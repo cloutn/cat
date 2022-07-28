@@ -16,3 +16,5 @@
 /testCat/bin/libEGL.dll
 /testCat/bin/libGLESv2.dll
 /testCat/bin/TextureConverter.dll
+/testCat/bin/bin_*.7z
+/free/free_*.7z
