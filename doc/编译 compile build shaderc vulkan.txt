@@ -1,0 +1,44 @@
+
+
+先安装python 3.7 或者 3.8  C:\Python\Python37 目录中。
+编译 D:\dev\cat_lite\free\shaderc\build\shaderc.sln 中的  shaderc_combined_genfile 工程，就会在 free/lib 下生成 Win32 Debug 版本的 shaderc_combined.lib。
+(如果 free/lib 没有，需要手动拷贝 D:\dev\cat_lite\free\shaderc\build\libshaderc\Debug\shaderc_combined.lib 到 free/lib 下)
+编译 Win32 Debug 的 cat 库需要这个 shaderc 的 lib。
+
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+
+
+------------------------------------
+
+win32 debug下如果想 link vulkan 的shaderc 库，需要自己编译一个 shaderc_combined.lib
+因为我们项目的C++代码生成 选项中的 运行库 是MDd，而shaderc用的都是 MTd
+
+用Cmake生成   D:\VulkanSDK\1.2.131.1\shaderc  
+在cmake选项里面，搜索 MTd 都改成MDd
+搜索Test，取消所有的勾选
+生成后打开项目，手动把下面的工程的属性都改成 MDd
+(属性 -> C/C++ -> 代码生成)
+
+spirv-Tools
+spirv-tools-opt
+shaderc
+shaderc_util
+
+
+下面这些应该已经是MDd了，可以检查一下
+HLSL
+glslang
+OGLCompiler
+OSDependent
+spirv
+
+然后编译 shaderc_combined_genfile 工程
+编译好之后把  D:\VulkanSDK\1.2.131.1\shaderc\project\libshaderc\Debug\shaderc_combined.lib
+拷贝到
+D:\VulkanSDK\1.2.131.1\Lib32Debug
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+#pragma once
+
+#include "cat/primitive.h"
+#include "cat/string.h"
+
+#include "scl/varray.h"
+
+namespace cat {
+
+class Material;
+class Env;
+
+// A mesh is a collection of primitives
+class Mesh
+{
+public:
+	Mesh();
+	~Mesh();
+
+	void load(cgltf_mesh* mesh, const char* const path, int skinJointCount, Object* parent, IRender* render, Env* env);
+	void draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render);
+	void addPrimitive(Primitive*);
+	Object* parent() { return m_parent; }
+	const String& name() const { return m_name; }
+
+private:
+	scl::varray<Primitive*> m_primitives;
+	String					m_name;
+
+	//TODO parent is for debug
+	Object*					m_parent;
+
+	Env*					m_env;
+};
+
+}	// namespace cat

@@ -1,0 +1,536 @@
+#include "cat/object.h"
+
+#include "cat/IRender.h"
+//#include "cat/camera.h"
+#include "cat/material.h"
+//#include "cat/primitive.h"
+#include "cat/mesh.h"
+#include "cat/def.h"
+
+#include "gfx/vertex.h"
+#include "gfx/base.h"
+
+#include "scl/type.h"
+#include "scl/assert.h"
+#include "scl/vector.h"
+#include "scl/file.h"
+#include "scl/quaternion.h"
+
+#include "cgltf/cgltf.h"
+
+////// DEBUG //////
+#include "GLES3/gl3.h"
+////// DEBUG //////
+
+#include <map>
+
+namespace cat {
+
+Object::Object() :
+	m_parent		(NULL)
+	m_material		(NULL),
+	m_mesh			(NULL),
+	m_translate		(NULL),
+	m_scale			(NULL),
+	m_rotation		(NULL),
+	m_matrix		(NULL),
+	m_globalMatrix	(NULL)
+{
+
+}
+
+Object::~Object()
+{
+	//if (NULL != m_material)
+	//{
+	//	delete m_material;
+	//	m_material = NULL;
+	//}
+
+	safe_delete(m_mesh);
+
+	for (int i = 0; i < m_childs.size(); ++i)
+		delete m_childs[i];
+
+	m_childs.clear();
+
+	safe_delete(m_translate);
+	safe_delete(m_scale);
+	safe_delete(m_rotation);
+	safe_delete(m_matrix);
+}
+
+void Object::loadNode(cgltf_node* node, BufferMap& bm, const char* const path, IRender* render, Material* material)
+{
+	// create mesh
+	assert(NULL == m_mesh);
+	if (NULL != node->mesh)
+	{
+		m_mesh = new Mesh();
+		m_mesh->load(node->mesh, bm, path, render);
+	}
+	
+	m_material = material;
+
+	if (node->has_translation)
+	{
+		m_translate = new scl::vector3 { node->translation[0], node->translation[1], node->translation[2] };
+	}
+	if (node->has_scale)
+	{
+		m_scale = new scl::vector3 { node->scale[0], node->scale[1], node->scale[2] };
+	}
+	if (node->has_rotation)
+	{
+		m_rotation = new scl::quaternion { node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] };
+	}
+	if (node->has_matrix)
+	{
+		m_matrix = new scl::matrix {
+			node->matrix[0],	node->matrix[1],	node->matrix[2],	node->matrix[3],
+			node->matrix[4],	node->matrix[5],	node->matrix[6],	node->matrix[7],
+			node->matrix[8],	node->matrix[9],	node->matrix[10],	node->matrix[11],
+			node->matrix[12],	node->matrix[13],	node->matrix[14],	node->matrix[15],
+		};
+	}
+
+	// load childs
+	for (size_t i = 0; i < node->children_count; ++i)
+	{
+		if (NULL == node->children[i])
+			continue;
+
+		Object* c = new Object();
+		c->loadNode(node->children[i], bm, path, render, material);
+		m_childs.push_back(c);
+	}
+}
+
+void Object::init(const char* const filename, IRender* render, Material* material)
+{
+	//assert(NULL == m_primitive);
+	//if (NULL == m_primitive)
+	//{
+	//	m_primitive = new Primitive;
+	//}
+	string256 path = filename;
+	scl::extract_path(path.pstring());
+
+	cgltf_data* data = gltf_load_from_file(filename);
+	//m_gltfRenderData = gltf_create_render_data();
+	if (NULL == data)
+		return;
+	if (NULL == data->scene)
+		return;
+
+	if (NULL == m_material)
+	{
+		m_material = material; //new Material;
+		//m_material->init(render, 0, "default.png");
+	}
+
+	BufferMap bm;
+	for (size_t i = 0; i < data->scene->nodes_count; ++i)
+	{
+		assert(NULL != data->scene->nodes);
+		loadNode(data->scene->nodes[i], bm, path.c_str(), render, m_material);
+		//_drawNode(scene->nodes[i], vbo_map);
+		//cgltf_mesh* mesh = data->scene->nodes[i]->mesh;
+		//for (size_t j = 0; j < mesh->primitives_count; ++j)
+		//{
+		//	m_primitive->loadFromGltf(&mesh->primitives[j], bm, render);
+		//	break;
+		//}
+	}
+
+	cgltf_free(data);
+
+	//if (NULL != m_data)
+	//{
+	//	assert(false);
+	//	return;
+	//}
+	//cgltf_options	options	= { 0 };
+	//cgltf_result	result	= cgltf_parse_file(&options, filename, &m_data);
+	//if (result != cgltf_result_success)
+	//{
+	//	cgltf_free(m_data);
+	//	return;
+	//}
+
+	//scl::stringPath s = filename;
+	//scl::extract_path(s.pstring());
+
+	//result = cgltf_load_buffers(&options, m_data, s.c_str());
+	//if (result != cgltf_result_success)
+	//{
+	//	cgltf_free(m_data);
+	//	return;
+	//}
+
+	//scl::matrix::frustum(m_mvp, -3, 3, -3, 3, -3, 3);
+	//scl::matrix::lookat(m_view, 1, 1, 1, 0, 0, 0, 0, 1, 0);
+
+	//float w = m_render->getDeviceWidth();
+	//float h = m_render->getDeviceHeight();
+
+	//scl::matrix camera = scl::matrix::identity();
+	//scl::vector3 eye	= { 0.5, 0.8, 2 };
+	//scl::vector3 target = { 0.7, -0.5, -1 };
+	//scl::vector3 up		= { -0.3, 0.4, -0.7 };
+	////scl::vector3 eye	= { 0, 0, 1 };
+	////scl::vector3 target = { 0, 0, 0 };
+	////scl::vector3 up		= { 0, 1, 0 };
+	//scl::matrix::lookat(camera, eye.x, eye.y, eye.z, target.x, target.y, target.z, up.x, up.y, up.z);
+	//Camera cameraClass;
+	//cameraClass.set(eye, target, up, 45, w/h, 0.1f, 100.f);
+
+	//scl::matrix t2 = scl::matrix::lookat2(eye, target, up);
+	
+	//scl::matrix t3 = t2 - t1;
+
+	//scl::matrix::frustum(m_projection, -w/2, w/2, -h/2, h/2, -100, 100);
+	//scl::matrix::perspective(m_projection, 45, w/h, 0.1f, 100);
+
+	//glm::mat4 proj = glm::perspective(glm::radians(45.0f), w/h, 0.1f, 100.0f);
+
+	//scl::matrix::ortho(m_projection, -w/2, w/2, -h/2, h/2, -10000, 10000);
+
+	//m_mvp = scl::matrix::identity();
+	//m_mvp = scl::matrix::scale(100, 100, 100);
+	//m_mvp.mul(m_view);
+	//m_mvp.mul(camera);
+
+	//m_mvp.mul(scl::matrix::scale(1000, 1000, 100));
+	//m_mvp.mul(scl::matrix::rotate_x(30));
+	//m_mvp.mul(scl::matrix::rotate_y(-45));
+	//m_mvp.mul(scl::matrix::rotate_z(30));
+	//m_mvp.mul(m_projection);
+	//m_mvp.x1 = 1;
+	//m_mvp.y2 = 1;
+	//m_mvp.z3 = 1;
+	//m_mvp.z4 = 0;
+	//m_mvp.d3 = 0;
+	//m_mvp.d4 = 1;
+	//m_mvp.mul(scl::matrix::move(0, 0, -1.01));
+	//const scl::matrix& cameraClassMatrix = cameraClass.matrix();
+
+	//scl::matrix ddd = m_mvp - cameraClassMatrix;
+
+	//scl::vector4 p0 = { 0, 0, -100, 1 };
+	//scl::vector4 p1 = { 1, 0, -10, 1};
+	//scl::vector4 p2 = { 0, 1, -10, 1 };
+	//scl::vector4 p3 = { 1, 1, -10, 1 };
+	//p0.mul(m_mvp);
+	//p1.mul(m_mvp);
+	//p2.mul(m_mvp);
+	//p3.mul(m_mvp);
+
+	//printf("\n------\n");
+	//_draw(m_data, m_render);
+	//cgltf_free(data);
+}
+
+
+//void Object::init(Material* material, Primitive* primitive)
+//{
+//	m_material	= material;
+//	m_primitive = primitive;
+//}
+
+//void Object::_draw(cgltf_data* data, IRender* render)
+//{
+//	if (data->scene == NULL && data->scenes_count <= 0)
+//		return;
+//	cgltf_scene* scene = data->scene;
+//	if (NULL == scene)
+//		scene = &data->scenes[0];
+//	for (size_t i = 0; i < scene->nodes_count; ++i)
+//	{
+//		_drawNode(scene->nodes[i], render);
+//	}
+//}
+//
+//void Object::_drawNode(cgltf_node* node, IRender* render)
+//{
+//	_drawMesh(node->mesh, render);
+//	for (size_t i = 0; i < node->children_count; ++i)
+//	{
+//		_drawNode(node->children[i], render);
+//	}
+//}
+//
+////cgltf_get_buffer_view_index(cgltf_data* data, cgltf_buffer_view* view)
+////{
+////
+////}
+//
+//GLuint _getVbo(cgltf_buffer_view* bufferView, cgltf_type type)
+//{
+//	GLuint vbo = -1;
+//	BufferMap::const_iterator it = vbo_map.find(bufferView);
+//	if (it == vbo_map.end())
+//	{
+//		glGenBuffers(1, &vbo);
+//		glBindBuffer(bufferView->target, vbo);
+//
+//		if (bufferView->type == cgltf_buffer_view_type_indices)
+//		{
+//			printf("loading indices : size = %d\n", bufferView->size);
+//			uint16* indices = (uint16*)((byte*)bufferView->buffer->data + bufferView->offset);
+//			for (size_t i = 0; i < bufferView->size / sizeof(uint16); ++i)
+//			{
+//				printf("%d, ", indices[i]);
+//			}
+//			printf("\n");
+//		}
+//		else if (bufferView->type == cgltf_buffer_view_type_vertices)
+//		{
+//			printf("loading vertex : size = %d\n", bufferView->size);
+//			float* indices = (float*)((byte*)bufferView->buffer->data + bufferView->offset);
+//			for (size_t i = 0; i < bufferView->size / sizeof(float); ++i)
+//			{
+//				//if (((i + 1) % 3) == 0 && bufferView->size > 400)
+//				//	indices[i] = 0;
+//				//if (type == cgltf_type_vec2 && indices[i] < 0)
+//				//	indices[i] = 0;
+//				printf("%.3f, ", indices[i]);
+//				if (type == cgltf_type_vec2 && ((i + 1) % 2 == 0))
+//					printf("\n");
+//				if (type == cgltf_type_vec3 && ((i + 1) % 3 == 0))
+//					printf("\n");
+//			}
+//			printf("\n");
+//		}
+//
+//		glBufferData(
+//			bufferView->target,
+//			bufferView->size,
+//			(byte*)bufferView->buffer->data + bufferView->offset,
+//			GL_STATIC_DRAW);
+//
+//
+//		vbo_map.insert(std::make_pair(bufferView, vbo));
+//		printf("loading buffer [%x]: file = %s, type = %d, target = %d\n", (unsigned int)bufferView, bufferView->buffer->uri, bufferView->type, bufferView->target);
+//	}
+//	else
+//		vbo = it->second;
+//	return vbo;
+//}
+//
+//static cgltf_size cgltf_num_components(cgltf_type type) 
+//{
+//	switch (type)
+//	{
+//	case cgltf_type_vec2:
+//		return 2;
+//	case cgltf_type_vec3:
+//		return 3;
+//	case cgltf_type_vec4:
+//		return 4;
+//	case cgltf_type_mat2:
+//		return 4;
+//	case cgltf_type_mat3:
+//		return 9;
+//	case cgltf_type_mat4:
+//		return 16;
+//	case cgltf_type_invalid:
+//	case cgltf_type_scalar:
+//	default:
+//		return 1;
+//	}
+//}
+//
+//
+//void Object::_drawMesh(cgltf_mesh* mesh, IRender* render)
+//{
+//	for (size_t i = 0; i < mesh->primitives_count; ++i) 
+//	{
+//		const cgltf_primitive&	primitive	= mesh->primitives[i];
+//		const cgltf_accessor*	indices		= primitive.indices;
+//
+//		GLuint indices_vbo = _getVbo(indices->buffer_view, indices->type);
+//		
+//		//// buffer
+//		glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_vbo));
+//
+//		for (size_t j = 0; j < primitive.attributes_count; ++j)
+//		{
+//			cgltf_attribute& attr = primitive.attributes[j];
+//
+//			//"attributes" : 
+//			//{
+//			//   "NORMAL" : 2,
+//			//   "POSITION" : 1,
+//			//   "TANGENT" : 3,
+//			//   "TEXCOORD_0" : 4
+//			//}
+//
+//			int attrIndex = -1;
+//			if (0 == _stricmp(attr.name, "position"))
+//				attrIndex = 0;
+//			if (0 == _stricmp(attr.name, "texcoord_0"))
+//				attrIndex = 2;
+//			//if (attrIndex >= 0)
+//			if (attrIndex >= 0)
+//			{
+//				cgltf_accessor* accessor = attr.data;
+//				GLuint attr_vbo = _getVbo(accessor->buffer_view, accessor->type);
+//				glcheck(glBindBuffer(GL_ARRAY_BUFFER, attr_vbo));
+//
+//				glcheck(glEnableVertexAttribArray(attrIndex));
+//				glcheck(glVertexAttribPointer(
+//					attrIndex, 
+//					cgltf_num_components(accessor->type), 
+//					accessor->gl_component_type, 
+//					accessor->normalized, 
+//					accessor->stride, 
+//					(void*)accessor->offset));
+//				//printf("set vertext attr : name = %s, index = %d, size = %d, type = %d, normalized = %d, stride = %d\n", 
+//				//	attr.name, attrIndex, cgltf_num_components(accessor->type), accessor->gl_component_type, accessor->normalized, accessor->stride);
+//			}
+//			else
+//			{
+//				//printf("attr index failed : %s\n", attr.name);
+//			}
+//		}
+//
+//		glcheck(glDrawElements(
+//			primitive.type,
+//			indices->count,
+//			indices->gl_component_type,
+//			reinterpret_cast<void*>(indices->offset)));
+//	}
+//}
+
+void Object::draw(const scl::matrix& mvp, IRender* render)
+{
+	if (NULL != m_mesh)
+		m_mesh->draw(mvp, m_material, render);
+
+	for (int i = 0; i < m_childs.size(); ++i)
+	{
+		if (NULL == m_childs[i])
+			continue;
+		m_childs[i]->draw(mvp, render);
+	}
+	//m_material->render()->draw2(
+	//	m_material->texture(),
+	//	m_primitive->vertexBuffers(),
+	//	m_primitive->indexBuffer(),
+	//	m_primitive->indexCount() / 3, // triangles
+	//	m_primitive->attrCount(),
+	//	m_primitive->attrs(),
+	//	m_material->shader(),
+	//	mvp
+	//	);
+
+	////glcheck( glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_color), 0) );
+	////glcheck( glEnableVertexAttribArray(0) );
+
+	////glcheck( glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(vertex_color), offset(vertex_color, color)) );
+	////glcheck( glEnableVertexAttribArray(1) );
+
+	////glcheck( glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_color), offset(vertex_color, u)) );
+	////glcheck( glEnableVertexAttribArray(2) );
+	//VertexAttr attrs[3] = 
+	//	{
+	//		{ 0, 3, VertexAttr::DATA_TYPE_FLOAT,			0,	sizeof(gfx::vertex_color),	0									},
+	//		{ 1, 4, VertexAttr::DATA_TYPE_UNSIGNED_BYTE,	1,	sizeof(gfx::vertex_color),	scl_offset(gfx::vertex_color, color)		},
+	//		{ 2, 2, VertexAttr::DATA_TYPE_FLOAT ,			0,	sizeof(gfx::vertex_color),	scl_offset(gfx::vertex_color, u)			}
+	//	};
+
+	//m_render->draw(
+	//	NULL, 
+	//	texture(), 
+	//	vertexBuffer(), 
+	//	indexBuffer(), 
+	//	2,  // primitive count
+	//	3, // vertex attributes count
+	//	attrs,
+	//	gfx::ALPHA_MODE_INVALID,  // blend mode
+	//	&s_transform, // world transform
+	//	shader(), 
+	//	NULL,	// uniform name
+	//	0,		// uniform value
+	//	NULL,	// camera (for some specific engine)
+	//	0);		// render level (for some special logic)
+}
+
+scl::matrix* Object::globalMatrix()
+{
+	return NULL;
+}
+
+//void Object::drawGltf(void* m_shader, void* texture, const scl::matrix& mvp)
+//{
+//	//glEnable(GL_CULL_FACE);
+//
+//	glUseProgram(GLuint(m_shader));
+//	int m_uniform_mvp = glGetUniformLocation(GLuint(m_shader), "mvp");
+//	assert(m_uniform_mvp >= 0);
+//	glcheck( glUniformMatrix4fv(m_uniform_mvp, 1, GL_FALSE, &mvp.m[0][0]) );
+//
+//	uint tex = static_cast<uint>(reinterpret_cast<uint64>(texture));
+//	glcheck(glBindTexture(GL_TEXTURE_2D, tex));
+//
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//	_draw(m_data, NULL);
+//
+//	//clear
+//	glcheck( glDisableVertexAttribArray(0) );
+//	glcheck( glDisableVertexAttribArray(1) );
+//	glcheck( glDisableVertexAttribArray(2) );
+//	glcheck( glBindVertexArray(0) );
+//	glcheck( glBindTexture(GL_TEXTURE_2D, 0) );
+//	glcheck( glBindBuffer(GL_ARRAY_BUFFER, 0) );
+//	glcheck( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) );
+//}
+
+
+//void Object::drawDebugBuffer(const scl::matrix& mvp)
+//{
+////	glEnable(GL_CULL_FACE);
+//
+//	glUseProgram(GLuint(m_shader));
+//	int m_uniform_mvp = glGetUniformLocation(GLuint(m_shader), "mvp");
+//	assert(m_uniform_mvp >= 0);
+//	//glcheck(glUniformMatrix4fv(m_uniform_mvp, 1, GL_FALSE, &m_mvp.m[0][0]));
+//	glcheck(glUniformMatrix4fv(m_uniform_mvp, 1, GL_FALSE, &mvp.m[0][0]));
+//
+//	uint tex = static_cast<uint>(reinterpret_cast<uint64>(m_texture));
+//	glcheck(glBindTexture(GL_TEXTURE_2D, tex));
+//
+//
+//	//// buffer
+//	glcheck( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,	static_cast<uint>(reinterpret_cast<uint64>(m_indexBuffer))) );
+//
+//	glcheck( glBindBuffer(GL_ARRAY_BUFFER, m_debugVertexBuffer_position));
+//	glcheck( glEnableVertexAttribArray(0) );
+//	glcheck( glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0) );
+//
+//	glcheck( glBindBuffer(GL_ARRAY_BUFFER, m_debugVertexBuffer_position));
+//	glcheck( glEnableVertexAttribArray(2) );
+//	glcheck( glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (byte*)NULL + 3 * sizeof(float)) );
+//
+//
+//	//glcheck( glBindBuffer(GL_ARRAY_BUFFER, m_debugVertexBuffer_coord));
+//	//glcheck( glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0) );
+//	//glcheck( glEnableVertexAttribArray(2) );
+//
+//
+//	glcheck( glDrawElements(GL_TRIANGLES,  6, GL_UNSIGNED_SHORT, 0) );
+//
+//	//clear
+//	glcheck( glDisableVertexAttribArray(0) );
+//	glcheck( glDisableVertexAttribArray(1) );
+//	glcheck( glDisableVertexAttribArray(2) );
+//	glcheck( glBindVertexArray(0) );
+//	glcheck( glBindTexture(GL_TEXTURE_2D, 0) );
+//	glcheck( glBindBuffer(GL_ARRAY_BUFFER, 0) );
+//	glcheck( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) );
+//}
+
+} // namespace cat {
+

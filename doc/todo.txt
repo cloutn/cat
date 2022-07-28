@@ -1,0 +1,139 @@
+
+整体规划：
+====== 模型 ======
+	原生数据render（基本完成）
+	mesh加载（已完成）
+	基础材质纹理加载（已完成）
+	场景组织（已完成）
+
+	skinned mesh 动画 (基本完成)
+	整理一下render的代码。
+	
+	（非必要功能，延后。先在gltf基础上做后续开发）fbx 在 windows 下的加载, 使用sdk
+	（非必要功能，延后。）fbx 在 android 下的加载，考虑使用 openfbx 或者 assimp 代码。
+
+
+====== 基础光照 ======
+冯氏光照模型 
+blinned-phong
+
+====== pbr渲染 ======
+基础pbr光照
+IBL实现
+
+====== 阴影 ======
+生成阴影图
+使用阴影图
+场景阴影bake（使用 Unreal 的 LightMass）
+
+====== 地形  ======
+刷高度图（地形刷子需要编辑器的支持）
+地形纹理
+植被 GPU Instance
+雪地沙地脚印，用TS
+
+====== 天空======
+实现最简单的天空盒
+
+====== 水面 ======
+河流
+大海（FFT Fast Fourier Transform 快速傅里叶变换）
+瀑布
+
+====== 场景编辑器 ======
+
+
+
+2022年04月20日 星期三
+渲染器：
+	
+光照：
+	基础光照实现。
+	pbr与光照实现。
+地形：
+	地形高度图渲染和纹理。
+	DrawInstance画植被
+	进阶：RVT实现。
+水体：
+	静态水
+	动态水
+	涟漪  unity 实现参考 https://blog.csdn.net/ak47007tiger/article/details/115270022
+
+阴影：
+	基础 shadowmap实现
+
+场景管理：
+	八叉树空间管理。
+
+资源管理：
+	参考 catui 的资源管理方式。
+
+物理：
+	接入physiX 4.0
+
+AI：
+	寻路，接入recast and detour navmesh
+
+
+其他？？：
+
+
+
+
+2021年09月16日 星期四
+【已完成】全屏和最小化之后的恢复
+【暂缓】接入catui。现在接入了 imgui，可以保证一些基本的信息显示与调试了。
+【暂缓】接入HLSL支持。该功能不是非常紧急
+
+
+
+2021年09月02日 星期四
+vulkan uniform 的管理过于混乱，能不能抽象一下，简化对上结构
+
+2021年06月08日 星期二
+
+干掉global ，只留下env
+
+使用 shaderCache类管理重复加载shader。
+
+明明只有一个 vertex shader 和一个 frag shader，但是_createShaderFromCode被调用了4次。
+
+正在改造 svkCreateShaderProgramFromCode 支持从 shader中直接读取 unifrom 信息
+
+
+
+
+1. 纹理的wrap方式，默认是repeat，现在没问题，但是怎么设置？
+
+2. vulkan方式下，索引的index 是 int16还是int32无法指定
+
+
+
+
+
+attr 在 shader 中的 layout 位置，现在是写死的，考虑怎么改成可配置的。
+		m_attrs[i].index		= attrIndex;
+		if (attrIndex < 0)
+		{
+			printf("attr index = %s\n", attr.name);
+			continue;
+		}
+还有这个，不支持的 attr 怎么处理？强制 render 跳过？
+或者先扫一遍有效的attr?
+
+
+render 代码清理 ( 现在基本只有一个draw是没用的函数了)
+
+pbr材质支持！用 DamagedHelmet 调试！
+
+
+D:\glTF-Sample-Viewer\assets\models\2.0\Sponza
+这个大房子模型显示不正确。感觉是摄像机裁剪问题
+
+鼠标移动手感像屎一样！
+
+
+1. 渲染状态切换，类似 unity的subshader的pass属性，是否开启深度之类的
+
+
+
