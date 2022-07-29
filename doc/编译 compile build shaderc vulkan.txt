@@ -5,10 +5,15 @@
 (如果 free/lib 没有，需要手动拷贝 D:\dev\cat_lite\free\shaderc\build\libshaderc\Debug\shaderc_combined.lib 到 free/lib 下)
 编译 Win32 Debug 的 cat 库需要这个 shaderc 的 lib。
 
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+
+
+
 
 
 ------------------------------------
+
+
+
 
 win32 debug下如果想 link vulkan 的shaderc 库，需要自己编译一个 shaderc_combined.lib
 因为我们项目的C++代码生成 选项中的 运行库 是MDd，而shaderc用的都是 MTd
