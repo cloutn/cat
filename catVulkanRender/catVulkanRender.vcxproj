@@ -100,7 +100,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../;../free/;../free/imgui/;D:\VulkanSDK\1.2.131.1\Include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../free/;../free/imgui/;../free/vulkan/Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;GFX_ENABLE_IMAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>

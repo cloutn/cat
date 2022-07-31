@@ -51,6 +51,16 @@ cmd([
 	"../free/free_%s.7z" % datetime_str,
 	"../free/*",
 	"-x!*.7z",
+	"-x!*.suo",
+	"-x!*.sdf",
+	"-x!*.pdb",
+	"-x!*.ilk",
+	"-x!*.user",
+	"-xr!Debug",
+	"-xr!Release",
+	"-xr!x64",
+	"-xr!make",
+	"-xr!ipch",
 	"-x!lib",
 	"-x!shaderc/build"])
 

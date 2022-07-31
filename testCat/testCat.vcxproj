@@ -55,13 +55,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;GFX_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\;..\free;..\free\imgui;..\free\gles\qualcomm\include;D:\VulkanSDK\1.2.131.1\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\free;..\free\imgui;..\free\gles\qualcomm\include;..\free\vulkan\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>scl_d.lib;cat_d.lib;gfx_d.lib;imgui_d.lib;catVulkanRender_d.lib;vulkan-1.lib;../free/lib/shaderc_combined.lib;spirv_cross_vs2015_d.lib;libEGL.lib;libGLESv2.lib;jpeg_turbo_d.lib;libktx_d.lib;libpng_d.lib;libtga_d.lib;zlib_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib;..\free\lib;..\free\gles\qualcomm\lib;..\free\vld_runtime\lib\Win32;D:\VulkanSDK\1.2.131.1\Lib32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;..\free\lib;..\free\gles\qualcomm\lib;..\free\vld_runtime\lib\Win32;..\free\vulkan\Lib32</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
