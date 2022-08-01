@@ -60,8 +60,8 @@ void* gltf_create_render_data()
 
 void gltf_do_render(cgltf_data* data, void* gltfRenderData, void* m_shader, void* texture, const scl::matrix& mvp)
 {
-	glUseProgram(GLuint(m_shader));
-	int m_uniform_mvp = glGetUniformLocation(GLuint(m_shader), "mvp");
+	glUseProgram(GLuint(reinterpret_cast<uintptr_t>(m_shader)));
+	int m_uniform_mvp = glGetUniformLocation(GLuint(reinterpret_cast<uintptr_t>(m_shader)), "mvp");
 	assert(m_uniform_mvp >= 0);
 	glcheck( glUniformMatrix4fv(m_uniform_mvp, 1, GL_FALSE, &mvp.m[0][0]) );
 
@@ -166,11 +166,11 @@ GLuint _getVbo(cgltf_buffer_view* bufferView, cgltf_type type, BufferMap* vbo_ma
 			(byte*)bufferView->buffer->data + bufferView->offset,
 			GL_STATIC_DRAW);
 
-		vbo_map->insert(std::make_pair(bufferView, reinterpret_cast<void*>(vbo)));
-		printf("loading buffer [%x]: file = %s, type = %d, target = %d\n", (unsigned int)bufferView, bufferView->buffer->uri, bufferView->type, bufferView->target);
+		vbo_map->insert(std::make_pair(bufferView, reinterpret_cast<void*>(static_cast<uintptr_t>(vbo))));
+		printf("loading buffer [%p]: file = %s, type = %d, target = %d\n", bufferView, bufferView->buffer->uri, bufferView->type, bufferView->target);
 	}
 	else
-		vbo = reinterpret_cast<GLuint>(it->second);
+		vbo = GLuint(reinterpret_cast<uintptr_t>(it->second));
 	return vbo;
 }
 

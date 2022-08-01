@@ -208,7 +208,7 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 		m_attrs[i].dataType		= static_cast<VertexAttr::DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
 		m_attrs[i].normalize	= accessor->normalized;
 		m_attrs[i].stride		= sizeofVertex;
-		m_attrs[i].offset		= reinterpret_cast<void*>(attrOffsets[i]);
+		m_attrs[i].offset		= reinterpret_cast<void*>(static_cast<uintptr_t>(attrOffsets[i]));
 
 		int	elementSize = accessor->stride; 
 		if (elementSize == 0)

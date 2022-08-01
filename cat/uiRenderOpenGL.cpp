@@ -51,7 +51,7 @@ void* UIRenderOpenGL::createVertexBuffer(const int vertexCount)
 {
 	uint buf = 0;
 	glcheck( glGenBuffers(1, &buf) );
-	return reinterpret_cast<void*>(buf);
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(buf));
 }
 
 void UIRenderOpenGL::releaseVertexBuffer(void* vertexBuffer)
@@ -66,7 +66,7 @@ void* UIRenderOpenGL::createIndexBuffer(const int vertexCount)
 {
 	uint buf = 0;
 	glcheck( glGenBuffers(1, &buf) );
-	return reinterpret_cast<void*>(buf);
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(buf));
 }
 
 void UIRenderOpenGL::releaseIndexBuffer(void* vertexBuffer)
@@ -103,7 +103,7 @@ void* UIRenderOpenGL::createTexture(const char* const filename, int* width, int*
 	_set_texture_param();
 
 	glcheck( glBindTexture(GL_TEXTURE_2D, 0) );
-	return reinterpret_cast<void*>(textureID);
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(textureID));
 }
 
 unsigned char* UIRenderOpenGL::loadImage(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel)
@@ -168,7 +168,7 @@ void* UIRenderOpenGL::createTexture(const int width, const int height, const gfx
 	glcheck( glBindTexture(GL_TEXTURE_2D, 0) );
 
 	free(empty);
-	return reinterpret_cast<void*>(tex);
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(tex));
 }
 
 void UIRenderOpenGL::copyTexture(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const gfx::PIXEL pixel, const int alignment)
@@ -358,7 +358,7 @@ void UIRenderOpenGL::draw2(
 		//}
 	}
 
-	glcheck( glDrawElements(primitiveType, indexCount, VertexAttrDataTypeToGLDataType((VertexAttr::DATA_TYPE)indexComponentType), reinterpret_cast<void*>(indexOffset) ) );
+	glcheck( glDrawElements(primitiveType, indexCount, VertexAttrDataTypeToGLDataType((VertexAttr::DATA_TYPE)indexComponentType), reinterpret_cast<void*>(static_cast<uintptr_t>(indexOffset)) ) );
 
 	//clear
 	glcheck( glDisableVertexAttribArray(0) );
@@ -500,7 +500,7 @@ void* UIRenderOpenGL::createShader(int shaderType)
 	}
 	//if (shaderType == ui::SHADER_COLOR)
 	//	m_effectShader = shader;
-	return reinterpret_cast<void*>(shader);
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(shader));
 }
 
 void* UIRenderOpenGL::createShader(const char* const vs_code, const char* const ps_code)
@@ -508,7 +508,7 @@ void* UIRenderOpenGL::createShader(const char* const vs_code, const char* const 
 	// shader 
 	uint shader = 0;
 	shader = gfx::load_shader(vs_code, ps_code);
-	return reinterpret_cast<void*>(shader);
+	return reinterpret_cast<void*>(static_cast<uintptr_t>(shader));
 }
 
 void UIRenderOpenGL::useShader(void* _shader)
