@@ -1040,7 +1040,7 @@ VkPipelineVertexInputStateCreateInfo _buildVulkanVertexInput(const VertexAttr* a
 		viAttr.location								= attr.index;
 		viAttr.binding								= binding;
 		viAttr.format								= _attrToVkFormat(attr); 
-		viAttr.offset								= reinterpret_cast<int>(attr.offset);
+		viAttr.offset								= uint32_t((uintptr_t(attr.offset)));
 		++viAttrCount;
 	}
 

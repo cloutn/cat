@@ -410,7 +410,7 @@ static void __testSpirv_Cross(const char* bytes, const int bytesLen, const char*
 		{
 			//spvc_resources_get_resource_list_for_type(resources, SPVC_RESOURCE_TYPE_UNIFORM_BUFFER, &list, &count);
 			spvc_resources_get_resource_list_for_type(resources, (spvc_resource_type)t, &list, &count);
-			printf("type [%s] count = %d\n", spvc_resource_type_names[t], count);
+			printf("type [%s] count = %zd\n", spvc_resource_type_names[t], count);
 
 			for (size_t i = 0; i < count; i++)
 			{
@@ -1653,7 +1653,7 @@ svkPipeline svkCreatePipeline(svkDevice& device, VkDescriptorSetLayout descLayou
 	viAttribs[1].location		= 1;
 	viAttribs[1].binding		= 0;
 	viAttribs[1].format			= VK_FORMAT_R32G32_SFLOAT;
-	viAttribs[1].offset			= (uint32_t)offset(example_vertex, texcoord);
+	viAttribs[1].offset			= (uint32_t)(uintptr_t)offset(example_vertex, texcoord);
 
 	VkPipelineVertexInputStateCreateInfo viCreateInfo;
 	memclr(viCreateInfo);
