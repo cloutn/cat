@@ -1,11 +1,12 @@
 
 cd ../free/shaderc
 
-mkdir build
+mkdir build64
 
-cd build
+cd build64
 
-"C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 14 2015" -A Win32 -DSHADERC_ENABLE_SHARED_CRT:INT=1  -DSHADERC_SKIP_TESTS=ON -DSHADERC_SKIP_INSTALL=ON "../" 
+rem "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 14 2015" -A Win32 -DSHADERC_ENABLE_SHARED_CRT:INT=1  -DSHADERC_SKIP_TESTS=ON -DSHADERC_SKIP_INSTALL=ON "../" 
+"C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 14 2015" -DSHADERC_ENABLE_SHARED_CRT:INT=1  -DSHADERC_SKIP_TESTS=ON -DSHADERC_SKIP_INSTALL=ON "../" 
 
 "C:\Program Files\CMake\bin\cmake.exe" --build . --config Debug
 

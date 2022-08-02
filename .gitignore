@@ -19,3 +19,10 @@
 /testCat/bin/bin_*.7z
 /free/free_*.7z
 /free/vulkan
+/cat/build
+/catVulkanRender/build
+/testCat/art
+/testCat/build64
+/testCat/build32
+/testCat/build
+/testCat/imgui.ini

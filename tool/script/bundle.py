@@ -25,6 +25,8 @@ cmd([
     "-xr!ipch",
     "-xr!.vs",
     "-xr!build",
+    "-xr!build32",
+    "-xr!build64",
     "-x!lib",
     "-x!lib64",
     "-x!shaderc/build",
@@ -34,14 +36,53 @@ cmd([
     ])
 
 
+#print("compressing ../../testCat/bin/bin_%s.7z" % datetime_str)
+#cmd([
+#    'bin/7z.exe',
+#    'a',
+#    "../testCat/bin/bin_%s.7z" % datetime_str,
+#    "../testCat/bin/art",
+#    "../testCat/bin/driver",
+#    "../testCat/bin/*.dll",
+#    "-x!*.7z",
+#    "-aoa",
+#    "-bso0",
+#    "-bd",
+#    ])
+
 print("compressing ../../testCat/bin/bin_%s.7z" % datetime_str)
 cmd([
     'bin/7z.exe',
     'a',
     "../testCat/bin/bin_%s.7z" % datetime_str,
-    "../testCat/bin/art",
     "../testCat/bin/driver",
     "../testCat/bin/*.dll",
+    "-x!*.7z",
+    "-aoa",
+    "-bso0",
+    "-bd",
+    ])
+
+
+print("compressing ../../testCat/bin64/bin64_%s.7z" % datetime_str)
+cmd([
+    'bin/7z.exe',
+    'a',
+    "../testCat/bin64/bin64_%s.7z" % datetime_str,
+    "../testCat/bin64/driver",
+    "../testCat/bin64/*.dll",
+    "-x!*.7z",
+    "-aoa",
+    "-bso0",
+    "-bd",
+    ])
+
+print("compressing ../../testCat/art/art_%s.7z" % datetime_str)
+cmd([
+    'bin/7z.exe',
+    'a',
+    "../testCat/art/art_%s.7z" % datetime_str,
+    "../testCat/art/*",
     "-x!*.7z",
     "-aoa",
     "-bso0",
