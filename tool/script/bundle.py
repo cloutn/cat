@@ -1,3 +1,6 @@
+import sys
+sys.path.append("./script")
+
 import os
 import shutil
 import io
