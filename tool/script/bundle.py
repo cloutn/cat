@@ -6,11 +6,15 @@ from datetime import datetime
 
 datetime_str = datetime.now().strftime("%Y_%m%d_%H%M%S")
 
-print("compressing ../free/free_%s.7z" % datetime_str)
+dir = "../archive/%s/" % datetime_str
+
+os.mkdir(dir)
+
+#print("compressing %sfree.7z" % dir)
 cmd([
     'bin/7z.exe',
     'a',
-    "../free/free_%s.7z" % datetime_str,
+    dir + "free.7z" ,
     "../free/*",
     "-x!*.7z",
     "-x!*.suo",
@@ -50,11 +54,11 @@ cmd([
 #    "-bd",
 #    ])
 
-print("compressing ../../testCat/bin/bin_%s.7z" % datetime_str)
+#print("compressing %sbin.7z" % dir)
 cmd([
     'bin/7z.exe',
     'a',
-    "../testCat/bin/bin_%s.7z" % datetime_str,
+    dir + "/bin.7z",
     "../testCat/bin/driver",
     "../testCat/bin/*.dll",
     "-x!*.7z",
@@ -64,11 +68,11 @@ cmd([
     ])
 
 
-print("compressing ../../testCat/bin64/bin64_%s.7z" % datetime_str)
+#print("compressing %sbin64.7z" % dir)
 cmd([
     'bin/7z.exe',
     'a',
-    "../testCat/bin64/bin64_%s.7z" % datetime_str,
+    dir + "bin64.7z",
     "../testCat/bin64/driver",
     "../testCat/bin64/*.dll",
     "-x!*.7z",
@@ -77,11 +81,11 @@ cmd([
     "-bd",
     ])
 
-print("compressing ../../testCat/art/art_%s.7z" % datetime_str)
+#print("compressing %sart.7z" % dir)
 cmd([
     'bin/7z.exe',
     'a',
-    "../testCat/art/art_%s.7z" % datetime_str,
+    dir + "art.7z",
     "../testCat/art/*",
     "-x!*.7z",
     "-aoa",
