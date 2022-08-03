@@ -26,3 +26,5 @@
 /testCat/build32
 /testCat/build
 /testCat/imgui.ini
+/tool/cmake
+/tool/python
