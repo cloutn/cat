@@ -15,7 +15,7 @@ os.mkdir(dir)
 
 #print("compressing %sfree.7z" % dir)
 cmd([
-    'bin/7z.exe',
+    './7z.exe',
     'a',
     dir + "free.7z" ,
     "../free/*",
@@ -59,7 +59,7 @@ cmd([
 
 #print("compressing %sbin.7z" % dir)
 cmd([
-    'bin/7z.exe',
+    './7z.exe',
     'a',
     dir + "/bin.7z",
     "../testCat/bin/driver",
@@ -73,7 +73,7 @@ cmd([
 
 #print("compressing %sbin64.7z" % dir)
 cmd([
-    'bin/7z.exe',
+    './7z.exe',
     'a',
     dir + "bin64.7z",
     "../testCat/bin64/driver",
@@ -86,7 +86,7 @@ cmd([
 
 #print("compressing %sart.7z" % dir)
 cmd([
-    'bin/7z.exe',
+    './7z.exe',
     'a',
     dir + "art.7z",
     "../testCat/art/*",

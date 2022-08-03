@@ -8,7 +8,7 @@
 
 cd "tool"
 
-"./bin/7z.exe" x "../archive/python.7z" "-o../tool/python" -aoa -bso0 -bd
+"./7z.exe" x "../archive/python.7z" "-o../tool/python" -aoa -bso0 -bd
 
 "./python/python" "script/setup.py"
 
