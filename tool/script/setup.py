@@ -51,12 +51,20 @@ def build_all():
             continue
         globals()[f]()
 
+def generate_testCat():
+    src_path = "../testCat/"
+    build_path = "../testCat/build64/"
+    cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-Wno-dev", "-S", src_path, "-B", build_path])
+    pass
+
 def all():
     unzip_all()
     build_all()
+    generate_testCat()
 
 all_funcs = []
 all_funcs.extend(locals())
+#all_funcs_lower = [x.lower() for x in all_funcs]
 
 argc = len(sys.argv)
 

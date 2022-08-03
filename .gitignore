@@ -28,3 +28,9 @@
 /testCat/imgui.ini
 /tool/cmake
 /tool/python
+/cat/build64
+/cat/build32
+/cat/build
+/catVulkanRender/build64
+/catVulkanRender/build32
+/catVulkanRender/build

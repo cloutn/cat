@@ -5,6 +5,18 @@ set(target testCat)
 
 project(${target})
 
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/imgui ${PROJECT_SOURCE_DIR}/../free/imgui/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/jpeg_turbo ${PROJECT_SOURCE_DIR}/../free/jpeg_turbo/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libktx ${PROJECT_SOURCE_DIR}/../free/libktx/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libpng ${PROJECT_SOURCE_DIR}/../free/libpng/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libtga ${PROJECT_SOURCE_DIR}/../free/libtga/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/zlib ${PROJECT_SOURCE_DIR}/../free/zlib/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/spirv_cross ${PROJECT_SOURCE_DIR}/../free/spirv_cross/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/../catVulkanRender/build64)
+
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
   set(arch64 1)
 endif()
@@ -44,6 +56,9 @@ set(src_files
 #	)
 
 add_executable(${target} ${src_files} ${header_files})
+
+
+add_dependencies(${target} scl gfx imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender)
 
 if (arch64)
 	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin64)
