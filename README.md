@@ -1,7 +1,9 @@
 #cat
+
 cat is a simple vulkan renderer with gltf supported.
 
 ##How to run
+
 1.Microsoft Windows 10 or higher, nvidia GTX 770 or higher.
 
 2.Setup Visual Studio 2022 with msvc++ tools.
@@ -12,6 +14,12 @@ cat is a simple vulkan renderer with gltf supported.
 
 
 ##Features
+
+Vulkan 1.2.131.1 supported.
+
 Load and display gltf model.
+
 VertexShader skinned-mesh.
+
 Imgui embeded.
+
