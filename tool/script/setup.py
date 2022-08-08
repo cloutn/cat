@@ -8,6 +8,9 @@ import os
 import shutil
 from mytool import cmd
 
+class G:
+    arch64 = False
+
 
 def unzip_cmake():
     # "-aoa"  # ask overwrite mode = all #   "-bso0"  # stadard output stream disabled #   "-bd"   # disable progress indicator
@@ -34,16 +37,20 @@ def unzip_all():
         globals()[f]()
 
 def build_shaderc():
+    arch = "64" if G.arch64 else ""
     src_path = "../free/shaderc/"
-    build_path = "../free/shaderc/build64/"
+    build_path = f"../free/shaderc/build{arch}/"
     if not os.path.exists(build_path):
         os.mkdir(build_path)
-    cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
+    cmake_arch = "x64" if G.arch64 else "Win32"
+    cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-A", cmake_arch, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
+    print(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-A", cmake_arch, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
+
     cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
-    lib_path = "../free/lib64/"
+    lib_path = f"../free/lib{arch}/"
     if not os.path.exists(lib_path):
         os.mkdir(lib_path)
-    shutil.copy(build_path + "/libshaderc/Debug/shaderc_combined.lib", "../free/lib64/")
+    shutil.copy(build_path + "/libshaderc/Debug/shaderc_combined.lib", f"../free/lib{arch}/")
 
 def build_all():
     funcs = []
@@ -54,12 +61,20 @@ def build_all():
         globals()[f]()
 
 def generate_testCat():
+    arch = "64" if G.arch64 else ""
     src_path = "../testCat/"
-    build_path = "../testCat/build64/"
-    cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-Wno-dev", "-S", src_path, "-B", build_path])
-    pass
+    build_path = f"../testCat/build{arch}/"
+    cmake_arch = "x64" if G.arch64 else "Win32"
+    cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-A", cmake_arch, "-Wno-dev", "-S", src_path, "-B", build_path])
 
 def all():
+    G.arch64 = True
+    unzip_all()
+    build_all()
+    generate_testCat()
+
+def all32():
+    G.arch64 = False
     unzip_all()
     build_all()
     generate_testCat()

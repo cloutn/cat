@@ -34,3 +34,5 @@
 /catVulkanRender/build64
 /catVulkanRender/build32
 /catVulkanRender/build
+/.vscode
+/testCat/logger.txt

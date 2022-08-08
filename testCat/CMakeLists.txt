@@ -1,35 +1,27 @@
 
 cmake_minimum_required(VERSION 3.22)
 
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	set(ARCH 64) 
+	set(arch64 1)
+endif()
+
 set(target testCat)
 
 project(${target})
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/imgui ${PROJECT_SOURCE_DIR}/../free/imgui/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/jpeg_turbo ${PROJECT_SOURCE_DIR}/../free/jpeg_turbo/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libktx ${PROJECT_SOURCE_DIR}/../free/libktx/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libpng ${PROJECT_SOURCE_DIR}/../free/libpng/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libtga ${PROJECT_SOURCE_DIR}/../free/libtga/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/zlib ${PROJECT_SOURCE_DIR}/../free/zlib/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/spirv_cross ${PROJECT_SOURCE_DIR}/../free/spirv_cross/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build64)
-add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/../catVulkanRender/build64)
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/imgui ${PROJECT_SOURCE_DIR}/../free/imgui/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/jpeg_turbo ${PROJECT_SOURCE_DIR}/../free/jpeg_turbo/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libktx ${PROJECT_SOURCE_DIR}/../free/libktx/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libpng ${PROJECT_SOURCE_DIR}/../free/libpng/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libtga ${PROJECT_SOURCE_DIR}/../free/libtga/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/zlib ${PROJECT_SOURCE_DIR}/../free/zlib/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/spirv_cross ${PROJECT_SOURCE_DIR}/../free/spirv_cross/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/../catVulkanRender/build${ARCH})
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  set(arch64 1)
-endif()
-  #else()
-  #  set(arch64 False)
-  #endif()
-if (arch64)
-	message(STATUS "is arch64")
-else()
-	message(STATUS "is arch32")
-endif()
-
-#message(STATUS "cmake build type = ${platform} , ${CMAKE_CL_64}")
 
 set(header_files
 	client.h
@@ -42,33 +34,12 @@ set(src_files
 	main.cpp
 )
 
-#set(link_dir_debug
-#	${PROJECT_SOURCE_DIR}/../lib64
-#	${PROJECT_SOURCE_DIR}/../free/lib64
-#	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib64
-#	${PROJECT_SOURCE_DIR}/../free/vld_runtime/lib/Win64/
-#	${PROJECT_SOURCE_DIR}/../free/vulkan/Lib
-#)
-#
-#link_directories(
-#	$<$<CONFIG:Debug>:${link_dir_debug}>
-#	$<$<CONFIG:Release>:${PROJECT_SOURCE_DIR}/../free>
-#	)
-
 add_executable(${target} ${src_files} ${header_files})
-
 
 add_dependencies(${target} scl gfx imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender)
 
-if (arch64)
-	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin64)
-	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin64)
-else()
-	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
-	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
-endif()
-
-#..\;..\free;..\free\imgui;..\free\gles\qualcomm\include;..\free\vulkan\Include
+set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
+set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
 
 target_include_directories(
 	${target}
@@ -81,56 +52,48 @@ target_include_directories(
 	)
 
 set(debug_links 	
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/scl_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../lib64/cat_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/gfx_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/imgui_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../lib64/catVulkanRender_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib/vulkan-1.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/shaderc_combined.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/spirv_cross_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib64/libEGL.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib64/libGLESv2.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/jpeg_turbo_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/libktx_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/libpng_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/libtga_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib64/zlib_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib${ARCH}/libEGL.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib${ARCH}/libGLESv2.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/jpeg_turbo_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libktx_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libpng_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libtga_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib_d.lib
 )
 
 set(release_links 	
-	optimized scl.lib
-	optimized cat.lib
-	optimized gfx.lib
-	optimized imgui.lib
-	optimized catVulkanRender.lib
-	optimized vulkan-1.lib
-	optimized shaderc_combined.lib
-	optimized spirv_cross.lib
-	optimized libEGL.lib
-	optimized libGLESv2.lib
-	optimized jpeg_turbo.lib
-	optimized libktx.lib
-	optimized libpng.lib
-	optimized libtga.lib
-	optimized zlib.lib)
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl.lib
+	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui.lib
+	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib${ARCH}/libEGL.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib${ARCH}/libGLESv2.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/jpeg_turbo.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libktx.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libpng.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libtga.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib.lib
+)
 
 
-#target_link_libraries(${target} 
-#	PUBLIC
-#	$<$<CONFIG:Debug>:"${debug_links}">
-#	$<$<CONFIG:Release>:"${release_links}">
-#)
-
-#$set_target_properties(${target} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/mybin")
-#set_property(TARGET ${target} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set_target_properties(${target} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${target})
 
 target_link_libraries(${target} 
 	${debug_links}
 	${release_links})
-#target_link_libraries(${target} )
 
 add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DGFX_WIN32)
