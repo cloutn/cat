@@ -30,6 +30,11 @@ set(src_files
 	vulkanRender.cpp
 )
 
+source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
+source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
+
 add_library(${target} STATIC ${src_files} ${header_files})
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8) 

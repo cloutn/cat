@@ -34,6 +34,11 @@ set(src_files
 	main.cpp
 )
 
+source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${header_files})
+source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${src_files})
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
+
 add_executable(${target} ${src_files} ${header_files})
 
 add_dependencies(${target} scl gfx imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender)
