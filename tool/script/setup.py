@@ -5,13 +5,12 @@ sys.path.append("./script")
 
 import subprocess
 import os
+import shutil
 from mytool import cmd
 
-#	"-aoa"  	# ask overwrite mode = all
-#	"-bso0"  	# stadard output stream disabled
-#	"-bd"		# disable progress indicator
 
 def unzip_cmake():
+    # "-aoa"  # ask overwrite mode = all #   "-bso0"  # stadard output stream disabled #   "-bd"   # disable progress indicator
     cmd(['./7z/7z.exe', 'x', '../archive/cmake.7z', '-o../tool/cmake', '-aoa', '-bso0', '-bd'])
 
 def unzip_free():
@@ -40,8 +39,11 @@ def build_shaderc():
     if not os.path.exists(build_path):
         os.mkdir(build_path)
     cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
-    #cmd(['./cmake/bin/cmake.exe', "--version"])
     cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
+    lib_path = "../free/lib64/"
+    if not os.path.exists(lib_path):
+        os.mkdir(lib_path)
+    shutil.copy(build_path + "/libshaderc/Debug/shaderc_combined.lib", "../free/lib64/")
 
 def build_all():
     funcs = []
@@ -64,15 +66,14 @@ def all():
 
 all_funcs = []
 all_funcs.extend(locals())
-#all_funcs_lower = [x.lower() for x in all_funcs]
 
 argc = len(sys.argv)
 
 if argc >= 2:
     op = sys.argv[1]
     if op in all_funcs:
-        #print("call function %s" % op)
         locals()[op]()
     else:
         print("operation %s not found." % op)
-    
+
+

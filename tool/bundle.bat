@@ -3,7 +3,6 @@
 ::set datetime_str=%date:~0,4%_%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 ::rem echo %datetime_str%
 ::
-::
 ::rem "./svnclear.bat"
 ::
 ::echo compressing ../free/free_%datetime_str%.7z
