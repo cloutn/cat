@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.22)
 
 set(target cat)
 
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+
 project(${target})
 
 set(header_files
