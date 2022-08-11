@@ -34,7 +34,7 @@ public:
 	VulkanRender();
 	~VulkanRender();
 
-	bool					init					(void* hInstance, void* hwnd);
+	bool					init					(void* hInstance, void* hwnd, const uint32 clearColor);
 	bool					is_init					()const { return m_isInit; };
 	void					swap					();
 	void					clear					();
@@ -184,6 +184,9 @@ private:
 	void*				m_windowHandle;
 
 	VkDescriptorPool	m_IMGUIDescriptorPool;
+
+	//uint32				m_clearColor;
+	float				m_clearColor[4];
 
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
 	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key ÊÇ uniform bind µÄ hash Öµ

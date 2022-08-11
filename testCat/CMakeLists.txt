@@ -6,6 +6,8 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(arch64 1)
 endif()
 
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+
 set(target testCat)
 
 project(${target})
@@ -26,6 +28,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/
 set(header_files
 	client.h
 	imgui_impl_win32.h
+	config.h
 )
 
 set(src_files

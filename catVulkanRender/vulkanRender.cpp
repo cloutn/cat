@@ -47,6 +47,7 @@ VulkanRender::VulkanRender()  :
 	m_windowHandle				(NULL),
 	m_IMGUIDescriptorPool		(NULL),
 	m_bindCommandBuffer			(NULL)
+	//m_clearColor				(0)
 	
 {
 	memclr(m_device);
@@ -57,10 +58,11 @@ VulkanRender::VulkanRender()  :
 
 	memset(m_frameUniforms,				0, sizeof(m_frameUniforms));
 	memset(m_frameUniformBuffersMapped,	0, sizeof(m_frameUniformBuffersMapped));
+	memset(m_clearColor,				0, sizeof(m_clearColor));
 }
 
 
-bool VulkanRender::init(void* hInstance, void* hwnd)
+bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 {
 	if (is_init())
 		return false;
@@ -76,6 +78,8 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 	m_inst				= svkCreateInstance	(ENABLE_VALIDATION_LAYER);
 	m_device			= svkCreateDevice	(m_inst);
 	m_surface			= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
+	gfx::argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
+	//m_clearColor		= clearColor;
 
 	// mvp matrix
 	//calcViewMatrix();
@@ -482,7 +486,8 @@ void VulkanRender::endDraw()
 
 	VkCommandBuffer& primaryCb = m_swapchain.commandBuffers[m_frameIndex];
 	svkBeginCommandBuffer(primaryCb);
-	svkCmdBeginRenderPass(primaryCb, 0.2f, 0.2f, 0.2f, 0.2f, 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
+	//svkCmdBeginRenderPass(primaryCb, 0.2f, 0.2f, 0.2f, 0.2f, 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
+	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
 	
 	CommandAllocator* ca = m_commandAllocator[m_frameIndex];
 	vkCmdExecuteCommands(primaryCb, ca->getAllocCount(), ca->getAllocArray());

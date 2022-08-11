@@ -68,7 +68,7 @@ void Client::init(const int width, const int height)
 {
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
-	m_render.init(m_window.getInstance(), m_window.getHandle());
+	m_render.init(m_window.getInstance(), m_window.getHandle(), m_config.clearColor);
 	m_window.registerEventHandler(*this);
 #endif
 
@@ -392,18 +392,18 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 }
 
 
-void Client::_onGUI(bool& show_demo_window, bool& show_another_window, scl::vector4& clear_color)
+void Client::_onGUI()
 {
 	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-	if (show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
+	if (m_config.showDemoWindow)
+		ImGui::ShowDemoWindow(&m_config.showDemoWindow);
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
 		static float f = 0.0f;
 		static int counter = 0;
 
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+		ImGui::Begin("Debug main");                          // Create a window called "Hello, world!" and append into it.
 
 		string256 fpsStr;
 		float fps = (m_totalTime == 0) ? 0 : m_totalFrame / (m_totalTime / 1000.f);
@@ -411,30 +411,30 @@ void Client::_onGUI(bool& show_demo_window, bool& show_another_window, scl::vect
 
 		ImGui::Text(fpsStr.c_str());               // Display some text (you can use a format strings too)
 
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-		ImGui::Checkbox("Another Window", &show_another_window);
+		ImGui::Checkbox("Demo Window", &m_config.showDemoWindow);      // Edit bools storing our window open/close state
+		//ImGui::Checkbox("Another Window", &show_another_window);
 
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+		//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
+		//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+		//	counter++;
+		//ImGui::SameLine();
+		//ImGui::Text("counter = %d", counter);
 
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
 
 	// 3. Show another simple window.
-	if (show_another_window)
-	{
-		ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		ImGui::Text("Hello from another window!");
-		if (ImGui::Button("Close Me"))
-			show_another_window = false;
-		ImGui::End();
-	}
+	//if (m_config.showAnotherWindow)
+	//{
+	//	ImGui::Begin("Another Window", &m_config.showAnotherWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+	//	ImGui::Text("Hello from another window!");
+	//	if (ImGui::Button("Close Me"))
+	//		m_config.showAnotherWindow = false;
+	//	ImGui::End();
+	//}
 
 	// Rendering
 	ImGui::Render();
@@ -446,7 +446,7 @@ void Client::_onGUI(bool& show_demo_window, bool& show_another_window, scl::vect
 	}
 }
 
-void Client::_renderScene(uint64 diff, bool& show_demo_window, bool& show_another_window, scl::vector4& clear_color)
+void Client::_renderScene(uint64 diff)
 {
 	m_render.beginDraw();
 
@@ -476,7 +476,7 @@ void Client::_renderScene(uint64 diff, bool& show_demo_window, bool& show_anothe
 	/// /// imgui
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	_onGUI(show_demo_window, show_another_window, clear_color);
+	_onGUI();
 
 
 	m_render.endDraw();
@@ -495,9 +495,6 @@ void Client::_renderScene(uint64 diff, bool& show_demo_window, bool& show_anothe
 void Client::run()
 {
 	uint64 lastTick = SCL_TICK;
-	bool showDemoWindow = true;
-	bool showAnotherWindow = false;
-	scl::vector4 clearColor = { 0.45f, 0.55f, 0.60f, 1.00f };
 
 	while (m_window.run())
 	{
@@ -511,7 +508,7 @@ void Client::run()
 
 		//_renderIMGUI(showDemoWindow, showAnotherWindow, clearColor);
 
-		_renderScene(diff, showDemoWindow, showAnotherWindow, clearColor);
+		_renderScene(diff);
 
 #else
 		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);

@@ -19,6 +19,8 @@
 
 #include "cat/def.h"
 
+#include "./config.h"
+
 #ifdef SCL_WIN
 #include "gfx/win32window.h"
 #endif
@@ -69,9 +71,8 @@ public:
 
 private:
 	void					_initIMGUI		();
-	void					_onGUI			(bool& show_demo_window, bool& show_another_window, scl::vector4& clear_color);
-	void					_renderScene	(uint64 diff, bool& show_demo_window, bool& show_another_window, scl::vector4& clear_color);
-	//void					_renderIMGUI	(bool show_demo_window, bool show_another_window, scl::vector4& clear_color);
+	void					_onGUI			();
+	void					_renderScene	(uint64 diff);
 
 private:
 
@@ -109,6 +110,8 @@ private:
 
 	scl::varray<Scene*>		m_scenes;
 	scl::varray<Animation*>	m_animations;
+
+	Config					m_config;
 };
 
 } //namespace cat
