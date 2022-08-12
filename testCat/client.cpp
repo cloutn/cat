@@ -36,6 +36,8 @@ using scl::vector2;
 using scl::vector3;
 using scl::vector4;
 
+namespace ui = ImGui;
+
 Primitive* _createGridPrimitive				(IRender* render, Env* env);
 Primitive* _createTestVulkanPrimitive		(IRender* render, Env* env);
 Primitive* _createTestVulkanPrimitiveColor	(IRender* render, Env* env);
@@ -60,6 +62,8 @@ Client::Client()
 	m_gltfRenderData			= NULL;
 	m_totalFrame				= 0;
 	m_totalTime					= 1;
+
+	m_selectObject				= NULL;
 }
 
 
@@ -398,6 +402,16 @@ void Client::_onGUI()
 	if (m_config.showDemoWindow)
 		ImGui::ShowDemoWindow(&m_config.showDemoWindow);
 
+	ImGui::Begin("Another Window");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+	ImGui::Text("Hello from another window!");
+	for (int i = 0; i < m_scenes.size(); ++i)
+	{
+		_onGUIScene(i);
+	}
+	//if (ImGui::Button("Close Me"))
+	//	m_config.showAnotherWindow = false;
+	ImGui::End();
+
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
 		static float f = 0.0f;
@@ -421,10 +435,14 @@ void Client::_onGUI()
 		//	counter++;
 		//ImGui::SameLine();
 		//ImGui::Text("counter = %d", counter);
+		if (NULL != m_selectObject)
+			ImGui::Text(m_selectObject->name().c_str());               // Display some text (you can use a format strings too)
 
 		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
+
+
 
 	// 3. Show another simple window.
 	//if (m_config.showAnotherWindow)
@@ -481,6 +499,76 @@ void Client::_renderScene(uint64 diff)
 
 	m_render.endDraw();
 }
+
+void Client::_onGUIScene(const int sceneIndex)
+{
+	Scene* scene = m_scenes[sceneIndex];
+	if (NULL == scene)
+		return;
+
+	string64 sceneName;
+	sceneName.format("Scene_%d", sceneIndex);
+	if (ImGui::TreeNode(sceneName.c_str()))
+	{
+		for (int i = 0; i < scene->objectCount(); ++i)
+			_onGUIObject(scene->object(i));
+
+		ImGui::TreePop();
+	}
+}
+
+void Client::_onGUIObject(Object* const object)
+{
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	// Use SetNextItemOpen() so set the default state of a node to be open. We could
+	//	// also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
+	//	if (i == 0)
+	//		ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+	string128 objectName = object->name().c_str();	
+	if (objectName.empty())
+		objectName = "[NoName]";
+
+	if (object->childCount() == 0)
+	{
+		//ui::Text(objectName.c_str());
+		int node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+		ImGui::TreeNodeEx(objectName.c_str(), node_flags);
+		if (ImGui::IsItemClicked())
+		{
+			m_selectObject = object;
+		}
+	}
+	else
+	{
+		ImVec2 buttonSize(200, 0);
+		bool nodeOpen = ImGui::TreeNodeEx(objectName.c_str(), 2240);
+		if (ImGui::BeginPopupContextItem())
+		{
+		   // your popup code
+			if (ImGui::Button("context menu item 1", buttonSize))
+			{
+				printf("context menu pressed.");
+			}
+			if (ImGui::Button("Close", buttonSize))
+				ImGui::CloseCurrentPopup();
+		   ImGui::EndPopup();
+		}
+		if (ImGui::IsItemClicked())
+		{
+			m_selectObject = object;
+		}
+		if (nodeOpen)
+		{
+			for (int i = 0; i < object->childCount(); ++i)
+			{
+				_onGUIObject(object->child(i));
+			}
+			ImGui::TreePop();
+		}
+	}
+}
+
 
 //void Client::_renderIMGUI(bool& show_demo_window, bool& show_another_window, scl::vector4& clear_color)
 //{
@@ -545,13 +633,14 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 {
 	ImGui_ImplWin32_WndProcHandler((HWND)hWnd, message, wParam, lParam);
 	ImGuiIO& io = ImGui::GetIO();
-	if (io.WantCaptureMouse || io.WantCaptureKeyboard)
-		return false;
 
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
 		{
+			if (io.WantCaptureMouse)
+				break;
+
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
 			
@@ -561,6 +650,9 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 		break;
 	case WM_LBUTTONUP:
 		{
+			if (io.WantCaptureMouse)
+				break;
+
 			m_dragging = false;
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
@@ -568,6 +660,9 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 		break;
 	case WM_MOUSEMOVE:
 		{
+			if (io.WantCaptureMouse)
+				break;
+
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
 			
@@ -582,11 +677,17 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 		break;
 	case WM_CHAR:
 		{
+			if (io.WantCaptureKeyboard)
+				break;
+
 			wchar c = wParam;
 		}
 		break;
 	case WM_KEYDOWN:
 		{
+			if (io.WantCaptureKeyboard)
+				break;
+
 			uint32 keyCode = wParam;
 			char s[2] = { 0 };
 			s[0] = (char)keyCode;
@@ -621,6 +722,11 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 		}
 		break;
 	}; // switch
+
+	// imgui need DefWindowProc, so we must return false to call DefWindowProc in win32Window.cpp
+	if (io.WantCaptureMouse || io.WantCaptureKeyboard)
+		return false;
+
 	return true;
 }
 #endif

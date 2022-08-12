@@ -73,6 +73,8 @@ private:
 	void					_initIMGUI		();
 	void					_onGUI			();
 	void					_renderScene	(uint64 diff);
+	void					_onGUIScene		(const int sceneIndex);
+	void					_onGUIObject	(Object* const object);
 
 private:
 
@@ -108,10 +110,13 @@ private:
 	int						m_totalFrame;
 	uint64					m_totalTime;
 
+
 	scl::varray<Scene*>		m_scenes;
 	scl::varray<Animation*>	m_animations;
 
 	Config					m_config;
+
+	Object*					m_selectObject;
 };
 
 } //namespace cat
