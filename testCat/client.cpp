@@ -543,8 +543,10 @@ void Client::run()
 
 bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler((HWND)hWnd, message, wParam, lParam))
-		return true;
+	ImGui_ImplWin32_WndProcHandler((HWND)hWnd, message, wParam, lParam);
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse || io.WantCaptureKeyboard)
+		return false;
 
 	switch (message)
 	{
