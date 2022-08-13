@@ -17,6 +17,7 @@
 #include "scl/time.h"
 #include "scl/log.h"
 #include "scl/vector.h"
+#include "scl/file.h"
 
 #include "imgui_impl_win32.h"
 #include "cgltf/cgltf.h"
@@ -35,6 +36,7 @@ using scl::matrix;
 using scl::vector2;
 using scl::vector3;
 using scl::vector4;
+using scl::file;
 
 namespace ui = ImGui;
 
@@ -784,12 +786,27 @@ void Client::_initIMGUI()
 	fontFilename += "msyh.ttc";
 
 	io.Fonts->AddFontDefault();
-	ImFont* myshFont = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), 24.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+	ImFont* myshFont = NULL;
+	if (file::exists(fontFilename.c_str()))
+	{
+		myshFont = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), 24.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+	}
+	else
+	{
+		printf("Font file not found! %s", fontFilename.c_str());
+	}
 
 	fontFilename = fontsDir;
 	fontFilename += "ArialUni.ttf";
-	ImFont* font = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
-	IM_ASSERT(font != NULL);
+	if (file::exists(fontFilename.c_str()))
+	{ 
+		ImFont* font = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+		IM_ASSERT(font != NULL);
+	}
+	else
+	{
+		printf("Font file not found! %s", fontFilename.c_str());
+	}
 
 	io.FontDefault = myshFont;
 
