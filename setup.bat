@@ -6,6 +6,8 @@ cd "tool"
 
 "./python/python" "script/setup.py" all
 
+cd ..
+
 echo complete.
 
 pause

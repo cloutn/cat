@@ -1,16 +1,21 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(ARCH 64) 
-	set(arch64 1)
-endif()
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 
 set(target testCat)
 
 project(${target})
+
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	set(ARCH 64) 
+	set(arch64 1)
+endif()
+
+
+
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build${ARCH})
