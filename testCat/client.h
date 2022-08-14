@@ -75,6 +75,7 @@ private:
 	void					_renderScene	(uint64 diff);
 	void					_onGUIScene		(const int sceneIndex);
 	void					_onGUIObject	(Object* const object);
+	void					_onGUIProperty	(Object* const object);
 
 private:
 

@@ -404,8 +404,8 @@ void Client::_onGUI()
 	if (m_config.showDemoWindow)
 		ImGui::ShowDemoWindow(&m_config.showDemoWindow);
 
-	ImGui::Begin("Another Window");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-	ImGui::Text("Hello from another window!");
+	ImGui::Begin("Scene");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+	//ImGui::Text("Hello from another window!");
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
 		_onGUIScene(i);
@@ -413,6 +413,8 @@ void Client::_onGUI()
 	//if (ImGui::Button("Close Me"))
 	//	m_config.showAnotherWindow = false;
 	ImGui::End();
+
+	_onGUIProperty(m_selectObject);
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 	{
@@ -787,9 +789,10 @@ void Client::_initIMGUI()
 
 	io.Fonts->AddFontDefault();
 	ImFont* myshFont = NULL;
+	float fontSize = 18.0f;
 	if (file::exists(fontFilename.c_str()))
 	{
-		myshFont = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), 24.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+		myshFont = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), fontSize, NULL, io.Fonts->GetGlyphRangesChineseFull());
 	}
 	else
 	{
@@ -800,7 +803,7 @@ void Client::_initIMGUI()
 	fontFilename += "ArialUni.ttf";
 	if (file::exists(fontFilename.c_str()))
 	{ 
-		ImFont* font = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+		ImFont* font = io.Fonts->AddFontFromFileTTF(fontFilename.c_str(), fontSize, NULL, io.Fonts->GetGlyphRangesChineseFull());
 		IM_ASSERT(font != NULL);
 	}
 	else
@@ -813,6 +816,39 @@ void Client::_initIMGUI()
 	m_render.initIMGUI();
 }
 
+#define HZ_CORE_IMGUI_COMPONENT_VAR(func, label, code) ImGui::TextUnformatted(label); ImGui::NextColumn(); ImGui::SetNextItemWidth(-1); if(func) { code } ImGui::NextColumn();
+
+void Client::_onGUIProperty(Object* const object)
+{
+	if (NULL == object)
+		return;
+
+	ImGui::Begin("Property");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+
+	string128 name = object->name().c_str();
+	ImGui::InputText("Name", name.c_str(), name.capacity());
+	object->setName(name.c_str());
+
+	//ImGui::BeginColumns("columne1", 2);
+	//{
+	//	//HZ_CORE_IMGUI_COMPONENT_VAR(ImGui::DragFloat("##Far", &orthoFar), "Far", camera.SetOrthographicFarClip(orthoFar); );
+
+	//	HZ_CORE_IMGUI_COMPONENT_VAR(ImGui::Checkbox("##Fixed Aspect Ratio", &v), "Fixed Aspect Ratio");
+	//}
+	//ImGui::EndColumns();
+	//ImGui::Separator();
+
+
+	//ImGui::Text("input 2"); 
+	//ImGui::SameLine(); 
+	//ImGui::Text("input 2"); 
+
+
+	//ImGui::InputFloat("", &v);
+	//if (ImGui::Button("Close Me"))
+	//	m_config.showAnotherWindow = false;
+	ImGui::End();
+}
 
 
 } //namespace cat
