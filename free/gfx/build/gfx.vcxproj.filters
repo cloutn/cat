@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\cat\free\gfx\color.cpp" />
+    <ClCompile Include="D:\cat\free\gfx\eglWindow.cpp" />
+    <ClCompile Include="D:\cat\free\gfx\image.cpp" />
+    <ClCompile Include="D:\cat\free\gfx\shader.cpp" />
+    <ClCompile Include="D:\cat\free\gfx\vertex.cpp" />
+    <ClCompile Include="D:\cat\free\gfx\win32Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\cat\free\gfx\base.h" />
+    <ClInclude Include="D:\cat\free\gfx\color.h" />
+    <ClInclude Include="D:\cat\free\gfx\eglWindow.h" />
+    <ClInclude Include="D:\cat\free\gfx\image.h" />
+    <ClInclude Include="D:\cat\free\gfx\shader.h" />
+    <ClInclude Include="D:\cat\free\gfx\vertex.h" />
+    <ClInclude Include="D:\cat\free\gfx\win32window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\cat\free\gfx\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

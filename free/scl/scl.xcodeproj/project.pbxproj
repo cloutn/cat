@@ -1,0 +1,465 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EF73A6791CC8B8F400F05B70 /* android.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6281CC8B8F400F05B70 /* android.cpp */; };
+		EF73A67A1CC8B8F400F05B70 /* assert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A62B1CC8B8F400F05B70 /* assert.cpp */; };
+		EF73A67B1CC8B8F400F05B70 /* backtrace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A62D1CC8B8F400F05B70 /* backtrace.cpp */; };
+		EF73A67C1CC8B8F400F05B70 /* buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6311CC8B8F400F05B70 /* buffer.cpp */; };
+		EF73A67D1CC8B8F400F05B70 /* directory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6331CC8B8F400F05B70 /* directory.cpp */; };
+		EF73A67E1CC8B8F400F05B70 /* dump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6351CC8B8F400F05B70 /* dump.cpp */; };
+		EF73A67F1CC8B8F400F05B70 /* file_mapping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6381CC8B8F400F05B70 /* file_mapping.cpp */; };
+		EF73A6801CC8B8F400F05B70 /* file_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A63A1CC8B8F400F05B70 /* file_reader.cpp */; };
+		EF73A6811CC8B8F400F05B70 /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A63C1CC8B8F400F05B70 /* file.cpp */; };
+		EF73A6821CC8B8F400F05B70 /* frame_lock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A63E1CC8B8F400F05B70 /* frame_lock.cpp */; };
+		EF73A6831CC8B8F400F05B70 /* ini_file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6431CC8B8F400F05B70 /* ini_file.cpp */; };
+		EF73A6841CC8B8F400F05B70 /* log_file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6471CC8B8F400F05B70 /* log_file.cpp */; };
+		EF73A6851CC8B8F400F05B70 /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6491CC8B8F400F05B70 /* log.cpp */; };
+		EF73A6861CC8B8F400F05B70 /* math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A64B1CC8B8F400F05B70 /* math.cpp */; };
+		EF73A6871CC8B8F400F05B70 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A64D1CC8B8F400F05B70 /* matrix.cpp */; };
+		EF73A6881CC8B8F400F05B70 /* path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6511CC8B8F400F05B70 /* path.cpp */; };
+		EF73A6891CC8B8F400F05B70 /* pstring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6551CC8B8F400F05B70 /* pstring.cpp */; };
+		EF73A68A1CC8B8F400F05B70 /* pwstring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6581CC8B8F400F05B70 /* pwstring.cpp */; };
+		EF73A68B1CC8B8F400F05B70 /* quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A65A1CC8B8F400F05B70 /* quaternion.cpp */; };
+		EF73A68C1CC8B8F400F05B70 /* rect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A65C1CC8B8F400F05B70 /* rect.cpp */; };
+		EF73A68D1CC8B8F400F05B70 /* ring_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A65E1CC8B8F400F05B70 /* ring_buffer.cpp */; };
+		EF73A68E1CC8B8F400F05B70 /* stringdef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6631CC8B8F400F05B70 /* stringdef.cpp */; };
+		EF73A68F1CC8B8F400F05B70 /* task_thread_pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6651CC8B8F400F05B70 /* task_thread_pool.cpp */; };
+		EF73A6901CC8B8F400F05B70 /* task_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6671CC8B8F400F05B70 /* task_thread.cpp */; };
+		EF73A6911CC8B8F400F05B70 /* thread_log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A66A1CC8B8F400F05B70 /* thread_log.cpp */; };
+		EF73A6921CC8B8F400F05B70 /* thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A66C1CC8B8F400F05B70 /* thread.cpp */; };
+		EF73A6931CC8B8F400F05B70 /* time.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A66E1CC8B8F400F05B70 /* time.cpp */; };
+		EF73A6941CC8B8F400F05B70 /* vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF73A6741CC8B8F400F05B70 /* vector.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EF6044821CC8B8C000FBDE75 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		EF6044841CC8B8C000FBDE75 /* libscl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libscl.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF73A6251CC8B8F400F05B70 /* alloc_pool.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = alloc_pool.h; sourceTree = "<group>"; };
+		EF73A6261CC8B8F400F05B70 /* allocator_thread.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = allocator_thread.h; sourceTree = "<group>"; };
+		EF73A6271CC8B8F400F05B70 /* allocator.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = allocator.h; sourceTree = "<group>"; };
+		EF73A6281CC8B8F400F05B70 /* android.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = android.cpp; sourceTree = "<group>"; };
+		EF73A6291CC8B8F400F05B70 /* android.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = android.h; sourceTree = "<group>"; };
+		EF73A62A1CC8B8F400F05B70 /* array.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = array.h; sourceTree = "<group>"; };
+		EF73A62B1CC8B8F400F05B70 /* assert.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = assert.cpp; sourceTree = "<group>"; };
+		EF73A62C1CC8B8F400F05B70 /* assert.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = assert.h; sourceTree = "<group>"; };
+		EF73A62D1CC8B8F400F05B70 /* backtrace.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = backtrace.cpp; sourceTree = "<group>"; };
+		EF73A62E1CC8B8F400F05B70 /* backtrace.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = backtrace.h; sourceTree = "<group>"; };
+		EF73A62F1CC8B8F400F05B70 /* big_int.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = big_int.h; sourceTree = "<group>"; };
+		EF73A6301CC8B8F400F05B70 /* bitset.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = bitset.h; sourceTree = "<group>"; };
+		EF73A6311CC8B8F400F05B70 /* buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = buffer.cpp; sourceTree = "<group>"; };
+		EF73A6321CC8B8F400F05B70 /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
+		EF73A6331CC8B8F400F05B70 /* directory.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = directory.cpp; sourceTree = "<group>"; };
+		EF73A6341CC8B8F400F05B70 /* directory.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = directory.h; sourceTree = "<group>"; };
+		EF73A6351CC8B8F400F05B70 /* dump.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = dump.cpp; sourceTree = "<group>"; };
+		EF73A6361CC8B8F400F05B70 /* dump.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = dump.h; sourceTree = "<group>"; };
+		EF73A6371CC8B8F400F05B70 /* encoding.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = encoding.h; sourceTree = "<group>"; };
+		EF73A6381CC8B8F400F05B70 /* file_mapping.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = file_mapping.cpp; sourceTree = "<group>"; };
+		EF73A6391CC8B8F400F05B70 /* file_mapping.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = file_mapping.h; sourceTree = "<group>"; };
+		EF73A63A1CC8B8F400F05B70 /* file_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = file_reader.cpp; sourceTree = "<group>"; };
+		EF73A63B1CC8B8F400F05B70 /* file_reader.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = file_reader.h; sourceTree = "<group>"; };
+		EF73A63C1CC8B8F400F05B70 /* file.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = file.cpp; sourceTree = "<group>"; };
+		EF73A63D1CC8B8F400F05B70 /* file.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = file.h; sourceTree = "<group>"; };
+		EF73A63E1CC8B8F400F05B70 /* frame_lock.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = frame_lock.cpp; sourceTree = "<group>"; };
+		EF73A63F1CC8B8F400F05B70 /* frame_lock.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = frame_lock.h; sourceTree = "<group>"; };
+		EF73A6401CC8B8F400F05B70 /* hash_table.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = hash_table.h; sourceTree = "<group>"; };
+		EF73A6411CC8B8F400F05B70 /* heap_ptr.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = heap_ptr.h; sourceTree = "<group>"; };
+		EF73A6421CC8B8F400F05B70 /* heap.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = heap.h; sourceTree = "<group>"; };
+		EF73A6431CC8B8F400F05B70 /* ini_file.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = ini_file.cpp; sourceTree = "<group>"; };
+		EF73A6441CC8B8F400F05B70 /* ini_file.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = ini_file.h; sourceTree = "<group>"; };
+		EF73A6451CC8B8F400F05B70 /* list.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
+		EF73A6461CC8B8F400F05B70 /* log_define.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = log_define.h; sourceTree = "<group>"; };
+		EF73A6471CC8B8F400F05B70 /* log_file.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = log_file.cpp; sourceTree = "<group>"; };
+		EF73A6481CC8B8F400F05B70 /* log_file.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = log_file.h; sourceTree = "<group>"; };
+		EF73A6491CC8B8F400F05B70 /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
+		EF73A64A1CC8B8F400F05B70 /* log.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
+		EF73A64B1CC8B8F400F05B70 /* math.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = math.cpp; sourceTree = "<group>"; };
+		EF73A64C1CC8B8F400F05B70 /* math.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
+		EF73A64D1CC8B8F400F05B70 /* matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
+		EF73A64E1CC8B8F400F05B70 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		EF73A64F1CC8B8F400F05B70 /* memory_barrier.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = memory_barrier.h; sourceTree = "<group>"; };
+		EF73A6501CC8B8F400F05B70 /* pair.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = pair.h; sourceTree = "<group>"; };
+		EF73A6511CC8B8F400F05B70 /* path.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = path.cpp; sourceTree = "<group>"; };
+		EF73A6521CC8B8F400F05B70 /* path.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = path.h; sourceTree = "<group>"; };
+		EF73A6531CC8B8F400F05B70 /* point.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = point.h; sourceTree = "<group>"; };
+		EF73A6541CC8B8F400F05B70 /* pool.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = pool.h; sourceTree = "<group>"; };
+		EF73A6551CC8B8F400F05B70 /* pstring.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = pstring.cpp; sourceTree = "<group>"; };
+		EF73A6561CC8B8F400F05B70 /* pstring.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = pstring.h; sourceTree = "<group>"; };
+		EF73A6571CC8B8F400F05B70 /* ptr.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = ptr.h; sourceTree = "<group>"; };
+		EF73A6581CC8B8F400F05B70 /* pwstring.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = pwstring.cpp; sourceTree = "<group>"; };
+		EF73A6591CC8B8F400F05B70 /* pwstring.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = pwstring.h; sourceTree = "<group>"; };
+		EF73A65A1CC8B8F400F05B70 /* quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = quaternion.cpp; sourceTree = "<group>"; };
+		EF73A65B1CC8B8F400F05B70 /* quaternion.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = quaternion.h; sourceTree = "<group>"; };
+		EF73A65C1CC8B8F400F05B70 /* rect.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = rect.cpp; sourceTree = "<group>"; };
+		EF73A65D1CC8B8F400F05B70 /* rect.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
+		EF73A65E1CC8B8F400F05B70 /* ring_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = ring_buffer.cpp; sourceTree = "<group>"; };
+		EF73A65F1CC8B8F400F05B70 /* ring_buffer.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = ring_buffer.h; sourceTree = "<group>"; };
+		EF73A6601CC8B8F400F05B70 /* ring_queue.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = ring_queue.h; sourceTree = "<group>"; };
+		EF73A6611CC8B8F400F05B70 /* stack.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
+		EF73A6621CC8B8F400F05B70 /* string.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = string.h; sourceTree = "<group>"; };
+		EF73A6631CC8B8F400F05B70 /* stringdef.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = stringdef.cpp; sourceTree = "<group>"; };
+		EF73A6641CC8B8F400F05B70 /* stringdef.h */ = {isa = PBXFileReference; fileEncoding = 2147484705; lastKnownFileType = sourcecode.c.h; path = stringdef.h; sourceTree = "<group>"; };
+		EF73A6651CC8B8F400F05B70 /* task_thread_pool.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = task_thread_pool.cpp; sourceTree = "<group>"; };
+		EF73A6661CC8B8F400F05B70 /* task_thread_pool.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = task_thread_pool.h; sourceTree = "<group>"; };
+		EF73A6671CC8B8F400F05B70 /* task_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = task_thread.cpp; sourceTree = "<group>"; };
+		EF73A6681CC8B8F400F05B70 /* task_thread.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = task_thread.h; sourceTree = "<group>"; };
+		EF73A6691CC8B8F400F05B70 /* thread_allocator.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = thread_allocator.h; sourceTree = "<group>"; };
+		EF73A66A1CC8B8F400F05B70 /* thread_log.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = thread_log.cpp; sourceTree = "<group>"; };
+		EF73A66B1CC8B8F400F05B70 /* thread_log.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = thread_log.h; sourceTree = "<group>"; };
+		EF73A66C1CC8B8F400F05B70 /* thread.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = thread.cpp; sourceTree = "<group>"; };
+		EF73A66D1CC8B8F400F05B70 /* thread.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = thread.h; sourceTree = "<group>"; };
+		EF73A66E1CC8B8F400F05B70 /* time.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = time.cpp; sourceTree = "<group>"; };
+		EF73A66F1CC8B8F400F05B70 /* time.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
+		EF73A6701CC8B8F400F05B70 /* tree.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = tree.h; sourceTree = "<group>"; };
+		EF73A6711CC8B8F400F05B70 /* type.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = type.h; sourceTree = "<group>"; };
+		EF73A6721CC8B8F400F05B70 /* user_type.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = user_type.h; sourceTree = "<group>"; };
+		EF73A6731CC8B8F400F05B70 /* varray.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = varray.h; sourceTree = "<group>"; };
+		EF73A6741CC8B8F400F05B70 /* vector.cpp */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.cpp.cpp; path = vector.cpp; sourceTree = "<group>"; };
+		EF73A6751CC8B8F400F05B70 /* vector.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
+		EF73A6761CC8B8F400F05B70 /* vring_queue.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = vring_queue.h; sourceTree = "<group>"; };
+		EF73A6771CC8B8F400F05B70 /* wstring.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = wstring.h; sourceTree = "<group>"; };
+		EF73A6781CC8B8F400F05B70 /* zip_int.h */ = {isa = PBXFileReference; fileEncoding = 2147483673; lastKnownFileType = sourcecode.c.h; path = zip_int.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EF6044811CC8B8C000FBDE75 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EF60447B1CC8B8C000FBDE75 = {
+			isa = PBXGroup;
+			children = (
+				EF73A6251CC8B8F400F05B70 /* alloc_pool.h */,
+				EF73A6261CC8B8F400F05B70 /* allocator_thread.h */,
+				EF73A6271CC8B8F400F05B70 /* allocator.h */,
+				EF73A6281CC8B8F400F05B70 /* android.cpp */,
+				EF73A6291CC8B8F400F05B70 /* android.h */,
+				EF73A62A1CC8B8F400F05B70 /* array.h */,
+				EF73A62B1CC8B8F400F05B70 /* assert.cpp */,
+				EF73A62C1CC8B8F400F05B70 /* assert.h */,
+				EF73A62D1CC8B8F400F05B70 /* backtrace.cpp */,
+				EF73A62E1CC8B8F400F05B70 /* backtrace.h */,
+				EF73A62F1CC8B8F400F05B70 /* big_int.h */,
+				EF73A6301CC8B8F400F05B70 /* bitset.h */,
+				EF73A6311CC8B8F400F05B70 /* buffer.cpp */,
+				EF73A6321CC8B8F400F05B70 /* buffer.h */,
+				EF73A6331CC8B8F400F05B70 /* directory.cpp */,
+				EF73A6341CC8B8F400F05B70 /* directory.h */,
+				EF73A6351CC8B8F400F05B70 /* dump.cpp */,
+				EF73A6361CC8B8F400F05B70 /* dump.h */,
+				EF73A6371CC8B8F400F05B70 /* encoding.h */,
+				EF73A6381CC8B8F400F05B70 /* file_mapping.cpp */,
+				EF73A6391CC8B8F400F05B70 /* file_mapping.h */,
+				EF73A63A1CC8B8F400F05B70 /* file_reader.cpp */,
+				EF73A63B1CC8B8F400F05B70 /* file_reader.h */,
+				EF73A63C1CC8B8F400F05B70 /* file.cpp */,
+				EF73A63D1CC8B8F400F05B70 /* file.h */,
+				EF73A63E1CC8B8F400F05B70 /* frame_lock.cpp */,
+				EF73A63F1CC8B8F400F05B70 /* frame_lock.h */,
+				EF73A6401CC8B8F400F05B70 /* hash_table.h */,
+				EF73A6411CC8B8F400F05B70 /* heap_ptr.h */,
+				EF73A6421CC8B8F400F05B70 /* heap.h */,
+				EF73A6431CC8B8F400F05B70 /* ini_file.cpp */,
+				EF73A6441CC8B8F400F05B70 /* ini_file.h */,
+				EF73A6451CC8B8F400F05B70 /* list.h */,
+				EF73A6461CC8B8F400F05B70 /* log_define.h */,
+				EF73A6471CC8B8F400F05B70 /* log_file.cpp */,
+				EF73A6481CC8B8F400F05B70 /* log_file.h */,
+				EF73A6491CC8B8F400F05B70 /* log.cpp */,
+				EF73A64A1CC8B8F400F05B70 /* log.h */,
+				EF73A64B1CC8B8F400F05B70 /* math.cpp */,
+				EF73A64C1CC8B8F400F05B70 /* math.h */,
+				EF73A64D1CC8B8F400F05B70 /* matrix.cpp */,
+				EF73A64E1CC8B8F400F05B70 /* matrix.h */,
+				EF73A64F1CC8B8F400F05B70 /* memory_barrier.h */,
+				EF73A6501CC8B8F400F05B70 /* pair.h */,
+				EF73A6511CC8B8F400F05B70 /* path.cpp */,
+				EF73A6521CC8B8F400F05B70 /* path.h */,
+				EF73A6531CC8B8F400F05B70 /* point.h */,
+				EF73A6541CC8B8F400F05B70 /* pool.h */,
+				EF73A6551CC8B8F400F05B70 /* pstring.cpp */,
+				EF73A6561CC8B8F400F05B70 /* pstring.h */,
+				EF73A6571CC8B8F400F05B70 /* ptr.h */,
+				EF73A6581CC8B8F400F05B70 /* pwstring.cpp */,
+				EF73A6591CC8B8F400F05B70 /* pwstring.h */,
+				EF73A65A1CC8B8F400F05B70 /* quaternion.cpp */,
+				EF73A65B1CC8B8F400F05B70 /* quaternion.h */,
+				EF73A65C1CC8B8F400F05B70 /* rect.cpp */,
+				EF73A65D1CC8B8F400F05B70 /* rect.h */,
+				EF73A65E1CC8B8F400F05B70 /* ring_buffer.cpp */,
+				EF73A65F1CC8B8F400F05B70 /* ring_buffer.h */,
+				EF73A6601CC8B8F400F05B70 /* ring_queue.h */,
+				EF73A6611CC8B8F400F05B70 /* stack.h */,
+				EF73A6621CC8B8F400F05B70 /* string.h */,
+				EF73A6631CC8B8F400F05B70 /* stringdef.cpp */,
+				EF73A6641CC8B8F400F05B70 /* stringdef.h */,
+				EF73A6651CC8B8F400F05B70 /* task_thread_pool.cpp */,
+				EF73A6661CC8B8F400F05B70 /* task_thread_pool.h */,
+				EF73A6671CC8B8F400F05B70 /* task_thread.cpp */,
+				EF73A6681CC8B8F400F05B70 /* task_thread.h */,
+				EF73A6691CC8B8F400F05B70 /* thread_allocator.h */,
+				EF73A66A1CC8B8F400F05B70 /* thread_log.cpp */,
+				EF73A66B1CC8B8F400F05B70 /* thread_log.h */,
+				EF73A66C1CC8B8F400F05B70 /* thread.cpp */,
+				EF73A66D1CC8B8F400F05B70 /* thread.h */,
+				EF73A66E1CC8B8F400F05B70 /* time.cpp */,
+				EF73A66F1CC8B8F400F05B70 /* time.h */,
+				EF73A6701CC8B8F400F05B70 /* tree.h */,
+				EF73A6711CC8B8F400F05B70 /* type.h */,
+				EF73A6721CC8B8F400F05B70 /* user_type.h */,
+				EF73A6731CC8B8F400F05B70 /* varray.h */,
+				EF73A6741CC8B8F400F05B70 /* vector.cpp */,
+				EF73A6751CC8B8F400F05B70 /* vector.h */,
+				EF73A6761CC8B8F400F05B70 /* vring_queue.h */,
+				EF73A6771CC8B8F400F05B70 /* wstring.h */,
+				EF73A6781CC8B8F400F05B70 /* zip_int.h */,
+				EF6044851CC8B8C000FBDE75 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EF6044851CC8B8C000FBDE75 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EF6044841CC8B8C000FBDE75 /* libscl.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EF6044831CC8B8C000FBDE75 /* scl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EF60448D1CC8B8C000FBDE75 /* Build configuration list for PBXNativeTarget "scl" */;
+			buildPhases = (
+				EF6044801CC8B8C000FBDE75 /* Sources */,
+				EF6044811CC8B8C000FBDE75 /* Frameworks */,
+				EF6044821CC8B8C000FBDE75 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = scl;
+			productName = scl;
+			productReference = EF6044841CC8B8C000FBDE75 /* libscl.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EF60447C1CC8B8C000FBDE75 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = cl;
+				TargetAttributes = {
+					EF6044831CC8B8C000FBDE75 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = AY2WR8Y6JX;
+					};
+				};
+			};
+			buildConfigurationList = EF60447F1CC8B8C000FBDE75 /* Build configuration list for PBXProject "scl" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = EF60447B1CC8B8C000FBDE75;
+			productRefGroup = EF6044851CC8B8C000FBDE75 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EF6044831CC8B8C000FBDE75 /* scl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EF6044801CC8B8C000FBDE75 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF73A6791CC8B8F400F05B70 /* android.cpp in Sources */,
+				EF73A68F1CC8B8F400F05B70 /* task_thread_pool.cpp in Sources */,
+				EF73A6931CC8B8F400F05B70 /* time.cpp in Sources */,
+				EF73A6901CC8B8F400F05B70 /* task_thread.cpp in Sources */,
+				EF73A67C1CC8B8F400F05B70 /* buffer.cpp in Sources */,
+				EF73A6911CC8B8F400F05B70 /* thread_log.cpp in Sources */,
+				EF73A6941CC8B8F400F05B70 /* vector.cpp in Sources */,
+				EF73A6921CC8B8F400F05B70 /* thread.cpp in Sources */,
+				EF73A6841CC8B8F400F05B70 /* log_file.cpp in Sources */,
+				EF73A68C1CC8B8F400F05B70 /* rect.cpp in Sources */,
+				EF73A6811CC8B8F400F05B70 /* file.cpp in Sources */,
+				EF73A6801CC8B8F400F05B70 /* file_reader.cpp in Sources */,
+				EF73A6871CC8B8F400F05B70 /* matrix.cpp in Sources */,
+				EF73A6891CC8B8F400F05B70 /* pstring.cpp in Sources */,
+				EF73A6881CC8B8F400F05B70 /* path.cpp in Sources */,
+				EF73A68D1CC8B8F400F05B70 /* ring_buffer.cpp in Sources */,
+				EF73A67F1CC8B8F400F05B70 /* file_mapping.cpp in Sources */,
+				EF73A67A1CC8B8F400F05B70 /* assert.cpp in Sources */,
+				EF73A67D1CC8B8F400F05B70 /* directory.cpp in Sources */,
+				EF73A68B1CC8B8F400F05B70 /* quaternion.cpp in Sources */,
+				EF73A67B1CC8B8F400F05B70 /* backtrace.cpp in Sources */,
+				EF73A6821CC8B8F400F05B70 /* frame_lock.cpp in Sources */,
+				EF73A6851CC8B8F400F05B70 /* log.cpp in Sources */,
+				EF73A6861CC8B8F400F05B70 /* math.cpp in Sources */,
+				EF73A68E1CC8B8F400F05B70 /* stringdef.cpp in Sources */,
+				EF73A6831CC8B8F400F05B70 /* ini_file.cpp in Sources */,
+				EF73A67E1CC8B8F400F05B70 /* dump.cpp in Sources */,
+				EF73A68A1CC8B8F400F05B70 /* pwstring.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		EF60448B1CC8B8C000FBDE75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		EF60448C1CC8B8C000FBDE75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EF60448E1CC8B8C000FBDE75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		EF60448F1CC8B8C000FBDE75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EF60447F1CC8B8C000FBDE75 /* Build configuration list for PBXProject "scl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF60448B1CC8B8C000FBDE75 /* Debug */,
+				EF60448C1CC8B8C000FBDE75 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EF60448D1CC8B8C000FBDE75 /* Build configuration list for PBXNativeTarget "scl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF60448E1CC8B8C000FBDE75 /* Debug */,
+				EF60448F1CC8B8C000FBDE75 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EF60447C1CC8B8C000FBDE75 /* Project object */;
+}

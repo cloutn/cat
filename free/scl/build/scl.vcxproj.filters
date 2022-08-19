@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\cat\free\scl\android.cpp" />
+    <ClCompile Include="D:\cat\free\scl\assert.cpp" />
+    <ClCompile Include="D:\cat\free\scl\backtrace.cpp" />
+    <ClCompile Include="D:\cat\free\scl\buffer.cpp" />
+    <ClCompile Include="D:\cat\free\scl\directory.cpp" />
+    <ClCompile Include="D:\cat\free\scl\dump.cpp" />
+    <ClCompile Include="D:\cat\free\scl\file.cpp" />
+    <ClCompile Include="D:\cat\free\scl\file_mapping.cpp" />
+    <ClCompile Include="D:\cat\free\scl\file_reader.cpp" />
+    <ClCompile Include="D:\cat\free\scl\frame_lock.cpp" />
+    <ClCompile Include="D:\cat\free\scl\ini_file.cpp" />
+    <ClCompile Include="D:\cat\free\scl\log.cpp" />
+    <ClCompile Include="D:\cat\free\scl\log_file.cpp" />
+    <ClCompile Include="D:\cat\free\scl\math.cpp" />
+    <ClCompile Include="D:\cat\free\scl\matrix.cpp" />
+    <ClCompile Include="D:\cat\free\scl\path.cpp" />
+    <ClCompile Include="D:\cat\free\scl\pstring.cpp" />
+    <ClCompile Include="D:\cat\free\scl\pwstring.cpp" />
+    <ClCompile Include="D:\cat\free\scl\quaternion.cpp" />
+    <ClCompile Include="D:\cat\free\scl\rect.cpp" />
+    <ClCompile Include="D:\cat\free\scl\ring_buffer.cpp" />
+    <ClCompile Include="D:\cat\free\scl\stringdef.cpp" />
+    <ClCompile Include="D:\cat\free\scl\task_thread.cpp" />
+    <ClCompile Include="D:\cat\free\scl\task_thread_pool.cpp" />
+    <ClCompile Include="D:\cat\free\scl\thread.cpp" />
+    <ClCompile Include="D:\cat\free\scl\thread_log.cpp" />
+    <ClCompile Include="D:\cat\free\scl\time.cpp" />
+    <ClCompile Include="D:\cat\free\scl\vbitset.cpp" />
+    <ClCompile Include="D:\cat\free\scl\vector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\cat\free\scl\allocator.h" />
+    <ClInclude Include="D:\cat\free\scl\allocator_thread.h" />
+    <ClInclude Include="D:\cat\free\scl\alloc_pool.h" />
+    <ClInclude Include="D:\cat\free\scl\android.h" />
+    <ClInclude Include="D:\cat\free\scl\array.h" />
+    <ClInclude Include="D:\cat\free\scl\assert.h" />
+    <ClInclude Include="D:\cat\free\scl\backtrace.h" />
+    <ClInclude Include="D:\cat\free\scl\big_int.h" />
+    <ClInclude Include="D:\cat\free\scl\bitdef.h" />
+    <ClInclude Include="D:\cat\free\scl\bitset.h" />
+    <ClInclude Include="D:\cat\free\scl\buffer.h" />
+    <ClInclude Include="D:\cat\free\scl\directory.h" />
+    <ClInclude Include="D:\cat\free\scl\dump.h" />
+    <ClInclude Include="D:\cat\free\scl\encoding.h" />
+    <ClInclude Include="D:\cat\free\scl\file.h" />
+    <ClInclude Include="D:\cat\free\scl\file_mapping.h" />
+    <ClInclude Include="D:\cat\free\scl\file_reader.h" />
+    <ClInclude Include="D:\cat\free\scl\frame_lock.h" />
+    <ClInclude Include="D:\cat\free\scl\hash_table.h" />
+    <ClInclude Include="D:\cat\free\scl\heap.h" />
+    <ClInclude Include="D:\cat\free\scl\heap_ptr.h" />
+    <ClInclude Include="D:\cat\free\scl\ini_file.h" />
+    <ClInclude Include="D:\cat\free\scl\list.h" />
+    <ClInclude Include="D:\cat\free\scl\log.h" />
+    <ClInclude Include="D:\cat\free\scl\log_define.h" />
+    <ClInclude Include="D:\cat\free\scl\log_file.h" />
+    <ClInclude Include="D:\cat\free\scl\math.h" />
+    <ClInclude Include="D:\cat\free\scl\matrix.h" />
+    <ClInclude Include="D:\cat\free\scl\memory_barrier.h" />
+    <ClInclude Include="D:\cat\free\scl\page_array.h" />
+    <ClInclude Include="D:\cat\free\scl\pair.h" />
+    <ClInclude Include="D:\cat\free\scl\path.h" />
+    <ClInclude Include="D:\cat\free\scl\point.h" />
+    <ClInclude Include="D:\cat\free\scl\pool.h" />
+    <ClInclude Include="D:\cat\free\scl\pstring.h" />
+    <ClInclude Include="D:\cat\free\scl\ptr.h" />
+    <ClInclude Include="D:\cat\free\scl\pwstring.h" />
+    <ClInclude Include="D:\cat\free\scl\quaternion.h" />
+    <ClInclude Include="D:\cat\free\scl\rect.h" />
+    <ClInclude Include="D:\cat\free\scl\ring_buffer.h" />
+    <ClInclude Include="D:\cat\free\scl\ring_queue.h" />
+    <ClInclude Include="D:\cat\free\scl\stack.h" />
+    <ClInclude Include="D:\cat\free\scl\string.h" />
+    <ClInclude Include="D:\cat\free\scl\stringdef.h" />
+    <ClInclude Include="D:\cat\free\scl\task_thread.h" />
+    <ClInclude Include="D:\cat\free\scl\task_thread_pool.h" />
+    <ClInclude Include="D:\cat\free\scl\thread.h" />
+    <ClInclude Include="D:\cat\free\scl\thread_allocator.h" />
+    <ClInclude Include="D:\cat\free\scl\thread_log.h" />
+    <ClInclude Include="D:\cat\free\scl\time.h" />
+    <ClInclude Include="D:\cat\free\scl\tree.h" />
+    <ClInclude Include="D:\cat\free\scl\type.h" />
+    <ClInclude Include="D:\cat\free\scl\user_type.h" />
+    <ClInclude Include="D:\cat\free\scl\varray.h" />
+    <ClInclude Include="D:\cat\free\scl\vbitset.h" />
+    <ClInclude Include="D:\cat\free\scl\vector.h" />
+    <ClInclude Include="D:\cat\free\scl\vring_queue.h" />
+    <ClInclude Include="D:\cat\free\scl\wstring.h" />
+    <ClInclude Include="D:\cat\free\scl\zip_int.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\cat\free\scl\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

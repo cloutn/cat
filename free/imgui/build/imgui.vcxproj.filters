@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\cat\free\imgui\imgui.cpp" />
+    <ClCompile Include="D:\cat\free\imgui\imgui_demo.cpp" />
+    <ClCompile Include="D:\cat\free\imgui\imgui_draw.cpp" />
+    <ClCompile Include="D:\cat\free\imgui\imgui_tables.cpp" />
+    <ClCompile Include="D:\cat\free\imgui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\cat\free\imgui\imconfig.h" />
+    <ClInclude Include="D:\cat\free\imgui\imgui.h" />
+    <ClInclude Include="D:\cat\free\imgui\imgui_internal.h" />
+    <ClInclude Include="D:\cat\free\imgui\imstb_rectpack.h" />
+    <ClInclude Include="D:\cat\free\imgui\imstb_textedit.h" />
+    <ClInclude Include="D:\cat\free\imgui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\cat\free\imgui\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>
