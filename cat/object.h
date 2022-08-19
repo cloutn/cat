@@ -29,16 +29,12 @@ class Animation;
 class Object 
 {
 public:
-	//Object();
 	Object(Object* parent);
 	virtual ~Object();
 
-	//void						init					(const char* const filename, IRender* render, Env* env);
-	//void						init					(Material* material, Primitive* mesh);
 	void						loadNode				(cgltf_node* node, const char* const path, IRender* render, Env* env);
 	void						loadSkin				(cgltf_node* node, Env* env);
 	void						draw					(const scl::matrix& mvp, IRender* render);
-	//void						update					(double diff);
 	scl::matrix					globalMatrix			();
 	const String&				name					() const { return m_name; }
 	void						setName					(const char* const name) { m_name = name; }
@@ -53,35 +49,35 @@ public:
 	static Object*				objectByID				(const int id) { return _objectIDMap().get(id); }
 	static void					releaseObjectIDMap		();
 
-	void		setAnimationRotate		(scl::quaternion& v);
-	void		setAnimationScale		(scl::vector3 v);
-	void		setAnimationMove		(scl::vector3 v);
+	void						setAnimationRotate		(scl::quaternion& v);
+	void						setAnimationScale		(scl::vector3 v);
+	void						setAnimationMove		(scl::vector3 v);
 
 private:
-	Transform*	_animationTransform();
+	Transform*					_animationTransform();
 
 private:
 	static ObjectIDMap<Object>*	s_objectIDMap;		//a map from object id to pointer. 
 	static ObjectIDMap<Object>&	_objectIDMap();
 
-	int						m_id;
-	Env*					m_env;
-	Object*					m_parent;
-	Mesh*					m_mesh;
-	Skin*					m_skin;
-	scl::varray<Object*>	m_childs;
+	int							m_id;
+	Env*						m_env;
+	Object*						m_parent;
+	Mesh*						m_mesh;
+	Skin*						m_skin;
+	scl::varray<Object*>		m_childs;
 
-	scl::vector3*			m_move;
-	scl::vector3*			m_scale;
-	scl::quaternion*		m_rotate;
-	scl::matrix*			m_loadMatrix;
+	scl::vector3*				m_move;
+	scl::vector3*				m_scale;
+	scl::quaternion*			m_rotate;
+	scl::matrix*				m_loadMatrix;
 
-	scl::matrix*			m_matrix;
+	scl::matrix*				m_matrix;
 
-	Transform*				m_animationTransform;
+	Transform*					m_animationTransform;
 
-	//scl::matrix*			m_globalMatrix;
-	String					m_name;
+	//scl::matrix*				m_globalMatrix;
+	String						m_name;
 
 };  // class Object 
 

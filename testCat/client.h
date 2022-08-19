@@ -37,7 +37,7 @@ class Env;
 class Scene;
 class Animation;
 
-class Client : public gfx::IEventHandler
+class Client
 {
 public:
 	Client();
@@ -65,8 +65,8 @@ public:
 #ifdef SCL_WIN
 	void					run				();
 
-	// implement gfx::IEventHandler
-	virtual bool			onEvent			(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam);
+	static bool				staticOnEvent	(void* caller, void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam) { return static_cast<Client*>(caller)->onEvent(hWnd, message, wParam, lParam); }  
+	bool					onEvent			(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam);
 #endif
 
 private:
@@ -88,8 +88,12 @@ private:
 
 #ifdef SCL_WIN
 	gfx::Win32Window		m_window;
+
 	bool					m_dragging;
 	scl::vector2i			m_dragPrev;
+
+	bool					m_rightDragging;
+	scl::vector2i			m_rightDragPrev;
 #endif
 
 	Env*					m_env;

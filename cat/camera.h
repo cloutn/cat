@@ -5,7 +5,9 @@
 
 namespace cat {
 
+//////
 // camera is a matrix ( view matrix multiply projection matrix)
+//////
 
 class Camera
 {
@@ -34,7 +36,6 @@ public:
 private:
 	void					_updateView		() const;
 	void					_updateProjection() const;
-	//void					_updateMatrix	() const;
 
 private:
 	// view

@@ -50,6 +50,8 @@ Client::Client()
 #ifdef SCL_WIN
 	m_dragging					= false;
 	m_dragPrev					= { 0, 0 };
+	m_rightDragging				= false;
+	m_rightDragPrev				= { 0, 0 };
 #endif
 	m_simpleAnimation			= new Object(NULL);
 
@@ -75,7 +77,7 @@ void Client::init(const int width, const int height)
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle(), m_config.clearColor);
-	m_window.registerEventHandler(*this);
+	m_window.registerEventHandler(this, Client::staticOnEvent);
 #endif
 
 	m_env = new Env();
@@ -662,6 +664,28 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 			int y = HIWORD(lParam);
 		}
 		break;
+	case WM_RBUTTONDOWN:
+		{
+			if (io.WantCaptureMouse)
+				break;
+
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+			
+			m_rightDragging = true;
+			m_rightDragPrev.set(x, y);
+		}
+		break;
+	case WM_RBUTTONUP:
+		{
+			if (io.WantCaptureMouse)
+				break;
+
+			m_rightDragging = false;
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+		}
+		break;
 	case WM_MOUSEMOVE:
 		{
 			if (io.WantCaptureMouse)
@@ -672,10 +696,14 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 			
 			if (m_dragging)
 			{
-				int dx = x - m_dragPrev.x;
-				int dy = y - m_dragPrev.y;
+
+			}
+			else if (m_rightDragging)
+			{
+				int dx = x - m_rightDragPrev.x;
+				int dy = y - m_rightDragPrev.y;
 				m_camera->move({dx / 1000.f, dy / 1000.f, 0});
-				m_dragPrev.set(x, y);
+				m_rightDragPrev.set(x, y);
 			}
 		}
 		break;
