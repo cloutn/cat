@@ -38,10 +38,10 @@ Win32Window::Win32Window() :
 	m_height			(0),
 	m_eventHandlerCount	(0)
 {
-	for (int i = 0; i < MAX_EVENT_HANDLER; ++i)
-	{
-		m_eventHandlers[i] = NULL;
-	}
+	//for (int i = 0; i < MAX_EVENT_HANDLER; ++i)
+	//{
+	//	m_eventHandlers[i] = NULL;
+	//}
 }
 
 bool Win32Window::init(const int width, const int height, const wchar* const titleName, const wchar* const szIconName, bool enableDpiAwareness) //  titleName = "main"
@@ -161,37 +161,29 @@ ptr_int __stdcall Win32Window::WndProc(void* hWnd, uint32 message, ptr_int wPara
 	return DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
 }
 
-bool Win32Window::registerEventHandler(IEventHandler& eventHandler)
+bool Win32Window::registerEventHandler(void* caller, EventHandlerFuncT func)
 {
+	EventHandler eventHandler(caller, func);
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
-		if (m_eventHandlers[i] == &eventHandler)
+		if (m_eventHandlers[i] == eventHandler)
 		{
 			assert(0);
 			return false;
 		}
 	}
-	m_eventHandlers[m_eventHandlerCount] = &eventHandler;
+	m_eventHandlers[m_eventHandlerCount] = eventHandler;
 	m_eventHandlerCount++;
 	return true;
 }
 
-bool Win32Window::unregisterEventHandler(IEventHandler& eventHandler)
+bool Win32Window::unregisterEventHandler(void* caller, EventHandlerFuncT func)
 {
-	//bool found = false;
-	//for (int i = 0; i < m_eventHandlers.size(); ++i)
-	//{
-	//	if (m_eventHandlers[i] == &eventHandler)
-	//	{
-	//		found = true;
-	//		break;
-	//	}
-	//}
-	//assert(found);
+	EventHandler eventHandler(caller, func);
 
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
-		if (m_eventHandlers[i] == &eventHandler)
+		if (m_eventHandlers[i] == eventHandler)
 		{
 			if (i != m_eventHandlerCount - 1)
 			{
@@ -201,7 +193,6 @@ bool Win32Window::unregisterEventHandler(IEventHandler& eventHandler)
 			break;
 		}
 	}
-	//m_eventHandlers.erase_element_fast(&eventHandler);
 	return true;
 }
 
@@ -209,9 +200,8 @@ bool Win32Window::postEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lP
 {
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
-		if (NULL == m_eventHandlers[i])
-			return false;
-		if (m_eventHandlers[i]->onEvent(hWnd, message, wParam, lParam))
+		EventHandler& eh = m_eventHandlers[i];
+		if (eh.func(eh.caller, hWnd, message, wParam, lParam))
 		{
 			//事件已被处理
 			return true;

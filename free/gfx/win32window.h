@@ -16,25 +16,33 @@ typedef __int32 ptr_int;
 
 namespace gfx {
 
-class IEventHandler
-{
-public:
-	virtual bool onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam) = 0;
-};
-
 class Win32Window
 {
+public:
+	typedef bool (*EventHandlerFuncT)(void* caller, void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
+
+	class EventHandler
+	{
+	public:
+		EventHandler		() : caller(NULL), func(NULL) {}
+		EventHandler		(void* _caller, EventHandlerFuncT _func) : caller(_caller), func(_func) {}
+		bool operator==		(const EventHandler& other) const { return caller == other.caller && func == other.func; }
+
+		void*				caller;
+		EventHandlerFuncT	func;
+	};
+
 public:
 	Win32Window();
 	~Win32Window();
 
-	bool	init(const int width, const int height, const wchar* const titleName = L"main", const wchar* const szIconName = L"", bool enableDpiAwareness = false);
-	bool	hasInit() { return m_windowHandle != NULL; }
+	bool	init					(const int width, const int height, const wchar* const titleName = L"main", const wchar* const szIconName = L"", bool enableDpiAwareness = false);
+	bool	hasInit					() { return m_windowHandle != NULL; }
 	
-	bool	run();
+	bool	run						();
 
-	bool	registerEventHandler	(IEventHandler& eventHandler);
-	bool	unregisterEventHandler	(IEventHandler& eventHandler);
+	bool	registerEventHandler	(void* caller, EventHandlerFuncT func);
+	bool	unregisterEventHandler	(void* caller, EventHandlerFuncT func);
 	bool	postEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
 
 	int		getWidth				() { return m_width; };
@@ -57,7 +65,7 @@ private:
 	//typedef scl::array<IEventHandler*, 1024> EventHandlerArray;
 	//EventHandlerArray m_eventHandlers;
 	static const int MAX_EVENT_HANDLER = 256;
-	IEventHandler* m_eventHandlers[MAX_EVENT_HANDLER];
+	EventHandler m_eventHandlers[MAX_EVENT_HANDLER];
 	int m_eventHandlerCount;
 };
 

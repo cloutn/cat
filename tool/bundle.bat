@@ -11,7 +11,7 @@
 ::echo compressing ../testCat/bin/bin_%datetime_str%.7z
 ::"7z.exe" a "../testCat/bin/bin_"%datetime_str%".7z" "../testCat/bin/art" "../testCat/bin/driver" "../testCat/bin/*.dll" -x!*.7z -bd -bso0
 
-python "script/bundle.py"
+"./python/python.exe" "script/bundle.py"
 
 echo completed.
 pause
