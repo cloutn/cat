@@ -77,6 +77,13 @@ vector3& vector3::operator*=( const float v )
 	return *this;
 }
 
+vector3 vector3::operator*(const float v)
+{
+	vector3 r = *this;
+	r *= v;
+	return r;
+}
+
 vector3 vector3::operator-() const
 {
 	vector3 v = {-x, -y, -z};

@@ -53,6 +53,7 @@ public:
 	vector3& 	operator-=	(const vector3& other);
 	vector3& 	operator+=	(const vector3& other);
 	vector3& 	operator*=	(const float v);
+	vector3 	operator*	(const float v);
 	vector3		operator-	() const;
 	vector3		operator-	(const vector3& other) const;
 	vector3		operator+	(const vector3& other) const;

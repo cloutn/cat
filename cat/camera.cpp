@@ -1,6 +1,12 @@
 #include "cat/camera.h"
 
+#include "scl/quaternion.h"
+
 namespace cat {
+
+using scl::vector3;
+using scl::quaternion;
+using scl::matrix;
 
 Camera::Camera() : 
 	m_position			{0, 0, -1},
@@ -45,11 +51,69 @@ void Camera::setProjection(float fov, float aspect, float near, float far)
 
 void Camera::move(scl::vector3 d)
 {
-	scl::vector3 lookat = m_target - m_position;
-	m_position	+= d;
-	m_target	= m_position + lookat;
-	m_viewDirty	= true;
-	m_dirty		= true;
+	vector3 lookat	= _front();
+	m_position		+= d;
+	m_target		= m_position + lookat;
+	m_viewDirty		= true;
+	m_dirty			= true;
+}
+
+
+void Camera::rotate(float x, float y, float z)
+{
+	vector3 front	= _front();
+	vector3 right	= vector3::cross(front, m_up);
+	right.normalize();
+
+	quaternion q;
+	q.from_euler_angle(x, y, z);
+	scl::matrix transform;
+	q.to_matrix(transform);
+	front.mul_matrix(transform);
+	
+	m_target = m_position + front;
+	m_up = vector3::cross(right, front);
+	m_up.normalize();
+
+	m_viewDirty = true;
+	m_dirty = true;
+}
+
+
+void Camera::orbit_right(float angle)
+{
+	vector3 front = _front();
+	vector3 right = _right();
+
+	quaternion q;
+	q.from_pivot_radian(right, scl::radian(angle));
+	scl::matrix mat;
+	q.to_matrix(mat);
+
+	front.mul_matrix(mat);
+
+	m_target = m_position + front;
+	m_up = vector3::cross(right, front);
+
+	m_viewDirty = true;
+	m_dirty = true;
+}
+
+void Camera::orbit_up(float angle)
+{
+	vector3 front = _front();
+
+	quaternion q;
+	q.from_pivot_radian(m_up, scl::radian(angle));
+	scl::matrix mat;
+	q.to_matrix(mat);
+
+	front.mul_matrix(mat);
+
+	m_target = m_position + front;
+
+	m_viewDirty = true;
+	m_dirty = true;
 }
 
 const scl::matrix& Camera::matrix() const
@@ -94,6 +158,41 @@ void Camera::_updateProjection() const
 	scl::matrix::perspective(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
 	m_projectionDirty = false;
 }
+
+void Camera::move_front(float d)
+{
+	vector3 m_front = _front();
+	move(m_front * d);
+}
+
+void Camera::move_side(float d)
+{
+	vector3 side = vector3::cross(_front(), m_up);
+	move(side * d);
+}
+
+
+scl::vector3 Camera::_front() const
+{
+	vector3 front = m_target - m_position;
+	front.normalize();
+	return front;
+}
+
+scl::vector3 Camera::_right() const
+{
+	vector3 right = vector3::cross(_front(), m_up);
+	right.normalize();
+	return right;
+}
+
+
+//scl::vector3 Camera::_right(const scl::vector3& front) const
+//{
+//	vector3 right = vector3::cross(front, m_up);
+//	right.normalize();
+//	return right;
+//}
 
 //void Camera::_updateMatrix() const
 //{

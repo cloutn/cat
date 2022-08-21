@@ -28,12 +28,20 @@ public:
 
 	void					move			(scl::vector3 d);
 	void					move			(float dx, float dy, float dz) { move({dx, dy, dz}); }
+	void					move_front		(float d);
+	void					move_side		(float d);
+	void					rotate			(float x, float y, float z);
+	void					orbit_right		(float angle);
+	void					orbit_up		(float angle);
 
 	const	scl::matrix&	matrix			() const;
 	const	scl::matrix&	viewMatrix		() const;
 	const	scl::matrix&	projectionMatrix() const;
 
 private:
+	scl::vector3			_front			() const;	// front vector = m_target - m_position
+	scl::vector3			_right			() const;	// right vector = cross(front, up)
+	//scl::vector3			_right			(const scl::vector3& front) const;	// right vector = cross(front, up)
 	void					_updateView		() const;
 	void					_updateProjection() const;
 

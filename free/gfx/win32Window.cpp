@@ -200,8 +200,8 @@ bool Win32Window::postEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lP
 {
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
-		EventHandler& eh = m_eventHandlers[i];
-		if (eh.func(eh.caller, hWnd, message, wParam, lParam))
+		EventHandler& eventHandler = m_eventHandlers[i];
+		if (eventHandler.func(eventHandler.caller, hWnd, message, wParam, lParam))
 		{
 			//事件已被处理
 			return true;

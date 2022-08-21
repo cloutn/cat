@@ -45,6 +45,14 @@ Primitive* _createTestVulkanPrimitive		(IRender* render, Env* env);
 Primitive* _createTestVulkanPrimitiveColor	(IRender* render, Env* env);
 Primitive* _createBone(Object* root, IRender* render, Env* env);
 
+inline bool Keydown	(int vKey) { return (GetAsyncKeyState(vKey) & 0x8000) ? 1 : 0; }
+inline bool Keyup	(int vKey) { return (GetAsyncKeyState(vKey) & 0x8000) ? 0 : 1; }
+//#define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
+//#define KEY_UP(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1)
+//#define KEY_STATE(vk_code) (GetKeyState(vk_code) & 0x8000 ? 1 : 0)
+
+
+
 Client::Client()
 {
 #ifdef SCL_WIN
@@ -596,6 +604,31 @@ void Client::run()
 		uint64 diff = now - lastTick;
 		lastTick = now;
 
+		ImGuiIO& io = ImGui::GetIO();
+		if (!io.WantCaptureKeyboard)
+		{
+			float speed = 0.3f;
+			if (Keydown('W'))
+			{
+				//m_camera->move(0, 0, -speed);
+				m_camera->move_front(speed);
+			}
+			if (Keydown('S'))
+			{
+				m_camera->move_front(-speed);
+				//m_camera->move(0, 0, speed);
+			}
+			if (Keydown('A'))
+			{
+				m_camera->move_side(-speed);
+			}
+			if (Keydown('D'))
+			{
+				m_camera->move_side(speed);
+			}
+		}
+
+
 		m_render.clear();
 
 #ifdef TEST_VULKAN
@@ -702,7 +735,12 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 			{
 				int dx = x - m_rightDragPrev.x;
 				int dy = y - m_rightDragPrev.y;
-				m_camera->move({dx / 1000.f, dy / 1000.f, 0});
+				printf("x = %d, prev_x = %d, y = %d, prev_y = %d, dx = %d, dy = %d\n", x, m_rightDragPrev.x, y, m_rightDragPrev.y, dx, dy);
+				//m_camera->move({dx / 1000.f, dy / 1000.f, 0});
+				//m_camera->rotate(-dy, -dx, 0);
+				m_camera->orbit_right(-dy);
+				m_camera->orbit_up(-dx);
+
 				m_rightDragPrev.set(x, y);
 			}
 		}
@@ -720,26 +758,26 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 			if (io.WantCaptureKeyboard)
 				break;
 
-			uint32 keyCode = wParam;
-			char s[2] = { 0 };
-			s[0] = (char)keyCode;
-			float speed = 1.0f;
-			if (keyCode == 'W')
-			{
-				m_camera->move(0, 0, -speed);
-			}
-			else if (keyCode == 'S')
-			{
-				m_camera->move(0, 0, speed);
-			}
-			else if (keyCode == 'A')
-			{
-				m_camera->move(-speed, 0, 0);
-			}
-			else if (keyCode == 'D')
-			{
-				m_camera->move(speed, 0, 0);
-			}
+			//uint32 keyCode = wParam;
+			//char s[2] = { 0 };
+			//s[0] = (char)keyCode;
+			//float speed = 1.0f;
+			//if (keyCode == 'W')
+			//{
+			//	m_camera->move(0, 0, -speed);
+			//}
+			//else if (keyCode == 'S')
+			//{
+			//	m_camera->move(0, 0, speed);
+			//}
+			//else if (keyCode == 'A')
+			//{
+			//	m_camera->move(-speed, 0, 0);
+			//}
+			//else if (keyCode == 'D')
+			//{
+			//	m_camera->move(speed, 0, 0);
+			//}
 		}
 		break;
 	case WM_SIZE:
@@ -754,6 +792,8 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 		}
 		break;
 	}; // switch
+
+
 
 	// imgui need DefWindowProc, so we must return false to call DefWindowProc in win32Window.cpp
 	if (io.WantCaptureMouse || io.WantCaptureKeyboard)
