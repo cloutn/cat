@@ -102,15 +102,19 @@ void Camera::orbit_right(float angle)
 void Camera::orbit_up(float angle)
 {
 	vector3 front = _front();
+	vector3 right = _right();
+	vector3 up = { 0, 1, 0 };
 
 	quaternion q;
-	q.from_pivot_radian(m_up, scl::radian(angle));
+	q.from_pivot_radian(up, scl::radian(angle));
 	scl::matrix mat;
 	q.to_matrix(mat);
 
 	front.mul_matrix(mat);
+	right.mul_matrix(mat);
 
 	m_target = m_position + front;
+	m_up = vector3::cross(right, front);
 
 	m_viewDirty = true;
 	m_dirty = true;
