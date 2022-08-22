@@ -201,8 +201,8 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	uint16 indices[] = { 0, 1, 2, 3 };
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 3, VertexAttr::DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 1, 4, VertexAttr::DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
+		{ 1, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1] = { {"COLOR", ""} };
@@ -218,7 +218,7 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	p->setEnv			(env);
 	p->setRender		(render);
 	p->setPrimitiveType	(PRIMITIVE_TYPE_LINES);
-	p->setIndices		(indices, countof(indices), VertexAttr::DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices		(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
 	p->setAttrs			(attrs, countof(attrs), attrBuffers);
 	p->setVertices		(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture		(NULL);
@@ -231,8 +231,8 @@ Primitive* _createGridPrimitive(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 3, VertexAttr::DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 5, 4, VertexAttr::DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
+		{ 5, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1];
@@ -267,7 +267,7 @@ Primitive* _createGridPrimitive(IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_LINES);
-	p->setIndices(indices, countof(indices), VertexAttr::DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
@@ -312,8 +312,8 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 3, VertexAttr::DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 5, 4, VertexAttr::DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
+		{ 5, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1];
@@ -331,7 +331,7 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_LINES);
-	p->setIndices(indices.begin(), indices.size(), VertexAttr::DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices.begin(), indices.size(), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 	p->setTexture(NULL);
@@ -344,9 +344,9 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 4, VertexAttr::DATA_TYPE_FLOAT,		0, sizeof(vertex_coord), 0 },
-		{ 1, 4, VertexAttr::DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_coord), OFFSET(vertex_coord, color) },
-		{ 2, 2, VertexAttr::DATA_TYPE_FLOAT,		0, sizeof(vertex_coord), OFFSET(vertex_coord, texcoord) }
+		{ 0, 4, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_coord), 0 },
+		{ 1, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_coord), OFFSET(vertex_coord, color) },
+		{ 2, 2, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_coord), OFFSET(vertex_coord, texcoord) }
 	};
 	int attrBuffers[] = { 0, 0, 0 };
 	ShaderMacro macros[1] = { {"USE_COLOR", ""} };
@@ -365,7 +365,7 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
-	p->setIndices(indices, countof(indices), VertexAttr::DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_coord));
 	p->setTexture(NULL);
@@ -379,8 +379,8 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 
 	VertexAttr attrs[] = {
-		{ 0, 3, VertexAttr::DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 1, 4, VertexAttr::DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
+		{ 1, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1] = { {"COLOR", ""} };
@@ -399,7 +399,7 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
-	p->setIndices(indices, countof(indices), VertexAttr::DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
@@ -607,7 +607,7 @@ void Client::run()
 		ImGuiIO& io = ImGui::GetIO();
 		if (!io.WantCaptureKeyboard)
 		{
-			float speed = 0.3f;
+			float speed = 0.25f;
 			if (Keydown('W'))
 			{
 				//m_camera->move(0, 0, -speed);
@@ -735,11 +735,12 @@ bool Client::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 			{
 				int dx = x - m_rightDragPrev.x;
 				int dy = y - m_rightDragPrev.y;
-				printf("x = %d, prev_x = %d, y = %d, prev_y = %d, dx = %d, dy = %d\n", x, m_rightDragPrev.x, y, m_rightDragPrev.y, dx, dy);
+				float speed = 0.3f;
+				//printf("x = %d, prev_x = %d, y = %d, prev_y = %d, dx = %d, dy = %d\n", x, m_rightDragPrev.x, y, m_rightDragPrev.y, dx, dy);
 				//m_camera->move({dx / 1000.f, dy / 1000.f, 0});
 				//m_camera->rotate(-dy, -dx, 0);
-				m_camera->orbit_right(-dy);
-				m_camera->orbit_up(-dx);
+				m_camera->orbit_right(-dy * speed);
+				m_camera->orbit_up(-dx * speed);
 
 				m_rightDragPrev.set(x, y);
 			}

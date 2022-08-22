@@ -7,6 +7,7 @@
 #include "cat/mesh.h"
 #include "cat/object.h"
 #include "cat/env.h"
+#include "cat/def.h"
 
 #include "scl/assert.h"
 
@@ -131,7 +132,7 @@ Primitive::~Primitive()
 //		m_deviceVertexBuffers[i] = createBuffer(attr.data, env->bufferMap(), render);
 //
 //		m_attrs[i].size			= cgltf_num_components(accessor->type);
-//		m_attrs[i].dataType		= static_cast<VertexAttr::DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
+//		m_attrs[i].dataType		= static_cast<VERTEX_DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
 //		m_attrs[i].normalize	= accessor->normalized;
 //		m_attrs[i].stride		= (accessor->buffer_view->stride == 0) ?  accessor->stride : accessor->buffer_view->stride;
 //		m_attrs[i].offset		= (void*)accessor->offset;
@@ -205,7 +206,7 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 			continue;
 		}
 		m_attrs[i].size			= cgltf_num_components(accessor->type);
-		m_attrs[i].dataType		= static_cast<VertexAttr::DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
+		m_attrs[i].dataType		= static_cast<VERTEX_DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
 		m_attrs[i].normalize	= accessor->normalized;
 		m_attrs[i].stride		= sizeofVertex;
 		m_attrs[i].offset		= reinterpret_cast<void*>(static_cast<uintptr_t>(attrOffsets[i]));
@@ -500,13 +501,12 @@ void Primitive::setIndices(void* indices, const int indexCount, const int indexC
 		return;
 
 	// index
-	m_indexCount = indexCount;
-	m_indexOffset = 0;
-	m_indexComponentType = indexComponentType;
-	m_deviceIndexBuffer = m_render->createIndexBuffer(-1);
-	//G.refCounter.AddRef(m_deviceIndexBuffer);
-	const int indexBytes = m_indexCount * cgltf_component_size(m_indexComponentType);
+	m_indexCount			= indexCount;
+	m_indexComponentType	= indexComponentType;
+	m_deviceIndexBuffer		= m_render->createIndexBuffer(-1);
+	const int indexBytes	= m_indexCount * cgltf_component_size(m_indexComponentType);
 	m_render->copyIndexBuffer(indices, m_deviceIndexBuffer, indexBytes);
+	m_indexOffset = 0;
 }
 
 void Primitive::setVertices(void** verticesList, int* vertexCountList, int* sizeOfVertex)

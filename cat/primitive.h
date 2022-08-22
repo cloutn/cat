@@ -43,18 +43,18 @@ public:
 		IRender*		render
 		);
 
-	void				setRender		(IRender* render) { m_render = render; } 
-	void				setEnv			(Env* env) { m_env = env; } 
-	void**				vertexBuffers	() { return m_deviceVertexBuffers;	}
-	void*				indexBuffer		() { return m_deviceIndexBuffer;	}
-	int					attrCount		() const { return m_attrCount;		}
-	const VertexAttr*	attrs			() const { return m_attrs;			}
-	void				setAttrs		(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices);
-	void				setIndices		(void* indices, const int indexCount, const int indexComponentType);
-	void				setVertices		(void** verticesList, int* vertexCountList, int* sizeOfVertex);
-	void				setVertices		(void* vertices, int vertexCount, int sizeOfVertex);
-	void				setPrimitiveType(PRIMITIVE_TYPE t) { m_primitiveType = t; }
-	void				updateVertices	(void* vertices, int vertexCount, int sizeOfVertex);
+	void				setRender			(IRender* render) { m_render = render; } 
+	void				setEnv				(Env* env) { m_env = env; } 
+	void**				vertexBuffers		() { return m_deviceVertexBuffers;	}
+	void*				indexBuffer			() { return m_deviceIndexBuffer;	}
+	int					attrCount			() const { return m_attrCount;		}
+	const VertexAttr*	attrs				() const { return m_attrs;			}
+	void				setAttrs			(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices);
+	void				setIndices			(void* indices, const int indexCount, const int indexComponentType);
+	void				setVertices			(void** verticesList, int* vertexCountList, int* sizeOfVertex);
+	void				setVertices			(void* vertices, int vertexCount, int sizeOfVertex);
+	void				setPrimitiveType	(PRIMITIVE_TYPE t) { m_primitiveType = t; }
+	void				updateVertices		(void* vertices, int vertexCount, int sizeOfVertex);
 
 private:
 	//void				_loadVertexOriginal	(const cgltf_primitive&	primitive, Env* env, IRender* render);

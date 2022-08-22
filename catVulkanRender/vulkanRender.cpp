@@ -502,8 +502,8 @@ VkIndexType _toVkIndexType(int indexComponentType)
 {
 	switch (indexComponentType)
 	{
-	case VertexAttr::DATA_TYPE_UNSIGNED_SHORT: return VK_INDEX_TYPE_UINT16;
-	case VertexAttr::DATA_TYPE_UNSIGNED_INT: return VK_INDEX_TYPE_UINT32;
+	case VERTEX_DATA_TYPE_UNSIGNED_SHORT: return VK_INDEX_TYPE_UINT16;
+	case VERTEX_DATA_TYPE_UNSIGNED_INT: return VK_INDEX_TYPE_UINT32;
 	default: assert(false); break;
 	}
 	return VK_INDEX_TYPE_UINT16;
@@ -845,7 +845,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 	VkFormat result = VK_FORMAT_UNDEFINED;
 	switch(attr.dataType)
 	{
-	case VertexAttr::DATA_TYPE_BYTE:
+	case VERTEX_DATA_TYPE_BYTE:
 		{
 			if (attr.normalize)
 			{
@@ -869,7 +869,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 			}
 		}
 		break;
-	case VertexAttr::DATA_TYPE_UNSIGNED_BYTE:
+	case VERTEX_DATA_TYPE_UNSIGNED_BYTE:
 		{
 			if (attr.normalize)
 			{
@@ -893,7 +893,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 			}
 		}
 		break;
-	case VertexAttr::DATA_TYPE_SHORT:
+	case VERTEX_DATA_TYPE_SHORT:
 		{
 			if (attr.normalize)
 			{
@@ -917,7 +917,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 			}
 		}
 		break;
-	case VertexAttr::DATA_TYPE_UNSIGNED_SHORT:
+	case VERTEX_DATA_TYPE_UNSIGNED_SHORT:
 		{
 			if (attr.normalize)
 			{
@@ -947,7 +947,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 			}
 		}
 		break;
-	case VertexAttr::DATA_TYPE_UNSIGNED_INT:
+	case VERTEX_DATA_TYPE_UNSIGNED_INT:
 		{
 			assert(!attr.normalize);
 			switch (attr.size)
@@ -959,7 +959,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 			};
 		}
 		break;
-	case VertexAttr::DATA_TYPE_FLOAT:
+	case VERTEX_DATA_TYPE_FLOAT:
 		{
 			assert(!attr.normalize);
 			switch (attr.size)
@@ -971,7 +971,7 @@ VkFormat _attrToVkFormat(const VertexAttr& attr)
 			};
 		}
 		break;
-	case VertexAttr::DATA_TYPE_INT:
+	case VERTEX_DATA_TYPE_INT:
 		{
 			assert(!attr.normalize);
 			switch (attr.size)

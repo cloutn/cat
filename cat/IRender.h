@@ -2,6 +2,8 @@
 
 #include "gfx/color.h"
 
+#include "cat/def.h"
+
 namespace scl { class matrix; }
 
 namespace cat {
@@ -43,39 +45,15 @@ enum PRIMITIVE_TYPE
 	PRIMITIVE_TYPE_TRIANGLE_FAN,
 };
 
-//typedef enum cgltf_component_type
-//{
-//	cgltf_component_type_invalid,
-//	cgltf_component_type_r_8, /* BYTE */
-//	cgltf_component_type_r_8u, /* UNSIGNED_BYTE */
-//	cgltf_component_type_r_16, /* SHORT */
-//	cgltf_component_type_r_16u, /* UNSIGNED_SHORT */
-//	cgltf_component_type_r_32u, /* UNSIGNED_INT */
-//	cgltf_component_type_r_32f, /* FLOAT */
-//} cgltf_component_type;
-
 class VertexAttr
 {
 public:
-	enum DATA_TYPE
-	{
-		DATA_TYPE_INVALID			= 0,	
-		DATA_TYPE_BYTE				,	
-		DATA_TYPE_UNSIGNED_BYTE		,	
-		DATA_TYPE_SHORT				,	
-		DATA_TYPE_UNSIGNED_SHORT	,	
-		DATA_TYPE_UNSIGNED_INT		,	
-		DATA_TYPE_FLOAT				,	
-		DATA_TYPE_INT				,	
-		//DATA_TYPE_DOUBLE			,	
-	};
-	int			index;
-	int			size;
-	DATA_TYPE	dataType;
-	int			normalize;
-	int			stride;
-	void*		offset;
-	//int			bufferIndex;
+	int					index;
+	int					size;
+	VERTEX_DATA_TYPE	dataType;
+	int					normalize;
+	int					stride;
+	void*				offset;
 };
 
 //class UniformBind

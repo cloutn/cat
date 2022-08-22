@@ -242,15 +242,15 @@ int gltf_type_to_attr_type(int gltf_component_type)
 {
 	switch (gltf_component_type)
 	{
-	case cgltf_component_type_r_8	: return VertexAttr::DATA_TYPE_BYTE;
-	case cgltf_component_type_r_8u	: return VertexAttr::DATA_TYPE_UNSIGNED_BYTE;
-	case cgltf_component_type_r_16	: return VertexAttr::DATA_TYPE_SHORT;
-	case cgltf_component_type_r_16u	: return VertexAttr::DATA_TYPE_UNSIGNED_SHORT;
-	case cgltf_component_type_r_32u	: return VertexAttr::DATA_TYPE_UNSIGNED_INT;
-	case cgltf_component_type_r_32f	: return VertexAttr::DATA_TYPE_FLOAT;
+	case cgltf_component_type_r_8	: return VERTEX_DATA_TYPE_BYTE;
+	case cgltf_component_type_r_8u	: return VERTEX_DATA_TYPE_UNSIGNED_BYTE;
+	case cgltf_component_type_r_16	: return VERTEX_DATA_TYPE_SHORT;
+	case cgltf_component_type_r_16u	: return VERTEX_DATA_TYPE_UNSIGNED_SHORT;
+	case cgltf_component_type_r_32u	: return VERTEX_DATA_TYPE_UNSIGNED_INT;
+	case cgltf_component_type_r_32f	: return VERTEX_DATA_TYPE_FLOAT;
 	default : assert(false); break;
 	};
-	return VertexAttr::DATA_TYPE_INVALID;
+	return VERTEX_DATA_TYPE_INVALID;
 }
 
 
