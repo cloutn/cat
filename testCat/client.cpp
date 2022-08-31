@@ -201,8 +201,8 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	uint16 indices[] = { 0, 1, 2, 3 };
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 1, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 },
+		{ 1, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1] = { {"COLOR", ""} };
@@ -218,7 +218,7 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	p->setEnv			(env);
 	p->setRender		(render);
 	p->setPrimitiveType	(PRIMITIVE_TYPE_LINES);
-	p->setIndices		(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices		(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs			(attrs, countof(attrs), attrBuffers);
 	p->setVertices		(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture		(NULL);
@@ -231,8 +231,8 @@ Primitive* _createGridPrimitive(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 5, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 },
+		{ 5, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1];
@@ -267,7 +267,7 @@ Primitive* _createGridPrimitive(IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_LINES);
-	p->setIndices(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
@@ -312,8 +312,8 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 5, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, ELEM_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
+		{ 5, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1];
@@ -331,7 +331,7 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_LINES);
-	p->setIndices(indices.begin(), indices.size(), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices.begin(), indices.size(), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 	p->setTexture(NULL);
@@ -344,9 +344,9 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 4, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_coord), 0 },
-		{ 1, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_coord), OFFSET(vertex_coord, color) },
-		{ 2, 2, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_coord), OFFSET(vertex_coord, texcoord) }
+		{ 0, 4, ELEM_TYPE_FLOAT,	0, sizeof(vertex_coord), 0 },
+		{ 1, 4, ELEM_TYPE_UINT8,	1, sizeof(vertex_coord), OFFSET(vertex_coord, color) },
+		{ 2, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_coord), OFFSET(vertex_coord, texcoord) }
 	};
 	int attrBuffers[] = { 0, 0, 0 };
 	ShaderMacro macros[1] = { {"USE_COLOR", ""} };
@@ -365,7 +365,7 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
-	p->setIndices(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_coord));
 	p->setTexture(NULL);
@@ -379,8 +379,8 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 
 	VertexAttr attrs[] = {
-		{ 0, 3, VERTEX_DATA_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
-		{ 1, 4, VERTEX_DATA_TYPE_UNSIGNED_BYTE, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+		{ 0, 3, ELEM_TYPE_FLOAT,		0, sizeof(vertex_color), 0 },
+		{ 1, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
 	ShaderMacro macros[1] = { {"COLOR", ""} };
@@ -399,7 +399,7 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
-	p->setIndices(indices, countof(indices), VERTEX_DATA_TYPE_UNSIGNED_SHORT);
+	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);

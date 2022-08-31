@@ -50,7 +50,7 @@ class VertexAttr
 public:
 	int					index;
 	int					size;
-	VERTEX_DATA_TYPE	dataType;
+	ELEM_TYPE	dataType;
 	int					normalize;
 	int					stride;
 	void*				offset;

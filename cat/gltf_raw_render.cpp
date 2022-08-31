@@ -238,21 +238,39 @@ void _drawMesh(cgltf_mesh* mesh, BufferMap* vbo_map)
 }
 
 
-int gltf_type_to_attr_type(int gltf_component_type)
+ELEM_TYPE gltf_type_to_attr_type(int gltf_component_type)
 {
 	switch (gltf_component_type)
 	{
-	case cgltf_component_type_r_8	: return VERTEX_DATA_TYPE_BYTE;
-	case cgltf_component_type_r_8u	: return VERTEX_DATA_TYPE_UNSIGNED_BYTE;
-	case cgltf_component_type_r_16	: return VERTEX_DATA_TYPE_SHORT;
-	case cgltf_component_type_r_16u	: return VERTEX_DATA_TYPE_UNSIGNED_SHORT;
-	case cgltf_component_type_r_32u	: return VERTEX_DATA_TYPE_UNSIGNED_INT;
-	case cgltf_component_type_r_32f	: return VERTEX_DATA_TYPE_FLOAT;
+	case cgltf_component_type_r_8	: return ELEM_TYPE_INT8;
+	case cgltf_component_type_r_8u	: return ELEM_TYPE_UINT8;
+	case cgltf_component_type_r_16	: return ELEM_TYPE_INT16;
+	case cgltf_component_type_r_16u	: return ELEM_TYPE_UINT16;
+	case cgltf_component_type_r_32u	: return ELEM_TYPE_UINT32;
+	case cgltf_component_type_r_32f	: return ELEM_TYPE_FLOAT;
 	default : assert(false); break;
 	};
-	return VERTEX_DATA_TYPE_INVALID;
+	return ELEM_TYPE_INVALID;
 }
 
+static cgltf_size component_size(cgltf_component_type component_type) 
+{
+	switch (component_type)
+	{
+	case cgltf_component_type_r_8:
+	case cgltf_component_type_r_8u:
+		return 1;
+	case cgltf_component_type_r_16:
+	case cgltf_component_type_r_16u:
+		return 2;
+	case cgltf_component_type_r_32u:
+	case cgltf_component_type_r_32f:
+		return 4;
+	case cgltf_component_type_invalid:
+	default:
+		return 0;
+	}
+}
 
 } // namespace cat
 

@@ -209,18 +209,18 @@ void UIRenderOpenGL::copyVertexBuffer(const void* data, void* vertexBuffer, cons
 	glcheck( glBindBuffer(GL_ARRAY_BUFFER, 0) );
 }
 
-int VertexAttrDataTypeToGLDataType(VERTEX_DATA_TYPE t)
+int VertexAttrDataTypeToGLDataType(ELEM_TYPE t)
 {
 	switch (t)
 	{
-	case VERTEX_DATA_TYPE_BYTE				: return GL_BYTE;
-	case VERTEX_DATA_TYPE_UNSIGNED_BYTE	: return GL_UNSIGNED_BYTE;
-	case VERTEX_DATA_TYPE_SHORT			: return GL_SHORT;
-	case VERTEX_DATA_TYPE_UNSIGNED_SHORT	: return GL_UNSIGNED_SHORT;
-	case VERTEX_DATA_TYPE_INT				: return GL_INT;
-	case VERTEX_DATA_TYPE_UNSIGNED_INT		: return GL_UNSIGNED_INT;
-	case VERTEX_DATA_TYPE_FLOAT			: return GL_FLOAT;
-	//case VERTEX_DATA_TYPE_DOUBLE			: return GL_DOUBLE;
+	case ELEM_TYPE_INT8				: return GL_BYTE;
+	case ELEM_TYPE_UINT8	: return GL_UNSIGNED_BYTE;
+	case ELEM_TYPE_INT16			: return GL_SHORT;
+	case ELEM_TYPE_UINT16	: return GL_UNSIGNED_SHORT;
+	case ELEM_TYPE_INT32				: return GL_INT;
+	case ELEM_TYPE_UINT32		: return GL_UNSIGNED_INT;
+	case ELEM_TYPE_FLOAT			: return GL_FLOAT;
+	//case ELEM_TYPE_DOUBLE			: return GL_DOUBLE;
 	default:
 		assert(false);
 		break;
@@ -358,7 +358,7 @@ void UIRenderOpenGL::draw2(
 		//}
 	}
 
-	glcheck( glDrawElements(primitiveType, indexCount, VertexAttrDataTypeToGLDataType((VERTEX_DATA_TYPE)indexComponentType), reinterpret_cast<void*>(static_cast<uintptr_t>(indexOffset)) ) );
+	glcheck( glDrawElements(primitiveType, indexCount, VertexAttrDataTypeToGLDataType((ELEM_TYPE)indexComponentType), reinterpret_cast<void*>(static_cast<uintptr_t>(indexOffset)) ) );
 
 	//clear
 	glcheck( glDisableVertexAttribArray(0) );

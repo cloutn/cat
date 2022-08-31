@@ -23,7 +23,7 @@ Primitive::Primitive() :
 	m_render					(NULL),
 	m_deviceIndexBuffer			(NULL),
 	m_indexCount				(0),
-	m_indexComponentType		(0),
+	m_indexComponentType		(ELEM_TYPE_INVALID),
 	m_indexOffset				(0),
 	m_deviceVertexBuffers		(NULL),
 	m_attrCount					(0),
@@ -132,7 +132,7 @@ Primitive::~Primitive()
 //		m_deviceVertexBuffers[i] = createBuffer(attr.data, env->bufferMap(), render);
 //
 //		m_attrs[i].size			= cgltf_num_components(accessor->type);
-//		m_attrs[i].dataType		= static_cast<VERTEX_DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
+//		m_attrs[i].dataType		= static_cast<ELEM_TYPE>(gltf_type_to_attr_type(accessor->component_type));
 //		m_attrs[i].normalize	= accessor->normalized;
 //		m_attrs[i].stride		= (accessor->buffer_view->stride == 0) ?  accessor->stride : accessor->buffer_view->stride;
 //		m_attrs[i].offset		= (void*)accessor->offset;
@@ -206,7 +206,7 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 			continue;
 		}
 		m_attrs[i].size			= cgltf_num_components(accessor->type);
-		m_attrs[i].dataType		= static_cast<VERTEX_DATA_TYPE>(gltf_type_to_attr_type(accessor->component_type));
+		m_attrs[i].dataType		= static_cast<ELEM_TYPE>(gltf_type_to_attr_type(accessor->component_type));
 		m_attrs[i].normalize	= accessor->normalized;
 		m_attrs[i].stride		= sizeofVertex;
 		m_attrs[i].offset		= reinterpret_cast<void*>(static_cast<uintptr_t>(attrOffsets[i]));
@@ -250,13 +250,8 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 	m_primitiveType			= static_cast<PRIMITIVE_TYPE>(primitive.type);
 
 	// index
-	m_indexCount			= indices->count;
-	m_indexComponentType	= gltf_type_to_attr_type(indices->component_type);
-	m_deviceIndexBuffer		= render->createIndexBuffer(-1);
 	const byte*	pBuffer		= cgltf_get_accessor_buffer(indices);	//(byte*)indices->buffer_view->buffer->data + indices->buffer_view->offset + indices->offset;
-	int sizeofIndex			= indices->count * cgltf_calc_size(indices->type, indices->component_type);
-	render->copyIndexBuffer(pBuffer, m_deviceIndexBuffer, sizeofIndex);
-	m_indexOffset			= 0;
+	setIndices(pBuffer, indices->count, gltf_type_to_attr_type(indices->component_type));
 
 	//_loadVertexOriginal(primitive, bufferMap, render);
 	_loadVertex(primitive, render);
@@ -397,19 +392,19 @@ void Primitive::release()
 }
 
 void Primitive::loadMemory(
-	void* indices,
-	const int indexCount,
-	const int indexComponentType,
-	void** verticesList,
-	int* vertexCountList,
-	int* sizeOfVertex,
-	int attrCount,
-	VertexAttr* attrs,
-	int* attrVertexBuffer,
-	PRIMITIVE_TYPE primitiveType,
-	Material* material,
-	Shader* shader,
-	IRender* render)
+	void*				indices,
+	const int			indexCount,
+	const ELEM_TYPE		indexComponentType,
+	void**				verticesList,
+	int*				vertexCountList,
+	int*				sizeOfVertex,
+	int					attrCount,
+	VertexAttr*			attrs,
+	int*				attrVertexBuffer,
+	PRIMITIVE_TYPE		primitiveType,
+	Material*			material,
+	Shader*				shader,
+	IRender*			render)
 {
 	release();
 
@@ -495,7 +490,7 @@ void Primitive::setAttrs(const VertexAttr* attrs, const int attrCount, const int
 	memcpy(m_attrBufferIndices, attrBufferIndices, m_attrCount * sizeof(attrBufferIndices[0]));
 }
 
-void Primitive::setIndices(void* indices, const int indexCount, const int indexComponentType)
+void Primitive::setIndices(const void* indices, const int indexCount, const ELEM_TYPE indexComponentType)
 {
 	if (NULL == m_render)
 		return;
@@ -504,7 +499,7 @@ void Primitive::setIndices(void* indices, const int indexCount, const int indexC
 	m_indexCount			= indexCount;
 	m_indexComponentType	= indexComponentType;
 	m_deviceIndexBuffer		= m_render->createIndexBuffer(-1);
-	const int indexBytes	= m_indexCount * cgltf_component_size(m_indexComponentType);
+	const int indexBytes	= m_indexCount * elem_type_byte(m_indexComponentType);
 	m_render->copyIndexBuffer(indices, m_deviceIndexBuffer, indexBytes);
 	m_indexOffset = 0;
 }

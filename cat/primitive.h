@@ -30,7 +30,7 @@ public:
 	void				loadMemory		(
 		void*			indices, 
 		const int		indexCount, 
-		const int		indexComponentType, 
+		const ELEM_TYPE	indexComponentType, 
 		void**			verticesList,
 		int*			vertexCountList,
 		int*			sizeOfVertex,
@@ -50,7 +50,7 @@ public:
 	int					attrCount			() const { return m_attrCount;		}
 	const VertexAttr*	attrs				() const { return m_attrs;			}
 	void				setAttrs			(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices);
-	void				setIndices			(void* indices, const int indexCount, const int indexComponentType);
+	void				setIndices			(const void* indices, const int indexCount, const ELEM_TYPE indexComponentType);
 	void				setVertices			(void** verticesList, int* vertexCountList, int* sizeOfVertex);
 	void				setVertices			(void* vertices, int vertexCount, int sizeOfVertex);
 	void				setPrimitiveType	(PRIMITIVE_TYPE t) { m_primitiveType = t; }
@@ -67,7 +67,7 @@ private:
 	// indices data
 	void*				m_deviceIndexBuffer;
 	int					m_indexCount;
-	int					m_indexComponentType;
+	ELEM_TYPE			m_indexComponentType;
 	int					m_indexOffset;
 
 	// vertices data
