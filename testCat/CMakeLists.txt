@@ -28,6 +28,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../free/zlib ${PROJECT_SOURCE_DIR}/../fre
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/spirv_cross ${PROJECT_SOURCE_DIR}/../free/spirv_cross/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/../catVulkanRender/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/rapidyaml ${PROJECT_SOURCE_DIR}/../free/rapidyaml/build${ARCH})
 
 
 set(header_files
@@ -62,6 +63,7 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../free/imgui/
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
+	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
 	)
 
 set(debug_links 	
@@ -80,6 +82,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libpng_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libtga_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/rapidyaml_d.lib
 )
 
 set(release_links 	
@@ -98,6 +101,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libpng.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libtga.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/rapidyaml.lib
 )
 
 
