@@ -24,6 +24,13 @@ String::String(const char* s) :
 	_assign(s);
 }
 
+String::String(const char* s, const int len) : 
+	m_level		(0), 
+	m_autofree	(1)
+{
+	_assign(s, len);
+}
+
 String::String(const String& s) : 
 	m_level		(0), 
 	m_autofree	(s.m_autofree)
@@ -35,6 +42,11 @@ String::~String()
 {
 	if (m_autofree)
 		m_long.free();
+}
+
+void String::copy(const char* const s, const int len)
+{
+	_assign(s, len);
 }
 
 String& String::operator+=(const char* s)
@@ -118,6 +130,12 @@ void String::_assign(const char* s)
 {
 	_grow(static_cast<int>(::strnlen(s, MAX_LENGTH)));
 	pstring().copy(s);
+}
+
+void String::_assign(const char* s, const int len)
+{
+	_grow(len);
+	pstring().copy(s, len);
 }
 
 int String::length() const

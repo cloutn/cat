@@ -11,9 +11,11 @@ class String
 public:
 	String	();
 	String	(const char* s);
+	String	(const char* s, const int len);
 	String	(const String& s);
 	~String	();
 
+	void		copy		(const char* const s, const int len);
 	void		insert		(const int positionIndex, const char* const s);
 	void		insert		(const int positionIndex, const char c);	
 	void		erase		(const int startIndex = 0, const int length = -1) { pstring().erase(startIndex, length); }
@@ -63,6 +65,7 @@ public:
 private:
 	void		_grow		(const int appendLength, int currentLength = -1);
 	void		_assign		(const char* s);
+	void		_assign		(const char* s, const int len);
 
 private:
 	string16		m_short;

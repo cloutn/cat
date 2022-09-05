@@ -64,7 +64,8 @@ set(src_files
 	string.cpp
 	transform.cpp
 	uiRenderOpenGL.cpp
-	wstring.cpp)
+	wstring.cpp
+	yaml.cpp)
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})
@@ -90,6 +91,7 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
+	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
 	)
 
 add_definitions(-DUNICODE -D_UNICODE)

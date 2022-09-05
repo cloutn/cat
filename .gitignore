@@ -37,3 +37,5 @@
 /free/scl/build
 /free/rapidyaml/build
 /free/rapidyaml/build64
+/test/testYaml/build
+/test/testYaml/bin
