@@ -8,6 +8,11 @@
 #include "scl/vector.h"
 #include "scl/assert.h"
 
+namespace scl {
+inline size_t to_chars(ryml::substr buf, scl::vector3 v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
+inline bool from_chars(ryml::csubstr buf, scl::vector3* v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
+}
+
 namespace yaml {
 
 class node;
@@ -137,6 +142,7 @@ private:
     node_iterator b;
 	node_iterator e;
 }; // class node_list
+
 
 
 } // namespace yaml

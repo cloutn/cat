@@ -33,6 +33,7 @@ set(header_files
 )
 
 set(src_files
+	quickstart.cpp
 	main.cpp
 )
 
@@ -105,6 +106,10 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT $
 target_link_libraries(${target} 
 	${debug_links}
 	${release_links})
+
+if(WIN32)
+  add_definitions("/wd4819")
+endif(WIN32)
 
 add_definitions(-DUNICODE -D_UNICODE)
 #add_definitions(-DGFX_WIN32)

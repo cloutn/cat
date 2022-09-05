@@ -1,62 +1,38 @@
 
 #include "cat/yaml.h"
 
-
-#include "scl/vector.h"
 #include "rapidyaml/ryml.hpp"
 #include "c4/format.hpp" // needed for the examples below
 
-//namespace scl {
-//
-//template<class T> size_t to_chars(ryml::substr buf, scl::vector3 v) { return ryml::format(buf, "({},{},{})", v.x, v.y, v.z); }
-//template<class T> bool from_chars(ryml::csubstr buf, scl::vector3* v) { size_t ret = ryml::unformat(buf, "({},{},{})", v->x, v->y, v->z); return ret != ryml::yml::npos; }
-//
-//}
-
-//template<class T> bool from_chars(ryml::csubstr buf, vec3* v) { size_t ret = ryml::unformat(buf, "({},{},{})", v->x, v->y, v->z); return ret != ryml::yml::npos; }
-
-
-
-
-
-
-#include "scl/log.h"
 #include "scl/file_mapping.h"
+#include "scl/vector.h"
 
 #include <iostream>
 
-
-// ####################################
 #ifdef _WIN32
 #include <crtdbg.h>
-#include <Windows.h>
-//#include "vld_runtime/include/vld.h"
-//#include <C:\\Program Files (x86)\\Visual Leak Detector\\include\\vld.h>
+#include <Windows.h> //#include "vld_runtime/include/vld.h" //#include <C:\\Program Files (x86)\\Visual Leak Detector\\include\\vld.h>
 #endif
-// ####################################
 
-typedef ryml::NodeRef node;
+const char* const g_filename_raw = "./1.yaml";
+const char* const g_filename = "./2.yaml";
+
+typedef ryml::NodeRef node_raw;
 typedef ryml::Tree tree;
 
-
-namespace scl {
-inline size_t to_chars(ryml::substr buf, scl::vector3 v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
-inline bool from_chars(ryml::csubstr buf, scl::vector3* v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
-}
-
-node add_scene(node& scenes, const char* const name)
+node_raw add_scene_raw(node_raw& scenes, const char* const name)
 {
-	node scene = scenes.append_child();
+	node_raw scene = scenes.append_child();
 	scene |= ryml::MAP;
 	scene["name"] << name;
-	node objects = scene["objects"];
+	node_raw objects = scene["objects"];
 	objects |= ryml::SEQ;
 	return scene;
 }
 
-node add_object(node objects, const char* const name, float x, float y, float z)
+node_raw add_object_raw(node_raw objects, const char* const name, float x, float y, float z)
 {
-	node obj = objects.append_child();
+	node_raw obj = objects.append_child();
 	obj |= ryml::MAP;
 	obj["name"] << name;
 	obj["x"] << x;
@@ -69,37 +45,26 @@ node add_object(node objects, const char* const name, float x, float y, float z)
 }
 
 
-void test3()
+void test_write_raw()
 {
 	tree t;
 
-	node root = t.rootref();
+	node_raw root = t.rootref();
 	root |= ryml::MAP;
 
-	node scenes = root["scenes"] ;
+	node_raw scenes = root["scenes"] ;
 	scenes |= ryml::SEQ;
 
-	node scene1 = add_scene(scenes, "scene_1");
-	//node scene1 = scenes.append_child();
-	//scene1 |= ryml::MAP;
-	//scene1["name"] << "scene_1";
+	node_raw scene1 = add_scene_raw(scenes, "scene_1");
 
-
-	add_object(scene1["objects"], "obj1", 1, 3.22f, -0.003f);
-	add_object(scene1["objects"], "obj2", 1, 3.22f, -0.003f);
+	add_object_raw(scene1["objects"], "obj1", 1, 3.22f, -0.003f);
+	add_object_raw(scene1["objects"], "obj2", 1, 3.22f, -0.003f);
 	
-	node scene2 = add_scene(scenes, "scene_2");
-	add_object(scene2["objects"], "obj3", -01, -3.22f, 0.2003f);
+	node_raw scene2 = add_scene_raw(scenes, "scene_2");
+	add_object_raw(scene2["objects"], "obj3", -01, -3.22f, 0.2003f);
 
-	//node pos = obj1["position"];
-	//pos |= ryml::MAP;
-	//pos["x"] << 1.33f;
-	//pos["y"] << 222.f;
-	//pos["z"] << 222.f;
 
-	//node scene2 = root.append_child();
-
-	FILE* fp = fopen("d:/1.yaml", "wb");
+	FILE* fp = fopen(g_filename_raw, "wb");
 
 	size_t len = ryml::emit(t, t.root_id(), fp);
 
@@ -107,12 +72,11 @@ void test3()
 	std::cout << t;
 }
 
-void test4()
+void test_read_raw()
 {
 	scl::file_mapping fm;
-	fm.open("d:/1.yaml");
+	fm.open(g_filename_raw);
 	char* buffer = (char*)fm.map();
-
 
 	//FILE* fp = fopen("d:/1.yaml", "rb");	
 	//int bufferSize = fread(NULL, 1, 0, fp) + 1;
@@ -124,42 +88,34 @@ void test4()
 	//delete[] buffer;
 	std::cout << tree;
 
-	node scenes = tree["scenes"];
+	node_raw scenes = tree["scenes"];
 	printf("scene count = %d\n", scenes.num_children());
-	for (node scene : scenes.children())
+	for (node_raw scene : scenes.children())
 	{
 		std::string name;
-		node nameNode = scene["name"];
+		node_raw nameNode = scene["name"];
 		name.assign(nameNode.val().data(), nameNode.val().len);
 		printf("  scene name = %s\n", name.c_str());
 
 		const char* s = nameNode.val().data();
-		node objects = scene["objects"];
-		for (node obj : objects.children())
+		node_raw objects = scene["objects"];
+		for (node_raw obj : objects.children())
 		{
 			c4::csubstr obj_nameNode = obj["name"].val();
 			std::string obj_name(obj_nameNode.data(), obj_nameNode.len);
 			printf("    obj name = %s\n", obj_name.c_str());
 		}
-
 		//std::cout << nameNode;
 	}
 
 	fm.close();
-	getchar();
-	//delete[] buffer;
 }
 
-void test5()
+void test_read()
 {
 	yaml::document doc;
-	yaml::node root = doc.load("d:/2.yaml");
+	yaml::node root = doc.load(g_filename);
 	yaml::node scenes = root["scenes"];
-	//for (yaml::node scene : scenes.children())
-	//{
-	//	yaml::node sceneName	= scene["name"];
-	//	printf("scene name = %s\n", sceneName.value());
-	//}
 	for (yaml::node scene : scenes.children())
 	{
 		yaml::node sceneName	= scene["name"];
@@ -183,7 +139,7 @@ void test5()
 	}
 }
 
-void test6()
+void test_write()
 {
 	yaml::document doc;
 	yaml::node scenes = doc.root().set_map().add_seq("scenes");
@@ -219,7 +175,7 @@ void test6()
 	obj3.add("z", 0.2003f);
 	obj3.add("pos", scl::vector3 { 1.2, -2.33, 0.23333 });
 
-	doc.save("d:/2.yaml");
+	doc.save(g_filename);
 }
 
 int main()
@@ -229,12 +185,19 @@ int main()
 	//如果发生泄漏，请将泄漏的内存序号填写在下面
 	//_CrtSetBreakAlloc(1535);
 #endif
+	printf("\n\n****************** test raw ****************** \n\n");
 
-	test6();
-	test5();
+	test_write_raw();
+
+	test_read_raw();
+
+	printf("\n\n****************** test cat::yaml ******************\n\n");
+
+	test_write();
+
+	test_read();
+
 	getchar();
-
-	scl::log::release();
 
 	return 0;
 }
