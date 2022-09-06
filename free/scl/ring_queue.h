@@ -45,6 +45,7 @@ public:
 	void	drop			(const int count = 1);
 
 	int		used			() const;
+	bool	empty			() const { return used() <= 0; }
 	int		free			() const;
 	int		capacity		() const { return MAX_COUNT; }
 	void	clear_unsafe	();

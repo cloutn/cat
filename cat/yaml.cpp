@@ -4,8 +4,6 @@
 #include "scl/file.h"
 
 
-
-
 namespace yaml {
 
 document::document() : m_tree(NULL)
@@ -76,11 +74,6 @@ node::node(yaml::document* doc, const int id)
 	m_document = *doc;
 	m_node = c4::yml::NodeRef(&doc->tree(), id);
 }
-
-//node::node(const node& other): node(other.m_node)
-//{
-//
-//}
 
 bool node::is_valid() const
 {
@@ -246,6 +239,12 @@ void node::set_type(NODE_TYPE type)
 	case NODE_TYPE_SEQ:
 		m_node |= ryml::SEQ;
 		break;
+	case NODE_TYPE_SEQ_INLINE:
+		{
+			m_node |= ryml::SEQ;
+			m_node |= ryml::_WIP_STYLE_FLOW_SL;
+		}
+		break;
 	case NODE_TYPE_SCALAR:
 		m_node |= ryml::VAL;
 		break;
@@ -283,6 +282,13 @@ node node::add_seq(const char* const name)
 {
 	node n = add(name);
 	n.set_seq();
+	return n;
+}
+
+node node::add_seq_inline(const char* const name)
+{
+	node n = add(name);
+	n.set_seq_inline();
 	return n;
 }
 

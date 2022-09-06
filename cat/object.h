@@ -13,6 +13,8 @@ struct cgltf_data;
 struct cgltf_node;
 struct cgltf_mesh;
 
+namespace yaml { class node; }
+
 namespace cat {
 	
 class IRender;
@@ -34,6 +36,7 @@ public:
 
 	void						loadNode				(cgltf_node* node, const char* const path, IRender* render, Env* env);
 	void						loadSkin				(cgltf_node* node, Env* env);
+	void						save					(yaml::node& parent);
 	void						draw					(const scl::matrix& mvp, IRender* render);
 	scl::matrix					globalMatrix			();
 	const String&				name					() const { return m_name; }

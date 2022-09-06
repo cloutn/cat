@@ -2,8 +2,14 @@
 
 #include "cat/object.h"
 #include "cat/env.h"
+#include "cat/yaml.h"
+
+//#include "scl/ring_queue.h"
+
 
 #include "cgltf/cgltf.h"
+
+#include <queue>
 
 namespace cat {
 
@@ -38,6 +44,50 @@ void Scene::load(cgltf_scene& scene, const char* const path, Env* env)
 		Object* object = m_env->getObjectByGltfNode(node);		
 		object->loadSkin(node, env);
 	}
+}
+
+void Scene::save(const char* const filename)
+{
+	yaml::document doc;
+	yaml::node root = doc.root().set_map();
+
+	root.add("name", "scene");
+
+	yaml::node root_objects	= root.add_seq_inline("root_objects");
+	yaml::node objects		= root.add_seq("objects");
+
+	std::queue<Object*> queue;
+
+	for (int i = 0; i < m_objects.size(); ++i)
+	{
+		if (NULL == m_objects[i])
+			continue;
+
+		queue.push(m_objects[i]);
+		root_objects.add_val(i);
+	}
+
+	while (!queue.empty())
+	{
+		Object* object = queue.front();
+		queue.pop();
+
+		yaml::node objectNode = objects.add_map();
+		objectNode.add("i", objects.child_count() - 1);
+		object->save(objectNode);
+		if (object->childCount() <= 0)
+			continue;
+
+		yaml::node objectChilds = objectNode.add_seq_inline("childs");
+		int nextIndex = objects.child_count() + queue.size();
+		for (int i = 0; i < object->childCount(); ++i)
+		{
+			objectChilds.add_val(nextIndex + i);
+			queue.push(object->child(i));
+		}
+	}
+
+	doc.save(filename);
 }
 
 void Scene::draw(const scl::matrix& mvp, IRender* render)

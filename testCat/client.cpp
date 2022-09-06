@@ -108,6 +108,13 @@ void Client::init(const int width, const int height)
 	m_bonePrimitive = _createBone(m_object, &m_render, m_env);
 
 	m_gridPrimitive = _createGridPrimitive(&m_render, m_env);
+
+	for (int i = 0; i < m_scenes.size(); ++i)
+	{
+		string64 fn;
+		fn.format("scene_%d.yaml", i);
+		m_scenes[i]->save(fn.c_str());
+	}
 }
 
 void Client::loadGltf(const char* const filename)

@@ -9,8 +9,8 @@
 #include "scl/assert.h"
 
 namespace scl {
-inline size_t to_chars(ryml::substr buf, scl::vector3 v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
-inline bool from_chars(ryml::csubstr buf, scl::vector3* v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
+inline size_t	to_chars	(ryml::substr	buf, scl::vector3	v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
+inline bool		from_chars	(ryml::csubstr	buf, scl::vector3*	v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
 }
 
 namespace yaml {
@@ -43,6 +43,7 @@ enum NODE_TYPE
 	NODE_TYPE_SCALAR,
 	NODE_TYPE_MAP,
 	NODE_TYPE_SEQ,
+	NODE_TYPE_SEQ_INLINE,
 };
 
 class node
@@ -87,17 +88,28 @@ public:
 	void			set_type		(NODE_TYPE type);
 	node			set_map			() { set_type(NODE_TYPE_MAP); return *this; }
 	node			set_seq			() { set_type(NODE_TYPE_SEQ); return *this; }
+	node			set_seq_inline	() { set_type(NODE_TYPE_SEQ_INLINE); return *this; }
 	node			add				();
 	node			add				(const char* const name);
 	node			add_map			();
 	node			add_map			(const char* const name);
 	node			add_seq			();
 	node			add_seq			(const char* const name);
+	node			add_seq_inline	(const char* const name);
+	node			add				(const char* const name, char* value) { return add(name, (const char*)value); }
 
 	template <typename T>
 	node			add				(const char* const name, T value)
 	{
 		node n = add(name);
+		n.set_value(value);
+		return n;
+	}
+
+	template <typename T>
+	node			add_val			(T value)
+	{
+		node n = add();
 		n.set_value(value);
 		return n;
 	}
@@ -128,6 +140,7 @@ public:
 private:
     yaml::document*	m_document;
     size_t			m_childID;
+
 }; // class node_iterator
 
 
@@ -141,6 +154,7 @@ public:
 private:
     node_iterator b;
 	node_iterator e;
+
 }; // class node_list
 
 

@@ -24,6 +24,8 @@ public:
 	~Scene();
 	
 	void						load		(cgltf_scene& scene, const char* const path, Env* env);
+	void						save		(const char* const filename);
+
 	const scl::varray<Object*>	objects		() const { return m_objects; }
 	int							objectCount	() const { return m_objects.size(); }
 	Object*						object		(const int index) { return m_objects[index]; }

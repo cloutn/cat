@@ -9,6 +9,7 @@
 //#include "cat/primitive.h"
 #include "cat/mesh.h"
 #include "cat/skin.h"
+#include "cat/yaml.h"
 
 #include "gfx/vertex.h"
 #include "gfx/base.h"
@@ -295,6 +296,29 @@ void Object::loadSkin(cgltf_node* node, Env* env)
 	{
 		m_childs[i]->loadSkin(node->children[i], env);
 	}
+}
+
+void Object::save(yaml::node& root)
+{
+	//yaml::node root = parent["childs"].add_map();
+	root.add("name", m_name.c_str());
+	root.add("id", m_id);
+
+	if (NULL != m_move)
+		root.add("move", *m_move);
+	if (NULL != m_scale)
+		root.add("scale", *m_scale);
+
+	//yaml::node childs = root.add_seq("childs");
+	//int childCount = parent["childs"].child_count();
+	//return root;
+
+	//for (int i = 0; i < m_childs.size(); ++i)
+	//{
+	//	if (NULL == m_childs[i])
+	//		continue;
+	//	m_childs[i]->save(root);
+	//}
 }
 
 ObjectIDMap<Object>& Object::_objectIDMap()
