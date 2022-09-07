@@ -67,12 +67,7 @@ public:
 #endif
 
 private:
-	//void					_initIMGUI			();
-	void					_onGUI				();
 	void					_renderScene		(uint64 diff);
-	//void					_onGUIScene			(const int sceneIndex, bool& isContextMenuOpen);
-	//void					_onGUIObject		(Object* const object, bool& isContextMenuOpen);
-	//void					_onGUIProperty		(Object* const object);
 
 private:
 
@@ -88,27 +83,18 @@ private:
 
 	bool					m_dragging;
 	scl::vector2i			m_dragPrev;
-
 	bool					m_rightDragging;
 	scl::vector2i			m_rightDragPrev;
 #endif
 
 	Env*					m_env;
-
 	Camera*					m_camera;
 
 	// for object test 	(读取gltf file data解析到自己的内存中，然后渲染)
 	Object*					m_object;
 	Primitive*				m_gridPrimitive;
-	Primitive*				m_testVulkanPrimitive;
-	Primitive*				m_testVulkanPrimitiveColor;
-	Object*					m_simpleAnimation;
 	Primitive*				m_bonePrimitive;
 
-	// for direct render test 	(直接渲染 gltf file data,没有解析过程)
-	Material*				m_material;
-	cgltf_data*				m_gltf;
-	void*					m_gltfRenderData;
 	int						m_totalFrame;
 	uint64					m_totalTime;
 

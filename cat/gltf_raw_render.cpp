@@ -90,10 +90,10 @@ void gltf_release(cgltf_data* data, void* renderData)
 	delete vbo_map;
 }
 
-void gltf_mesh_to_render_mesh(cgltf_mesh* gltf_mesh, Mesh* engine_mesh)
-{
-
-}
+//void gltf_mesh_to_render_mesh(cgltf_mesh* gltf_mesh, Mesh* engine_mesh)
+//{
+//
+//}
 
 void _draw(cgltf_data* data, BufferMap* vbo_map)
 {
