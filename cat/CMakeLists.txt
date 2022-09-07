@@ -38,7 +38,8 @@ set(header_files
 	transform.h
 	typedef.h
 	uiRenderOpenGL.h
-	wstring.h)
+	wstring.h
+	yaml.h)
 
 set(src_files
 	cgltf.c

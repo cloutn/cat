@@ -1,14 +1,4 @@
 
-/*
-	TODO
-	2019.06.25 
-		primitive 已经可以渲染了
-		BufferMap 应该在哪的问题还没解决
-		现在 gltf load 的  normal和tangent 没有处理，如果shader里面没有，应该说明一下 
-		
-			
-*/
-
 #pragma once
 
 #include "scl/type.h"
@@ -20,6 +10,7 @@
 #include "cat/def.h"
 
 #include "./config.h"
+#include "./mainGUI.h"
 
 #ifdef SCL_WIN
 #include "gfx/win32window.h"
@@ -43,39 +34,45 @@ public:
 	Client();
 	virtual ~Client();
 
-	static Client&			inst			();
-	void					init			(const int width, const int height);
+	static Client&			inst				();
+	void					init				(const int width, const int height);
 
-	void					loadGltf		(const char* const filename);
-	void					updateAnimation	(const double diff);
-	Object*					findObject		(const char* const objectName);
-	Object*					getObject		(int sceneIndex, int index);
+	void					loadGltf			(const char* const filename);
+	void					updateAnimation		(const double diff);
+	Object*					findObject			(const char* const objectName);
+	Object*					getObject			(int sceneIndex, int index);
+
+	Config&					config				() { return m_config; }
+	scl::varray<Scene*>&	scenes				() { return m_scenes; }
+	float					fps					();
+	VulkanRender&			render				() { return m_render; }
+	void*					windowHandle		() { return m_window.getHandle(); }
 
 #ifdef SCL_APPLE
-	void					tick			();
-	void					draw			();
-	void					onTouchBegin	(const uint16 touchID, const float x, const float y) { currentUI().onTouchBegin (touchID, x, y); }
-	void					onTouchEnd		(const uint16 touchID, const float x, const float y) { currentUI().onTouchEnd   (touchID, x, y); }
-    void					onTouchMove     (const uint16 touchID, const float x, const float y) { currentUI().onTouchMove  (touchID, x, y); }
-	void					onChar			(wchar_t c) { currentUI().onChar(c); }
-    void					resize			(const int width, const int height);
-	bool					isEditing		(const char** controlText) const;
+	void					tick				();
+	void					draw				();
+	void					onTouchBegin		(const uint16 touchID, const float x, const float y) { currentUI().onTouchBegin (touchID, x, y); }
+	void					onTouchEnd			(const uint16 touchID, const float x, const float y) { currentUI().onTouchEnd   (touchID, x, y); }
+    void					onTouchMove			(const uint16 touchID, const float x, const float y) { currentUI().onTouchMove  (touchID, x, y); }
+	void					onChar				(wchar_t c) { currentUI().onChar(c); }
+    void					resize				(const int width, const int height);
+	bool					isEditing			(const char** controlText) const;
 #endif
 
 #ifdef SCL_WIN
-	void					run				();
+	void					run					();
 
-	static bool				staticOnEvent	(void* caller, void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam) { return static_cast<Client*>(caller)->onEvent(hWnd, message, wParam, lParam); }  
-	bool					onEvent			(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam);
+	static bool				staticOnEvent		(void* caller, void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam) { return static_cast<Client*>(caller)->onEvent(hWnd, message, wParam, lParam); }  
+	bool					onEvent				(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam);
 #endif
 
 private:
-	void					_initIMGUI		();
-	void					_onGUI			();
-	void					_renderScene	(uint64 diff);
-	void					_onGUIScene		(const int sceneIndex);
-	void					_onGUIObject	(Object* const object);
-	void					_onGUIProperty	(Object* const object);
+	//void					_initIMGUI			();
+	void					_onGUI				();
+	void					_renderScene		(uint64 diff);
+	//void					_onGUIScene			(const int sceneIndex, bool& isContextMenuOpen);
+	//void					_onGUIObject		(Object* const object, bool& isContextMenuOpen);
+	//void					_onGUIProperty		(Object* const object);
 
 private:
 
@@ -120,8 +117,9 @@ private:
 	scl::varray<Animation*>	m_animations;
 
 	Config					m_config;
+	MainGUI					m_gui;
 
-	Object*					m_selectObject;
+	//Object*					m_selectObject;
 };
 
 } //namespace cat

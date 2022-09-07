@@ -35,12 +35,14 @@ set(header_files
 	client.h
 	imgui_impl_win32.h
 	config.h
+	mainGUI.h
 )
 
 set(src_files
 	client.cpp
 	imgui_impl_win32.cpp
 	main.cpp
+	mainGUI.cpp
 )
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${header_files})
