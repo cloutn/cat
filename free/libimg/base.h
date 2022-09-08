@@ -23,7 +23,7 @@
 
 struct _iobuf;
 
-namespace gfx { 
+namespace img { 
 
 typedef unsigned int uint;
 typedef unsigned int uint32;

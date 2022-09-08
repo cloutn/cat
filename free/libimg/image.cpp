@@ -1,5 +1,5 @@
 
-#include "gfx/image.h"
+#include "./image.h"
 
 #ifdef GFX_ENABLE_PNG
 #include <libpng/png.h>  
@@ -39,12 +39,12 @@
 #include <stdlib.h>
 #include <memory.h>
 
-namespace gfx {
+namespace img {
 
 static const int PIXEL_RGBA		= 4;
 static const int PIXEL_RGB		= 3;
 
-FILE* my_fopen(const char* const filename)
+inline FILE* my_fopen(const char* const filename)
 {
 #ifdef _WIN32
 	FILE* f = NULL;

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "gfx/base.h"
+#include "libimg/base.h"
 
 
-namespace gfx {
+namespace img {
 
 #if defined(GFX_ENABLE_PNG) && defined(GFX_ENABLE_JPEG) && defined(GFX_ENABLE_TGA) && defined(GFX_ENABLE_OPENGLES)
 // load png or jpeg image file to opengles texture.
