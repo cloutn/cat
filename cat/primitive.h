@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gltf_raw_render.h"
-#include "cat/typedef.h"
 #include "cat/IRender.h"
 
 struct cgltf_primitive;

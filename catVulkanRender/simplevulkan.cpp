@@ -16,7 +16,7 @@
 #define USE_EXTERNAL_GFX_LIB
 
 #ifdef USE_EXTERNAL_GFX_LIB
-#include "gfx/image.h"
+#include "libimg/image.h"
 #endif
 
 #define memclr(s) memset(&s, 0, sizeof(s))
@@ -195,7 +195,7 @@ static bool _copyFromFileToTexture(svkDevice& device, FILE* f, svkTexture* texOb
 		assert(!err);
 
 #ifdef USE_EXTERNAL_GFX_LIB
-		if (NULL == gfx::load_img_to_buffer(f, (unsigned char*)data, NULL, NULL, NULL, NULL))
+		if (NULL == img::load_img_to_buffer(f, (unsigned char*)data, NULL, NULL, NULL, NULL))
 #else
 		if (NULL == load_png_data_to_memory(f, (unsigned char*)data, NULL, NULL, NULL, NULL))
 #endif
@@ -234,7 +234,7 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 #pragma warning(pop)
 
 #ifdef USE_EXTERNAL_GFX_LIB
-	gfx::get_img_size(f, &texWidth, &texHeight, &pixel);
+	img::get_img_size(f, &texWidth, &texHeight, &pixel);
 #else
 	load_png_data_to_memory(f, NULL, &texWidth, &texHeight, NULL, NULL);
 #endif

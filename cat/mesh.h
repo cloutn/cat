@@ -9,6 +9,7 @@ namespace cat {
 
 class Material;
 class Env;
+class Object;
 
 // A mesh is a collection of primitives
 class Mesh

@@ -11,8 +11,8 @@
 #include "cat/skin.h"
 #include "cat/yaml.h"
 
-#include "gfx/vertex.h"
-#include "gfx/base.h"
+//#include "gfx/vertex.h"
+//#include "gfx/base.h"
 
 #include "scl/type.h"
 #include "scl/assert.h"

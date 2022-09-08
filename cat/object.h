@@ -1,6 +1,5 @@
 #pragma once
 
-#include "cat/typedef.h"
 #include "cat/objectIDMap.h"
 #include "cat/transform.h"
 

@@ -5,8 +5,6 @@
 #include "cat/IRender.h"
 #include "cat/cgltf_util.h"
 
-#include "gfx/base.h"
-
 #include "scl/string.h"
 #include "scl/file.h"
 #include "scl/matrix.h"
@@ -18,6 +16,23 @@
 ////// DEBUG //////
 
 #include <map>
+
+#define glcheck(x)	do\
+{ \
+	x; \
+	int err = glGetError(); \
+	if ( err != GL_NO_ERROR ) \
+	{ \
+		gfx_assert(false); \
+	} \
+} while (false)
+
+
+#ifndef assert
+#define gfx_assert(expr) do { if (!(expr)) { throw 1; } } while(0)
+#else
+#define gfx_assert assert
+#endif
 
 namespace cat {
 

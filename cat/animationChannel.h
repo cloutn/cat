@@ -17,14 +17,14 @@ public:
 	AnimationChannel();
 	~AnimationChannel();
 
-	void load(const cgltf_animation_channel& channel, Env* env);
-	void update(const uint timeConst);
-	void apply();
+	void load				(const cgltf_animation_channel& channel, Env* env);
+	void update				(const uint timeConst);
+	void apply				();
 
 private:
-	void _lerp(const KeyFrame& before, const KeyFrame& after, const float delta);
-	void _set(const KeyFrame& f);
-	void _resetTransform();
+	void _lerp				(const KeyFrame& before, const KeyFrame& after, const float delta);
+	void _set				(const KeyFrame& f);
+	void _resetTransform	();
 
 private:
 	int						m_target;
@@ -32,9 +32,9 @@ private:
 	scl::varray<KeyFrame*>	m_frames;
 	union
 	{
-		scl::quaternion	m_rotate;
-		scl::vector3	m_move;
-		scl::vector3	m_scale;
+		scl::quaternion		m_rotate;
+		scl::vector3		m_move;
+		scl::vector3		m_scale;
 	};
 };
 

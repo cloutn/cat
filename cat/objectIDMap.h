@@ -5,55 +5,6 @@
 
 namespace cat {
 
-//////
-//	usage :
-//		class Object 
-//		{
-//		public:
-//			Object() : m_id(_objectIDMap().alloc_id())
-//			{
-//				_objectIDMap().add(this);
-//			}
-//			~Object()
-//			{
-//				_objectIDMap().del(this);
-//			}
-//			int id() const { return m_id; }
-//
-//			static Object*	objectByID			(const int id) { return _objectIDMap().get(id); }
-//			static void		releaseObjectIDMap	()
-//			{
-//				if (NULL == s_objectIDMap)
-//					return;
-//				delete s_objectIDMap;
-//			}
-//
-//		private:
-//			static ObjectIDMap<Object>*	s_objectIDMap;		//a map from object id to pointer. 
-//			static ObjectIDMap<Object>&	_objectIDMap()
-//			{
-//				if (NULL == s_objectIDMap)
-//				{
-//					s_objectIDMap = new ObjectIDMap<Object>;
-//					s_objectIDMap->init(MAX_OBJECT_COUNT);
-//				}
-//				return *s_objectIDMap;
-//			}
-//
-//			int m_id;
-//		};
-//
-//	in cpp:
-//		ObjectIDMap<Object>*	Object::s_objectIDMap = NULL;
-//
-//	when need object*:
-//		Object* obj = Object::objectByID(id);
-//
-//  when app exit, call:
-//		Object::releaseObjectIDMap();
-//
-//////
-
 template <typename T>
 class ObjectIDMap
 {

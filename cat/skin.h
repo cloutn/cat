@@ -1,14 +1,14 @@
 #pragma once
 
-#include "cat/typedef.h"
-
 #include "scl/matrix.h"
+#include "scl/varray.h"
 
 struct cgltf_skin;
 
 namespace cat {
 
 class Env;
+class Object;
 
 class Skin
 {

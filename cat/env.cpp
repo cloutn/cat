@@ -63,7 +63,7 @@ const TextureFile* Env::getTextureFile(const char* const filename)
 	int			width	= 0;
 	int			height	= 0;
 	int			pitch	= 0;
-	gfx::PIXEL	pixel	= gfx::PIXEL_INVALID;
+	PIXEL		pixel	= PIXEL_INVALID;
 	void*		texture	= render()->createTexture(filename, &width, &height, &pitch, &pixel);
 	if (NULL == texture)
 	{

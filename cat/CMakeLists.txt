@@ -10,7 +10,6 @@ project(${target})
 set(header_files
 	animation.h
 	animationChannel.h
-	bufferRefCounter.h
 	camera.h
 	cgltf_util.h
 	def.h
@@ -30,23 +29,27 @@ set(header_files
 	resources.h
 	scene.h
 	shader.h
+	shader_gles.h
 	shaderCache.h
 	shaderMacro.h
 	skin.h
 	string.h
 	textureFile.h
 	transform.h
-	typedef.h
 	uiRenderOpenGL.h
 	wstring.h
-	yaml.h)
+	yaml.h
+	win32Window.h
+	eglWindow.h
+	color.h
+	vertex.h
+)
 
 set(src_files
 	cgltf.c
 	cgltf_util.c
 	animation.cpp
 	animationChannel.cpp
-	bufferRefCounter.cpp
 	camera.cpp
 	env.cpp
 	gltf_raw_render.cpp
@@ -60,13 +63,19 @@ set(src_files
 	resources.cpp
 	scene.cpp
 	shader.cpp
+	shader_gles.cpp
 	shaderCache.cpp
 	skin.cpp
 	string.cpp
 	transform.cpp
 	uiRenderOpenGL.cpp
 	wstring.cpp
-	yaml.cpp)
+	yaml.cpp
+	win32Window.cpp
+	eglWindow.cpp
+	color.cpp
+	vertex.cpp
+)
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})

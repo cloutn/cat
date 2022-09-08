@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gfx/color.h"
+#include "cat/color.h"
 
 #include "cat/def.h"
 
@@ -129,12 +129,12 @@ public:
 	//virtual void			releaseBuffer		(void* vertexBuffer) = 0;
 
 	//texture
-	virtual void*			createTexture		(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel) = 0;
-	virtual void*			createTexture		(const int width, const int height, const gfx::PIXEL pixel) = 0;
+	virtual void*			createTexture		(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel) = 0;
+	virtual void*			createTexture		(const int width, const int height, const PIXEL pixel) = 0;
 	virtual void			releaseTexture		(void* texture) = 0;
-	virtual void			copyTexture			(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const gfx::PIXEL pixel, const int alignment) = 0;
+	virtual void			copyTexture			(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const PIXEL pixel, const int alignment) = 0;
 	virtual void			saveTexture			(void* texture, const char* const filename) = 0;
-	virtual unsigned char*	loadImage			(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel) = 0;
+	virtual unsigned char*	loadImage			(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel) = 0;
 
 	//shader
 	virtual void*			createShader		(int shader) = 0;

@@ -12,8 +12,7 @@
 #include "cat/scene.h"
 #include "cat/env.h"
 #include "cat/def.h"
-
-#include "gfx/vertex.h"
+#include "cat/vertex.h"
 
 #include "scl/type.h"
 #include "scl/time.h"

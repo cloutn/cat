@@ -1,8 +1,8 @@
 #include "./uiRenderOpenGL.h"
 
-#include "gfx/image.h"
-#include "gfx/shader.h"
-#include "gfx/vertex.h"
+#include "libimg/image.h"
+#include "cat/shader_gles.h"
+#include "cat/vertex.h"
 
 #ifdef __APPLE__
 #include <OpenGLES/ES3/gl.h>
@@ -25,7 +25,7 @@
 
 namespace cat {
 
-using gfx::vertex_color;
+using cat::vertex_color_uv;
 
 UIRenderOpenGL::UIRenderOpenGL() : 
 #ifdef __APPLE__
@@ -92,13 +92,13 @@ void UIRenderOpenGL::releaseIndexBuffer(void* vertexBuffer)
 //	glcheck( glDeleteBuffers(1, reinterpret_cast<uint*>(&buffer)) );
 //}
 
-void* UIRenderOpenGL::createTexture(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel)
+void* UIRenderOpenGL::createTexture(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel)
 {
 	//char s[256] = { 0 };
 	//scl::wchar_to_ansi(s, 256, filename, static_cast<int>(wcslen(filename)), scl::Encoding_UTF8);
 
 	//¥¥Ω®Œ∆¿Ì   
-	uint textureID = gfx::load_img(filename, width, height, pitch, (int*)pixel);
+	uint textureID = img::load_img(filename, width, height, pitch, (int*)pixel);
 	
 	_set_texture_param();
 
@@ -106,51 +106,51 @@ void* UIRenderOpenGL::createTexture(const char* const filename, int* width, int*
 	return reinterpret_cast<void*>(static_cast<uintptr_t>(textureID));
 }
 
-unsigned char* UIRenderOpenGL::loadImage(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel)
+unsigned char* UIRenderOpenGL::loadImage(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel)
 {
 	int _pix = -1;
-	unsigned char* data = gfx::load_png_data(filename, NULL, width, height, pitch, &_pix);
+	unsigned char* data = img::load_png_data(filename, NULL, width, height, pitch, &_pix);
 	if (_pix == 4)
-		*pixel = gfx::PIXEL_RGBA;
+		*pixel = cat::PIXEL_RGBA;
 	else if (_pix == 3)
-		*pixel = gfx::PIXEL_RGB;
+		*pixel = cat::PIXEL_RGB;
 
 	return data;
 }
 
-GLint pixel_to_format(const gfx::PIXEL pixel)
+GLint pixel_to_format(const PIXEL pixel)
 {
 	GLint format = GL_RGBA;
 	switch (pixel)
 	{
-	case gfx::PIXEL_A		: format	= GL_ALPHA;				break;
-	case gfx::PIXEL_L		: format	= GL_LUMINANCE;			break;
-	case gfx::PIXEL_LA		: format	= GL_LUMINANCE_ALPHA;	break;
-	case gfx::PIXEL_RGB		: format	= GL_RGB;				break;
-	case gfx::PIXEL_RGBA	: format	= GL_RGBA;				break;
+	case cat::PIXEL_A		: format	= GL_ALPHA;				break;
+	case cat::PIXEL_L		: format	= GL_LUMINANCE;			break;
+	case cat::PIXEL_LA		: format	= GL_LUMINANCE_ALPHA;	break;
+	case cat::PIXEL_RGB		: format	= GL_RGB;				break;
+	case cat::PIXEL_RGBA	: format	= GL_RGBA;				break;
 	default: assert(false); break;
 	}
 	return format;
 }
 
 
-GLint pixel_to_internal_format(const gfx::PIXEL pixel)
+GLint pixel_to_internal_format(const cat::PIXEL pixel)
 {
 	GLint internalFormat = GL_RGBA8;
 	switch (pixel)
 	{
-	case gfx::PIXEL_A		: internalFormat	= GL_ALPHA; break;
-	case gfx::PIXEL_L		: internalFormat	= GL_LUMINANCE; break;
-	case gfx::PIXEL_LA		: internalFormat	= GL_LUMINANCE_ALPHA; break;
-	case gfx::PIXEL_RGB		: internalFormat	= GL_RGB8; break;
-	case gfx::PIXEL_RGBA	: internalFormat	= GL_RGBA8; break;
+	case cat::PIXEL_A		: internalFormat	= GL_ALPHA; break;
+	case cat::PIXEL_L		: internalFormat	= GL_LUMINANCE; break;
+	case cat::PIXEL_LA		: internalFormat	= GL_LUMINANCE_ALPHA; break;
+	case cat::PIXEL_RGB		: internalFormat	= GL_RGB8; break;
+	case cat::PIXEL_RGBA	: internalFormat	= GL_RGBA8; break;
 	default: assert(false); break;
 	}
 	return internalFormat;
 }
 
 
-void* UIRenderOpenGL::createTexture(const int width, const int height, const gfx::PIXEL pixel)
+void* UIRenderOpenGL::createTexture(const int width, const int height, const cat::PIXEL pixel)
 {
 	uint tex = 0;
 
@@ -171,7 +171,7 @@ void* UIRenderOpenGL::createTexture(const int width, const int height, const gfx
 	return reinterpret_cast<void*>(static_cast<uintptr_t>(tex));
 }
 
-void UIRenderOpenGL::copyTexture(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const gfx::PIXEL pixel, const int alignment)
+void UIRenderOpenGL::copyTexture(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const cat::PIXEL pixel, const int alignment)
 {
 	uint tex = static_cast<uint>(reinterpret_cast<uint64>(texture));
 	glcheck( glBindTexture(GL_TEXTURE_2D, tex) );
@@ -235,7 +235,7 @@ int VertexAttrDataTypeToGLDataType(ELEM_TYPE t)
 //	const int primitiveCount, 
 //	const int attrCount,
 //	VertexAttr* attrs,
-//	const gfx::ALPHA_MODE alphaMode, 
+//	const cat::ALPHA_MODE alphaMode, 
 //	scl::matrix* transform, 
 //	void* shader, 
 //	const char* const uniformName, 
@@ -278,12 +278,12 @@ int VertexAttrDataTypeToGLDataType(ELEM_TYPE t)
 ////	glcheck( glEnableVertexAttribArray(3) );
 //
 //	//blend
-//	//if (alphaMode == gfx::ALPHA_MODE_ADD)
+//	//if (alphaMode == cat::ALPHA_MODE_ADD)
 //	//	glcheck( glBlendFunc(GL_DST_ALPHA, GL_ONE) );
 //
 //	glcheck( glDrawElements(GL_TRIANGLES, primitiveCount * 3, GL_UNSIGNED_SHORT, 0) );
 //
-//	//if (alphaMode == gfx::ALPHA_MODE_ADD)
+//	//if (alphaMode == cat::ALPHA_MODE_ADD)
 //	//	glcheck( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
 //
 //	//clear
@@ -378,7 +378,7 @@ void UIRenderOpenGL::_set_uniform(void* _shader, const char* const name, const u
 	int loc = glGetUniformLocation(shader, name);
 	assert(loc > 0);
 	float a = 0, r = 0, g = 0, b = 0;
-	gfx::argb_to_float(color, a, r, g, b);
+	argb_to_float(color, a, r, g, b);
 	glcheck( glUniform4f(loc, r, g, b, a) );
 }
 
@@ -489,13 +489,13 @@ void* UIRenderOpenGL::createShader(int shaderType)
 	uint shader = 0;
 	switch (shaderType)
 	{
-	case 0			: shader = gfx::load_shader(gfx::shader_vs_skin, gfx::shader_ps				);	break;
-	//case ui::SHADER_COLOR			: shader = gfx::load_shader(shader_vs, shader_color_ps			);	break;
-	//case ui::SHADER_FONT			: shader = gfx::load_shader(shader_vs, shader_font_ps			);	break;
-	//case ui::SHADER_FONT_OUTLINE	: shader = gfx::load_shader(shader_vs, shader_font_outline_ps	);	break;
-	//case ui::SHADER_ADD_COLOR		: shader = gfx::load_shader(shader_vs, shader_add_color_ps		);	break;
-	//case ui::SHADER_GRAY			: shader = gfx::load_shader(shader_vs, shader_gray_ps			);	break;
-	//case ui::SHADER_VIDEO			: shader = gfx::load_shader(shader_vs, shader_ps				);	break;
+	case 0			: shader = cat::load_shader(cat::shader_vs_skin, cat::shader_ps				);	break;
+	//case ui::SHADER_COLOR			: shader = cat::load_shader(shader_vs, shader_color_ps			);	break;
+	//case ui::SHADER_FONT			: shader = cat::load_shader(shader_vs, shader_font_ps			);	break;
+	//case ui::SHADER_FONT_OUTLINE	: shader = cat::load_shader(shader_vs, shader_font_outline_ps	);	break;
+	//case ui::SHADER_ADD_COLOR		: shader = cat::load_shader(shader_vs, shader_add_color_ps		);	break;
+	//case ui::SHADER_GRAY			: shader = cat::load_shader(shader_vs, shader_gray_ps			);	break;
+	//case ui::SHADER_VIDEO			: shader = cat::load_shader(shader_vs, shader_ps				);	break;
 	default : assert(false); break;
 	}
 	//if (shaderType == ui::SHADER_COLOR)
@@ -507,7 +507,7 @@ void* UIRenderOpenGL::createShader(const char* const vs_code, const char* const 
 {
 	// shader 
 	uint shader = 0;
-	shader = gfx::load_shader(vs_code, ps_code);
+	shader = cat::load_shader(vs_code, ps_code);
 	return reinterpret_cast<void*>(static_cast<uintptr_t>(shader));
 }
 

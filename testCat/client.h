@@ -6,6 +6,7 @@
 
 #include "cat/uiRenderOpenGL.h"
 #include "catVulkanRender/vulkanRender.h"
+#include "cat/win32window.h"
 
 #include "cat/def.h"
 
@@ -13,7 +14,6 @@
 #include "./mainGUI.h"
 
 #ifdef SCL_WIN
-#include "gfx/win32window.h"
 #endif
 
 struct cgltf_data;
@@ -79,7 +79,7 @@ private:
 	
 
 #ifdef SCL_WIN
-	gfx::Win32Window		m_window;
+	Win32Window				m_window;
 
 	bool					m_dragging;
 	scl::vector2i			m_dragPrev;

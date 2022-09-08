@@ -18,7 +18,8 @@ endif()
 
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build${ARCH})
-add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build${ARCH})
+#add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libimg ${PROJECT_SOURCE_DIR}/../free/libimg/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/imgui ${PROJECT_SOURCE_DIR}/../free/imgui/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/jpeg_turbo ${PROJECT_SOURCE_DIR}/../free/jpeg_turbo/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libktx ${PROJECT_SOURCE_DIR}/../free/libktx/build${ARCH})
@@ -74,6 +75,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
@@ -93,6 +95,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl.lib
 	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui.lib
 	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib

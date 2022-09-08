@@ -144,10 +144,6 @@ void AnimationChannel::update(const uint _timeConst)
 		KeyFrame& after		= *pAfter;
 
 		float delta			= (time - before.time()) / static_cast<float>(after.time() - before.time());
-		//if (before.accelerate() == KEY_FRAME_ACCELERATE_UP)
-		//	delta = delta * delta;  // d(x^2)/dx = 2x, monotonically increasing.
-		//else if (before.accelerate() == KEY_FRAME_ACCELERATE_DOWN)
-		//	delta = ::sqrtf(delta); // d(sqrt(x))/dx = (1/2) * x^(-1/2), monotonically decreasing.
 
 		_lerp(before, after, delta);
 	}
@@ -202,7 +198,6 @@ void AnimationChannel::apply()
 	case KEY_FRAME_TYPE_SCALE				: target->setAnimationScale(m_scale); break;
 	default:break;
 	};
-	//printf("apply to object [%s], type = [%d], value = {%.2f, %.2f, %.2f, %.2f}\n", target->name().c_str(), m_type, m_rotate.x, m_rotate.y, m_rotate.z, m_rotate.w);
 }
 
 } // namespace cat

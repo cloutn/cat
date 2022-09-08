@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gfx/color.h"
+#include "cat/color.h"
 
 #include <stddef.h>
 
@@ -25,7 +25,7 @@ public:
 	int					width;
 	int					height;
 	int					pitch;
-	gfx::PIXEL			pixel;
+	PIXEL				pixel;
 
 }; // class TextureFile
 

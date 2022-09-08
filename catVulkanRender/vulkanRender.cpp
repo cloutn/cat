@@ -3,7 +3,7 @@
 #include "./commandAllocator.h"
 
 
-#include "gfx/image.h"
+#include "libimg/image.h"
 
 #include "scl/stringdef.h"
 #include "scl/log.h"
@@ -78,7 +78,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_inst				= svkCreateInstance	(ENABLE_VALIDATION_LAYER);
 	m_device			= svkCreateDevice	(m_inst);
 	m_surface			= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
-	gfx::argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
+	argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
 	//m_clearColor		= clearColor;
 
 	// mvp matrix
@@ -232,7 +232,7 @@ void VulkanRender::copyIndexBuffer(const void* data, void* indexBuffer, const in
 }
 
 
-void* VulkanRender::createTexture(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel)
+void* VulkanRender::createTexture(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel)
 {
 	//char s[256] = { 0 };
 	//scl::wchar_to_ansi(s, 256, filename, static_cast<int>(wcslen(filename)), scl::Encoding_UTF8);
@@ -244,7 +244,7 @@ void* VulkanRender::createTexture(const char* const filename, int* width, int* h
 	return reinterpret_cast<void*>(tex);
 }
 
-unsigned char* VulkanRender::loadImage(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel)
+unsigned char* VulkanRender::loadImage(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel)
 {
 	assert(false && "not implemented!");
 	return NULL;
@@ -259,7 +259,7 @@ unsigned char* VulkanRender::loadImage(const char* const filename, int* width, i
 }
 
 
-void* VulkanRender::createTexture(const int width, const int height, const gfx::PIXEL pixel)
+void* VulkanRender::createTexture(const int width, const int height, const PIXEL pixel)
 {
 	assert(false); //the text must be clear with (0, 0, 0)!!!
 
@@ -268,7 +268,7 @@ void* VulkanRender::createTexture(const int width, const int height, const gfx::
 	return reinterpret_cast<void*>(tex);
 }
 
-void VulkanRender::copyTexture(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const gfx::PIXEL pixel, const int alignment)
+void VulkanRender::copyTexture(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const PIXEL pixel, const int alignment)
 {
 	assert(false && "not implemented!");
 

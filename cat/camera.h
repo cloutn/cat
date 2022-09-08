@@ -5,9 +5,7 @@
 
 namespace cat {
 
-//////
 // camera is a matrix ( view matrix multiply projection matrix)
-//////
 
 class Camera
 {

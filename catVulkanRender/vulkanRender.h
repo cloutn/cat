@@ -10,7 +10,7 @@
 
 #include "cat/IRender.h"
 
-#include "gfx/color.h"
+#include "cat/color.h"
 
 #include "scl/matrix.h"
 #include "scl/vector.h"
@@ -71,12 +71,12 @@ public:
 //	virtual void			releaseBuffer		(void* buffer);
 
 	//texture
-	virtual void*			createTexture		(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel);
-	virtual void*			createTexture		(const int width, const int height, const gfx::PIXEL pixel);
+	virtual void*			createTexture		(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel);
+	virtual void*			createTexture		(const int width, const int height, const PIXEL pixel);
 	virtual void			releaseTexture		(void* texture);
-	virtual void			copyTexture			(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const gfx::PIXEL pixel, const int alignment);
+	virtual void			copyTexture			(void* texture, const int offset_x, const int offset_y, const int width, const int height, const void* data, const PIXEL pixel, const int alignment);
 	void					saveTexture			(void* texture, const char* const filename);
-	virtual unsigned char*	loadImage			(const char* const filename, int* width, int* height, int* pitch, gfx::PIXEL* pixel);
+	virtual unsigned char*	loadImage			(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel);
 
 	//shader
 	virtual void*			createShader		(int shaderType);

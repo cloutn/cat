@@ -1,7 +1,5 @@
 #pragma once
 
-#include "cat/typedef.h"
-
 #include "cat/def.h"
 
 #include <map>
