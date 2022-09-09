@@ -18,15 +18,15 @@ class IRender;
 class Shader 
 {
 public:
-	Shader() : m_deviceShader(NULL), m_dirty(false), m_render(NULL) {}
-	~Shader();
+	Shader	() : m_deviceShader(NULL), m_dirty(false), m_render(NULL) {}
+	~Shader	();
 
 public:
 
-	void	load		(const char* const vs_filename, const char* const ps_filename);
-	void	addMacro	(ShaderMacro& macro);
-	void*	shader		(IRender* render); // 为什么要通过 Render ？ 因为 OpengGL和directX load shader 的方式不同？
-	void	invalidate	() { m_dirty = true; }
+	void			load		(const char* const vs_filename, const char* const ps_filename);
+	void			addMacro	(ShaderMacro& macro);
+	void*			shader		(IRender* render); // 为什么要通过 Render ？ 因为 OpengGL和directX load shader 的方式不同？
+	void			invalidate	() { m_dirty = true; }
 
 private:
 	static char*	_loadfile	(const char* const filename, const char* const macros);

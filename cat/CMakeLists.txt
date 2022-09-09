@@ -15,7 +15,6 @@ set(header_files
 	def.h
 	env.h
 	gltf_raw_render.h
-	gltf_type.h
 	grid.h
 	IFileProvider.h
 	IRender.h

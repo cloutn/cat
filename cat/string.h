@@ -26,7 +26,7 @@ public:
 	int			capacity	() const	{ if (m_level) return m_long.capacity();	else return m_short.capacity(); }
 	char*		c_str		()			{ if (m_level) return m_long.c_str();		else return m_short.c_str();	}
 	const char* c_str		()	const	{ if (m_level) return m_long.c_str();		else return m_short.c_str();	}
-	scl::pstring pstring		() const { if (m_level) return m_long; else return m_short.pstring(); }
+	scl::pstring pstring	() const { if (m_level) return m_long; else return m_short.pstring(); }
 	void		set_autofree(bool v) { m_autofree = v; }
 	void		free		() { m_long.free(); }
 	void		clear		();

@@ -16,15 +16,20 @@ public:
 	void	_initIMGUI			();
 	void	release				();
 
-	void	OnGUI				();
-	void	OnEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
-	bool	WantCaptureKeyboard	();
-	bool	WantCaptureMouse	();
+	void	onGUI				();
+	void	onEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
+	bool	wantCaptureKeyboard	();
+	bool	wantCaptureMouse	();
 
 private:
+	void	_windowScene		();
+	void	_windowProperty		(Object* const object);
+	void	_windowDebug		();
+
 	void	_onGUIScene			(const int sceneIndex, bool& isContextMenuOpen);
 	void	_onGUIObject		(Object* const object, bool& isContextMenuOpen);
-	void	_onGUIProperty		(Object* const object);
+	void	_beginFrame			();
+	void	_endFrame			();
 
 private:
 	Client*		m_client;	

@@ -48,12 +48,12 @@ enum PRIMITIVE_TYPE
 class VertexAttr
 {
 public:
-	int					index;
-	int					size;
+	int			index;
+	int			size;
 	ELEM_TYPE	dataType;
-	int					normalize;
-	int					stride;
-	void*				offset;
+	int			normalize;
+	int			stride;
+	void*		offset;
 };
 
 //class UniformBind

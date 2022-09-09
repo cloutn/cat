@@ -9,22 +9,7 @@ class Primitive;
 class IRender;
 class Env;
 class Object;
-
-	
-class vertex_color
-{
-public:
-	scl::vector3 position;
-	uint32	color;
-};
-
-class vertex_coord
-{
-public:
-	scl::vector4 position;
-	uint32	color;
-	scl::vector2 texcoord;
-};
+class vertex_color;
 
 Primitive* _createGridPrimitive				(IRender* render, Env* env);
 Primitive* _createTestVulkanPrimitive		(IRender* render, Env* env);

@@ -25,8 +25,6 @@ class Shader;
 class Env;
 class Animation;
 
-// object (node in gltf) -> mesh -> primitive
-
 class Object 
 {
 public:

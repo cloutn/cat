@@ -8,6 +8,7 @@
 #include "cat/Object.h"
 #include "cat/shaderMacro.h"
 #include "cat/shader.h"
+#include "cat/vertex.h"
 
 
 namespace cat {

@@ -7,6 +7,7 @@
 
 #include "scl/type.h"
 #include "scl/matrix.h"
+#include "scl/vector.h"
 
 namespace cat {
 
@@ -18,7 +19,7 @@ public:
 	float u, v;
 
 	//TODO 干掉vertex的构造函数
-	vertex(float ix, float iy, float iz, float inx = 0, float iny = 0, float inz = 0, float iu = 0, float iv = 0);
+	//vertex(float ix, float iy, float iz, float inx = 0, float iny = 0, float inz = 0, float iu = 0, float iv = 0);
 
 	void set(
 		float ix, float iy, float iz, 
@@ -31,7 +32,7 @@ public:
 	vertex& operator+=(const scl::vector3& v);
 };
 
-class vertex_texture
+class vertex_uv
 {
 public:
 	float x, y, z;
@@ -46,6 +47,21 @@ public:
 	}
 
 	void clear() { x = 0; y = 0; z = 0; u = 0; v = 0; }
+};
+
+class vertex_color
+{
+public:
+	scl::vector3 position;
+	uint32	color;
+};
+
+class vertex_coord
+{
+public:
+	scl::vector4	position;
+	uint32			color;
+	scl::vector2	texcoord;
 };
 
 class vertex_color_uv

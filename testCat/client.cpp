@@ -174,7 +174,7 @@ void Client::_renderScene(uint64 diff)
 		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);
 	}
 
-	m_gui.OnGUI();
+	m_gui.onGUI();
 
 	m_render.endDraw();
 }
@@ -190,7 +190,7 @@ void Client::run()
 		uint64 diff = now - lastTick;
 		lastTick = now;
 
-		if (!m_gui.WantCaptureKeyboard())
+		if (!m_gui.wantCaptureKeyboard())
 		{
 			float speed = 0.25f;
 			if (Keydown('W'))
@@ -252,9 +252,9 @@ void Client::run()
 
 bool Client::onEvent(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam)
 {
-	m_gui.OnEvent(hWnd, message, wParam, lParam);
-	bool WantCaptureMouse = m_gui.WantCaptureMouse();
-	bool WantCaptureKeyboard = m_gui.WantCaptureKeyboard();
+	m_gui.onEvent(hWnd, message, wParam, lParam);
+	bool WantCaptureMouse = m_gui.wantCaptureMouse();
+	bool WantCaptureKeyboard = m_gui.wantCaptureKeyboard();
 
 	switch (message)
 	{

@@ -23,12 +23,12 @@ vertex& vertex::operator=( const vector3& v )
 	return *this;
 }
 
-vertex::vertex( float ix, float iy, float iz, float inx, float iny, float inz, float iu, float iv)
-{
-	x = ix; y = iy; z = iz;
-	nx = inx; ny = iny; nz = inz;
-	u = iu; v = iv;
-}
+//vertex::vertex( float ix, float iy, float iz, float inx, float iny, float inz, float iu, float iv)
+//{
+//	x = ix; y = iy; z = iz;
+//	nx = inx; ny = iny; nz = inz;
+//	u = iu; v = iv;
+//}
 
 void vertex::clear()
 {
