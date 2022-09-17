@@ -984,6 +984,7 @@ svkSwapchain svkCreateSwapchain(svkDevice& device, const svkSurface& surface, co
 	swapchain.imageCount = svkSwapchain::MAX_IMAGE_COUNT;
 	VkImage swapchainImages[svkSwapchain::MAX_IMAGE_COUNT] = { NULL };
 	vkcheck( vkGetSwapchainImagesKHR(device.device, swapchain.swapchain, &swapchain.imageCount, NULL) );
+	assert(swapchain.imageCount <= svkSwapchain::MAX_IMAGE_COUNT);
 	vkcheck( vkGetSwapchainImagesKHR(device.device, swapchain.swapchain, &swapchain.imageCount, swapchainImages) );
 
 	for (uint i = 0; i < swapchain.imageCount; ++i) 

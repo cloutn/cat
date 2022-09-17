@@ -39,8 +39,10 @@ struct svkSwapchain
 	VkColorSpaceKHR						colorSpace;
 	unsigned int						imageCount;
 	VkImageView							imageViews				[MAX_IMAGE_COUNT];
+
 	VkFramebuffer						framebuffers			[MAX_IMAGE_COUNT];
 	VkCommandBuffer						commandBuffers			[MAX_IMAGE_COUNT];
+
 	VkFence								fences					[MAX_IMAGE_COUNT];
 	VkSemaphore							imageAcquireSemaphores	[MAX_IMAGE_COUNT];
 	VkSemaphore							drawCompleteSemaphores	[MAX_IMAGE_COUNT];
@@ -50,8 +52,15 @@ struct svkSwapchain
 	VkImage								depthImage;
 	VkDeviceMemory						depthMemory;
 	VkImageView							depthImageView;
+
 	VkRenderPass						renderPass;
 };
+
+//struct svkRenderPass
+//{
+//	VkRenderPass						renderPass;
+//	VkFramebuffer						framebuffers			[svkSwapchain::MAX_IMAGE_COUNT];
+//};
 
 struct svkTexture
 {

@@ -460,20 +460,6 @@ void VulkanRender::beginDraw()
 	m_prevFrameIndex = m_frameIndex;
 	m_frameIndex = svkAcquireNextImage(m_device, m_swapchain, m_frameIndex, this, presentCallback);
 	m_commandAllocator[m_frameIndex]->reset(m_device);
-
-
-	//VkCommandBuffer& commandBuffer = m_swapchain.commandBuffers[m_frameIndex];
-	//if (NULL == m_sceneCommandBuffer)
-	//	m_sceneCommandBuffer = m_commandAllocator->alloc();
-	//if (NULL == m_imguiCommandBuffer)
-	//	m_imguiCommandBuffer = m_commandAllocator->alloc();
-
-	//svkBeginCommandBuffer(commandBuffer);
-	//svkBeginSecondaryCommandBuffer(m_sceneCommandBuffer, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex]);
-
-	//svkBeginSecondaryCommandBuffer(m_imguiCommandBuffer, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex]);
-	//svkCmdBeginRenderPass(commandBuffer, 0.2f, 0.2f, 0.2f, 0.2f, 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height);
-
 	m_frameUniformBufferOffset = 0;
 }
 
@@ -486,11 +472,10 @@ void VulkanRender::endDraw()
 
 	VkCommandBuffer& primaryCb = m_swapchain.commandBuffers[m_frameIndex];
 	svkBeginCommandBuffer(primaryCb);
-	//svkCmdBeginRenderPass(primaryCb, 0.2f, 0.2f, 0.2f, 0.2f, 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
 	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
 	
-	CommandAllocator* ca = m_commandAllocator[m_frameIndex];
-	vkCmdExecuteCommands(primaryCb, ca->getAllocCount(), ca->getAllocArray());
+	CommandAllocator* commandAllocator = m_commandAllocator[m_frameIndex];
+	vkCmdExecuteCommands(primaryCb, commandAllocator->getAllocCount(), commandAllocator->getAllocArray());
 
 	vkCmdEndRenderPass(primaryCb);
 	err = vkEndCommandBuffer(primaryCb);
@@ -778,7 +763,6 @@ void VulkanRender::waitIdle()
 void VulkanRender::recreateSwapchain()
 {
 	svkRefreshSurfaceSize(m_device, m_surface);
-	//printf("VulkanRender::recreateSwapchain, surface = {%d, %d}\n", m_surface.width, m_surface.height);
 	if (_minimized())
 		return;
 

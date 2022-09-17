@@ -8,6 +8,31 @@
 #include "scl/vector.h"
 #include "scl/assert.h"
 
+
+//////
+//	Write Example:
+//
+//		yaml::document doc;
+//		yaml::node root = doc.root().set_map();
+//		yaml::node scenes = root.add_seq("scenes");
+//		yaml::node scene1 = scenes.add_map();
+//		scene1.add("name", "scene1");
+//		doc.save("1.yaml");
+//
+
+//////
+//	Read Example:
+//
+//	yaml::document doc;
+//	yaml::node root = doc.load("1.yaml");
+//	yaml::node scenes = root["scenes"];
+//	for (yaml::node scene : scenes.children())
+//	{
+//		yaml::node sceneName = scene["name"];
+//		printf("scene = %s\n", sceneName.value());
+//	}
+//
+
 namespace scl {
 inline size_t	to_chars	(ryml::substr	buf, scl::vector3	v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
 inline bool		from_chars	(ryml::csubstr	buf, scl::vector3*	v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
