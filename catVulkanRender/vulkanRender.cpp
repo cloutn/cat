@@ -208,7 +208,7 @@ void* VulkanRender::createIndexBuffer(const int bufferSize)
   return buf;
 }
 
-//Èç¹û·¢ÉúÒ»¸ö buffer ±»Á½´ÎÊÍ·ÅµÄÎÊÌâ£¬Ô­ÒòÊÇ¶à¸ö primitive ¹²ÏíÁËÒ»¸öindexbuffer
+//å¦‚æœå‘ç”Ÿä¸€ä¸ª buffer è¢«ä¸¤æ¬¡é‡Šæ”¾çš„é—®é¢˜ï¼ŒåŸå› æ˜¯å¤šä¸ª primitive å…±äº«äº†ä¸€ä¸ªindexbuffer
 void VulkanRender::releaseIndexBuffer(void* indexBuffer)
 {
 	if (NULL == indexBuffer)
@@ -238,7 +238,7 @@ void* VulkanRender::createTexture(const char* const filename, int* width, int* h
 	//char s[256] = { 0 };
 	//scl::wchar_to_ansi(s, 256, filename, static_cast<int>(wcslen(filename)), scl::Encoding_UTF8);
 
-	//´´½¨ÎÆÀí   
+	//åˆ›å»ºçº¹ç†   
 	svkTexture* tex = new svkTexture; 
 	*tex = svkCreateTexture(m_device, filename, NULL); 
 
@@ -401,10 +401,10 @@ void VulkanRender::swap()
 {
 	if (_minimized())
 	{
-		// ÕâÀïµÄÂß¼­ÊÇÎªÁË´¦ÀíÒÔÏÂÇé¿ö£º
-		//		×îĞ¡»¯Ö®ºó£¬Õû¸örender»á²»ÔÙÖ´ĞĞ¡£
-		//		ÕâÊ±ĞèÒªµ÷ÓÃ recreateSwapchain ²»¶ÏË¢ĞÂÆÁÄ»µÄ´óĞ¡¼ì²âÊÇ·ñ»Ö¸´ÁËÕı³£´°¿Ú¡£
-		//		µ±È»ÔÚ windowsÏÂÍ¨¹ı WM_SIZE ÏûÏ¢À´Í¨ÖªÒ²¿ÉÒÔ¡£
+		// è¿™é‡Œçš„é€»è¾‘æ˜¯ä¸ºäº†å¤„ç†ä»¥ä¸‹æƒ…å†µï¼š
+		//		æœ€å°åŒ–ä¹‹åï¼Œæ•´ä¸ªrenderä¼šä¸å†æ‰§è¡Œã€‚
+		//		è¿™æ—¶éœ€è¦è°ƒç”¨ recreateSwapchain ä¸æ–­åˆ·æ–°å±å¹•çš„å¤§å°æ£€æµ‹æ˜¯å¦æ¢å¤äº†æ­£å¸¸çª—å£ã€‚
+		//		å½“ç„¶åœ¨ windowsä¸‹é€šè¿‡ WM_SIZE æ¶ˆæ¯æ¥é€šçŸ¥ä¹Ÿå¯ä»¥ã€‚
 		recreateSwapchain();
 		return;
 	}
@@ -518,7 +518,7 @@ int VulkanRender::_fillUniformData(
 {
 	assert(uniformDataCapacity >= 3);
 
-	//ÕâÀïÊÇ¾ßÌå°ó¶¨µÄ mvp ¾ØÕóÊı¾İºÍÎÆÀíÊı¾İ¡£
+	//è¿™é‡Œæ˜¯å…·ä½“ç»‘å®šçš„ mvp çŸ©é˜µæ•°æ®å’Œçº¹ç†æ•°æ®ã€‚
 
 	memset(uniformDatas, 0, sizeof(svkDescriptorData) * uniformDataCapacity);
 	const int MAX_INFO_COUNT = countof(uniformDatas[1].data);
@@ -689,19 +689,19 @@ void VulkanRender::draw2(
 	if (!useBindCommandBuffer)
 		svkBeginSecondaryCommandBuffer(cmd_buf, m_mainRenderPass, m_frames[m_frameIndex].framebuffer);
 
-	// uniform Êı¾İ·ÖÎªÁ½¸ö²¿·Ö£¬
-	//		Ò»¸öÊÇÉùÃ÷ĞÅÏ¢£¬¾ÍÊÇuniform bind
-	//		Ò»¸öÊÇ¾ßÌåÊı¾İĞÅÏ¢£¬¾ÍÊÇ uniform data
-	//		¾ßÌåÊı¾İÒªºÍÇ°ÃæÉùÃ÷µÄÀàĞÍ¶ÔÓ¦ÉÏ¡£
+	// uniform æ•°æ®åˆ†ä¸ºä¸¤ä¸ªéƒ¨åˆ†ï¼Œ
+	//		ä¸€ä¸ªæ˜¯å£°æ˜ä¿¡æ¯ï¼Œå°±æ˜¯uniform bind
+	//		ä¸€ä¸ªæ˜¯å…·ä½“æ•°æ®ä¿¡æ¯ï¼Œå°±æ˜¯ uniform data
+	//		å…·ä½“æ•°æ®è¦å’Œå‰é¢å£°æ˜çš„ç±»å‹å¯¹åº”ä¸Šã€‚
 
 	svkDescriptorData uniformDatas[3];
 	int uniformDataCount = _fillUniformData(mvp, texture, jointMatrixCount, uniformDatas, countof(uniformDatas));
 
-	// ÕâÀïÊ¹ÓÃ dynamic offset ½øĞĞÓÅ»¯
-	// ¾ßÌåÓÅ»¯Ë¼Â·¿ÉÒÔ²Î¿¼ arm µÄÎÄÕÂ £ºhttps://community.arm.com/developer/tools-software/graphics/b/blog/posts/vulkan-descriptor-and-buffer-management
-	// Ë¼Â·¸ÅÒª£º
-	//	1. »º´æ DescriptorSet£¬¶ø²»ÊÇÃ¿Ö¡¶¼·´¸´´´½¨Ïú»Ù¡£
-	//	2. Ã¿Ò»Ö¡Ê¹ÓÃÒ»¸ö buffer£¬¼ÇÂ¼ËùÓĞ object µÄ uniform matrix (mvp, jointMatrices), È»ºóÔÚ vkCmdBindDescriptorSets ÖĞÊ¹ÓÃ dynamicOffsets Çø·ÖÃ¿¸öÎïÌå¡£
+	// è¿™é‡Œä½¿ç”¨ dynamic offset è¿›è¡Œä¼˜åŒ–
+	// å…·ä½“ä¼˜åŒ–æ€è·¯å¯ä»¥å‚è€ƒ arm çš„æ–‡ç«  ï¼šhttps://community.arm.com/developer/tools-software/graphics/b/blog/posts/vulkan-descriptor-and-buffer-management
+	// æ€è·¯æ¦‚è¦ï¼š
+	//	1. ç¼“å­˜ DescriptorSetï¼Œè€Œä¸æ˜¯æ¯å¸§éƒ½åå¤åˆ›å»ºé”€æ¯ã€‚
+	//	2. æ¯ä¸€å¸§ä½¿ç”¨ä¸€ä¸ª bufferï¼Œè®°å½•æ‰€æœ‰ object çš„ uniform matrix (mvp, jointMatrices), ç„¶ååœ¨ vkCmdBindDescriptorSets ä¸­ä½¿ç”¨ dynamicOffsets åŒºåˆ†æ¯ä¸ªç‰©ä½“ã€‚
 	//
 	const int	MAX_DYNAMIC_OFFSET_COUNT					= 2;
 	uint32_t	dynamicOffsets[MAX_DYNAMIC_OFFSET_COUNT]	= { 0 };
@@ -984,25 +984,25 @@ VkPipelineVertexInputStateCreateInfo _buildVulkanVertexInput(const VertexAttr* a
 	memclr(viCreateInfo);
 	viCreateInfo.sType								= VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-	// ×¢Òâ£¡ÕâÀïbufferµÄindexºÍattrµÄindexÊÇ·Ö¿ªµÄ
-	// ¿ÉÒÔÀí½âÎªÒ»¸öbuffer´øn¸öattr¡£
-	// ÄÇÎªÊ²Ã´´«½øÀ´µÄÊ±ºò²»ÊÇÀàËÆÏÂÃæÕâÖÖ½á¹¹ÄØ£¿
+	// æ³¨æ„ï¼è¿™é‡Œbufferçš„indexå’Œattrçš„indexæ˜¯åˆ†å¼€çš„
+	// å¯ä»¥ç†è§£ä¸ºä¸€ä¸ªbufferå¸¦nä¸ªattrã€‚
+	// é‚£ä¸ºä»€ä¹ˆä¼ è¿›æ¥çš„æ—¶å€™ä¸æ˜¯ç±»ä¼¼ä¸‹é¢è¿™ç§ç»“æ„å‘¢ï¼Ÿ
 	//  struct Buffer 
 	//	{
 	//		int stride;
 	//		Attr attrs[n];
 	//	}
-	// Ô­ÒòÔÚÓÚ£¬ÔÚgltfÖĞ£¬Êı¾İ²»ÊÇÒÔbufferÎªÖ÷½øĞĞ´æ·ÅµÄ£¬¶øÊÇÒÔÊôĞÔÎªÖ÷½øĞĞ´æ·ÅµÄ
+	// åŸå› åœ¨äºï¼Œåœ¨gltfä¸­ï¼Œæ•°æ®ä¸æ˜¯ä»¥bufferä¸ºä¸»è¿›è¡Œå­˜æ”¾çš„ï¼Œè€Œæ˜¯ä»¥å±æ€§ä¸ºä¸»è¿›è¡Œå­˜æ”¾çš„
 	//
 	//	"primitives" : [
 	//	{
 	//		"attributes" : {
-	//				"NORMAL"		: 2,	// ÕâÀïµÄ id ¶ÔÓ¦ accessor £¬accessor ÓÖ¶ÔÓ¦ buffer view£¬buffer view »áÖ¸ÏòÊµ¼ÊµÄ buffer, 
-	//				"POSITION"		: 1,	// ÕâÀïËäÈ» accessor ºÍ buffer view ¶¼²»Í¬£¬µ«ÊÇÖ¸ÏòµÄ buffer ¿ÉÄÜÊÇÍ¬Ò»¸ö
-	//				"TANGENT"		: 3,	// Ò²¿ÉÄÜÊÇ accessor ²»Í¬£¬µ«ÊÇ buffer view ÏàÍ¬£¬offset ²»Í¬¡£
-	//				"TEXCOORD_0"	: 4		// nvidia ÀïÃæ¹ØÓÚ vulkan µÄÍÆ¼öÊÇ£¬¾¡Á¿ÉÙ´´½¨ gpu buffer£¬¶øÊÇ¶àÓÃ offset
-	//		},								// Ä¿Ç° Primitive Àà¶ÁÈ¡ gltf ÎÄ¼şµÄÊ±ºò£¬Ã»ÓĞÔÚÕâÀï½øĞĞ¶à¸ö attr ÕûºÏµ½Ò»¸ö buffer ÉÏµÄÂß¼­£¬ËùÒÔÔÚ bind vertex µÄÊ±ºò£¬ĞèÒª´¦ÀíÒ»ÏÂ¡£
-	//										// ¸üºÏÀíµÄ×ö·¨ÊÇ£¬ÔÚ Primitive ÀàÖĞ´¦Àí¡£
+	//				"NORMAL"		: 2,	// è¿™é‡Œçš„ id å¯¹åº” accessor ï¼Œaccessor åˆå¯¹åº” buffer viewï¼Œbuffer view ä¼šæŒ‡å‘å®é™…çš„ buffer, 
+	//				"POSITION"		: 1,	// è¿™é‡Œè™½ç„¶ accessor å’Œ buffer view éƒ½ä¸åŒï¼Œä½†æ˜¯æŒ‡å‘çš„ buffer å¯èƒ½æ˜¯åŒä¸€ä¸ª
+	//				"TANGENT"		: 3,	// ä¹Ÿå¯èƒ½æ˜¯ accessor ä¸åŒï¼Œä½†æ˜¯ buffer view ç›¸åŒï¼Œoffset ä¸åŒã€‚
+	//				"TEXCOORD_0"	: 4		// nvidia é‡Œé¢å…³äº vulkan çš„æ¨èæ˜¯ï¼Œå°½é‡å°‘åˆ›å»º gpu bufferï¼Œè€Œæ˜¯å¤šç”¨ offset
+	//		},								// ç›®å‰ Primitive ç±»è¯»å– gltf æ–‡ä»¶çš„æ—¶å€™ï¼Œæ²¡æœ‰åœ¨è¿™é‡Œè¿›è¡Œå¤šä¸ª attr æ•´åˆåˆ°ä¸€ä¸ª buffer ä¸Šçš„é€»è¾‘ï¼Œæ‰€ä»¥åœ¨ bind vertex çš„æ—¶å€™ï¼Œéœ€è¦å¤„ç†ä¸€ä¸‹ã€‚
+	//										// æ›´åˆç†çš„åšæ³•æ˜¯ï¼Œåœ¨ Primitive ç±»ä¸­å¤„ç†ã€‚
 	//		...
 	//	} 	]
 

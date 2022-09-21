@@ -19,7 +19,7 @@
 #include "vulkan/vulkan.h"
 #include "shaderc/shaderc.h"
 
-// TODO ºÜ¶à½Ó¿Ú  not implemented
+// TODO å¾ˆå¤šæ¥å£  not implemented
 
 struct ImDrawData;
 
@@ -58,7 +58,7 @@ public:
 	//vertex
 	virtual void*			createVertexBuffer	(const int size);
 	virtual void			releaseVertexBuffer	(void* vertexBuffer);
-	virtual void			copyVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte);//×¢Òâ£¬UIÊ¹ÓÃµÄvertexµÄfvf¸ñÊ½ÊÇ(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
+	virtual void			copyVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte);//æ³¨æ„ï¼ŒUIä½¿ç”¨çš„vertexçš„fvfæ ¼å¼æ˜¯(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
 
 
 	//index
@@ -154,13 +154,13 @@ private:
 
 
 private:
-	static const int	MAX_FRAME						= svkSwapchain::MAX_IMAGE_COUNT;	// ×î´ó½»»»Ö¡ÊıÁ¿¡£TODO, ¸ÄÎª¶¯Ì¬À©ÕÅ¡£¿ªÊ¼Ê±2£¬²»¹»µÄÊ±ºòÔö¼Ó
+	static const int	MAX_FRAME						= svkSwapchain::MAX_IMAGE_COUNT;	// æœ€å¤§äº¤æ¢å¸§æ•°é‡ã€‚TODO, æ”¹ä¸ºåŠ¨æ€æ‰©å¼ ã€‚å¼€å§‹æ—¶2ï¼Œä¸å¤Ÿçš„æ—¶å€™å¢åŠ 
 	static const int	MAX_MATRIX_PER_FRAME			= 64;	// assume 64 matrices per object. sizeof(matrix) = 64, but on some old device [limits.minUniformBufferOffsetAlignment] = 256, so use 128 for each matrix.
 	static const int	MAX_OBJECT_PER_FRAME			= 1024; // 1024 objects per frame. 
-	static const int	MAX_CONFLICT					= 16;	// render ÖĞÊ¹ÓÃµÄ¶à¸ö hash_table µÄ×î´ó³åÍ»´ÎÊı¡£
-	static const int	MAX_DESCRITOR_ALLOCATOR_COUNT	= 1024;	// hash_table ÖĞ descriptor allocator µÄ×î´óÊıÁ¿
-	static const int	MAX_PIPELINE_COUNT				= 1024;	// hash_table ÖĞ pipeline µÄ×î´óÊıÁ¿
-	static const int	MAX_DESCRIPTOR_SET_CACHE_SIZE	= 1024;	// hash_table ÖĞ descriptor set µÄ×î´óÊıÁ¿
+	static const int	MAX_CONFLICT					= 16;	// render ä¸­ä½¿ç”¨çš„å¤šä¸ª hash_table çš„æœ€å¤§å†²çªæ¬¡æ•°ã€‚
+	static const int	MAX_DESCRITOR_ALLOCATOR_COUNT	= 1024;	// hash_table ä¸­ descriptor allocator çš„æœ€å¤§æ•°é‡
+	static const int	MAX_PIPELINE_COUNT				= 1024;	// hash_table ä¸­ pipeline çš„æœ€å¤§æ•°é‡
+	static const int	MAX_DESCRIPTOR_SET_CACHE_SIZE	= 1024;	// hash_table ä¸­ descriptor set çš„æœ€å¤§æ•°é‡
 
 	VkInstance			m_inst;
 	svkDevice			m_device;
@@ -194,8 +194,8 @@ private:
 	float				m_clearColor[4];
 
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
-	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key ÊÇ uniform bind µÄ hash Öµ
-	scl::hash_table<UniformDataKey, DescriptorSet>	m_descriptorSetCache;		// ¸ù¾İ²»Í¬µÄ uniform data À´²éÕÒ¶ÔÓ¦µÄ descriptor set
+	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key æ˜¯ uniform bind çš„ hash å€¼
+	scl::hash_table<UniformDataKey, DescriptorSet>	m_descriptorSetCache;		// æ ¹æ®ä¸åŒçš„ uniform data æ¥æŸ¥æ‰¾å¯¹åº”çš„ descriptor set
 
 }; // class VulkanRender
 

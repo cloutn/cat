@@ -14,8 +14,8 @@ public:
 	bool	operator==	(const PipelineKey& other) const;
 
 private:
-	const void*		m_vertexAttrs;	// TODO ÒıÇæÓ¦¸ÃºÏÀíµÄ¹ÜÀí¶¥µã¸ñÊ½¡£
-	const void*		m_shader;		// TODO shaderÓ¦¸ÃÖ§³ÖÕÒ³öÖØ¸´ shader µÄÄÜÁ¦£¬²»ÒªÖØ¸´´´½¨ÍêÈ«ÏàÍ¬µÄshader¡£ÕâÊÇÒıÇæµÄÔğÈÎ
+	const void*		m_vertexAttrs;	// TODO å¼•æ“åº”è¯¥åˆç†çš„ç®¡ç†é¡¶ç‚¹æ ¼å¼ã€‚
+	const void*		m_shader;		// TODO shaderåº”è¯¥æ”¯æŒæ‰¾å‡ºé‡å¤ shader çš„èƒ½åŠ›ï¼Œä¸è¦é‡å¤åˆ›å»ºå®Œå…¨ç›¸åŒçš„shaderã€‚è¿™æ˜¯å¼•æ“çš„è´£ä»»
 	int				m_topology;
 
 }; // class PipelineKey

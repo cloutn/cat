@@ -103,7 +103,7 @@ unsigned char* load_png_data_to_memory(FILE* fp, unsigned char* rgba, int* out_w
 	for (int i = 0; i < height; i++)  
 		row_pointers[i] = NULL;  
 
-	//Í¨¹ýÉ¨ÃèÁ÷ÀïÃæµÄÃ¿Ò»ÐÐ½«µÃµ½µÄÊý¾Ý¸³Öµ¸ø¶¯Ì¬Êý×é         
+	//é€šè¿‡æ‰«ææµé‡Œé¢çš„æ¯ä¸€è¡Œå°†å¾—åˆ°çš„æ•°æ®èµ‹å€¼ç»™åŠ¨æ€æ•°ç»„         
 	for (int i = 0; i < height; i++)  
 		row_pointers[i] = (png_bytep)png_malloc(png_ptr, png_get_rowbytes(png_ptr, info_ptr));  
 
@@ -111,7 +111,7 @@ unsigned char* load_png_data_to_memory(FILE* fp, unsigned char* rgba, int* out_w
 	png_read_image(png_ptr, row_pointers);  
 
 	//flip image
-	//ÓÉÓÚpngËûµÄÏñËØÊÇÓÉ ×ó-ÓÒ-´Ó¶¥µ½µ× ¶øÌùÍ¼ÐèÒªµÄÏñËØ¶¼ÊÇ´Ó×ó-ÓÒ-µ×µ½¶¥µÄËùÒÔÔÚÕâÀïÐèÒª°ÑÏñËØÄÚÈÝ½øÐÐÒ»¸ö´ÓÐÂÅÅÁÐ 
+	//ç”±äºŽpngä»–çš„åƒç´ æ˜¯ç”± å·¦-å³-ä»Žé¡¶åˆ°åº• è€Œè´´å›¾éœ€è¦çš„åƒç´ éƒ½æ˜¯ä»Žå·¦-å³-åº•åˆ°é¡¶çš„æ‰€ä»¥åœ¨è¿™é‡Œéœ€è¦æŠŠåƒç´ å†…å®¹è¿›è¡Œä¸€ä¸ªä»Žæ–°æŽ’åˆ— 
 	for(int row = 0; row < height; row++)  
 	{  
 		//#ifdef __APPLE__

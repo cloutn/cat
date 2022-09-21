@@ -2488,8 +2488,8 @@ void svkUpdateDescriptorSet(svkDevice& device, VkDescriptorSet descriptorSet, co
 			continue;
 		}
 
-		// svkDescriptorData Êı×éÖĞ data µÄ buffer »òÕß texture µÄÊıÁ¿£¬ºÍ VkDescriptorSetLayoutBinding ÖĞµÄ descriptorCount µÄÊıÁ¿²»Ò»¶¨ÏàµÈ¡£
-		// ÕâÊ±ÎªÁË·ÀÖ¹Ğ´ÈëÎŞĞ§Êı¾İ£¬ĞèÒªÈ¡ÕâÁ½¸öÖµµÄ½ÏĞ¡Öµ×÷ÎªÊµ¼ÊĞ´ÈëµÄ descriptorCount
+		// svkDescriptorData æ•°ç»„ä¸­ data çš„ buffer æˆ–è€… texture çš„æ•°é‡ï¼Œå’Œ VkDescriptorSetLayoutBinding ä¸­çš„ descriptorCount çš„æ•°é‡ä¸ä¸€å®šç›¸ç­‰ã€‚
+		// è¿™æ—¶ä¸ºäº†é˜²æ­¢å†™å…¥æ— æ•ˆæ•°æ®ï¼Œéœ€è¦å–è¿™ä¸¤ä¸ªå€¼çš„è¾ƒå°å€¼ä½œä¸ºå®é™…å†™å…¥çš„ descriptorCount
 		uint32_t descriptorCount = min(bind.descriptorCount, static_cast<uint32_t>(pData->dataCount));
 		write.descriptorCount	= descriptorCount;
 
@@ -2504,7 +2504,7 @@ void svkUpdateDescriptorSet(svkDevice& device, VkDescriptorSet descriptorSet, co
 				const svkDescriptorData::Info& dataInfo = pData->data[bufferIndex]; 
 				if (NULL == dataInfo.buffer.buffer || 0 == dataInfo.buffer.bufferSize)
 				{
-					assert(false); // data ÖĞµÄÊı¾İ²»ÍêÕû£¡
+					assert(false); // data ä¸­çš„æ•°æ®ä¸å®Œæ•´ï¼
 					continue;
 				}
 				infos[bufferIndex].offset	= 0;
