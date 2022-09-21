@@ -48,3 +48,9 @@ add_definitions(
 -DKTX_OPENGL_ES3
 #-DSCL_ENABLE
 )
+
+if(WIN32)
+  add_definitions("/wd4819")
+endif(WIN32)
+
+

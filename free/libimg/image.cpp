@@ -64,21 +64,21 @@ uint load_png(const char* filename)
 	unsigned char*	rgba		= load_png_data(filename, NULL, &width, &height, NULL, NULL);
 	
 #ifndef OPENGL_ES
-	//¿ªÆôÎÆÀíÌùÍ¼ÌØĞ§  
+	//å¼€å¯çº¹ç†è´´å›¾ç‰¹æ•ˆ  
 	glcheck( glEnable(GL_TEXTURE_2D) );  
 #endif
 	
-	//´´½¨ÎÆÀí   
+	//åˆ›å»ºçº¹ç†   
 	GLuint textureID;
 	glcheck( glGenTextures(1, &textureID) );  
-	glcheck( glBindTexture(GL_TEXTURE_2D, textureID) ); //Î©Â´Å’âˆ†Â¿ÃŒâˆÃ›âˆ‚Â®ÂµÎ©âˆšËšâ—ŠÃ? 
+	glcheck( glBindTexture(GL_TEXTURE_2D, textureID) );
 	
 #ifndef OPENGL_ES
-	//ÉèÖÃÌùÍ¼ºÍÎÆÀíµÄ»ìºÏĞ§¹û
+	//è®¾ç½®è´´å›¾å’Œçº¹ç†çš„æ··åˆæ•ˆæœ
 	glcheck( glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL) );  
 #endif
 	
-	//ÉèÖÃÎÆÀíËùÓÃµ½Í¼Æ¬Êı¾İ 
+	//è®¾ç½®çº¹ç†æ‰€ç”¨åˆ°å›¾ç‰‡æ•°æ® 
 	glcheck( glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba) );  
 
 	free(rgba);
@@ -218,20 +218,20 @@ uint load_img(const char* filename, int* _width, int* _height, int* _pitch, int*
 		return -1;
 	
 #ifndef OPENGL_ES
-	//¿ªÆôÎÆÀíÌùÍ¼ÌØĞ§  
+	//å¼€å¯çº¹ç†è´´å›¾ç‰¹æ•ˆ  
 	glcheck( glEnable(GL_TEXTURE_2D) );  
 #endif
 	
-	//´´½¨ÎÆÀí   
+	//åˆ›å»ºçº¹ç†   
 	GLuint textureID;
 	glcheck( glGenTextures(1, &textureID) );  
 	glcheck( glBindTexture(GL_TEXTURE_2D, textureID) );
 	
 #ifndef OPENGL_ES
-	//ÉèÖÃÌùÍ¼ºÍÎÆÀíµÄ»ìºÏĞ§¹û
+	//è®¾ç½®è´´å›¾å’Œçº¹ç†çš„æ··åˆæ•ˆæœ
 	glcheck( glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL) );  
-    glcheck( glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR) );       //ÏßĞÔÂË²¨
-    glcheck( glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR) );       //ÏßĞÔÂË²¨
+    glcheck( glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR) );       //çº¿æ€§æ»¤æ³¢
+    glcheck( glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR) );       //çº¿æ€§æ»¤æ³¢
 #endif
 	
 	int align = 0;
@@ -247,7 +247,7 @@ uint load_img(const char* filename, int* _width, int* _height, int* _pitch, int*
 	}
 
 
-	//ÉèÖÃÎÆÀíËùÓÃµ½Í¼Æ¬Êı¾İ 
+	//è®¾ç½®çº¹ç†æ‰€ç”¨åˆ°å›¾ç‰‡æ•°æ® 
 #ifdef OPENGL_ES
 	glcheck( glTexImage2D(GL_TEXTURE_2D, 0, srcPixel, width, height, 0, srcPixel, GL_UNSIGNED_BYTE, rgba) );  
 #else
@@ -352,7 +352,7 @@ unsigned char* load_png_data(FILE* fp, unsigned char* out_rgba, int* out_width, 
 	for (int i = 0; i < height; i++)  
 		row_pointers[i] = NULL;  
 	
-	//Í¨¹ıÉ¨ÃèÁ÷ÀïÃæµÄÃ¿Ò»ĞĞ½«µÃµ½µÄÊı¾İ¸³Öµ¸ø¶¯Ì¬Êı×é         
+	//é€šè¿‡æ‰«ææµé‡Œé¢çš„æ¯ä¸€è¡Œå°†å¾—åˆ°çš„æ•°æ®èµ‹å€¼ç»™åŠ¨æ€æ•°ç»„         
 	for (int i = 0; i < height; i++)  
 		row_pointers[i] = (png_bytep)png_malloc(png_ptr, png_get_rowbytes(png_ptr, info_ptr));  
 	
@@ -360,7 +360,7 @@ unsigned char* load_png_data(FILE* fp, unsigned char* out_rgba, int* out_width, 
 	png_read_image(png_ptr, row_pointers);  
 	
 	//flip image
-	//ÓÉÓÚpngËûµÄÏñËØÊÇÓÉ ×ó-ÓÒ-´Ó¶¥µ½µ× ¶øÌùÍ¼ĞèÒªµÄÏñËØ¶¼ÊÇ´Ó×ó-ÓÒ-µ×µ½¶¥µÄËùÒÔÔÚÕâÀïĞèÒª°ÑÏñËØÄÚÈİ½øĞĞÒ»¸ö´ÓĞÂÅÅÁĞ 
+	//ç”±äºpngä»–çš„åƒç´ æ˜¯ç”± å·¦-å³-ä»é¡¶åˆ°åº• è€Œè´´å›¾éœ€è¦çš„åƒç´ éƒ½æ˜¯ä»å·¦-å³-åº•åˆ°é¡¶çš„æ‰€ä»¥åœ¨è¿™é‡Œéœ€è¦æŠŠåƒç´ å†…å®¹è¿›è¡Œä¸€ä¸ªä»æ–°æ’åˆ— 
 	for(int row = 0; row < height; row++)  
 	{  
 //#ifdef __APPLE__
@@ -437,7 +437,7 @@ unsigned char* load_jpg_data(FILE* fp, unsigned char* out_rgba, int* width, int*
     jpeg_read_header(&cinfo, TRUE);
 
 	//cinfo.jpeg_color_space;
-    cinfo.out_color_space = JCS_EXT_RGBX; //JCS_YCbCr;  // ÉèÖÃÊä³ö¸ñÊ½
+    cinfo.out_color_space = JCS_EXT_RGBX; //JCS_YCbCr;  // è®¾ç½®è¾“å‡ºæ ¼å¼
 
     jpeg_start_decompress(&cinfo);
 
@@ -451,18 +451,18 @@ unsigned char* load_jpg_data(FILE* fp, unsigned char* out_rgba, int* width, int*
 	if (NULL != height)
 		*height = cinfo.output_height;
 
-    rgb_size = row_stride * cinfo.output_height; // ×Ü´óĞ¡
+    rgb_size = row_stride * cinfo.output_height; // æ€»å¤§å°
 
     buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
     
     GLubyte* rgb_buffer = out_rgba;
 	if (NULL == rgb_buffer)
-		rgb_buffer = (unsigned char *)malloc(sizeof(char) * rgb_size);    // ·ÖÅä×ÜÄÚ´æ
+		rgb_buffer = (unsigned char *)malloc(sizeof(char) * rgb_size);    // åˆ†é…æ€»å†…å­˜
     
     //myprint("debug--:\nrgb_size: %d, size: %d w: %d h: %d row_stride: %d \n", rgb_size, cinfo.image_width*cinfo.image_height*3, cinfo.image_width, cinfo.image_height, row_stride);
 
     tmp_buffer = rgb_buffer;
-    while (cinfo.output_scanline < cinfo.output_height) // ½âÑ¹Ã¿Ò»ĞĞ
+    while (cinfo.output_scanline < cinfo.output_height) // è§£å‹æ¯ä¸€è¡Œ
     {
         jpeg_read_scanlines(&cinfo, buffer, 1);
         memcpy(tmp_buffer, buffer[0], row_stride);
@@ -513,7 +513,7 @@ void get_jpg_size(_iobuf* fp, int* out_width, int* out_height, int* out_pixel)
 	jpeg_read_header(&cinfo, TRUE);
 
 	//cinfo.jpeg_color_space;
-	//cinfo.out_color_space = JCS_EXT_RGBX; //JCS_YCbCr;  // ÉèÖÃÊä³ö¸ñÊ½
+	//cinfo.out_color_space = JCS_EXT_RGBX; //JCS_YCbCr;  // è®¾ç½®è¾“å‡ºæ ¼å¼
 
 	jpeg_start_decompress(&cinfo);
 
@@ -569,7 +569,6 @@ unsigned char* load_tga_data(FILE* fp, unsigned char* out_rgba, int* width, int*
 		return NULL;
 	}
 
-	//¶ÁÈ¡ Í·ÎÄ¼şĞÅÏ¢
 	int headerindex = TGAReadHeader(tga);
 	if (headerindex != TGA_OK)
 	{
@@ -581,7 +580,7 @@ unsigned char* load_tga_data(FILE* fp, unsigned char* out_rgba, int* width, int*
 		return NULL;
 	}
 
-	//Ö»Ö§³Ö 24 »òÕß 32 Î»µÄÍ¼Æ¬¸ñÊ½
+	//åªæ”¯æŒ 24 æˆ–è€… 32 ä½çš„å›¾ç‰‡æ ¼å¼
 	if (tga && tga->hdr.depth != 24 && tga->hdr.depth != 32)
 	{
 		free(tga);
@@ -602,8 +601,8 @@ unsigned char* load_tga_data(FILE* fp, unsigned char* out_rgba, int* width, int*
 	rgb_size		= tga->hdr.height * row_stride;
 	rgb_buffer		= out_rgba;
 	if (NULL == rgb_buffer)
-		rgb_buffer	= (unsigned char *)malloc(sizeof(char) * rgb_size);    // ·ÖÅä×ÜÄÚ´æ
-	tmp_buffer		= (unsigned char *)malloc(sizeof(char) * rgb_size);    // ·ÖÅä×ÜÄÚ´æ
+		rgb_buffer	= (unsigned char *)malloc(sizeof(char) * rgb_size);    // åˆ†é…æ€»å†…å­˜
+	tmp_buffer		= (unsigned char *)malloc(sizeof(char) * rgb_size);    // åˆ†é…æ€»å†…å­˜
 	if (NULL == rgb_buffer)
 	{
 		free(tga);
@@ -615,7 +614,7 @@ unsigned char* load_tga_data(FILE* fp, unsigned char* out_rgba, int* width, int*
 		free(rgb_buffer);
 		return NULL;
 	}
-	//¶ÁÈ¡ÏñËØÊı¾İ
+	//è¯»å–åƒç´ æ•°æ®
 
 	if (TGAReadScanlines(tga, tmp_buffer, 0, tga->hdr.height, TGA_RGB) != tga->hdr.height || tga->last != TGA_OK) {
 		if (tga) {
@@ -628,7 +627,7 @@ unsigned char* load_tga_data(FILE* fp, unsigned char* out_rgba, int* width, int*
 	}
 
 	//flip image
-	//ÓÉÓÚtgaËûµÄÏñËØÊÇÓÉ ×ó-ÓÒ-´Ó¶¥µ½µ× ¶øÌùÍ¼ĞèÒªµÄÏñËØ¶¼ÊÇ´Ó×ó-ÓÒ-µ×µ½¶¥µÄËùÒÔÔÚÕâÀïĞèÒª°ÑÏñËØÄÚÈİ½øĞĞÒ»¸ö´ÓĞÂÅÅÁĞ 
+	//ç”±äºtgaä»–çš„åƒç´ æ˜¯ç”± å·¦-å³-ä»é¡¶åˆ°åº• è€Œè´´å›¾éœ€è¦çš„åƒç´ éƒ½æ˜¯ä»å·¦-å³-åº•åˆ°é¡¶çš„æ‰€ä»¥åœ¨è¿™é‡Œéœ€è¦æŠŠåƒç´ å†…å®¹è¿›è¡Œä¸€ä¸ªä»æ–°æ’åˆ— 
 	for (int row = 0; row < static_cast<int>(tga->hdr.height); row++)
 	{
 		//#ifdef __APPLE__
@@ -703,7 +702,6 @@ void get_tga_size(_iobuf* fp, int* out_width, int* out_height, int* out_pixel)
 		return;
 	}
 
-	//¶ÁÈ¡ Í·ÎÄ¼şĞÅÏ¢
 	int headerindex = TGAReadHeader(tga);
 	if (headerindex != TGA_OK)
 	{
