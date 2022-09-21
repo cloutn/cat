@@ -35,6 +35,7 @@ VkPrimitiveTopology						_toVulkanPrimitiveTopology	(PRIMITIVE_TYPE type);
 
 VulkanRender::VulkanRender()  : 
 	m_inst						(NULL), 
+	m_mainRenderPass			(NULL),
 	m_isInit					(false),
 	m_minimized					(false),
 	m_prepared					(false),
@@ -59,6 +60,8 @@ VulkanRender::VulkanRender()  :
 	memset(m_frameUniforms,				0, sizeof(m_frameUniforms));
 	memset(m_frameUniformBuffersMapped,	0, sizeof(m_frameUniformBuffersMapped));
 	memset(m_clearColor,				0, sizeof(m_clearColor));
+	memset(m_mainFramebuffers,			0, sizeof(m_mainFramebuffers));
+	memset(m_mainCommandBuffers,		0, sizeof(m_mainCommandBuffers));
 }
 
 
@@ -121,7 +124,7 @@ void VulkanRender::initIMGUI()
 	init_info.Allocator			= NULL;
 	init_info.CheckVkResultFn	= NULL;
 
-	ImGui_ImplVulkan_Init		(&init_info, m_swapchain.renderPass);
+	ImGui_ImplVulkan_Init		(&init_info, m_mainRenderPass);
 
 	// Upload Fonts
 	VkCommandBuffer textureCommandBuffer		= svkCreateCommandBuffer(m_device);
@@ -164,6 +167,19 @@ VulkanRender::~VulkanRender()
 		delete m_commandAllocator[i];
 	}
 
+	vkDestroyRenderPass	(m_device.device, m_mainRenderPass, NULL);
+	for (int i = 0; i < svkSwapchain::MAX_IMAGE_COUNT; ++i)
+	{
+		if (NULL == m_mainFramebuffers[i])
+			continue;
+		vkDestroyFramebuffer(m_device.device, m_mainFramebuffers[i], NULL);
+	}
+	for (int i = 0; i < svkSwapchain::MAX_IMAGE_COUNT; ++i)
+	{
+		if (NULL == m_mainCommandBuffers[i])
+			continue;
+		vkFreeCommandBuffers(m_device.device, m_device.commandPool, 1, &m_mainCommandBuffers[i]);
+	}
 	svkDestroySwapchain	(m_device, m_swapchain, true);
 	svkDestroySurface	(m_inst, m_device, m_surface);
 	svkDestroyDevice	(m_device);
@@ -310,7 +326,15 @@ void VulkanRender::prepare()
 		return;
 	}
 
-	m_swapchain = svkCreateSwapchain(m_device, m_surface, m_swapchain);
+	m_swapchain			= svkCreateSwapchain	(m_device, m_surface, m_swapchain);
+	m_mainRenderPass	= svkCreateRenderPass	(m_device.device, m_swapchain.format, m_swapchain.depthImage.format);
+	for (int i = 0; i < m_swapchain.imageCount; ++i)
+	{
+		VkImageView attachments[]	= { m_swapchain.imageViews[i], m_swapchain.depthImage.imageView };
+		m_mainFramebuffers[i]		= svkCreateFrameBuffer(m_device.device, m_mainRenderPass, attachments, 2, m_surface.width, m_surface.height);
+		m_mainCommandBuffers[i]		= svkCreateCommandBuffer(m_device);
+	}
+
 	m_frameIndex = 0;
 
 	// descriptor set
@@ -405,7 +429,7 @@ void VulkanRender::swap()
 		return;
 	}
 		//printf("commit frameindex = %d\n", m_frameIndex);
-	svkQueueSubmit(m_device, m_swapchain, m_frameIndex, m_prevFrameIndex);
+	svkQueueSubmit(m_device, m_swapchain, &m_mainCommandBuffers[m_frameIndex], 1, m_frameIndex, m_prevFrameIndex);
 	svkPresent(m_device, m_swapchain, m_frameIndex, this, presentCallback);
 }
 
@@ -470,9 +494,9 @@ void VulkanRender::endDraw()
 
 	VkResult err;
 
-	VkCommandBuffer& primaryCb = m_swapchain.commandBuffers[m_frameIndex];
+	VkCommandBuffer& primaryCb = m_mainCommandBuffers[m_frameIndex];
 	svkBeginCommandBuffer(primaryCb);
-	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
+	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_mainRenderPass, m_mainFramebuffers[m_frameIndex], m_surface.width, m_surface.height, true);
 	
 	CommandAllocator* commandAllocator = m_commandAllocator[m_frameIndex];
 	vkCmdExecuteCommands(primaryCb, commandAllocator->getAllocCount(), commandAllocator->getAllocArray());
@@ -626,7 +650,7 @@ void VulkanRender::_preparePipeline(
 		svkShaderProgram*						shaderProgram	= static_cast<svkShaderProgram*>(shader);
 
 		pipeline	= new svkPipeline;
-		*pipeline	= svkCreatePipelineEx(m_device, descriptorAllocator->getLayout(), m_swapchain.renderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
+		*pipeline	= svkCreatePipelineEx(m_device, descriptorAllocator->getLayout(), m_mainRenderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
 		m_pipelines.add(pipelineKey, pipeline);
 	}
 }
@@ -683,7 +707,7 @@ void VulkanRender::draw2(
 	VkCommandBuffer	cmd_buf					= useBindCommandBuffer ? m_bindCommandBuffer : m_commandAllocator[m_frameIndex]->alloc();
 
 	if (!useBindCommandBuffer)
-		svkBeginSecondaryCommandBuffer(cmd_buf, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex]);
+		svkBeginSecondaryCommandBuffer(cmd_buf, m_mainRenderPass, m_mainFramebuffers[m_frameIndex]);
 
 	// uniform 数据分为两个部分，
 	//		一个是声明信息，就是uniform bind
@@ -795,7 +819,7 @@ void VulkanRender::drawIMGUI(ImDrawData* draw_data)
 	VkCommandBuffer cb = useBindCommandBuffer ? m_bindCommandBuffer : m_commandAllocator[m_frameIndex]->alloc();
 
 	if (!useBindCommandBuffer)
-		svkBeginSecondaryCommandBuffer(cb, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex]);
+		svkBeginSecondaryCommandBuffer(cb, m_mainRenderPass, m_mainFramebuffers[m_frameIndex]);
 
 	ImGui_ImplVulkan_RenderDrawData(draw_data, cb);
 
@@ -810,7 +834,7 @@ void VulkanRender::bindCommandBuffer()
 {
 	assert(NULL == m_bindCommandBuffer);
 	m_bindCommandBuffer = m_commandAllocator[m_frameIndex]->alloc();
-	svkBeginSecondaryCommandBuffer(m_bindCommandBuffer, m_swapchain.renderPass, m_swapchain.framebuffers[m_frameIndex]);
+	svkBeginSecondaryCommandBuffer(m_bindCommandBuffer, m_mainRenderPass, m_mainFramebuffers[m_frameIndex]);
 }
 
 void VulkanRender::unbindCommandBuffer()

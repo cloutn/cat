@@ -74,12 +74,12 @@ target_include_directories(
 set(debug_links 	
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
+	#debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
-	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib${ARCH}/libEGL.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/lib${ARCH}/libGLESv2.lib
@@ -94,7 +94,7 @@ set(debug_links
 set(release_links 	
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl.lib
 	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat.lib
-	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
+	#optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui.lib
 	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender.lib

@@ -30,6 +30,15 @@ struct svkSurface
 	VkSurfaceCapabilitiesKHR			capabilities;
 };
 
+struct svkImage
+{
+	//depth
+	VkFormat							format;
+	VkImage								image;
+	VkDeviceMemory						memory;
+	VkImageView							imageView;
+};
+
 struct svkSwapchain
 {
 	static const int					MAX_IMAGE_COUNT			= 4;
@@ -40,27 +49,23 @@ struct svkSwapchain
 	unsigned int						imageCount;
 	VkImageView							imageViews				[MAX_IMAGE_COUNT];
 
-	VkFramebuffer						framebuffers			[MAX_IMAGE_COUNT];
-	VkCommandBuffer						commandBuffers			[MAX_IMAGE_COUNT];
-
 	VkFence								fences					[MAX_IMAGE_COUNT];
 	VkSemaphore							imageAcquireSemaphores	[MAX_IMAGE_COUNT];
 	VkSemaphore							drawCompleteSemaphores	[MAX_IMAGE_COUNT];
 
 	//depth
-	VkFormat							depthFormat;
-	VkImage								depthImage;
-	VkDeviceMemory						depthMemory;
-	VkImageView							depthImageView;
-
-	VkRenderPass						renderPass;
+	svkImage							depthImage;
 };
 
-//struct svkRenderPass
-//{
-//	VkRenderPass						renderPass;
-//	VkFramebuffer						framebuffers			[svkSwapchain::MAX_IMAGE_COUNT];
-//};
+struct svkFrame
+{
+	VkImageView							imageView;
+	VkFence								fence;
+	VkSemaphore							imageAcquireSemaphore;
+	VkSemaphore							drawCompleteSemaphore;
+	VkFramebuffer						framebuffer;
+	VkCommandBuffer						commandBuffer;
+};
 
 struct svkTexture
 {
@@ -202,8 +207,13 @@ void					svkCmdBindVertexBuffers			(VkCommandBuffer cb, int firstBinding, void**
 void					svkCmdSetScissor				(VkCommandBuffer cb, uint32_t width, uint32_t height);
 typedef void			(*presentResultCallback)		(void* userData, VkResult);
 int						svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
-void					svkQueueSubmit					(svkDevice& device, svkSwapchain& swapchain, const int frame, const int prevFrame);
+void					svkQueueSubmit					(svkDevice& device, svkSwapchain& swapchain, const VkCommandBuffer* commandBuffers, const int commandBufferCount, const int frame, const int prevFrame);
 void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, const int frame,  void* userData, presentResultCallback callback);
-void					svkSubmitAndPresent				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
+//void					svkSubmitAndPresent				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
+VkRenderPass			svkCreateRenderPass				(VkDevice device, VkFormat format, VkFormat depthFormat);
+VkFramebuffer			svkCreateFrameBuffer			(VkDevice device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height);
+svkImage				svkCreateImage					(svkDevice& device, VkFormat format, const int width, const int height);
+void					svkDestroyImage					(svkDevice& device, svkImage& image);
+svkFrame				svkCreateFrame					(svkDevice& device);
 
 

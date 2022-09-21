@@ -47,10 +47,13 @@ def build_shaderc():
     print(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-A", cmake_arch, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
 
     cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
+    cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Release"])
+
     lib_path = f"../free/lib{arch}/"
     if not os.path.exists(lib_path):
         os.mkdir(lib_path)
-    shutil.copy(build_path + "/libshaderc/Debug/shaderc_combined.lib", f"../free/lib{arch}/")
+    shutil.copy(build_path + "/libshaderc/Debug/shaderc_combined.lib", f"../free/lib{arch}/shaderc_combined_d.lib")
+    shutil.copy(build_path + "/libshaderc/Release/shaderc_combined.lib", f"../free/lib{arch}/shaderc_combined.lib")
 
 def build_all():
     funcs = []

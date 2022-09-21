@@ -166,6 +166,10 @@ private:
 	svkDevice			m_device;
 	svkSurface			m_surface;
 	svkSwapchain		m_swapchain;
+	VkRenderPass		m_mainRenderPass;
+	VkFramebuffer		m_mainFramebuffers	[svkSwapchain::MAX_IMAGE_COUNT];
+	VkCommandBuffer		m_mainCommandBuffers[svkSwapchain::MAX_IMAGE_COUNT];
+
 	bool				m_isInit;
 	bool				m_minimized;
 	bool				m_prepared;
