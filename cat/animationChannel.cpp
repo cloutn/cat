@@ -118,7 +118,7 @@ void AnimationChannel::update(const uint _timeConst)
 	if (time > lastFrame->time())
 		time = lastFrame->time() > 0 ? (time % lastFrame->time()) : 0;
 
-	//ÕÒµ½Î»ÓÚÄÄÁ½Ö¡Ö®¼ä
+	//æ‰¾åˆ°ä½äºå“ªä¸¤å¸§ä¹‹é—´
 	KeyFrame temp(time);
 	int mid = frames.binary_search2(&temp, KeyFrame_compare_less2);
 

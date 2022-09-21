@@ -25,7 +25,7 @@ public:
 
 	void			load		(const char* const vs_filename, const char* const ps_filename);
 	void			addMacro	(ShaderMacro& macro);
-	void*			shader		(IRender* render); // ÎªÊ²Ã´ÒªÍ¨¹ı Render £¿ ÒòÎª OpengGLºÍdirectX load shader µÄ·½Ê½²»Í¬£¿
+	void*			shader		(IRender* render); // ä¸ºä»€ä¹ˆè¦é€šè¿‡ Render ï¼Ÿ å› ä¸º OpengGLå’ŒdirectX load shader çš„æ–¹å¼ä¸åŒï¼Ÿ
 	void			invalidate	() { m_dirty = true; }
 
 private:

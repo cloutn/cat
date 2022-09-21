@@ -90,7 +90,7 @@ private:
 	Env*					m_env;
 	Camera*					m_camera;
 
-	// for object test 	(读取gltf file data解析到自己的内存中，然后渲染)
+	// for object test 	(璇诲彇gltf file data瑙ｆ瀽鍒拌嚜宸辩殑鍐呭瓨涓紝鐒跺悗娓叉煋)
 	Object*					m_object;
 	Primitive*				m_gridPrimitive;
 	Primitive*				m_bonePrimitive;

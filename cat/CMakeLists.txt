@@ -107,3 +107,8 @@ add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DOPENGL_ES -DGFX_ENABLE_IMAGE)
 
 
+if(WIN32)
+  add_definitions("/wd4819")
+endif(WIN32)
+
+

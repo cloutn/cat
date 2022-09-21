@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//	顶点
+//	椤剁偣
 //	
 //	2010.12.02 caolei
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,8 +42,8 @@ void vertex::mulMatrix( const matrix& m )
 	y = temp.x * m.y1 + temp.y * m.y2 + temp.z * m.y3 + m.y4;
 	z = temp.x * m.z1 + temp.y * m.z2 + temp.z * m.z3 + m.z4;
 
-	//更新法线
-	//TODO 这里是否需要更新？
+	//鏇存柊娉曠嚎
+	//TODO 杩欓噷鏄惁闇�瑕佹洿鏂帮紵
 	//vector3 ntemp = {nx, ny, nz};
 	//nx = ntemp.x * m.x1 + ntemp.y * m.x2 + ntemp.z * m.x3 + m.x4;
 	//ny = ntemp.x * m.y1 + ntemp.y * m.y2 + ntemp.z * m.y3 + m.y4;

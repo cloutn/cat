@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////
-//	 win32ÏÂ´°¿ÚÀà
+//	 win32ä¸‹çª—å£ç±»
 //	
 //	2010.11.20 caolei
 ////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ Win32Window::Win32Window() :
 
 bool Win32Window::init(const int width, const int height, const wchar* const titleName, const wchar* const szIconName, bool enableDpiAwareness) //  titleName = "main"
 {
-	//²»ÔÊĞí·´¸´³õÊ¼»¯
+	//ä¸å…è®¸åå¤åˆå§‹åŒ–
 	if (hasInit())
 	{
 		assert(false);
@@ -56,11 +56,11 @@ bool Win32Window::init(const int width, const int height, const wchar* const tit
 	HINSTANCE hInstance = GetModuleHandle(0);
 	m_hInstance = hInstance;
 
-	//³õÊ¼»¯ÆÁÄ»³ß´çÏà¹Ø±äÁ¿
+	//åˆå§‹åŒ–å±å¹•å°ºå¯¸ç›¸å…³å˜é‡
 	m_width		= width;
 	m_height	= height;
 
-	// ¼ÆËã»ñµÃ×îÖÕµÄ´°¿Ú³ß´ç
+	// è®¡ç®—è·å¾—æœ€ç»ˆçš„çª—å£å°ºå¯¸
 	::RECT window_rect;
 	::SetRect(&window_rect, 
 		0,						//  int x,
@@ -69,8 +69,8 @@ bool Win32Window::init(const int width, const int height, const wchar* const tit
 		m_height);				//  int y + nHeight,
 	::AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	//×¢²á´°¿ÚÀà
-	const TCHAR szWindowClass[] = _T("MainWindowClass");			// Ö÷´°¿ÚÀàÃû
+	//æ³¨å†Œçª—å£ç±»
+	const TCHAR szWindowClass[] = _T("MainWindowClass");			// ä¸»çª—å£ç±»å
 	WNDCLASSEX wcex;
 	wcex.cbSize			= sizeof(WNDCLASSEX);
 	wcex.style			= CS_HREDRAW | CS_VREDRAW;
@@ -86,9 +86,9 @@ bool Win32Window::init(const int width, const int height, const wchar* const tit
 	wcex.hIconSm		= 0;
 	RegisterClassEx(&wcex);
 
-	//±êÌâÀ¸ÎÄ±¾
+	//æ ‡é¢˜æ æ–‡æœ¬
 	//const TCHAR szTitle[]		= _T("main");
-	//´´½¨´°¿Ú
+	//åˆ›å»ºçª—å£
 	m_windowHandle = ::CreateWindow(		
 		szWindowClass,			//  LPCTSTR lpClassName,
 		titleName,				//  LPCTSTR lpWindowName,
@@ -126,23 +126,23 @@ bool Win32Window::run()
 
 ptr_int __stdcall Win32Window::WndProc(void* hWnd, uint32 message, ptr_int wParam, ptr_int lParam)
 {
-	//Ê×ÏÈ´¦Àí´°¿ÚµÄWM_DESTROYÏûÏ¢
+	//é¦–å…ˆå¤„ç†çª—å£çš„WM_DESTROYæ¶ˆæ¯
 	if (message == WM_DESTROY)
 	{
 		PostQuitMessage(0);
 		return 0;
 	}
-	//TODO µÚÒ»ÌõWM_GETMINMAXINFOÏûÏ¢ÎŞ·¨·¢ËÍ¸øWin32Window£¬
-	//ÒòÎªÔÚCreateWindowº¯ÊıÖĞ£¬WM_GETMINMAXINFOÏûÏ¢ÏÈÓÚWM_NCCREATEµ½´ï
+	//TODO ç¬¬ä¸€æ¡WM_GETMINMAXINFOæ¶ˆæ¯æ— æ³•å‘é€ç»™Win32Windowï¼Œ
+	//å› ä¸ºåœ¨CreateWindowå‡½æ•°ä¸­ï¼ŒWM_GETMINMAXINFOæ¶ˆæ¯å…ˆäºWM_NCCREATEåˆ°è¾¾
 	if (message == WM_NCCREATE)
 	{
-		//½«´°¿ÚµÄthisÖ¸Õë°ó¶¨µ½HWNDµÄuser dataÉÏ
+		//å°†çª—å£çš„thisæŒ‡é’ˆç»‘å®šåˆ°HWNDçš„user dataä¸Š
 		::SetWindowLongPtr(
 			static_cast<HWND>(hWnd), 
 			GWLP_USERDATA, 
 			reinterpret_cast<LONG_PTR>(reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams));
 	}
-	//´ÓHWNDÖĞ»ñÈ¡Win32WindowµÄÖ¸Õë
+	//ä»HWNDä¸­è·å–Win32Windowçš„æŒ‡é’ˆ
 	Win32Window* pWindow = reinterpret_cast<Win32Window*>(
 		GetWindowLongPtr(static_cast<HWND>(hWnd), GWLP_USERDATA));
 	if (NULL == pWindow)
@@ -151,7 +151,7 @@ ptr_int __stdcall Win32Window::WndProc(void* hWnd, uint32 message, ptr_int wPara
 			assert(false);
 		return DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
 	}
-	//±éÀúËùÓĞhandler£¬³¢ÊÔ´¦ÀíÏûÏ¢
+	//éå†æ‰€æœ‰handlerï¼Œå°è¯•å¤„ç†æ¶ˆæ¯
 	if (pWindow->postEvent(hWnd, message, wParam, lParam)) 
 		return 0;
 
@@ -200,7 +200,7 @@ bool Win32Window::postEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lP
 		EventHandler& eventHandler = m_eventHandlers[i];
 		if (eventHandler.func(eventHandler.caller, hWnd, message, wParam, lParam))
 		{
-			//ÊÂ¼şÒÑ±»´¦Àí
+			//äº‹ä»¶å·²è¢«å¤„ç†
 			return true;
 		}
 	}

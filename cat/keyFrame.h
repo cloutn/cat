@@ -36,7 +36,7 @@ public:
 	//static int				compareFunc		(const void* k1, const void* k2);
 
 private:
-	uint					m_time;					//µ±Ç°Ö¡¶ÔÓ¦µÄÊ±¼ä£¬µ¥Î»:ºÁÃë
+	uint					m_time;					//å½“å‰å¸§å¯¹åº”çš„æ—¶é—´ï¼Œå•ä½:æ¯«ç§’
 	union
 	{
 		scl::quaternion 	m_rotate;		

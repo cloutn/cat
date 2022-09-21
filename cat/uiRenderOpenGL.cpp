@@ -97,7 +97,7 @@ void* UIRenderOpenGL::createTexture(const char* const filename, int* width, int*
 	//char s[256] = { 0 };
 	//scl::wchar_to_ansi(s, 256, filename, static_cast<int>(wcslen(filename)), scl::Encoding_UTF8);
 
-	//´´½¨ÎÆÀí   
+	//åˆ›å»ºçº¹ç†   
 	uint textureID = img::load_img(filename, width, height, pitch, (int*)pixel);
 	
 	_set_texture_param();
@@ -154,7 +154,7 @@ void* UIRenderOpenGL::createTexture(const int width, const int height, const cat
 {
 	uint tex = 0;
 
-	//TODO emptyÌ«·ÑÄÚ´æÁË
+	//TODO emptyå¤ªè´¹å†…å­˜äº†
 	int BYTE_SIZE			= sizeof(uint) * width * height;
 	uint* empty				= (uint*)malloc(BYTE_SIZE);
 	GLint internalFormat	= pixel_to_internal_format(pixel);

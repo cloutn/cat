@@ -45,7 +45,7 @@ public:
 	//vertex
 	virtual void*			createVertexBuffer	(const int size);
 	virtual void			releaseVertexBuffer	(void* vertexBuffer);
-	virtual void			copyVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte);//×¢Òâ£¬UIÊ¹ÓÃµÄvertexµÄfvf¸ñÊ½ÊÇ(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
+	virtual void			copyVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte);//æ³¨æ„ï¼ŒUIä½¿ç”¨çš„vertexçš„fvfæ ¼å¼æ˜¯(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
 
 	//index
 	virtual void*			createIndexBuffer	(const int size);

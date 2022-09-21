@@ -28,8 +28,8 @@ private:
 	scl::vector3				m_scale;	
 	scl::quaternion				m_rotate;
 
-	mutable bool				m_changed;			//ÊÇ·ñĞèÒª¸üĞÂ
-	mutable scl::matrix			m_matrix;			//±ä»¯¾ØÕó£¬°üº¬ÁË¸¸´°¿ÚµÄ±ä»¯	
+	mutable bool				m_changed;			//æ˜¯å¦éœ€è¦æ›´æ–°
+	mutable scl::matrix			m_matrix;			//å˜åŒ–çŸ©é˜µï¼ŒåŒ…å«äº†çˆ¶çª—å£çš„å˜åŒ–	
 
 }; // class Transform
 

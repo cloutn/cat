@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//	ÑÕÉ«Ïà¹Ø
+//	é¢œè‰²ç›¸å…³
 //	
 //	2010.09.05 caolei
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,10 +34,10 @@ namespace cat {
 #define COLOR_GET_B(c) byte(c & 0x000000FF)
 #define COLOR_SET_A(c, a) (c = ((c & 0x00FFFFFF) | (((uint)a) << 24)))
 
-//ÎÆÀíµÄalphaµÄ»ìºÏÄ£Ê½
+//çº¹ç†çš„alphaçš„æ··åˆæ¨¡å¼
 enum ALPHA_MODE
 {
-	ALPHA_MODE_INVALID	= 0,	//Ä¬ÈÏµÄ»ìºÏ·½Ê½, SRCBLEND = SRCALPHA	DESTBLEND = INVSRCALPHA
+	ALPHA_MODE_INVALID	= 0,	//é»˜è®¤çš„æ··åˆæ–¹å¼, SRCBLEND = SRCALPHA	DESTBLEND = INVSRCALPHA
 	ALPHA_MODE_ADD		= 1,	//SRCBLEND = DESTALPHA, DESTBLEND = ONE 
 };
 

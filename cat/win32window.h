@@ -60,7 +60,7 @@ private:
 	int					m_width;
 	int					m_height;
 	
-	//ÊÂ¼ş´¦ÀíÆ÷ÁĞ±í
+	//äº‹ä»¶å¤„ç†å™¨åˆ—è¡¨
 	static const int	MAX_EVENT_HANDLER = 256;
 	EventHandler		m_eventHandlers[MAX_EVENT_HANDLER];
 	int					m_eventHandlerCount;
