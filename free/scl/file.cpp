@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //	file.cpp
-//	FileÀàÊµÏÖ
+//	Fileç±»å®ç°
 //	2010.09.03 caolei
 ////////////////////////////////////////////////////////////////////////////////
 #include "scl/file.h"
@@ -47,18 +47,18 @@ file::~file()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//	Openº¯Êı(Ansi)
+//	Openå‡½æ•°(Ansi)
 ////////////////////////////////////////////////////////////////////////////////
 bool file::open(const char* const name, const char* const mode)
 {
 	if (m_file)
 	{
-		//ÖØ¸´´ò¿ªÎÄ¼ş
+		//é‡å¤æ‰“å¼€æ–‡ä»¶
 		assert(0);
 		return false;
 	}
 
-	//´¦Àí²»Í¬Æ½Ì¨ÏÂµÄ±àÂëÎÊÌâ£¬ÒòÎª::fopenº¯Êı×ÜÊÇ¼ÙÉè´«ÈëµÄchar* filenameÊÇ²Ù×÷ÏµÍ³Ê¹ÓÃµÄ±àÂë¸ñÊ½
+	//å¤„ç†ä¸åŒå¹³å°ä¸‹çš„ç¼–ç é—®é¢˜ï¼Œå› ä¸º::fopenå‡½æ•°æ€»æ˜¯å‡è®¾ä¼ å…¥çš„char* filenameæ˜¯æ“ä½œç³»ç»Ÿä½¿ç”¨çš„ç¼–ç æ ¼å¼
 #ifdef SCL_WIN
 	//static const int MAX_PATH = 260;
 	//static const int MAX_MODE = 128;
@@ -120,7 +120,7 @@ int file::read(void* data, const int elementCount, const int elementSize) const
 
 //int	file::ReadStringAll(void* buffer, const int bufferSize)
 //{
-//	//Ìø¹ıUTF16µÄ"FF FE"ÎÄ¼şÍ·
+//	//è·³è¿‡UTF16çš„"FF FE"æ–‡ä»¶å¤´
 //	const int UTF16HeaderSize = 2;
 //	seek(UTF16HeaderSize, file::SEEK_POSITION_BEGIN);
 //	int fileSize = GetSize();
@@ -145,8 +145,8 @@ int file::write(const void* data, const int elementCount, const int elementSize)
 
 //int file::writeString(const wchar* message, const int stringLength)
 //{
-//	//Ğ´Èë¿í×Ö·û´®Ö®Ç°¼ì²éÎÄ¼şÊÇ·ñÍêÈ«Îª¿Õ£¬
-//	//Èç¹ûÎª¿Õ¾ÍĞ´Èëutf16ÎÄ¼şÍ·
+//	//å†™å…¥å®½å­—ç¬¦ä¸²ä¹‹å‰æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å®Œå…¨ä¸ºç©ºï¼Œ
+//	//å¦‚æœä¸ºç©ºå°±å†™å…¥utf16æ–‡ä»¶å¤´
 //	int writeCount = 0;
 //	if (size() == 0)
 //	{
@@ -219,7 +219,7 @@ bool file::get_line(char* data, const int maxCount)
 	return NULL != fgets(data, maxCount, static_cast<FILE*>(m_file));	
 }
 
-//Ê¹ÓÃÈ«¾Ö¶ÔÏó£¬±ÜÃâÕ¼ÓÃ¾Ö²¿Õ»¿Õ¼ä
+//ä½¿ç”¨å…¨å±€å¯¹è±¡ï¼Œé¿å…å ç”¨å±€éƒ¨æ ˆç©ºé—´
 const int MAX_LINE_COUNT_TEMP_STRING_LENGTH = 16 * 1024;
 wchar lineCountTempString[MAX_LINE_COUNT_TEMP_STRING_LENGTH];
 
@@ -246,13 +246,13 @@ int file::line_count()
 			if (c != '\n' && c != '\r')
 				continue;
 			char next = 0;
-			if (i >= readCount - 1) //bufferÖĞµÄ×îºóÒ»¸ö×Ö·ûÊÇ\r»òÕß\n,´ËÊ±ĞèÒª´ÓÎÄ¼şÖĞÔÙ¶ÁÒ»¸ö×Ö·û
+			if (i >= readCount - 1) //bufferä¸­çš„æœ€åä¸€ä¸ªå­—ç¬¦æ˜¯\ræˆ–è€…\n,æ­¤æ—¶éœ€è¦ä»æ–‡ä»¶ä¸­å†è¯»ä¸€ä¸ªå­—ç¬¦
 			{
 				int nread = static_cast<int>(::fread(&next, sizeof(next), 1, static_cast<FILE*>(m_file)));
 				if (nread > 0)
 					fseek(static_cast<FILE*>(m_file), -nread, SEEK_CUR);
 				else if(feof(static_cast<FILE*>(m_file)))
-					continue; //ÎÄ¼şÒÑ¾­Ã»ÓĞÄÚÈİÁË£¬×îºóÒ»¸ö»»ĞĞ·û²»¼ÆËãÔÚÄÚ
+					continue; //æ–‡ä»¶å·²ç»æ²¡æœ‰å†…å®¹äº†ï¼Œæœ€åä¸€ä¸ªæ¢è¡Œç¬¦ä¸è®¡ç®—åœ¨å†…
 			}
 			else
 				next = temp[i + 1];
@@ -262,11 +262,11 @@ int file::line_count()
 
 			if (c == '\n')
 			{
-				++m_line_count; //windows/linux»»ĞĞ·û
+				++m_line_count; //windows/linuxæ¢è¡Œç¬¦
 			}
 			else if (c == '\r')
 			{
-				if (prev != '\n' && next != '\n') //macOS»»ĞĞ·û
+				if (prev != '\n' && next != '\n') //macOSæ¢è¡Œç¬¦
 					++m_line_count;
 			}
 		}
@@ -299,7 +299,7 @@ uint64 file::size()
 
 	int oldPosition = tell();
 	
-	//½«»º³åÇøÄÚÈİĞ´ÈëÎÄ¼ş£¬ÒÔ±ãÄÜ¹»»ñÈ¡fileStat
+	//å°†ç¼“å†²åŒºå†…å®¹å†™å…¥æ–‡ä»¶ï¼Œä»¥ä¾¿èƒ½å¤Ÿè·å–fileStat
 	fflush(static_cast<FILE*>(m_file));
 	struct stat fileStat;
 
@@ -337,7 +337,7 @@ int file::_inner_write(const void* data, const int elemSize, const int elemCount
 
 bool file::skip_bom()
 {
-	//Ìø¹ıutf16ºÍutf8µÄBOM
+	//è·³è¿‡utf16å’Œutf8çš„BOM
 	seek(0, SEEK_POSITION_BEGIN);
 	byte bom[3] = { 0 };
 	read(bom, 2);
@@ -436,9 +436,9 @@ file::LINEFEED_TYPE file::get_linefeed_type()
 			if (c == '\n')
 			{
 				if (next == '\r')
-					m_linefeed_type = LINEFEED_TYPE_WINDOWS;	//windows/linux»»ĞĞ·û
+					m_linefeed_type = LINEFEED_TYPE_WINDOWS;	//windows/linuxæ¢è¡Œç¬¦
 				else
-					m_linefeed_type = LINEFEED_TYPE_LINUX;		//windows/linux»»ĞĞ·û
+					m_linefeed_type = LINEFEED_TYPE_LINUX;		//windows/linuxæ¢è¡Œç¬¦
 
 				seek(oldPosition, SEEK_POSITION_BEGIN);
 				return m_linefeed_type;
@@ -446,9 +446,9 @@ file::LINEFEED_TYPE file::get_linefeed_type()
 			else if (c == '\r')
 			{
 				if (next == '\n')
-					m_linefeed_type = LINEFEED_TYPE_WINDOWS;	//windows/linux»»ĞĞ·û
+					m_linefeed_type = LINEFEED_TYPE_WINDOWS;	//windows/linuxæ¢è¡Œç¬¦
 				else
-					m_linefeed_type = LINEFEED_TYPE_MACOS;		//windows/linux»»ĞĞ·û
+					m_linefeed_type = LINEFEED_TYPE_MACOS;		//windows/linuxæ¢è¡Œç¬¦
 
 				seek(oldPosition, SEEK_POSITION_BEGIN);
 				return m_linefeed_type;
@@ -490,8 +490,8 @@ bool file::rename(const char* const oldname, const char* const newname)
 }
 
 ////////////////////////////////////
-//¹æ·¶»¯Ò»¸öÂ·¾¶Ãû
-//½«ËùÓĞµÄ'\'Ìæ»»Îª'/',Í¬Ê±,µ±autoAddSlashÎªtrue, ÇÒ±ØÒªµÄÊ±ºò£¬»áÔÚÄ©Î²Ìí¼Ó'/'
+//è§„èŒƒåŒ–ä¸€ä¸ªè·¯å¾„å
+//å°†æ‰€æœ‰çš„'\'æ›¿æ¢ä¸º'/',åŒæ—¶,å½“autoAddSlashä¸ºtrue, ä¸”å¿…è¦çš„æ—¶å€™ï¼Œä¼šåœ¨æœ«å°¾æ·»åŠ '/'
 ////////////////////////////////////
 void normalize_path(pstring path, bool auto_add_slash)
 {
@@ -511,12 +511,12 @@ void normalize_path(pstring path, bool auto_add_slash)
 }
 
 ////////////////////////////////////
-//´ÓÂ·¾¶ÖĞÌáÈ¡ÎÄ¼şÃû£¨withExt²ÎÊı±íÊ¾ÊÇ·ñ±£ÁôÀ©Õ¹Ãû£©
+//ä»è·¯å¾„ä¸­æå–æ–‡ä»¶åï¼ˆwithExtå‚æ•°è¡¨ç¤ºæ˜¯å¦ä¿ç•™æ‰©å±•åï¼‰
 ////////////////////////////////////
 void extract_filename(pstring fullname, bool with_ext)
 {
-	int name_start	= 0;		//²»´øÂ·¾¶µÄÎÄ¼şÃûÆğÊ¼Î»ÖÃ
-	int ext_dot		= - 1;		//À©Õ¹Ãû·Ö¸ô·ûÎ»ÖÃ
+	int name_start	= 0;		//ä¸å¸¦è·¯å¾„çš„æ–‡ä»¶åèµ·å§‹ä½ç½®
+	int ext_dot		= - 1;		//æ‰©å±•ååˆ†éš”ç¬¦ä½ç½®
 	char* pfullname = fullname.c_str();
 	char* p = pfullname;
 	while (*p)
@@ -541,7 +541,7 @@ void extract_filename(pstring fullname, bool with_ext)
 }
 
 ////////////////////////////////////
-//´ÓÂ·¾¶ÖĞÌáÈ¡ÎÄ¼şÃû£¬²»±£ÁôÀ©Õ¹Ãû
+//ä»è·¯å¾„ä¸­æå–æ–‡ä»¶åï¼Œä¸ä¿ç•™æ‰©å±•å
 ////////////////////////////////////
 void extract_filename_no_ext(pstring fullname)
 {
@@ -549,7 +549,7 @@ void extract_filename_no_ext(pstring fullname)
 }
 
 ////////////////////////////////////
-//´ÓÂ·¾¶ÖĞÌáÈ¡À©Õ¹Ãû£¬×¢Òâ£¬½á¹ûÖĞ²»°üÀ¨¡°.¡±£¬ÀıÈç¡°a.txt¡±£¬·µ»Ø½á¹ûÊÇ¡°txt¡±¶ø²»ÊÇ¡°.txt¡±
+//ä»è·¯å¾„ä¸­æå–æ‰©å±•åï¼Œæ³¨æ„ï¼Œç»“æœä¸­ä¸åŒ…æ‹¬â€œ.â€ï¼Œä¾‹å¦‚â€œa.txtâ€ï¼Œè¿”å›ç»“æœæ˜¯â€œtxtâ€è€Œä¸æ˜¯â€œ.txtâ€
 ////////////////////////////////////
 void extract_fileext(pstring fullname)
 {
@@ -557,18 +557,18 @@ void extract_fileext(pstring fullname)
 }
 
 ////////////////////////////////////
-//´ÓÂ·¾¶ÖĞÌáÈ¡À©Õ¹Ãû
+//ä»è·¯å¾„ä¸­æå–æ‰©å±•å
 ////////////////////////////////////
 void extract_fileext_to(pstring _fullname, pstring ext)
 {
-	int ext_dot = -1;		//À©Õ¹Ãû·Ö¸ô·ûÎ»ÖÃ
+	int ext_dot = -1;		//æ‰©å±•ååˆ†éš”ç¬¦ä½ç½®
 	char* fullname = _fullname.c_str();
 	char* p = fullname;
 	while (*p)
 	{
 		if (*p == '.')
 			ext_dot = static_cast<int>(p - fullname);
-		if (*p == '\\' || *p == '/') // Èç¹û³öÏÖÁËÂ·¾¶·Ö¸ô·û£¬ÔòÖ®Ç°ÕÒµ½µÄËùÓĞdot¶¼²»¿ÉÄÜÊÇÀ©Õ¹ÃûµÄdot
+		if (*p == '\\' || *p == '/') // å¦‚æœå‡ºç°äº†è·¯å¾„åˆ†éš”ç¬¦ï¼Œåˆ™ä¹‹å‰æ‰¾åˆ°çš„æ‰€æœ‰dotéƒ½ä¸å¯èƒ½æ˜¯æ‰©å±•åçš„dot
 			ext_dot = -1;
 		++p;
 	}
@@ -587,7 +587,7 @@ void extract_fileext_to(pstring _fullname, pstring ext)
 }
 
 ////////////////////////////////////
-//´ÓÂ·¾¶ÖĞÌáÈ¡Â·¾¶Ãû£¬²»°üº¬ÎÄ¼şÃû
+//ä»è·¯å¾„ä¸­æå–è·¯å¾„åï¼Œä¸åŒ…å«æ–‡ä»¶å
 ////////////////////////////////////
 void extract_path(pstring filename, bool add_current_path)
 {
@@ -604,7 +604,7 @@ void extract_path(pstring filename, bool add_current_path)
 	else
 	{
 		if (add_current_path)
-			scl::strcpy(filename.c_str(), filename.capacity(), "./");	//Ã»ÓĞÕÒµ½·Ö¸ô·û£¬ËµÃ÷Â·¾¶ÃûÖ»°üº¬ÎÄ¼şÃû£¬·µ»Øµ±Ç°Â·¾¶
+			scl::strcpy(filename.c_str(), filename.capacity(), "./");	//æ²¡æœ‰æ‰¾åˆ°åˆ†éš”ç¬¦ï¼Œè¯´æ˜è·¯å¾„ååªåŒ…å«æ–‡ä»¶åï¼Œè¿”å›å½“å‰è·¯å¾„
 		else
 			filename.clear();
 	}
@@ -612,7 +612,7 @@ void extract_path(pstring filename, bool add_current_path)
 
 void get_exe_name(pstring exename)
 {
-	//µÚÒ»´Î´ò¿ªÎÄ¼ş£¬ĞèÒªË³Ğò²éÕÒËùÓĞµÄÎÄ¼ş
+	//ç¬¬ä¸€æ¬¡æ‰“å¼€æ–‡ä»¶ï¼Œéœ€è¦é¡ºåºæŸ¥æ‰¾æ‰€æœ‰çš„æ–‡ä»¶
 	stringPath exe_full_name;
 
 #ifdef SCL_WIN

@@ -11,33 +11,33 @@ namespace scl {
 //void _reset_bit(unsigned char& c, const int bit_index);
 
 
-//×î×ó²àÎª1,ÆäËûÎ»Îª0µÄchar£¬ÓÃÓÚÒÆÎ»
+//æœ€å·¦ä¾§ä¸º1,å…¶ä»–ä½ä¸º0çš„charï¼Œç”¨äºç§»ä½
 static const unsigned char ONE = 0x80;
 
-//»ñµÃÄ³¸öcharÖĞµÄposÎ»ÖÃÉÏµÄbitÖÃ,·µ»Øtrue±íÊ¾1£¬false±íÊ¾2
-//×¢Òâ£¡posÊÇ´Óchar×ó²à¿ªÊ¼¼ÆËãµÄË÷Òı
+//è·å¾—æŸä¸ªcharä¸­çš„posä½ç½®ä¸Šçš„bitç½®,è¿”å›trueè¡¨ç¤º1ï¼Œfalseè¡¨ç¤º2
+//æ³¨æ„ï¼posæ˜¯ä»charå·¦ä¾§å¼€å§‹è®¡ç®—çš„ç´¢å¼•
 inline bool _get_bit(const unsigned char& c, const int bit_index)
 {
 	unsigned char v = (c & (ONE >> bit_index));
 	return (v != 0);
 }
 
-//ÉèÖÃÄ³¸öcharÖĞµÄposÎ»ÖÃÉÏµÄbitÎª1
-//×¢Òâ£¡posÊÇ´Óchar×ó²à¿ªÊ¼¼ÆËãµÄË÷Òı
+//è®¾ç½®æŸä¸ªcharä¸­çš„posä½ç½®ä¸Šçš„bitä¸º1
+//æ³¨æ„ï¼posæ˜¯ä»charå·¦ä¾§å¼€å§‹è®¡ç®—çš„ç´¢å¼•
 inline void _set_bit(unsigned char& c, const int bit_index)
 {
 	c = (c  | (ONE >> bit_index));
 }
 
-//ÉèÖÃÄ³¸öcharÖĞµÄposÎ»ÖÃÉÏµÄbitÎª0
-//×¢Òâ£¡posÊÇ´Óchar×ó²à¿ªÊ¼¼ÆËãµÄË÷Òı
+//è®¾ç½®æŸä¸ªcharä¸­çš„posä½ç½®ä¸Šçš„bitä¸º0
+//æ³¨æ„ï¼posæ˜¯ä»charå·¦ä¾§å¼€å§‹è®¡ç®—çš„ç´¢å¼•
 inline void _reset_bit(unsigned char& c, const int bit_index)
 {
 	c = (c  & (~(ONE >> bit_index)));
 }
 
-//·´×ªÄ³¸öcharÖĞµÄposÎ»ÖÃÉÏµÄbit
-//×¢Òâ£¡posÊÇ´Óchar×ó²à¿ªÊ¼¼ÆËãµÄË÷Òı
+//åè½¬æŸä¸ªcharä¸­çš„posä½ç½®ä¸Šçš„bit
+//æ³¨æ„ï¼posæ˜¯ä»charå·¦ä¾§å¼€å§‹è®¡ç®—çš„ç´¢å¼•
 inline void _flip_bit(unsigned char& c, const int bit_index)
 {
 	if (_get_bit(c, bit_index))
@@ -47,7 +47,7 @@ inline void _flip_bit(unsigned char& c, const int bit_index)
 }
 
 
-//·µ»Ø´Ó×ó±ß¿ªÊ¼µÄµÚÒ»¸ö 1 µÄÎ»ÖÃ
+//è¿”å›ä»å·¦è¾¹å¼€å§‹çš„ç¬¬ä¸€ä¸ª 1 çš„ä½ç½®
 inline int _get_first_set_bit(unsigned char _a)
 {
 	static char table[] =
@@ -73,7 +73,7 @@ inline int _get_first_set_bit(unsigned char _a)
 }
 
 
-//·µ»Ø´Ó×ó±ß¿ªÊ¼µÄµÚÒ»¸ö 0 µÄÎ»ÖÃ
+//è¿”å›ä»å·¦è¾¹å¼€å§‹çš„ç¬¬ä¸€ä¸ª 0 çš„ä½ç½®
 inline int _get_first_reset_bit(unsigned char _a)
 {
 	static char table[] =

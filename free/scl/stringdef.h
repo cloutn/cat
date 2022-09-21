@@ -8,14 +8,14 @@
 #include "scl/assert.h"
 
 ////////////////////////////////////////////////////////////////////////
-//	_SCL_ENCODING_GBK_ ËµÃ÷£º
-//		_SCL_ENCODING_GBK_Õâ¸öºê¾ö¶¨ÁËstringºÍpstringµÄfrom_ansiºÍto_ansiº¯ÊýµÄÐÐÎª
+//	_SCL_ENCODING_GBK_ è¯´æ˜Žï¼š
+//		_SCL_ENCODING_GBK_è¿™ä¸ªå®å†³å®šäº†stringå’Œpstringçš„from_ansiå’Œto_ansiå‡½æ•°çš„è¡Œä¸º
 //
-//		Èç¹û¶¨ÒåÁË_SCL_ENCODING_GBK_
-//		ÄÇÃ´from_ansiºÍto_ansi½«»á°Ñwchar*ºÍgbk±àÂëµÄchar*Ïà»¥×ª»»
+//		å¦‚æžœå®šä¹‰äº†_SCL_ENCODING_GBK_
+//		é‚£ä¹ˆfrom_ansiå’Œto_ansiå°†ä¼šæŠŠwchar*å’Œgbkç¼–ç çš„char*ç›¸äº’è½¬æ¢
 //
-//		Èç¹ûÃ»ÓÐ¶¨Òå_SCL_ENCODING_GBK_£¬
-//		ÄÇÃ´from_ansiºÍto_ansi½«»á°Ñwchar*ºÍutf8±àÂëµÄchar*Ïà»¥×ª»»
+//		å¦‚æžœæ²¡æœ‰å®šä¹‰_SCL_ENCODING_GBK_ï¼Œ
+//		é‚£ä¹ˆfrom_ansiå’Œto_ansiå°†ä¼šæŠŠwchar*å’Œutf8ç¼–ç çš„char*ç›¸äº’è½¬æ¢
 ////////////////////////////////////////////////////////////////////////
 
 //	#define _SCL_ENCODING_GBK_
@@ -36,7 +36,7 @@ namespace scl {
 #define scl_wcstok			wcstok_s
 #define scl_snprintf		scl::_snprintf
 
-//win32ÏÂ£¬Ö±½ÓÊ¹ÓÃ_snprintf»áµ¼ÖÂwarning£¬ËùÒÔÕâÀï¼ä½Óµ÷ÓÃÒ»ÏÂ
+//win32ä¸‹ï¼Œç›´æŽ¥ä½¿ç”¨_snprintfä¼šå¯¼è‡´warningï¼Œæ‰€ä»¥è¿™é‡Œé—´æŽ¥è°ƒç”¨ä¸€ä¸‹
 int _snprintf(
 	char*		buffer,
 	int			count,
@@ -133,7 +133,7 @@ bool iswdigit(wchar c);
 
 inline bool isspace(char c)
 {
-	//space char = 0x09 ¨C 0x0D or 0x20
+	//space char = 0x09 â€“ 0x0D or 0x20
 	if (c >= 0x09 && c <= 0x0D) return true;
 	if (c == 0x20) return true;
 	return false;
@@ -142,7 +142,7 @@ inline bool isspace(char c)
 
 inline bool iswspace(wchar c)
 {
-	//space char = 0x09 ¨C 0x0D or 0x20
+	//space char = 0x09 â€“ 0x0D or 0x20
 	if (c >= 0x09 && c <= 0x0D) return true;
 	if (c == 0x20) return true;
 	return false;
@@ -155,18 +155,18 @@ int trim_right	(char* s, const int l = -1);
 ////////////////////////////////////////////////////////////////////////
 // load_string_to_matrix
 //
-//		¹¦ÄÜÊÇ½«Ò»¸öÐÎÈç"1,2,3,4 \n 5,6,7,8 "µÄ×Ö·û´®×ª»»ÎªÒ»¸ö¶þÎ¬Êý×é
-//		¶þÎ¬Êý×éµÄµÚÒ»ÐÐ°üº¬4¸öÕûÊý 1 2 3 4
-//		¶þÎ¬Êý×éµÄµÚ¶þÐÐ°üº¬4¸öÕûÊý 5 6 7 6
+//		åŠŸèƒ½æ˜¯å°†ä¸€ä¸ªå½¢å¦‚"1,2,3,4 \n 5,6,7,8 "çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºä¸€ä¸ªäºŒç»´æ•°ç»„
+//		äºŒç»´æ•°ç»„çš„ç¬¬ä¸€è¡ŒåŒ…å«4ä¸ªæ•´æ•° 1 2 3 4
+//		äºŒç»´æ•°ç»„çš„ç¬¬äºŒè¡ŒåŒ…å«4ä¸ªæ•´æ•° 5 6 7 6
 //
-// ²ÎÊý£º
-//		str					´ý×ª»»µÄ×Ö·û´®
-//		str_len				´ý×ª»»µÄ×Ö·û´®³¤¶È
-//		seperator			·Ö¸ô·û£¬¸Ã²ÎÊýÖ±½Ó´«µÝ¸østrtokº¯Êý
-//		output_array		Êä³öÊý×éµÄÖ¸Õë
-//		output_capacity		Êä³öÊý×éµÄ×î´ó³¤¶È
-//		output_row_count	·µ»ØÖµ£¬·µ»ØÊä³öÒ»¹²ÓÐ¶àÉÙÐÐ£¬¼´¶þÎ¬Êý×éµÄ¸ß¶È
-//		output_column_count	·µ»ØÖµ£¬·µ»ØÊä³öÒ»¹²ÓÐ¶àÉÙÁÐ£¬¼´¶þÎ¬Êý×éµÄ¿í¶È
+// å‚æ•°ï¼š
+//		str					å¾…è½¬æ¢çš„å­—ç¬¦ä¸²
+//		str_len				å¾…è½¬æ¢çš„å­—ç¬¦ä¸²é•¿åº¦
+//		seperator			åˆ†éš”ç¬¦ï¼Œè¯¥å‚æ•°ç›´æŽ¥ä¼ é€’ç»™strtokå‡½æ•°
+//		output_array		è¾“å‡ºæ•°ç»„çš„æŒ‡é’ˆ
+//		output_capacity		è¾“å‡ºæ•°ç»„çš„æœ€å¤§é•¿åº¦
+//		output_row_count	è¿”å›žå€¼ï¼Œè¿”å›žè¾“å‡ºä¸€å…±æœ‰å¤šå°‘è¡Œï¼Œå³äºŒç»´æ•°ç»„çš„é«˜åº¦
+//		output_column_count	è¿”å›žå€¼ï¼Œè¿”å›žè¾“å‡ºä¸€å…±æœ‰å¤šå°‘åˆ—ï¼Œå³äºŒç»´æ•°ç»„çš„å®½åº¦
 //
 ////////////////////////////////////////////////////////////////////////
 bool load_string_to_matrix(
@@ -181,15 +181,15 @@ bool load_string_to_matrix(
 ////////////////////////////////////////////////////////////////////////
 // load_string_to_array
 //
-//		¹¦ÄÜÊÇ½«Ò»¸öÐÎÈç"1,2,3,4"µÄ×Ö·û´®×ª»»ÎªÒ»¸öintÊý×é
+//		åŠŸèƒ½æ˜¯å°†ä¸€ä¸ªå½¢å¦‚"1,2,3,4"çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºä¸€ä¸ªintæ•°ç»„
 //
-// ²ÎÊý£º
-//		str					´ý×ª»»µÄ×Ö·û´®
-//		str_len				´ý×ª»»µÄ×Ö·û´®³¤¶È
-//		seperator			·Ö¸ô·û£¬¸Ã²ÎÊýÖ±½Ó´«µÝ¸østrtokº¯Êý
-//		output_array		Êä³öÊý×éµÄÖ¸Õë
-//		output_capacity		Êä³öÊý×éµÄ×î´ó³¤¶È
-//		output_length		·µ»ØÖµ£¬·µ»ØÊä³öÒ»¹²ÓÐ¶àÉÙ¸öint
+// å‚æ•°ï¼š
+//		str					å¾…è½¬æ¢çš„å­—ç¬¦ä¸²
+//		str_len				å¾…è½¬æ¢çš„å­—ç¬¦ä¸²é•¿åº¦
+//		seperator			åˆ†éš”ç¬¦ï¼Œè¯¥å‚æ•°ç›´æŽ¥ä¼ é€’ç»™strtokå‡½æ•°
+//		output_array		è¾“å‡ºæ•°ç»„çš„æŒ‡é’ˆ
+//		output_capacity		è¾“å‡ºæ•°ç»„çš„æœ€å¤§é•¿åº¦
+//		output_length		è¿”å›žå€¼ï¼Œè¿”å›žè¾“å‡ºä¸€å…±æœ‰å¤šå°‘ä¸ªint
 //
 ////////////////////////////////////////////////////////////////////////
 bool load_string_to_array(
@@ -203,18 +203,18 @@ bool load_string_to_array(
 ////////////////////////////////////////////////////////////////////////
 // string_to_float_array
 //
-//		¹¦ÄÜÊÇ½«Ò»¸öÐÎÈç"1.2 , 0.33 , 3.14f , 4"µÄ×Ö·û´®×ª»»ÎªÒ»¸öfloatÊý×é
-//		·Ö¸ô·ûÎªÈÎÒâ"²»ÊôÓÚ¹¹³ÉfloatµÄ×Ö·û"µÄ×Ö·û, ÀýÈç" 1.001, { 2.33 } [ 3.14f ]" Ò²¿ÉÒÔ
+//		åŠŸèƒ½æ˜¯å°†ä¸€ä¸ªå½¢å¦‚"1.2 , 0.33 , 3.14f , 4"çš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºä¸€ä¸ªfloatæ•°ç»„
+//		åˆ†éš”ç¬¦ä¸ºä»»æ„"ä¸å±žäºŽæž„æˆfloatçš„å­—ç¬¦"çš„å­—ç¬¦, ä¾‹å¦‚" 1.001, { 2.33 } [ 3.14f ]" ä¹Ÿå¯ä»¥
 //
-// ²ÎÊý£º
-//		s					´ý×ª»»µÄ×Ö·û´®
-//		out					Êä³öµÄdoubleÊý×é
-//		out_max				Êä³öÊý×éµÄ×î´ó³¤¶È
+// å‚æ•°ï¼š
+//		s					å¾…è½¬æ¢çš„å­—ç¬¦ä¸²
+//		out					è¾“å‡ºçš„doubleæ•°ç»„
+//		out_max				è¾“å‡ºæ•°ç»„çš„æœ€å¤§é•¿åº¦
 ////////////////////////////////////////////////////////////////////////
 void string_to_float_array(char* s, double* out, const int out_max);
 void string_to_uint_array(char* s, int base, unsigned int* out, const int out_max);
 
-//½«ÐÎÈçTypeNameµÄ×Ö·û´®×ª»»ÎªTYPE_NAMEµÄÐÎÊ½
+//å°†å½¢å¦‚TypeNameçš„å­—ç¬¦ä¸²è½¬æ¢ä¸ºTYPE_NAMEçš„å½¢å¼
 void string_camel_to_all_upper(const char* const camel, char* const allupper, const int allupper_capacity, bool ignoreNumber = true, bool disableAdjacentUnderscore = true);
 
 } //namespace scl

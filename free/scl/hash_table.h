@@ -22,9 +22,9 @@ class hash_node
 public:
 	enum NODE_STATE
 	{
-		EMPTY,	//¸Ã²ÛÎ»Îª¿Õ
-		USING,	//¸Ã²ÛÎ»ÕıÔÚÊ¹ÓÃ
-		TOMB,	//¸Ã²ÛÎ»ÒÑ¾­±»ÊÍ·Å	
+		EMPTY,	//è¯¥æ§½ä½ä¸ºç©º
+		USING,	//è¯¥æ§½ä½æ­£åœ¨ä½¿ç”¨
+		TOMB,	//è¯¥æ§½ä½å·²ç»è¢«é‡Šæ”¾	
 	};
 	key_T		key;
 	value_T		value;
@@ -39,7 +39,7 @@ hash_node<key_T, value_T> hash_node<key_T, value_T>::empty;
 
 ////////////////////////////////////////////////////////////////////////////////
 //	class hash_table
-//	´¦Àí³åÍ»µÄ·½·¨:¿ª·ÅÑ°Ö··¨,¶ş´ÎÌ½²âÔÙÉ¢ÁĞ
+//	å¤„ç†å†²çªçš„æ–¹æ³•:å¼€æ”¾å¯»å€æ³•,äºŒæ¬¡æ¢æµ‹å†æ•£åˆ—
 ////////////////////////////////////////////////////////////////////////////////
 template<typename key_T, typename value_T>
 class hash_table
@@ -215,7 +215,7 @@ template<typename key_T, typename value_T>
 bool hash_table<key_T, value_T>::_try_add(const key_T& key, const value_T& value, const uint hashValue)
 {
 	bool probeSuccess = false;
-	//¶ş´ÎÌ½²âÔÙÉ¢ÁĞ
+	//äºŒæ¬¡æ¢æµ‹å†æ•£åˆ—
 	int tombIndex = -1;
 	int conflict = 0;
 	for (int i = 0; i < m_minPrime; ++i)
@@ -233,7 +233,7 @@ bool hash_table<key_T, value_T>::_try_add(const key_T& key, const value_T& value
 			}
 			break;
 		}
-		else if (node.state == node_T::TOMB) //ÕÒµ½Ò»¸ö·ØÄ¹Î»ÖÃ£¬¼ÇÂ¼Õâ¸öÎ»ÖÃ£¬²¢¼ÌĞø²éÕÒÒÔ±£Ö¤ºóĞøÃ»ÓĞÖØ¸´µÄkey
+		else if (node.state == node_T::TOMB) //æ‰¾åˆ°ä¸€ä¸ªåŸå¢“ä½ç½®ï¼Œè®°å½•è¿™ä¸ªä½ç½®ï¼Œå¹¶ç»§ç»­æŸ¥æ‰¾ä»¥ä¿è¯åç»­æ²¡æœ‰é‡å¤çš„key
 		{
 			if (tombIndex == -1)
 				tombIndex = probeIndex;
@@ -264,13 +264,13 @@ const value_T& hash_table<key_T, value_T>::find(const key_T& key) const
 {
 	const uint hashValue = hash_function(key);
 	//bool probeSuccess = false;
-	//¶ş´ÎÌ½²âÔÙÉ¢ÁĞ
+	//äºŒæ¬¡æ¢æµ‹å†æ•£åˆ—
 	for (int i = 0; i < m_minPrime; ++i)
 	{
 		const int probeIndex = (hashValue + (i * i)) % m_minPrime;
 		const node_T& node = m_hashTable[probeIndex];
 		if (node.state == node_T::EMPTY)
-			break; //Ã»ÕÒµ½
+			break; //æ²¡æ‰¾åˆ°
 		else if (node.state == node_T::TOMB)
 			continue;
 		else if (node.state == node_T::USING)
@@ -281,7 +281,7 @@ const value_T& hash_table<key_T, value_T>::find(const key_T& key) const
 		else
 			assertf(0, "invalid node status %d", node.state);
 	}
-	//Ã»ÕÒµ½Òª·µ»ØÊ²Ã´?
+	//æ²¡æ‰¾åˆ°è¦è¿”å›ä»€ä¹ˆ?
 	assert(false);
 	throw 1;
 	//return m_hashTable[0].value;
@@ -292,13 +292,13 @@ int hash_table<key_T, value_T>::find_index(const key_T& key) const
 {
 	const uint hashValue = hash_function(key);
 	//bool probeSuccess = false;
-	//¶ş´ÎÌ½²âÔÙÉ¢ÁĞ
+	//äºŒæ¬¡æ¢æµ‹å†æ•£åˆ—
 	for (int i = 0; i < m_minPrime; ++i)
 	{
 		const int probeIndex = (hashValue + (i * i)) % m_minPrime;
 		const node_T& node = m_hashTable[probeIndex];
 		if (node.state == node_T::EMPTY)
-			break; //Ã»ÕÒµ½
+			break; //æ²¡æ‰¾åˆ°
 		else if (node.state == node_T::TOMB)
 			continue;
 		else if (node.state == node_T::USING)
@@ -326,7 +326,7 @@ bool hash_table<key_T, value_T>::count(const key_T& key) const
 		const int probeIndex = (hashValue + (i * i)) % m_minPrime;
 		const node_T& node = m_hashTable[probeIndex];
 		if (node.state == node_T::EMPTY)
-			break; //Ã»ÕÒµ½
+			break; //æ²¡æ‰¾åˆ°
 		else if (node.state == node_T::TOMB)
 			continue;
 		else if (node.state == node_T::USING)

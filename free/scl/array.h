@@ -32,7 +32,7 @@ public:
 
 	array(): m_size(0) {}
 
-	//stl¼æÈİ½Ó¿Ú¡£iteratorÔİÊ±¼ò»¯ÎªT*
+	//stlå…¼å®¹æ¥å£ã€‚iteratoræš‚æ—¶ç®€åŒ–ä¸ºT*
 	typedef T*			iterator;
 	typedef const T*	const_iterator;
 	typedef T			value_type;
@@ -52,7 +52,7 @@ public:
 	T*		rbegin		()						{ return &(m_array[m_size - 1]); }
 	T*		rend		()						{ return &m_array[-1]; }
 	void	resize		(const int size)		{ assert(size <= MAX_SIZE); m_size = size; };
-	void	reserve		(const int capacity)	{ assert(0); } //¾²Ì¬Êı×é²»ÄÜreserve
+	void	reserve		(const int capacity)	{ assert(0); } //é™æ€æ•°ç»„ä¸èƒ½reserve
 	bool	empty		() const				{ return m_size == 0; }
 
 	template<class _Pr>
@@ -95,7 +95,7 @@ public:
 		return maxIndex;
 	}
 
-	//stlÖĞÃ»ÓĞÏàÓ¦µÄ¹¦ÄÜ½Ó¿Ú
+	//stlä¸­æ²¡æœ‰ç›¸åº”çš„åŠŸèƒ½æ¥å£
 	T&		push_back_fast		();
 	void	erase_fast			(const int index);
 	void	erase_element		(const T& elem);
@@ -160,7 +160,7 @@ inline void swapmem(T& a, T& b)
 {
 	if (&a == &b)
 		return;
-	//if (a == b)  //operator==Ö»Ìá¹©ÁËÂß¼­ÉÏµÄÏàµÈĞÔÅĞ¶¨
+	//if (a == b)  //operator==åªæä¾›äº†é€»è¾‘ä¸Šçš„ç›¸ç­‰æ€§åˆ¤å®š
 	//	return;
 	int* pIntA = reinterpret_cast<int*>(&a);
 	int* pIntB = reinterpret_cast<int*>(&b);
@@ -252,11 +252,11 @@ void array<T, MAX_SIZE>::erase_fast(const int index)
 		return;
 	}
 
-	//ÕâÀïÒª×ö½»»»£¬·ñÔòµ±TÖĞ°üº¬Ö¸ÕëµÄÊ±ºò£¬
-	//»áµ¼ÖÂm_array[m_count - 1]µÄÎö¹¹ÖĞdeleteÍ¬Ò»¸öÖ¸ÕëÁ½´Î£¨m_array[index]ÖĞ»¹ÓĞÒ»¸öÏàÍ¬µÄÖ¸Õë£©
-	//Í¬Ê±£¬²»ÄÜÓÃÒ»¸öĞÂµÄT tempÀ´×ö½»»»ÖĞ¼ä±äÁ¿£¬ÒòÎªÕâÑù»áµ¼ÖÂtempÎö¹¹£¬
-	//Ê¹µÃÍ¬ÑùÓĞÍ¬Ò»¸öÖ¸Õë±»Á½´ÎdeleteµÄÎÊÌâ£¨tempÄÚµÄÖ¸ÕëºÍ±»temp±£´æ¹ıµÄelemÄÚµÄÖ¸Õë£©
-	//2013.10.15 µ±TµÄÀàĞÍÎªÖ¸ÕëÊ±£¬swapmemÔÚ¶àÏß³ÌÏÂ²»°²È«£¬Ö±½Ó½»»»°²È«¡£ÉÏÃæÌáµ½µÄÎÊÌâ£¬½»¸øT±¾ÉíµÄ¿½±´¹¹Ôìº¯ÊıÀ´½â¾öÉî¿½±´Ç±¿½±´µÄÎÊÌá
+	//è¿™é‡Œè¦åšäº¤æ¢ï¼Œå¦åˆ™å½“Tä¸­åŒ…å«æŒ‡é’ˆçš„æ—¶å€™ï¼Œ
+	//ä¼šå¯¼è‡´m_array[m_count - 1]çš„ææ„ä¸­deleteåŒä¸€ä¸ªæŒ‡é’ˆä¸¤æ¬¡ï¼ˆm_array[index]ä¸­è¿˜æœ‰ä¸€ä¸ªç›¸åŒçš„æŒ‡é’ˆï¼‰
+	//åŒæ—¶ï¼Œä¸èƒ½ç”¨ä¸€ä¸ªæ–°çš„T tempæ¥åšäº¤æ¢ä¸­é—´å˜é‡ï¼Œå› ä¸ºè¿™æ ·ä¼šå¯¼è‡´tempææ„ï¼Œ
+	//ä½¿å¾—åŒæ ·æœ‰åŒä¸€ä¸ªæŒ‡é’ˆè¢«ä¸¤æ¬¡deleteçš„é—®é¢˜ï¼ˆtempå†…çš„æŒ‡é’ˆå’Œè¢«tempä¿å­˜è¿‡çš„elemå†…çš„æŒ‡é’ˆï¼‰
+	//2013.10.15 å½“Tçš„ç±»å‹ä¸ºæŒ‡é’ˆæ—¶ï¼Œswapmemåœ¨å¤šçº¿ç¨‹ä¸‹ä¸å®‰å…¨ï¼Œç›´æ¥äº¤æ¢å®‰å…¨ã€‚ä¸Šé¢æåˆ°çš„é—®é¢˜ï¼Œäº¤ç»™Tæœ¬èº«çš„æ‹·è´æ„é€ å‡½æ•°æ¥è§£å†³æ·±æ‹·è´æ½œæ‹·è´çš„é—®æ
 	//m_array[index] = m_array[m_count - 1];
 	if (index != m_size - 1)
 	{
@@ -294,7 +294,7 @@ void array<T, MAX_SIZE>::assign(const T* other, const int count)
 		return;
 	}
 
-	//·ÀÖ¹ÄÚ´æÖØºÏ
+	//é˜²æ­¢å†…å­˜é‡åˆ
 	assert(m_array != other);
 	if (m_array < other)
 		assert(m_array + count < other);

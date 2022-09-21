@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //	thread.h
-//	ThreadÀà
+//	Threadç±»
 //	2010.09.11 caolei
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -13,23 +13,23 @@ namespace scl {
 const int INVALID_THREAD_ID = -1;
 
 #ifdef SCL_WIN
-const int MAX_THREAD_COUNT = 64; // ×î´óÏß³ÌÊıÁ¿
+const int MAX_THREAD_COUNT = 64; // æœ€å¤§çº¿ç¨‹æ•°é‡
 #endif
 
 #ifdef SCL_LINUX
-const int MAX_THREAD_COUNT = 256; // ×î´óÏß³ÌÊıÁ¿
+const int MAX_THREAD_COUNT = 256; // æœ€å¤§çº¿ç¨‹æ•°é‡
 #endif
 
 #ifdef SCL_APPLE
-const int MAX_THREAD_COUNT = 64; // ×î´óÏß³ÌÊıÁ¿
+const int MAX_THREAD_COUNT = 64; // æœ€å¤§çº¿ç¨‹æ•°é‡
 #endif
 
 #ifdef SCL_ANDROID
-const int MAX_THREAD_COUNT = 64; // ×î´óÏß³ÌÊıÁ¿
+const int MAX_THREAD_COUNT = 64; // æœ€å¤§çº¿ç¨‹æ•°é‡
 #endif
 
 #ifdef SCL_HTML5
-const int MAX_THREAD_COUNT = 64; // ×î´óÏß³ÌÊıÁ¿
+const int MAX_THREAD_COUNT = 64; // æœ€å¤§çº¿ç¨‹æ•°é‡
 #endif
 
 
@@ -55,12 +55,12 @@ public:
 
 	void			send_stop_signal	();
 	bool			wait				(const int timeout = -1, bool check_thread = true);  // wait for thread close, timeout is millionseconds, if timeout == -1 wait until thread exits.
-	bool			force_kill			(); //Ç¿ÖÆÉ±ËÀÏß³Ì£¬·Ç³£²»°²È«
+	bool			force_kill			(); //å¼ºåˆ¶æ€æ­»çº¿ç¨‹ï¼Œéå¸¸ä¸å®‰å…¨
 
 	//static members
-	static	int		self				();			//Ïß³Ìid
-	static	int		self_process		(); //½ø³Ìid
-	static	int		self_index			();	//Ïß³ÌÔÚg_thread_infosÊı×éÖĞµÄindex
+	static	int		self				();			//çº¿ç¨‹id
+	static	int		self_process		(); //è¿›ç¨‹id
+	static	int		self_index			();	//çº¿ç¨‹åœ¨g_thread_infosæ•°ç»„ä¸­çš„index
 	static	bool	exists				(const int thread_id);
 
 	static	int		main_thread_id		()	{ return m_main_thread_id; }
@@ -69,31 +69,31 @@ public:
 public:
 	enum SIGNAL
 	{
-		SIGNAL_NORMAL	= 0, //Õı³£ÔËĞĞ
-		SIGNAL_STOP		= 1, //Í£Ö¹
-		SIGNAL_HUNG		= 2, //¹ÒÆğ
+		SIGNAL_NORMAL	= 0, //æ­£å¸¸è¿è¡Œ
+		SIGNAL_STOP		= 1, //åœæ­¢
+		SIGNAL_HUNG		= 2, //æŒ‚èµ·
 	};
 
 	class info
 	{
 	public:
-		void*					handle;				//Ïß³ÌÔÚ²Ù×÷ÏµÍ³ÖĞµÄ¾ä±ú
+		void*					handle;				//çº¿ç¨‹åœ¨æ“ä½œç³»ç»Ÿä¸­çš„å¥æŸ„
 
-		uint					process_id;			//½ø³Ìid
-		int						id;					//Ïß³Ìid
-		int						index;				//Ïß³ÌÔÚg_threadsÖĞµÄindex
+		uint					process_id;			//è¿›ç¨‹id
+		int						id;					//çº¿ç¨‹id
+		int						index;				//çº¿ç¨‹åœ¨g_threadsä¸­çš„index
 
-		uint64					pthread_id;			//pthreadÏß³Ìid  ½öÔÚlinuxÏÂÓĞĞ§
+		uint64					pthread_id;			//pthreadçº¿ç¨‹id  ä»…åœ¨linuxä¸‹æœ‰æ•ˆ
 
-		int						parent_thread_id;	//¸¸Ïß³ÌµÄid
+		int						parent_thread_id;	//çˆ¶çº¿ç¨‹çš„id
 
-		thread::ThreadFunction	function;			//Ïß³ÌµÄÖ´ĞĞº¯Êı
-		void*					param;				//Ïß³ÌÖ´ĞĞº¯ÊıµÄ²ÎÊı
-		int						signal;				//Ïß³ÌĞÅºÅ£¬ÆäËûÏß³ÌÍ¨¹ıÉèÖÃÕâ¸öĞÅºÅºÍÏß³Ìº¯ÊıÍ¨ĞÅ
+		thread::ThreadFunction	function;			//çº¿ç¨‹çš„æ‰§è¡Œå‡½æ•°
+		void*					param;				//çº¿ç¨‹æ‰§è¡Œå‡½æ•°çš„å‚æ•°
+		int						signal;				//çº¿ç¨‹ä¿¡å·ï¼Œå…¶ä»–çº¿ç¨‹é€šè¿‡è®¾ç½®è¿™ä¸ªä¿¡å·å’Œçº¿ç¨‹å‡½æ•°é€šä¿¡
 
-		bool					auto_detach;		//Ïß³Ìº¯ÊıÍÆ³öºó£¬Ïß³Ì×ÊÔ´ÊÇ·ñ×Ô¶¯ÊÍ·Å£¬×¢Òâ£¬Èç¹û¸ÃÖµÎªfalse£¬ÄÇÃ´´´½¨Ïß³Ì£¨thread::start£©ºÍÊÍ·ÅÏß³Ì(thread::start)µÄÏß³Ì±ØĞëÊÇÍ¬Ò»¸öÏß³Ì
-		void*					exit_code;			//Ïß³Ìº¯ÊıÍË³ö´úÂë
-		volatile bool			is_running;			//Ïß³Ìº¯ÊıÊÇ·ñÕıÔÚÔËĞĞ
+		bool					auto_detach;		//çº¿ç¨‹å‡½æ•°æ¨å‡ºåï¼Œçº¿ç¨‹èµ„æºæ˜¯å¦è‡ªåŠ¨é‡Šæ”¾ï¼Œæ³¨æ„ï¼Œå¦‚æœè¯¥å€¼ä¸ºfalseï¼Œé‚£ä¹ˆåˆ›å»ºçº¿ç¨‹ï¼ˆthread::startï¼‰å’Œé‡Šæ”¾çº¿ç¨‹(thread::start)çš„çº¿ç¨‹å¿…é¡»æ˜¯åŒä¸€ä¸ªçº¿ç¨‹
+		void*					exit_code;			//çº¿ç¨‹å‡½æ•°é€€å‡ºä»£ç 
+		volatile bool			is_running;			//çº¿ç¨‹å‡½æ•°æ˜¯å¦æ­£åœ¨è¿è¡Œ
 
 		void clear()
 		{
@@ -183,7 +183,7 @@ private:
 };
 
 
-//ĞÅºÅÁ¿
+//ä¿¡å·é‡
 class semaphore
 {
 public:

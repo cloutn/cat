@@ -77,18 +77,18 @@ void rectf::to_world(const int deviceWidth, const int deviceHeight)
 void rectf::_point_to_world(float& x, float& y, const int deviceWidth, const int deviceHeight)
 {
 	////////////////////////////////////
-	//Ò»¸öpoint(x, y)´Óscreen×ø±êÏµ±ä»»µ½world×ø±êÏµ
+	//ä¸€ä¸ªpoint(x, y)ä»screenåæ ‡ç³»å˜æ¢åˆ°worldåæ ‡ç³»
 	////////////////////////////////////
 
-	//screen×ø±êÏµyÖáÏòÏÂ£¬ËùÒÔÏÈÒª±ä»»ÎªyÖáÏòÉÏµÄ×ø±êÏµ£¬²ÅÄÜºÍworld×ø±êÏµ±ä»»
+	//screenåæ ‡ç³»yè½´å‘ä¸‹ï¼Œæ‰€ä»¥å…ˆè¦å˜æ¢ä¸ºyè½´å‘ä¸Šçš„åæ ‡ç³»ï¼Œæ‰èƒ½å’Œworldåæ ‡ç³»å˜æ¢
 	const float revertScreenX = x;
 	const float revertScreenY = -y;
 
-	//´Óscreen±ä»»µ½worldµÄtransformÖµ
+	//ä»screenå˜æ¢åˆ°worldçš„transformå€¼
 	const float transformX = -deviceWidth / 2.0f;
 	const float transformY = deviceHeight / 2.0f;
 
-	//»ñÈ¡Î»ÖÃ×ø±êÔÚworldÖĞµÄ×ø±êÖµ
+	//è·å–ä½ç½®åæ ‡åœ¨worldä¸­çš„åæ ‡å€¼
 	x = revertScreenX + transformX;
 	y = revertScreenY + transformY;
 }
@@ -131,7 +131,7 @@ void rectf::cut_with_texture(const rectf& bound, rectf& textureRect)
 	if (oriWidth < 0 || oriHeight < 0)
 		return;
 
-	//ÎÆÀí×ø±êÊÇ´Ó0µ½1µÄ£¬ËùÒÔÕâÀïÒª¼ÆËã±ä»¯µÄ±ÈÂÊ
+	//çº¹ç†åæ ‡æ˜¯ä»0åˆ°1çš„ï¼Œæ‰€ä»¥è¿™é‡Œè¦è®¡ç®—å˜åŒ–çš„æ¯”ç‡
 	float leftChangeRatio = 0;
 	if (left < bound.left)
 	{

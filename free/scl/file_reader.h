@@ -24,50 +24,50 @@ public:
 	file_reader(const int maxBufferSize = DEFAULT_MAX_BUFFER_SIZE, const int m_maxLineCacheSize = DEFAULT_LINE_CACHE_SIZE);
 	~file_reader();
 
-	bool		open							(const char* const filename);	//´ò¿ªÒ»¸öÎÄ¼ş
-	bool		open_buffer						(const char* const buffer, const int len);		//´ò¿ªÒ»¸ö»º³åÇø
-	bool		nextline						();		//½øÈëÏÂÒ»ĞĞ
-	char*		currentline						();		//»ñÈ¡µ±Ç°ĞĞµÄÄÚÈİ
-	void		clear							();		//Çå¿ÕËùÓĞ»º³åÇøºÍÓÎ±ê×´Ì¬£¬²»»áµ¼ÖÂ»º³åÇøÄÚ´æÊÍ·Å
-	void		reserve_linebreak				(char* c);	//ÉèÖÃ½âÎöÃ¿ĞĞºó£¬±£ÁôµÄ»»ĞĞ·û¸ñÊ½¡£Èç¹û²»ÉèÖÃ£¬currentline() »ñµÃµÄĞĞ¾Í²»°üÀ¨»»ĞĞ·û
+	bool		open							(const char* const filename);	//æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶
+	bool		open_buffer						(const char* const buffer, const int len);		//æ‰“å¼€ä¸€ä¸ªç¼“å†²åŒº
+	bool		nextline						();		//è¿›å…¥ä¸‹ä¸€è¡Œ
+	char*		currentline						();		//è·å–å½“å‰è¡Œçš„å†…å®¹
+	void		clear							();		//æ¸…ç©ºæ‰€æœ‰ç¼“å†²åŒºå’Œæ¸¸æ ‡çŠ¶æ€ï¼Œä¸ä¼šå¯¼è‡´ç¼“å†²åŒºå†…å­˜é‡Šæ”¾
+	void		reserve_linebreak				(char* c);	//è®¾ç½®è§£ææ¯è¡Œåï¼Œä¿ç•™çš„æ¢è¡Œç¬¦æ ¼å¼ã€‚å¦‚æœä¸è®¾ç½®ï¼Œcurrentline() è·å¾—çš„è¡Œå°±ä¸åŒ…æ‹¬æ¢è¡Œç¬¦
 
 private:
-	bool		_append_string_in_next_block	();		//µ±m_bufferÖĞÎŞ·¨°üº¬ÕûĞĞÄÚÈİÊ±£¬Ê¹ÓÃm_line»º´æµ±Ç°ĞĞ
-	bool		_find_next_start				();		//ÕÒµ½ÏÂÒ»ĞĞµÄ¿ªÊ¼Î»ÖÃ
-	bool		_find_end						(bool useLineCache = false);		//ÕÒµ½ÏÂµ±Ç°ĞĞ½áÊøµÄµØ·½,useLineCache²ÎÊıÓÃÀ´Ö¸Ê¾µ±m_buffÎŞ·¨ÍêÕû¶ÁÈëÒ»ĞĞÊ±£¬ÊÇ·ñ³¢ÊÔÊ¹ÓÃÀ©Õ¹m_line»º³åÇø
-	bool		_load_block						();		//´ÓÎÄ¼şÖĞ¶ÁÈ¡Ò»¸öĞÂµÄbyte¿é
-	int			_block_end						() { return m_readByteCount; }	//µ±Ç°¶ÁÈ¡¿éµÄ½áÊøÎ»ÖÃ
-	bool		_is_line_end					(const char c) { return c == '\r' || c == '\n' || c == 0; } //·µ»Øµ±Ç°×Ö·ûÊÇ·ñÎªÒ»ĞĞµÄ½áÊø
+	bool		_append_string_in_next_block	();		//å½“m_bufferä¸­æ— æ³•åŒ…å«æ•´è¡Œå†…å®¹æ—¶ï¼Œä½¿ç”¨m_lineç¼“å­˜å½“å‰è¡Œ
+	bool		_find_next_start				();		//æ‰¾åˆ°ä¸‹ä¸€è¡Œçš„å¼€å§‹ä½ç½®
+	bool		_find_end						(bool useLineCache = false);		//æ‰¾åˆ°ä¸‹å½“å‰è¡Œç»“æŸçš„åœ°æ–¹,useLineCacheå‚æ•°ç”¨æ¥æŒ‡ç¤ºå½“m_buffæ— æ³•å®Œæ•´è¯»å…¥ä¸€è¡Œæ—¶ï¼Œæ˜¯å¦å°è¯•ä½¿ç”¨æ‰©å±•m_lineç¼“å†²åŒº
+	bool		_load_block						();		//ä»æ–‡ä»¶ä¸­è¯»å–ä¸€ä¸ªæ–°çš„byteå—
+	int			_block_end						() { return m_readByteCount; }	//å½“å‰è¯»å–å—çš„ç»“æŸä½ç½®
+	bool		_is_line_end					(const char c) { return c == '\r' || c == '\n' || c == 0; } //è¿”å›å½“å‰å­—ç¬¦æ˜¯å¦ä¸ºä¸€è¡Œçš„ç»“æŸ
 
 private:
 
 	////////////////////////////////////
 	//
-	//	file_read¿ÉÒÔÍ¨¹ıÁ½ÖÖ²»Í¬µÄ·½Ê½À´¶ÁÈ¡ÎÄ¼ş
+	//	file_readå¯ä»¥é€šè¿‡ä¸¤ç§ä¸åŒçš„æ–¹å¼æ¥è¯»å–æ–‡ä»¶
 	//
-	//	1.µ±Ê¹ÓÃopen(filename)Ê±£¬Ê¹ÓÃm_fileÎÄ¼şÖ¸ÕëºÍfread()À´¶ÁÈ¡ÎÄ¼şÄÚÈİ
-	//	2.µ±Ê¹ÓÃopen_buffer(buffer, len)£¬¾Í²»ÔÙÊ¹ÓÃfreadÀ´¶ÁÈ¡ÎÄ¼ş£¬¶øÊÇÊ¹ÓÃm_filebuffer_lenºÍm_filebuffer_posÀ´¶ÁÈ¡ÎÄ¼şÄÚÈİ
+	//	1.å½“ä½¿ç”¨open(filename)æ—¶ï¼Œä½¿ç”¨m_fileæ–‡ä»¶æŒ‡é’ˆå’Œfread()æ¥è¯»å–æ–‡ä»¶å†…å®¹
+	//	2.å½“ä½¿ç”¨open_buffer(buffer, len)ï¼Œå°±ä¸å†ä½¿ç”¨freadæ¥è¯»å–æ–‡ä»¶ï¼Œè€Œæ˜¯ä½¿ç”¨m_filebuffer_lenå’Œm_filebuffer_posæ¥è¯»å–æ–‡ä»¶å†…å®¹
 	//
 	////////////////////////////////////
-	void*		m_file;							//fopen·µ»ØµÄÎÄ¼ş¾ä±ú
-	const char*	m_filebuffer;					//ÎÄ¼ş»º³åÇø
-	int			m_filebuffer_len;				//ÎÄ¼ş»º³åÇø³¤¶È
-	int			m_filebuffer_pos;				//ÎÄ¼ş»º³åÇøµ±Ç°Ö¸Õë
+	void*		m_file;							//fopenè¿”å›çš„æ–‡ä»¶å¥æŸ„
+	const char*	m_filebuffer;					//æ–‡ä»¶ç¼“å†²åŒº
+	int			m_filebuffer_len;				//æ–‡ä»¶ç¼“å†²åŒºé•¿åº¦
+	int			m_filebuffer_pos;				//æ–‡ä»¶ç¼“å†²åŒºå½“å‰æŒ‡é’ˆ
 
 
-	//ÓÃÓÚ´¦ÀíÎÄ¼şµÄÁÙÊ±»º³åÇø
-	char*		m_buffer;						//»º³åÇø
-	char*		m_line;							//ÁÙÊ±ÓÃĞĞ»º³åÇø£¬µ±m_bufferÖĞÎŞ·¨°üº¬ÕûĞĞÄÚÈİÊ±£¨ÖĞ¼ä°üº¬ÁË»»ĞĞ£¬µ¼ÖÂÎŞ·¨ÈİÄÉÒ»¸öÍêÕûĞĞ£©£¬Ê¹ÓÃm_line»º´æµ±Ç°ĞĞ
+	//ç”¨äºå¤„ç†æ–‡ä»¶çš„ä¸´æ—¶ç¼“å†²åŒº
+	char*		m_buffer;						//ç¼“å†²åŒº
+	char*		m_line;							//ä¸´æ—¶ç”¨è¡Œç¼“å†²åŒºï¼Œå½“m_bufferä¸­æ— æ³•åŒ…å«æ•´è¡Œå†…å®¹æ—¶ï¼ˆä¸­é—´åŒ…å«äº†æ¢è¡Œï¼Œå¯¼è‡´æ— æ³•å®¹çº³ä¸€ä¸ªå®Œæ•´è¡Œï¼‰ï¼Œä½¿ç”¨m_lineç¼“å­˜å½“å‰è¡Œ
 
-	int			m_start;						//m_bufferµÄÆğÊ¼µãÓÎ±ê£¬±ê¼ÇÒ»ĞĞµÄ¿ªÊ¼Î»ÖÃ
-	int			m_end;							//m_bufferµÄ½áÊøµãÓÎ±ê£¬±ê¼ÇÒ»ĞĞµÄ½áÊøÎ»ÖÃ
-	int			m_readByteCount;				//Ä³´Îfread·µ»ØµÄ×Ö½ÚÊı£¬ÓÃÓÚ_block_end()º¯Êı±êÊ¶µ±Ç°¶ÁÈ¡¿éµÄ½áÊøÎªÖ¹£¬×¢Òâ£¬¸ÃÎ»ÖÃÓë»»ĞĞ·ûÃ»ÓĞÈÎºÎÂß¼­¹ØÏµ
-	bool		m_usingLineCache;				//±êÃ÷µ±Ç°ÊÇ·ñÕıÔÚÊ¹ÓÃm_line»º³åÇø
-	char		m_linebreak[RESERVE_LINEBREAK_SIZE]; //½âÎöÃ¿ĞĞºó£¬±£´æµÄ»»ĞĞ·û¸ñÊ½
+	int			m_start;						//m_bufferçš„èµ·å§‹ç‚¹æ¸¸æ ‡ï¼Œæ ‡è®°ä¸€è¡Œçš„å¼€å§‹ä½ç½®
+	int			m_end;							//m_bufferçš„ç»“æŸç‚¹æ¸¸æ ‡ï¼Œæ ‡è®°ä¸€è¡Œçš„ç»“æŸä½ç½®
+	int			m_readByteCount;				//æŸæ¬¡freadè¿”å›çš„å­—èŠ‚æ•°ï¼Œç”¨äº_block_end()å‡½æ•°æ ‡è¯†å½“å‰è¯»å–å—çš„ç»“æŸä¸ºæ­¢ï¼Œæ³¨æ„ï¼Œè¯¥ä½ç½®ä¸æ¢è¡Œç¬¦æ²¡æœ‰ä»»ä½•é€»è¾‘å…³ç³»
+	bool		m_usingLineCache;				//æ ‡æ˜å½“å‰æ˜¯å¦æ­£åœ¨ä½¿ç”¨m_lineç¼“å†²åŒº
+	char		m_linebreak[RESERVE_LINEBREAK_SIZE]; //è§£ææ¯è¡Œåï¼Œä¿å­˜çš„æ¢è¡Œç¬¦æ ¼å¼
 
-	//ÅäÖÃ
-	const int	m_maxBufferSize;				//Ò»°ã»º³åÇøµÄ×î´óÈİÁ¿
-	const int	m_maxLineCacheSize;				//ÁÙÊ±ÓÃµÄ¡°ĞĞ»º³åÇø¡±µÄ×î´óÈİÁ¿
+	//é…ç½®
+	const int	m_maxBufferSize;				//ä¸€èˆ¬ç¼“å†²åŒºçš„æœ€å¤§å®¹é‡
+	const int	m_maxLineCacheSize;				//ä¸´æ—¶ç”¨çš„â€œè¡Œç¼“å†²åŒºâ€çš„æœ€å¤§å®¹é‡
 };
 
 } //namespace scl

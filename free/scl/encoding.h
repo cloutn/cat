@@ -14,9 +14,9 @@ namespace scl {
 
 ////////////////////////////////////
 //	_ANSI
-//	Õâ¸öºêµÄÖ÷Òª×÷ÓÃÊÇ:
-//		°ÑÔ´´úÂëÖĞµÄchar*ÖĞÎÄ£¬×ª»»ÎªÖ¸¶¨±àÂëµÄchar*ÖĞÎÄ
-//		¾ßÌå×ª»»ÎªÄÄÖÖchar*±àÂë£¬Çë²Î¿¼ºê_SCL_ENCODING_GBK_µÄËµÃ÷
+//	è¿™ä¸ªå®çš„ä¸»è¦ä½œç”¨æ˜¯:
+//		æŠŠæºä»£ç ä¸­çš„char*ä¸­æ–‡ï¼Œè½¬æ¢ä¸ºæŒ‡å®šç¼–ç çš„char*ä¸­æ–‡
+//		å…·ä½“è½¬æ¢ä¸ºå“ªç§char*ç¼–ç ï¼Œè¯·å‚è€ƒå®_SCL_ENCODING_GBK_çš„è¯´æ˜
 ////////////////////////////////////
 #define _ANSI(s) scl::debug_to_ansi(s).c_str()
 
@@ -24,14 +24,14 @@ namespace scl {
 #define MAX_DEBUG_SOURCE_STRING_LENGTH 128
 
 #ifdef SCL_WIN
-//²Î¼û#define _ANSI(s)µÄËµÃ÷
+//å‚è§#define _ANSI(s)çš„è¯´æ˜
 inline string<MAX_DEBUG_SOURCE_STRING_LENGTH> debug_to_ansi(char* s)
 {
 #ifdef _SCL_ENCODING_GBK_
 	return s;
 #else
 	wstring<MAX_DEBUG_SOURCE_STRING_LENGTH> ws;
-	ws.from_gbk(s); //ÓÉÓÚÔÚwindowsÏÂ£¬Ô´´úÂë×ÜÊÇgbk±àÂë£¬ËùÒÔÕâÀïfrom_gbk
+	ws.from_gbk(s); //ç”±äºåœ¨windowsä¸‹ï¼Œæºä»£ç æ€»æ˜¯gbkç¼–ç ï¼Œæ‰€ä»¥è¿™é‡Œfrom_gbk
 	string<MAX_DEBUG_SOURCE_STRING_LENGTH> ss;
 	ws.to_ansi(ss.c_str(), ss.capacity());
 	return ss;
@@ -40,12 +40,12 @@ inline string<MAX_DEBUG_SOURCE_STRING_LENGTH> debug_to_ansi(char* s)
 #endif
 
 #if defined(SCL_LINUX) || defined(SCL_APPLE)
-//²Î¼û#define _ANSI(s)µÄËµÃ÷
+//å‚è§#define _ANSI(s)çš„è¯´æ˜
 inline string<MAX_DEBUG_SOURCE_STRING_LENGTH> debug_to_ansi(char* s)
 {
 #ifdef _SCL_ENCODING_GBK_
 	wstring<MAX_DEBUG_SOURCE_STRING_LENGTH> ws;
-	ws.from_utf8(s); //ÓÉÓÚÔÚlinuxÏÂ£¬Ô´´úÂë×ÜÊÇutf8±àÂë£¬ËùÒÔÕâÀïfrom_utf8
+	ws.from_utf8(s); //ç”±äºåœ¨linuxä¸‹ï¼Œæºä»£ç æ€»æ˜¯utf8ç¼–ç ï¼Œæ‰€ä»¥è¿™é‡Œfrom_utf8
 	string<MAX_DEBUG_SOURCE_STRING_LENGTH> ss;
 	ws.to_ansi(ss.c_str(), ss.capacity());
 	return ss;

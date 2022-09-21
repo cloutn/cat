@@ -43,21 +43,21 @@ public:
 	bool			open				(const char* name, const char* const mode = "a+b");
 	//bool			open				(const wchar* name, const wchar* const mode = L"a+b");
 	int				seek				(int shift, SEEK_POSITION startPosition);
-	int 			read				(void* data,		const int elementCount, const int elementSize = 1) const; //·µ»Ø¶ÁÈ¡µÄÊı¾İµÄbyteÊı
+	int 			read				(void* data,		const int elementCount, const int elementSize = 1) const; //è¿”å›è¯»å–çš„æ•°æ®çš„byteæ•°
 	int				write				(const void* data,	const int elementCount, const int elementSize = 1);
 	bool			close				();
 	bool			eof					();
 	bool			is_open				() const { return m_file != NULL; }
-	void			flush				();	//Ç¿ÖÆÎÄ¼şĞ´Èë´ÅÅÌ
+	void			flush				();	//å¼ºåˆ¶æ–‡ä»¶å†™å…¥ç£ç›˜
 	uint64			size				();
 	int				tell				();
 
-	//ÒÔÏÂº¯ÊıÓÉÓÚºÍstring¸ñÊ½Ïà¹Ø£¬Ä¿Ç°Ö»ÄÜÓÃÓÚUTF16ÎÄ¼şµÄ´¦Àí
+	//ä»¥ä¸‹å‡½æ•°ç”±äºå’Œstringæ ¼å¼ç›¸å…³ï¼Œç›®å‰åªèƒ½ç”¨äºUTF16æ–‡ä»¶çš„å¤„ç†
 	bool			skip_bom			();
 	int				line_count			();
 	bool			get_line			(char* data, const int maxCount);
 	int 			write_string		(const char* message, const int stringLength);
-	int				read_string			(wchar* message, const int maxCount); //·µ»ØÖµÊÇ¶ÁÈ¡×Ö·ûµÄ¸öÊı
+	int				read_string			(wchar* message, const int maxCount); //è¿”å›å€¼æ˜¯è¯»å–å­—ç¬¦çš„ä¸ªæ•°
 	LINEFEED_TYPE	get_linefeed_type	();
 
 public:
@@ -81,26 +81,26 @@ protected:
 };
 
 
-//¹æ·¶»¯Ò»¸öÂ·¾¶Ãû
-//½«ËùÓĞµÄ'\'Ìæ»»Îª'/',Í¬Ê±,µ±autoAddSlashÎªtrue, ÇÒ±ØÒªµÄÊ±ºò£¬»áÔÚÄ©Î²Ìí¼Ó'/'
+//è§„èŒƒåŒ–ä¸€ä¸ªè·¯å¾„å
+//å°†æ‰€æœ‰çš„'\'æ›¿æ¢ä¸º'/',åŒæ—¶,å½“autoAddSlashä¸ºtrue, ä¸”å¿…è¦çš„æ—¶å€™ï¼Œä¼šåœ¨æœ«å°¾æ·»åŠ '/'
 void normalize_path			(pstring path, bool auto_add_slash = true);
 
-//´ÓÂ·¾¶ÖĞÌáÈ¡ÎÄ¼şÃû£¨withExt²ÎÊı±íÊ¾ÊÇ·ñ±£ÁôÀ©Õ¹Ãû£©
+//ä»è·¯å¾„ä¸­æå–æ–‡ä»¶åï¼ˆwithExtå‚æ•°è¡¨ç¤ºæ˜¯å¦ä¿ç•™æ‰©å±•åï¼‰
 void extract_filename		(pstring fullname, bool with_ext = true);
 
-//´ÓÂ·¾¶ÖĞÌáÈ¡ÎÄ¼şÃû£¬²»±£ÁôÀ©Õ¹Ãû
+//ä»è·¯å¾„ä¸­æå–æ–‡ä»¶åï¼Œä¸ä¿ç•™æ‰©å±•å
 void extract_filename_no_ext(pstring fullname);
 
-//´ÓÂ·¾¶ÖĞÌáÈ¡À©Õ¹Ãû
+//ä»è·¯å¾„ä¸­æå–æ‰©å±•å
 void extract_fileext		(pstring fullname);
 
-//´ÓÂ·¾¶ÖĞÌáÈ¡À©Õ¹Ãû
+//ä»è·¯å¾„ä¸­æå–æ‰©å±•å
 void extract_fileext_to		(pstring fullname, pstring ext);
 
-//´ÓÂ·¾¶ÖĞÌáÈ¡Â·¾¶Ãû£¬²»°üº¬ÎÄ¼şÃû
+//ä»è·¯å¾„ä¸­æå–è·¯å¾„åï¼Œä¸åŒ…å«æ–‡ä»¶å
 void extract_path			(pstring fullname, bool add_current_path = true);
 
-//»ñÈ¡µ±Ç°½ø³Ì¿ÉÖ´ĞĞÎÄ¼şµÄÃû×Ö
+//è·å–å½“å‰è¿›ç¨‹å¯æ‰§è¡Œæ–‡ä»¶çš„åå­—
 void get_exe_name			(pstring exename);
 
 } // namespace scl 

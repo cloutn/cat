@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //	log.cpp
-//	ÈÕÖ¾Àà
+//	æ—¥å¿—ç±»
 //	2010.09.03 caolei
 ////////////////////////////////////////////////////////////////////////////////
 #include <stdarg.h>
@@ -62,7 +62,7 @@ log::~log()
 
 void log::_prepare_log_header(log_header& header, LOG_LEVEL level, int log_format, const char* const filename, const char* const function, const int line)
 {
-	//ÎÄ¼şÃû£¨È¥µôÂ·¾¶£©
+	//æ–‡ä»¶åï¼ˆå»æ‰è·¯å¾„ï¼‰
 	stringPath fullfilename = filename;
 	extract_filename(fullfilename.pstring());
 
@@ -113,7 +113,7 @@ void log::direct_out(LOG_LEVEL level, int log_format, const char* const filename
 //	int thread_log_index = _find_thread_log();
 //	if (-1 == thread_log_index)
 //	{
-//		assert(false); //ËùÓĞÈÕÖ¾¶¼±»Õ¼ÓÃÁË
+//		assert(false); //æ‰€æœ‰æ—¥å¿—éƒ½è¢«å ç”¨äº†
 //		return;
 //	}
 //
@@ -132,7 +132,7 @@ void log::_sendlog(log_header& header, const char* log_string)
 	int thread_log_index = _find_thread_log();
 	if (-1 == thread_log_index)
 	{
-		assert(false); //ËùÓĞÈÕÖ¾¶¼±»Õ¼ÓÃÁË
+		assert(false); //æ‰€æœ‰æ—¥å¿—éƒ½è¢«å ç”¨äº†
 		return;
 	}
 
@@ -199,7 +199,7 @@ void log::disable(LOG_LEVEL level)
 
 void log::_open_log_file(log_file& _file, const char* const logname, bool split)
 {
-	//Èç¹ûÎÄ¼şËùÔÚÂ·¾¶·¢Éú±ä»¯£¬¹Ø±ÕÔ­ÓĞÎÄ¼ş
+	//å¦‚æœæ–‡ä»¶æ‰€åœ¨è·¯å¾„å‘ç”Ÿå˜åŒ–ï¼Œå…³é—­åŸæœ‰æ–‡ä»¶
 	stringPath currentPath = _file.filename();
 	extract_path(currentPath.pstring());
 	stringPath newPath = logname;
@@ -209,28 +209,28 @@ void log::_open_log_file(log_file& _file, const char* const logname, bool split)
 		_file.close();
 	}
 
-	if (!_file.is_open()) //µÚÒ»´Î´ò¿ªÎÄ¼ş£¬ĞèÒªË³Ğò²éÕÒËùÓĞµÄÎÄ¼ş
+	if (!_file.is_open()) //ç¬¬ä¸€æ¬¡æ‰“å¼€æ–‡ä»¶ï¼Œéœ€è¦é¡ºåºæŸ¥æ‰¾æ‰€æœ‰çš„æ–‡ä»¶
 	{	
 		_try_open_index_file(_file, logname, -1);
 	}
-	else  //ÎÄ¼şÒÑ¾­´ò¿ªÁË
+	else  //æ–‡ä»¶å·²ç»æ‰“å¼€äº†
 	{
-		//Èç¹ûÎŞĞè²ğ·Ö£¬ÔòÌø¹ı²ğ·ÖÂß¼­£¬Ö±½Ó·µ»Ø¼´¿É
+		//å¦‚æœæ— éœ€æ‹†åˆ†ï¼Œåˆ™è·³è¿‡æ‹†åˆ†é€»è¾‘ï¼Œç›´æ¥è¿”å›å³å¯
 		if (!split)
 			return;
-		//ÎÄ¼ş´óĞ¡»¹Ã»³¬¹ıMAX_LOG_FILE_SIZE£¬¿ÉÒÔ¼ÌĞøĞ´Èë£¬ËùÒÔ·µ»Ø¼´¿É
+		//æ–‡ä»¶å¤§å°è¿˜æ²¡è¶…è¿‡MAX_LOG_FILE_SIZEï¼Œå¯ä»¥ç»§ç»­å†™å…¥ï¼Œæ‰€ä»¥è¿”å›å³å¯
 		if (_file.size() < MAX_LOG_FILE_SIZE)
 			return;
 
 		stringPath filename = _file.filename();
 
-		//´Óµ±Ç°ÎÄ¼şÃûÖĞ½ØÈ¡index
+		//ä»å½“å‰æ–‡ä»¶åä¸­æˆªå–index
 		int start_index = static_cast<int>(::strlen(logname));
 		int end_index	= filename.length() - sizeof(".log") + 1;
 		string8 str_index;
 		filename.substr(start_index, end_index - start_index, str_index.c_str(), str_index.capacity());
 
-		//¼ÆËãĞÂµÄindex
+		//è®¡ç®—æ–°çš„index
 		int new_index = str_index.empty() ? 1 : (str_index.to_int() + 1);
 
 		_try_open_index_file(_file, logname, new_index);
@@ -247,7 +247,7 @@ int log::_find_thread_log(const int log_buffer_size)
 			return i;
 	}
 
-	//Èç¹ûÃ»ÓĞ¶ÔÓ¦µÄÈÕÖ¾£¬ÕÒ¸ö¿ÕÈÕÖ¾
+	//å¦‚æœæ²¡æœ‰å¯¹åº”çš„æ—¥å¿—ï¼Œæ‰¾ä¸ªç©ºæ—¥å¿—
 	for (int i = 0; i < MAX_THREAD_LOG_COUNT; ++i)
 	{
 		thread_log& l = m_thread_logs[i];
@@ -258,7 +258,7 @@ int log::_find_thread_log(const int log_buffer_size)
 				l.init(&log::_log_handler, m_levels.c_array(), m_levels.size(), log_buffer_size);
 			}
 			l.set_thread_id(thread_id);
-			return i;	//ÕÒµ½ÁË¿ÕÈÕÖ¾,Ğ´Èë
+			return i;	//æ‰¾åˆ°äº†ç©ºæ—¥å¿—,å†™å…¥
 		}
 	}
 	return -1;
@@ -266,27 +266,27 @@ int log::_find_thread_log(const int log_buffer_size)
 
 void log::_insert_date_dir(stringPath& _name, uint64 _time)
 {
-	//¸ù¾İÈÕÆÚÈ·¶¨ÈÕÖ¾µÄ´òÓ¡Ä¿Â¼
+	//æ ¹æ®æ—¥æœŸç¡®å®šæ—¥å¿—çš„æ‰“å°ç›®å½•
 	scl::time logtime(_time);
 	string256 timedir;
 	timedir.format("%d%02d%02d", logtime.year, logtime.month, logtime.day);
 
-	//ĞèÒª½«filenameµÄÂ·¾¶²ğ¿ª£¬È»ºó½«time string×÷ÎªÖĞ¼äÄ¿Â¼²åÈëÂ·¾¶
+	//éœ€è¦å°†filenameçš„è·¯å¾„æ‹†å¼€ï¼Œç„¶åå°†time stringä½œä¸ºä¸­é—´ç›®å½•æ’å…¥è·¯å¾„
 	stringPath path = _name.c_str();
 	extract_path(path.pstring());
 			
-	//ÎŞÂ·¾¶µÄÎÄ¼şÃû
+	//æ— è·¯å¾„çš„æ–‡ä»¶å
 	stringPath filename = _name.c_str();
 	extract_filename(filename.pstring());
 
-	//¼ì²éÈÕÆÚÄ¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥æ—¥æœŸç›®å½•æ˜¯å¦å­˜åœ¨
 	_name.format("%s/%s", path.c_str(), timedir.c_str());
 	if (!file::exists(_name.c_str()))
 	{
 		directory::create_dir(_name.c_str());
 	}
 
-	//ÍêÕûÎÄ¼şÃû
+	//å®Œæ•´æ–‡ä»¶å
 	_name += "/";
 	_name += filename.c_str();
 }
@@ -323,7 +323,7 @@ void log::_log_handler(const log_header& header, const char* const s, int thread
 	if (!strlog.empty())
 		strlog += " ";
 
-	//log±¾Ìå
+	//logæœ¬ä½“
 	strlog += s;
 
 	if (header.format & LOG_FORMAT_LINE_FEED)
@@ -332,7 +332,7 @@ void log::_log_handler(const log_header& header, const char* const s, int thread
 	}
 
 	////////////////////////////////////
-	//¿ªÊ¼Êä³ö
+	//å¼€å§‹è¾“å‡º
 	////////////////////////////////////
 	if (info.output & LOG_OUTPUT_CONSOLE)
 	{
@@ -357,7 +357,7 @@ void log::_log_handler(const log_header& header, const char* const s, int thread
 	if (info.output & LOG_OUTPUT_FILE)
 	{
 		//__android_log_print(ANDROID_LOG_INFO, "scl", "scl lord game _log_handler output file being");
-		if (info.filename.empty()) //È«¾ÖÎÄ¼ş
+		if (info.filename.empty()) //å…¨å±€æ–‡ä»¶
 		{
 			stringPath exename;
             
@@ -387,11 +387,11 @@ void log::_log_handler(const log_header& header, const char* const s, int thread
 			get_exe_name(exename.pstring());
 #endif
 
-			//ÊÇ·ñĞ´ÈëÈÕÆÚÄ¿Â¼
+			//æ˜¯å¦å†™å…¥æ—¥æœŸç›®å½•
 			if (info.date_dir)
 				_insert_date_dir(exename, header.time);
 
-			//´ò¿ªÎÄ¼ş²¢Ğ´Èë
+			//æ‰“å¼€æ–‡ä»¶å¹¶å†™å…¥
 			log_inst()._open_log_file(log_inst().m_globalfile, exename.c_str(), info.split);
 			log_inst().m_globalfile.write(info.quick_flush, strlog.c_str());
 		}
@@ -412,11 +412,11 @@ void log::_log_handler(const log_header& header, const char* const s, int thread
 			filename = info.filename.c_str();
 #endif
 
-			//ÊÇ·ñĞ´ÈëÈÕÆÚÄ¿Â¼
+			//æ˜¯å¦å†™å…¥æ—¥æœŸç›®å½•
 			if (info.date_dir)
 				_insert_date_dir(filename, header.time);
 
-			//´ò¿ªÈÕÖ¾ÎÄ¼ş²¢Ğ´Èë
+			//æ‰“å¼€æ—¥å¿—æ–‡ä»¶å¹¶å†™å…¥
 			log_inst()._open_log_file(_file, filename.c_str(), info.split);
 			_file.write(info.quick_flush, strlog.c_str());
 		}
@@ -431,7 +431,7 @@ void log::_log_handler(const log_header& header, const char* const s, int thread
 	}
 	//if (info.output & LOG_OUTPUT_REMOTE)
 	//{
-	//	//TODO Èç¹ûstrlogÖĞÓĞ
+	//	//TODO å¦‚æœstrlogä¸­æœ‰
 	//	if (info.remote_socket != -1)
 	//	{
 	//		string128 hostname;
@@ -497,7 +497,7 @@ void log::_init()
 	format = LOG_FORMAT_LINE_FEED | LOG_FORMAT_TIME | LOG_FORMAT_MILLISECOND;
 #endif
 
-	//³õÊ¼»¯Ä¬ÈÏÖµ
+	//åˆå§‹åŒ–é»˜è®¤å€¼
 	m_levels[LOG_LEVEL_VERBOSE	].set("verbose",	output, format	);
 	m_levels[LOG_LEVEL_DEBUG	].set("debug",		output, format	);
 	m_levels[LOG_LEVEL_INFO		].set("info ",		output, format	);
@@ -506,7 +506,7 @@ void log::_init()
 	m_levels[LOG_LEVEL_FATAL	].set("fatal",		output, format	);
 	//m_levels[LOG_LEVEL_NET		].set("net",		output, LOG_FORMAT_LINE_FEED | LOG_FORMAT_TIME | LOG_FORMAT_LEVEL);
 
-	//userÈÕÖ¾³õÊ¼»¯
+	//useræ—¥å¿—åˆå§‹åŒ–
 	for (int i = LOG_LEVEL_USER1; i < LOG_LEVEL_COUNT; ++i)
 	{
 		string16 username;
@@ -588,7 +588,7 @@ void log::_init_level(ini_file& cfg, LOG_LEVEL level, const char* const name)
 	string64 filename;
 	cfg.get_string(name, "filename", filename.c_str(), filename.capacity());
 
-	//TODO ¶à¸ölevelÊ¹ÓÃÍ¬ÃûÎÄ¼şÔõÃ´°ì£¿
+	//TODO å¤šä¸ªlevelä½¿ç”¨åŒåæ–‡ä»¶æ€ä¹ˆåŠï¼Ÿ
 	if (!filename.empty())
 	{
 		m_files[level].init	(LOG_CACHE_BUFFER_SIZE);
@@ -598,7 +598,7 @@ void log::_init_level(ini_file& cfg, LOG_LEVEL level, const char* const name)
 //	if (remote.empty())
 //		return;
 //
-//	//´´½¨Ô¶³Ìsocket
+//	//åˆ›å»ºè¿œç¨‹socket
 //	char* tokcontext = NULL;
 //	string32 ip			= scl_strtok(remote.c_str(), ":", &tokcontext);
 //	string16 strport	= scl_strtok(NULL, ":", &tokcontext);
@@ -646,7 +646,7 @@ log& log::inst()
 			g_pinst->_init();
 			//g_pinst.p = p;
 		}
-		//µÈ´ıÈÕÖ¾³õÊ¼»¯³É¹¦
+		//ç­‰å¾…æ—¥å¿—åˆå§‹åŒ–æˆåŠŸ
 		while (g_pinst == NULL)
 			sleep(1);
 	}
@@ -679,19 +679,19 @@ void log::_try_open_index_file(log_file& _file, const char* const exename, int s
 
 	while (1)
 	{
-		//ÎÄ¼ş²»´æÔÚ£¬Ö±½Ó´´½¨¼´¿É
+		//æ–‡ä»¶ä¸å­˜åœ¨ï¼Œç›´æ¥åˆ›å»ºå³å¯
 		if (!file::exists(filename.c_str()))
 		{
 			_file.open(filename.c_str());
 			break;
 		}
 
-		//ÎÄ¼ş´æÔÚ£¬µ«sizeĞ¡ÓÚMAX_LOG_FILE_SIZE£¬Ò²¿ÉÒÔÖ±½Ó´ò¿ª
+		//æ–‡ä»¶å­˜åœ¨ï¼Œä½†sizeå°äºMAX_LOG_FILE_SIZEï¼Œä¹Ÿå¯ä»¥ç›´æ¥æ‰“å¼€
 		_file.open(filename.c_str());
 		if (_file.size() < MAX_LOG_FILE_SIZE)
 			break;
 
-		//ÎÄ¼ş´æÔÚ£¬µ«ÊÇ´óĞ¡³¬¹ıÁËMAX_LOG_FILE_SIZE£¬³¢ÊÔ´ò¿ªĞÂµÄÎÄ¼ş
+		//æ–‡ä»¶å­˜åœ¨ï¼Œä½†æ˜¯å¤§å°è¶…è¿‡äº†MAX_LOG_FILE_SIZEï¼Œå°è¯•æ‰“å¼€æ–°çš„æ–‡ä»¶
 		_file.close();
 		++start_index;
 		filename.format("%s%d.log", exename, start_index);
@@ -717,7 +717,7 @@ void log::release()
 
 void log::enable_thread_mode()
 {
-	if (compare_and_swap(&log_inst().m_using_thread_mode, 0, 1)) //½øÈë¶àÏß³ÌÄ£Ê½
+	if (compare_and_swap(&log_inst().m_using_thread_mode, 0, 1)) //è¿›å…¥å¤šçº¿ç¨‹æ¨¡å¼
 		log_inst().m_flush_thread.start(_flush_thread_func);	
 }
 

@@ -27,8 +27,8 @@ class file_find_data
 public:
 	file_find_data			() { clear(); }
 	void clear				();
-	bool is_directory		() const;	//µ±Ç°ÎÄ¼şÊÇ·ñÎªÄ¿Â¼£¬²»°üÀ¨¡°.¡±ºÍ¡°..¡±
-	bool is_any_directory	() const;	//µ±Ç°ÎÄ¼şÊÇ·ñÎªÄ¿Â¼£¬°üÀ¨¡°.¡±ºÍ¡°..¡±
+	bool is_directory		() const;	//å½“å‰æ–‡ä»¶æ˜¯å¦ä¸ºç›®å½•ï¼Œä¸åŒ…æ‹¬â€œ.â€å’Œâ€œ..â€
+	bool is_any_directory	() const;	//å½“å‰æ–‡ä»¶æ˜¯å¦ä¸ºç›®å½•ï¼ŒåŒ…æ‹¬â€œ.â€å’Œâ€œ..â€
 	bool is_file			() const { return !is_any_directory(); }
 	bool is_hide			() const;
 	pstring name			() const { return m_name.pstring(); }

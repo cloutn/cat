@@ -13,11 +13,11 @@ namespace scl {
 //frame_index	address			function_name		file_name	  line_num	function_offset
 enum FORMAT
 {
-	FRAME_INDEX		=	0x01,	//Ö¡ºÅ
-	ADDRESS			=	0x02,	//µØÖ·Öµ
-	FUNCTION_NAME	=	0x04,	//º¯ÊıÃû
-	FILE_NAME		=	0x08,	//ÎÄ¼şÃû
-	LINE_NUM		=	0x10,	//ĞĞÊı
+	FRAME_INDEX		=	0x01,	//å¸§å·
+	ADDRESS			=	0x02,	//åœ°å€å€¼
+	FUNCTION_NAME	=	0x04,	//å‡½æ•°å
+	FILE_NAME		=	0x08,	//æ–‡ä»¶å
+	LINE_NUM		=	0x10,	//è¡Œæ•°
 	FUNCTION_OFFSET	=	0x20,	//offset in the current function (only avalible under linux)
 };
 

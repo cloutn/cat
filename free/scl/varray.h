@@ -28,7 +28,7 @@ public:
 	varray(): m_array(NULL), m_size(0), m_maxSize(0), m_option(0) {}
 	~varray();
 
-	//stl¼æÈİ½Ó¿Ú¡£iteratorÔİÊ±¼ò»¯ÎªT*
+	//stlå…¼å®¹æ¥å£ã€‚iteratoræš‚æ—¶ç®€åŒ–ä¸ºT*
 	typedef T			value_type;
 	typedef int			size_type;
 	void	push_back	(const T& elem);
@@ -61,12 +61,12 @@ public:
 	//template <class SearchT, class _Pr>
 	//int binary_search_type(const SearchT& elem, _Pr customCompare);
 
-	//stlÖĞÃ»ÓĞÏàÓ¦µÄ¹¦ÄÜ½Ó¿Ú
-	//T&		push_back_fast		();		//µ±TÖĞ´æÔÚÇ³¿½±´Ö¸ÕëÊ±£¬»òÕßÏëÒª±ÜÃâ²»±ØÒªµÄÁÙÊ±¶ÔÏó¿½±´Ê±£¬Ê¹ÓÃpush_back_fast½Ó¿Ú
-	T&		push_back_fast		(const int count = 1);		//µ±TÖĞ´æÔÚÇ³¿½±´Ö¸ÕëÊ±£¬»òÕßÏëÒª±ÜÃâ²»±ØÒªµÄÁÙÊ±¶ÔÏó¿½±´Ê±£¬Ê¹ÓÃpush_back_fast½Ó¿Ú
+	//stlä¸­æ²¡æœ‰ç›¸åº”çš„åŠŸèƒ½æ¥å£
+	//T&		push_back_fast		();		//å½“Tä¸­å­˜åœ¨æµ…æ‹·è´æŒ‡é’ˆæ—¶ï¼Œæˆ–è€…æƒ³è¦é¿å…ä¸å¿…è¦çš„ä¸´æ—¶å¯¹è±¡æ‹·è´æ—¶ï¼Œä½¿ç”¨push_back_fastæ¥å£
+	T&		push_back_fast		(const int count = 1);		//å½“Tä¸­å­˜åœ¨æµ…æ‹·è´æŒ‡é’ˆæ—¶ï¼Œæˆ–è€…æƒ³è¦é¿å…ä¸å¿…è¦çš„ä¸´æ—¶å¯¹è±¡æ‹·è´æ—¶ï¼Œä½¿ç”¨push_back_fastæ¥å£
 	void	erase_fast			(const int index);
 	void	erase_element		(const T& elem);
-	void	erase_element_fast	(const T& elem);	//µ±¶ÔÊı×éÄÚÔªËØµÄË³Ğò²»¹ØĞÄµÄÊ±ºò£¬Ê¹ÓÃRemoveFast½Ó¿ÚÌá¸ßĞ§ÂÊ
+	void	erase_element_fast	(const T& elem);	//å½“å¯¹æ•°ç»„å†…å…ƒç´ çš„é¡ºåºä¸å…³å¿ƒçš„æ—¶å€™ï¼Œä½¿ç”¨RemoveFastæ¥å£æé«˜æ•ˆç‡
 	int		find				(const T& elem) const;
 	bool	contains			(const T& elem) const { return find(elem) != -1; }
 	void	zero_memory			(const int start = 0, const int len = -1);
@@ -89,16 +89,16 @@ public:
 
 	enum OPTION
 	{
-		OPTION_DISABLE_CONSTRUCTOR	= 0x01, //½ûÓÃ¹¹Ôìº¯Êı
-		OPTION_DISABLE_DESTRUCTOR	= 0x02, //½ûÓÃÎö¹¹º¯Êı
+		OPTION_DISABLE_CONSTRUCTOR	= 0x01, //ç¦ç”¨æ„é€ å‡½æ•°
+		OPTION_DISABLE_DESTRUCTOR	= 0x02, //ç¦ç”¨ææ„å‡½æ•°
 
 	};
 
 private:
-	void _grow_to	(const int count);		//Ôö³¤µ½Ö¸¶¨´óĞ¡£¬Ôö³¤ºó£¬ºÍ_growº¯ÊıÃ¿´ÎÔö³¤µ½STEPµÄÄ³¸ö±¶Êı²»Í¬£¬_grow_to»áÊ¹Ôö³¤ºóµÄcapacityÑÏ¸ñÎª´«ÈëµÄ²ÎÊıcount
-	void _grow		(const int count = -1); //×Ô¶¯Ôö³¤¡£Èç¹û²»Ö¸¶¨count£¬ÔòÔö³¤ºóÎªÔö³¤Ç°STEP±¶¡£Èç¹ûÖ¸¶¨count£¬Ôö³¤ºó¿Ï¶¨¿ÉÒÔÈİÄÉcount£¬µ«ÊÇcapacity²»Ò»¶¨ÊÇcount
-	bool _disable_constructor	() const { return (m_option & OPTION_DISABLE_CONSTRUCTOR) != 0; } //ÊÇ·ñ½ûÓÃ¹¹Ôìº¯Êı
-	bool _disable_destructor	() const { return (m_option & OPTION_DISABLE_DESTRUCTOR	) != 0; } //ÊÇ·ñ½ûÓÃÎö¹¹º¯Êı
+	void _grow_to	(const int count);		//å¢é•¿åˆ°æŒ‡å®šå¤§å°ï¼Œå¢é•¿åï¼Œå’Œ_growå‡½æ•°æ¯æ¬¡å¢é•¿åˆ°STEPçš„æŸä¸ªå€æ•°ä¸åŒï¼Œ_grow_toä¼šä½¿å¢é•¿åçš„capacityä¸¥æ ¼ä¸ºä¼ å…¥çš„å‚æ•°count
+	void _grow		(const int count = -1); //è‡ªåŠ¨å¢é•¿ã€‚å¦‚æœä¸æŒ‡å®šcountï¼Œåˆ™å¢é•¿åä¸ºå¢é•¿å‰STEPå€ã€‚å¦‚æœæŒ‡å®šcountï¼Œå¢é•¿åè‚¯å®šå¯ä»¥å®¹çº³countï¼Œä½†æ˜¯capacityä¸ä¸€å®šæ˜¯count
+	bool _disable_constructor	() const { return (m_option & OPTION_DISABLE_CONSTRUCTOR) != 0; } //æ˜¯å¦ç¦ç”¨æ„é€ å‡½æ•°
+	bool _disable_destructor	() const { return (m_option & OPTION_DISABLE_DESTRUCTOR	) != 0; } //æ˜¯å¦ç¦ç”¨ææ„å‡½æ•°
 
 protected:
 	T*		m_array;
@@ -112,7 +112,7 @@ inline void swapmem2(T& a, T& b)
 {
 	if (&a == &b)
 		return;
-	//if (a == b)  //operator==Ö»Ìá¹©ÁËÂß¼­ÉÏµÄÏàµÈĞÔÅĞ¶¨
+	//if (a == b)  //operator==åªæä¾›äº†é€»è¾‘ä¸Šçš„ç›¸ç­‰æ€§åˆ¤å®š
 	//	return;
 	int* pIntA = reinterpret_cast<int*>(&a);
 	int* pIntB = reinterpret_cast<int*>(&b);
@@ -139,16 +139,16 @@ inline void swapmem2(T& a, T& b)
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//	varrayÊµÏÖ
+//	varrayå®ç°
 ////////////////////////////////////////////////////////////////////////////////
 template<typename T> 
 varray<T>::~varray()
 { 
-	//µ±Õû¸övarray±»Îö¹¹µÄÊ±ºò£¬²»Ó¦¸ÃÔÙ¿¼ÂÇ_disable_destructorÑ¡Ïî£¬·ñÔò»áÔì³É´ó¶àÊıarrayÄÚµÄelementµÄÎö¹¹º¯ÊıÃ»ÓĞ±»µ÷ÓÃµÄÇé¿ö
+	//å½“æ•´ä¸ªvarrayè¢«ææ„çš„æ—¶å€™ï¼Œä¸åº”è¯¥å†è€ƒè™‘_disable_destructoré€‰é¡¹ï¼Œå¦åˆ™ä¼šé€ æˆå¤§å¤šæ•°arrayå†…çš„elementçš„ææ„å‡½æ•°æ²¡æœ‰è¢«è°ƒç”¨çš„æƒ…å†µ
 //	if (!_disable_destructor())
 	{
 		for (int i = 0; i < size(); ++i)
-			m_array[i].~T(); //!!!×¢Òâ£¬Èç¹ûÒªÊ¹ÕâÀïÄÜµ÷ÓÃµ½class TµÄÎö¹¹º¯Êı£¬ÄÇÃ´varrayµÄÉùÃ÷´¦±ØĞë°üº¬class TµÄÍêÕû¶¨Òå£¬¶ø²»ÄÜÒòÎª³ÉÔ±±äÁ¿Ö»ÓĞÒ»¸öT*Ö¸Õë£¬¾Í½ö½öÊ¹ÓÃÒ»¸öTµÄÇ°ÖÃÉùÃ÷
+			m_array[i].~T(); //!!!æ³¨æ„ï¼Œå¦‚æœè¦ä½¿è¿™é‡Œèƒ½è°ƒç”¨åˆ°class Tçš„ææ„å‡½æ•°ï¼Œé‚£ä¹ˆvarrayçš„å£°æ˜å¤„å¿…é¡»åŒ…å«class Tçš„å®Œæ•´å®šä¹‰ï¼Œè€Œä¸èƒ½å› ä¸ºæˆå‘˜å˜é‡åªæœ‰ä¸€ä¸ªT*æŒ‡é’ˆï¼Œå°±ä»…ä»…ä½¿ç”¨ä¸€ä¸ªTçš„å‰ç½®å£°æ˜
 	}
 	::free(m_array);
 	m_array		= NULL;
@@ -234,7 +234,7 @@ void varray<T>::erase(const int index)
 	if (index < 0 || index >= m_size)
 		return;
 
-	//µ÷ÓÃÎö¹¹º¯Êı
+	//è°ƒç”¨ææ„å‡½æ•°
 	if (!_disable_destructor())
 		m_array[index].~T();
 
@@ -247,7 +247,7 @@ void varray<T>::erase(const int index)
 template<typename T> 
 void varray<T>::clear()
 {
-	//µ÷ÓÃÎö¹¹º¯Êı
+	//è°ƒç”¨ææ„å‡½æ•°
 	if (!_disable_destructor())
 	{
 		for (int i = 0; i < m_size; ++i)
@@ -275,15 +275,15 @@ void varray<T>::erase_fast(const int index)
 		return;
 	}
 
-	//µ÷ÓÃÎö¹¹º¯Êı
+	//è°ƒç”¨ææ„å‡½æ•°
 	if (!_disable_destructor())
 		m_array[index].~T();
 
-	//ÕâÀïÒª×ö½»»»£¬·ñÔòµ±TÖĞ°üº¬Ö¸ÕëµÄÊ±ºò£¬
-	//»áµ¼ÖÂm_array[m_count - 1]µÄÎö¹¹ÖĞdeleteÍ¬Ò»¸öÖ¸ÕëÁ½´Î£¨m_array[index]ÖĞ»¹ÓĞÒ»¸öÏàÍ¬µÄÖ¸Õë£©
-	//Í¬Ê±£¬²»ÄÜÓÃÒ»¸öĞÂµÄT tempÀ´×ö½»»»ÖĞ¼ä±äÁ¿£¬ÒòÎªÕâÑù»áµ¼ÖÂtempÎö¹¹£¬
-	//Ê¹µÃÍ¬ÑùÓĞÍ¬Ò»¸öÖ¸Õë±»Á½´ÎdeleteµÄÎÊÌâ£¨tempÄÚµÄÖ¸ÕëºÍ±»temp±£´æ¹ıµÄelemÄÚµÄÖ¸Õë£©
-	//2013.10.15 µ±TµÄÀàĞÍÎªÖ¸ÕëÊ±£¬swapmem2ÔÚ¶àÏß³ÌÏÂ²»°²È«£¬Ö±½Ó½»»»°²È«¡£ÉÏÃæÌáµ½µÄÎÊÌâ£¬½»¸øT±¾ÉíµÄ¿½±´¹¹Ôìº¯ÊıÀ´½â¾öÉî¿½±´Ç±¿½±´µÄÎÊÌá
+	//è¿™é‡Œè¦åšäº¤æ¢ï¼Œå¦åˆ™å½“Tä¸­åŒ…å«æŒ‡é’ˆçš„æ—¶å€™ï¼Œ
+	//ä¼šå¯¼è‡´m_array[m_count - 1]çš„ææ„ä¸­deleteåŒä¸€ä¸ªæŒ‡é’ˆä¸¤æ¬¡ï¼ˆm_array[index]ä¸­è¿˜æœ‰ä¸€ä¸ªç›¸åŒçš„æŒ‡é’ˆï¼‰
+	//åŒæ—¶ï¼Œä¸èƒ½ç”¨ä¸€ä¸ªæ–°çš„T tempæ¥åšäº¤æ¢ä¸­é—´å˜é‡ï¼Œå› ä¸ºè¿™æ ·ä¼šå¯¼è‡´tempææ„ï¼Œ
+	//ä½¿å¾—åŒæ ·æœ‰åŒä¸€ä¸ªæŒ‡é’ˆè¢«ä¸¤æ¬¡deleteçš„é—®é¢˜ï¼ˆtempå†…çš„æŒ‡é’ˆå’Œè¢«tempä¿å­˜è¿‡çš„elemå†…çš„æŒ‡é’ˆï¼‰
+	//2013.10.15 å½“Tçš„ç±»å‹ä¸ºæŒ‡é’ˆæ—¶ï¼Œswapmem2åœ¨å¤šçº¿ç¨‹ä¸‹ä¸å®‰å…¨ï¼Œç›´æ¥äº¤æ¢å®‰å…¨ã€‚ä¸Šé¢æåˆ°çš„é—®é¢˜ï¼Œäº¤ç»™Tæœ¬èº«çš„æ‹·è´æ„é€ å‡½æ•°æ¥è§£å†³æ·±æ‹·è´æ½œæ‹·è´çš„é—®æ
 	//m_array[index] = m_array[m_count - 1];
 	if (index != m_size - 1)
 	{
@@ -316,10 +316,10 @@ void varray<T>::assign(const T* other, const int count, const int start)
 		return;
 	if (start + count > m_maxSize)
 	{
-		_grow(start + count);	//ÕâÀïÖ®ËùÒÔµ÷ÓÃ_grow¶ø²»ÊÇ_grow_to£¬ÊÇÒòÎªassignºóÈç¹ûpush_backĞÂÔªËØ£¬»áµ¼ÖÂÔÙ´Î_grow
+		_grow(start + count);	//è¿™é‡Œä¹‹æ‰€ä»¥è°ƒç”¨_growè€Œä¸æ˜¯_grow_toï¼Œæ˜¯å› ä¸ºassignåå¦‚æœpush_backæ–°å…ƒç´ ï¼Œä¼šå¯¼è‡´å†æ¬¡_grow
 	}
 
-	//¼ì²éÄÚ´æÊÇ·ñÖØµş
+	//æ£€æŸ¥å†…å­˜æ˜¯å¦é‡å 
 	assert(m_array != other);
 	if (m_array < other)
 		assert(m_array + start + count < other);
@@ -342,7 +342,7 @@ void varray<T>::_grow(const int count)
 	const int STEP = 8;
 	//const int oldMaxSize = m_maxSize;
 
-	//È·¶¨ÒªÔö³¤µ½µÄ´óĞ¡
+	//ç¡®å®šè¦å¢é•¿åˆ°çš„å¤§å°
 	int target = count;
 	if (target == -1)
 		target = m_maxSize + 1;
@@ -352,18 +352,18 @@ void varray<T>::_grow(const int count)
 	while (m_maxSize < target)
 		m_maxSize *= STEP;
 
-	//·ÖÅäĞÂ¿Õ¼ä
+	//åˆ†é…æ–°ç©ºé—´
 	T* p = static_cast<T*>(::malloc(sizeof(T) * m_maxSize)); //new T[m_maxSize];
 	if (NULL == p)
 		return;
-	if (_disable_constructor()) //½ûÓÃÁË¹¹Ôìº¯Êı£¬ËùÒÔÕâÀïÒª¶ÔĞÂ´´½¨µÄÄÚ´æ×ö¼òµ¥µÄÇå¿Õ¹¤×÷	//TODO ÊÇ·ñ¿¼ÂÇÔö¼ÓÑ¡Ïî½ûÓÃÕâÒ»¹¦ÄÜ?
+	if (_disable_constructor()) //ç¦ç”¨äº†æ„é€ å‡½æ•°ï¼Œæ‰€ä»¥è¿™é‡Œè¦å¯¹æ–°åˆ›å»ºçš„å†…å­˜åšç®€å•çš„æ¸…ç©ºå·¥ä½œ	//TODO æ˜¯å¦è€ƒè™‘å¢åŠ é€‰é¡¹ç¦ç”¨è¿™ä¸€åŠŸèƒ½?
 		memset((void*)(void*)(void*)p, 0, sizeof(T) * m_maxSize);
 	
 #ifdef SCL_DEBUG
 	total_mem += m_maxSize * sizeof(T);
 #endif
 
-	//¿½±´ÀÏÊı¾İµ½ĞÂ¿Õ¼ä
+	//æ‹·è´è€æ•°æ®åˆ°æ–°ç©ºé—´
 	if (m_array != NULL)
 	{
 		if (m_size > 0)
@@ -380,7 +380,7 @@ void varray<T>::_grow(const int count)
 	m_array = p;
 }
 
-//Ôö³¤µ½Ö¸¶¨´óĞ¡£¬Ôö³¤ºó£¬arrayµÄcapacityÑÏ¸ñÎªcount
+//å¢é•¿åˆ°æŒ‡å®šå¤§å°ï¼Œå¢é•¿åï¼Œarrayçš„capacityä¸¥æ ¼ä¸ºcount
 template <typename T>
 void varray<T>::_grow_to(const int count)
 {
@@ -389,14 +389,14 @@ void varray<T>::_grow_to(const int count)
 
 	m_maxSize = count;
 
-	//·ÖÅäĞÂ¿Õ¼ä
+	//åˆ†é…æ–°ç©ºé—´
 	T* p = static_cast<T*>(::malloc(sizeof(T) * m_maxSize)); //new T[m_maxSize];
 	if (NULL == p)
 		return;
-	if (_disable_constructor()) //½ûÓÃÁË¹¹Ôìº¯Êı£¬ËùÒÔÕâÀïÒª¶ÔĞÂ´´½¨µÄÄÚ´æ×ö¼òµ¥µÄÇå¿Õ¹¤×÷	//TODO ÊÇ·ñ¿¼ÂÇÔö¼ÓÑ¡Ïî½ûÓÃÕâÒ»¹¦ÄÜ?
+	if (_disable_constructor()) //ç¦ç”¨äº†æ„é€ å‡½æ•°ï¼Œæ‰€ä»¥è¿™é‡Œè¦å¯¹æ–°åˆ›å»ºçš„å†…å­˜åšç®€å•çš„æ¸…ç©ºå·¥ä½œ	//TODO æ˜¯å¦è€ƒè™‘å¢åŠ é€‰é¡¹ç¦ç”¨è¿™ä¸€åŠŸèƒ½?
 		memset((void*)(void*)(void*)p, 0, sizeof(T) * m_maxSize);
 
-	//¿½±´ÀÏÊı¾İµ½ĞÂ¿Õ¼ä
+	//æ‹·è´è€æ•°æ®åˆ°æ–°ç©ºé—´
 	if (m_array != NULL)
 	{
 		if (m_size > 0)

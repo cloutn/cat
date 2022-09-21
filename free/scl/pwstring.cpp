@@ -168,7 +168,7 @@ int	pwstring::compare(const wchar* const source, const int length, bool ignoreCa
 
 void	pwstring::erase(const int startIndex, const int removeLength) 
 { 
-	//È·¶¨ĞèÒªÉ¾³ıµÄÊµ¼Ê³¤¶È
+	//ç¡®å®šéœ€è¦åˆ é™¤çš„å®é™…é•¿åº¦
 	int len = length();
 	int realRemoveLength = removeLength;
 	if (realRemoveLength > len - startIndex || realRemoveLength == -1)
@@ -180,7 +180,7 @@ void	pwstring::erase(const int startIndex, const int removeLength)
 		return;
 	}
 
-	//Ö´ĞĞÉ¾³ı
+	//æ‰§è¡Œåˆ é™¤
 	int moveLength = len - startIndex - realRemoveLength;
 	for (int i = startIndex; i < startIndex + moveLength; ++i)
 	{
@@ -193,13 +193,13 @@ void	pwstring::erase(const int startIndex, const int removeLength)
 
 int	pwstring::format_arg(const wchar* const format, va_list argumentpointer)	
 { 
-	//ÕâÀï²»ÔÙÊ¹ÓÃvsprintf_sµÄ°æ±¾£¬ÒòÎªvsprintf_s°æ±¾ÔÚDebugÏÂ£¬³¬³ö»º³åÇø³¤¶ÈµÄÊ±ºò»á±¨´í£¬²¢ÇÒÎŞ·¨ÆÁ±Î
+	//è¿™é‡Œä¸å†ä½¿ç”¨vsprintf_sçš„ç‰ˆæœ¬ï¼Œå› ä¸ºvsprintf_sç‰ˆæœ¬åœ¨Debugä¸‹ï¼Œè¶…å‡ºç¼“å†²åŒºé•¿åº¦çš„æ—¶å€™ä¼šæŠ¥é”™ï¼Œå¹¶ä¸”æ— æ³•å±è”½
 
-	//ÕâÀïµÚ¶ş¸ö²ÎÊıÔÚwindowsºÍlinuxÏÂº¬Òå²»Í¬
-	//		ÔÚlinuxÏÂ£¬µÚ¶ş¸ö²ÎÊı°üº¬'\0'
-	//		ÔÚwindowsÏÂ£¬µÚ¶ş¸ö²ÎÊı²»°üº¬'\0'
-	//ËùÒÔ£¬ÕâÀïÍ³Ò»´«MAX_COUNT£¬Èç¹û³¬³¤£¬ÔÚwindowsÏÂ»áÒç³ö£¬´ËÊ±safe_terminate();»á·¢»Ó×÷ÓÃ
-	//linuxÏÂsafe_terminate()ÎŞÂÛÊÇ·ñµ÷ÓÃ¶¼Ã»¹ØÏµ
+	//è¿™é‡Œç¬¬äºŒä¸ªå‚æ•°åœ¨windowså’Œlinuxä¸‹å«ä¹‰ä¸åŒ
+	//		åœ¨linuxä¸‹ï¼Œç¬¬äºŒä¸ªå‚æ•°åŒ…å«'\0'
+	//		åœ¨windowsä¸‹ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸åŒ…å«'\0'
+	//æ‰€ä»¥ï¼Œè¿™é‡Œç»Ÿä¸€ä¼ MAX_COUNTï¼Œå¦‚æœè¶…é•¿ï¼Œåœ¨windowsä¸‹ä¼šæº¢å‡ºï¼Œæ­¤æ—¶safe_terminate();ä¼šå‘æŒ¥ä½œç”¨
+	//linuxä¸‹safe_terminate()æ— è®ºæ˜¯å¦è°ƒç”¨éƒ½æ²¡å…³ç³»
 
 	int writtenCount = ::vswprintf(m_string, MAX_COUNT, format, argumentpointer);
 	safe_terminate();
@@ -213,11 +213,11 @@ int	pwstring::format_arg_append(const wchar* const format, va_list arg)
 	int freeLength = capacity() - length(); 
 	if (freeLength > 0) 
 	{ 
-		//ÕâÀïµÚ¶ş¸ö²ÎÊıÔÚwindowsºÍlinuxÏÂº¬Òå²»Í¬
-		//		ÔÚlinuxÏÂ£¬µÚ¶ş¸ö²ÎÊı°üº¬'\0'
-		//		ÔÚwindowsÏÂ£¬µÚ¶ş¸ö²ÎÊı²»°üº¬'\0'
-		//ËùÒÔ£¬ÕâÀïÍ³Ò»´«freeLength + 1£¬Èç¹û³¬³¤£¬ÔÚwindowsÏÂ»áÒç³ö£¬´ËÊ±safe_terminate();»á·¢»Ó×÷ÓÃ
-		//linuxÏÂsafe_terminate()ÎŞÂÛÊÇ·ñµ÷ÓÃ¶¼Ã»¹ØÏµ
+		//è¿™é‡Œç¬¬äºŒä¸ªå‚æ•°åœ¨windowså’Œlinuxä¸‹å«ä¹‰ä¸åŒ
+		//		åœ¨linuxä¸‹ï¼Œç¬¬äºŒä¸ªå‚æ•°åŒ…å«'\0'
+		//		åœ¨windowsä¸‹ï¼Œç¬¬äºŒä¸ªå‚æ•°ä¸åŒ…å«'\0'
+		//æ‰€ä»¥ï¼Œè¿™é‡Œç»Ÿä¸€ä¼ freeLength + 1ï¼Œå¦‚æœè¶…é•¿ï¼Œåœ¨windowsä¸‹ä¼šæº¢å‡ºï¼Œæ­¤æ—¶safe_terminate();ä¼šå‘æŒ¥ä½œç”¨
+		//linuxä¸‹safe_terminate()æ— è®ºæ˜¯å¦è°ƒç”¨éƒ½æ²¡å…³ç³»
 		int writeCount = ::vswprintf(m_string + length(), freeLength + 1, format, arg);
 		safe_terminate();
 		return writeCount;
@@ -358,30 +358,30 @@ bool pwstring::replace(const wchar* const oldString, const wchar* const newStrin
 	const int stringMaxLength	= MAX_COUNT - 1;
 
 	//int changedCount = 0;
-	//ÕÒµ½ĞèÌæ»»µÄ×Ö·û´®
+	//æ‰¾åˆ°éœ€æ›¿æ¢çš„å­—ç¬¦ä¸²
 	const int oldIndex = find_first_of(oldString);
 	if (-1 == oldIndex)
 	{
 		return false;
 	}
 
-	//oldStringºÍnewStringµÄ³¤¶È¶¼²»Ó¦¸Ã³¬¹ıµ±Ç°string£¬³¬¹ıµÄ²¿·Ö²»´¦Àí
+	//oldStringå’ŒnewStringçš„é•¿åº¦éƒ½ä¸åº”è¯¥è¶…è¿‡å½“å‰stringï¼Œè¶…è¿‡çš„éƒ¨åˆ†ä¸å¤„ç†
 	const int oldLength = static_cast<int>(::wcsnlen(oldString, stringMaxLength));
 	int newLength = static_cast<int>(::wcsnlen(newString, stringMaxLength));
 	if (oldLength > newLength)
 	{
 		::wmemcpy(m_string + oldIndex, newString, newLength);
-		//½«¶àÓàµÄµØ·½²¹Æë
+		//å°†å¤šä½™çš„åœ°æ–¹è¡¥é½
 		const int moveCount = oldLength - newLength;
 		erase(oldIndex + newLength, moveCount);
 	}
 	else if (oldLength < newLength)
 	{
-		//½«oldIndexºóÃæµÄ×Ö·û´®ÓÒÒÆ£¬¿Õ³ö×ã¹»µÄ¿Õ¼ä
+		//å°†oldIndexåé¢çš„å­—ç¬¦ä¸²å³ç§»ï¼Œç©ºå‡ºè¶³å¤Ÿçš„ç©ºé—´
 		const int diff = newLength - oldLength;
 		int moveCount = stringLength - (oldIndex + oldLength);
 		int newEnd = (stringLength + diff) - 1;
-		//Èç¹ûnewEndÔ½½ç£¬°²È«½Ø¶Ï
+		//å¦‚æœnewEndè¶Šç•Œï¼Œå®‰å…¨æˆªæ–­
 		if (newEnd > capacity() - 1)
 		{
 			const int overflowed = newEnd - (capacity() - 1);
@@ -392,7 +392,7 @@ bool pwstring::replace(const wchar* const oldString, const wchar* const newStrin
 		{
 			m_string[i] = m_string[i - diff];
 		}
-		//Èç¹ûnewLengthÌ«³¤£¬°²È«½Ø¶Ï
+		//å¦‚æœnewLengthå¤ªé•¿ï¼Œå®‰å…¨æˆªæ–­
 		if (oldIndex + newLength >= MAX_COUNT)
 		{
 			newLength -= ((oldIndex + newLength - MAX_COUNT) + 1);
@@ -404,7 +404,7 @@ bool pwstring::replace(const wchar* const oldString, const wchar* const newStrin
 	else if (oldLength == newLength)
 	{
 		::wmemcpy(m_string + oldIndex, newString, oldLength);
-		//×Ö·û´®³¤¶ÈÃ»ÓĞ·¢Éú±ä»¯
+		//å­—ç¬¦ä¸²é•¿åº¦æ²¡æœ‰å‘ç”Ÿå˜åŒ–
 	}
 	else
 	{
@@ -416,7 +416,7 @@ bool pwstring::replace(const wchar* const oldString, const wchar* const newStrin
 
 
 
-int	pwstring::replace_all(const wchar* const oldString, const wchar* const newString)//·µ»ØÊÇ·¢ÉúÌæ»»µÄ´ÎÊı
+int	pwstring::replace_all(const wchar* const oldString, const wchar* const newString)//è¿”å›æ˜¯å‘ç”Ÿæ›¿æ¢çš„æ¬¡æ•°
 { 
 	int replacedTimes = 0;  
 	while (replace(oldString, newString))
@@ -436,17 +436,17 @@ void pwstring::insert(const int positionIndex, const wchar* const insertString)
 		return;
 
 	int insertLength = static_cast<int>(::wcsnlen(insertString, stringMaxLength));
-	//¼ì²é²åÈë×Ö·û´®³¤¶È
+	//æ£€æŸ¥æ’å…¥å­—ç¬¦ä¸²é•¿åº¦
 	if (insertLength <= 0)
 		return;
 
-	//¼ì²é²åÈëÎ»ÖÃ
+	//æ£€æŸ¥æ’å…¥ä½ç½®
 	if (positionIndex > stringLength || positionIndex < 0)
 		return;
 
 	int moveCount	= stringLength - positionIndex;
 	int newEnd		= stringLength + insertLength - 1;
-	//¼ì²é²åÈëºó×Ü³¤¶È
+	//æ£€æŸ¥æ’å…¥åæ€»é•¿åº¦
 	if (newEnd > stringMaxLength - 1)
 	{
 		const int overflowed = newEnd - (stringMaxLength - 1);
@@ -476,14 +476,14 @@ void pwstring::insert(const int positionIndex, const wchar insertChar)
 
 	const int insertLength = 1;
 
-	//¼ì²é²åÈëÎ»ÖÃ
+	//æ£€æŸ¥æ’å…¥ä½ç½®
 	if (positionIndex > stringLength || positionIndex < 0)
 		return;
 	if (stringLength + insertLength >= MAX_COUNT)
 		return;
 
 	int newEnd = stringLength + insertLength - 1;
-	//¼ì²é²åÈëºó×Ü³¤¶È
+	//æ£€æŸ¥æ’å…¥åæ€»é•¿åº¦
 	if (newEnd > stringMaxLength)
 	{
 		return;
@@ -531,7 +531,7 @@ int pwstring::trim_left()
 { 
 	int stringLength = length();
 
-	//Çå³ı×ó²àµÄ¿Õ×Ö·û
+	//æ¸…é™¤å·¦ä¾§çš„ç©ºå­—ç¬¦
 	int emptyCount = 0;
 	for (int i = 0; i < stringLength; ++i)
 	{
@@ -540,7 +540,7 @@ int pwstring::trim_left()
 
 		emptyCount++;
 	}
-	//É¾³ıËùÓĞ¿Õ×Ö·û
+	//åˆ é™¤æ‰€æœ‰ç©ºå­—ç¬¦
 	erase(0, emptyCount);
 	return emptyCount;
 }
@@ -550,7 +550,7 @@ int pwstring::trim_right()
 { 
 	int stringLength = length();
 	int deleteEndCount = 0;
-	//ÏÈÇå³ıÄ©Î²µÄ¿Õ×Ö·û
+	//å…ˆæ¸…é™¤æœ«å°¾çš„ç©ºå­—ç¬¦
 	for (int i = stringLength - 1; i > 0; --i)
 	{
 		if (!scl::iswspace(m_string[i]))

@@ -52,7 +52,7 @@ int ring_buffer::write(const void* pSrc, int length)
 		assertf(0, "free = %d, length = %d", freelen, length);
 		return 0;
 	}
-	//free() < len±£Ö¤ÁËÔÚm_head > m_tailµÄÇé¿öÏÂ£¬Ö±½ÓÊ¹ÓÃtailLenÊÇ°²È«µÄ
+	//free() < lenä¿è¯äº†åœ¨m_head > m_tailçš„æƒ…å†µä¸‹ï¼Œç›´æ¥ä½¿ç”¨tailLenæ˜¯å®‰å…¨çš„
  	int tailLength = m_maxSize - m_tail;
  	if (tailLength >= length)
  	{
@@ -88,7 +88,7 @@ int ring_buffer::read(void* pOut, int length)
 
 void ring_buffer::clear()
 {
-	//ÖØÖÃbuffer
+	//é‡ç½®buffer
 	m_head		= 0;
 	m_tail		= 0;
 }
@@ -119,7 +119,7 @@ int ring_buffer::peek(void* pPeek, int length)
  	{
  		length = usedLength;
  	}
-	//len <= used()±£Ö¤ÁËÔÚm_head < m_tailµÄÇé¿öÏÂ£¬Ö±½ÓÊ¹ÓÃtailLenÊÇ°²È«µÄ
+	//len <= used()ä¿è¯äº†åœ¨m_head < m_tailçš„æƒ…å†µä¸‹ï¼Œç›´æ¥ä½¿ç”¨tailLenæ˜¯å®‰å…¨çš„
 	int tailLength = m_maxSize - m_head;
 	if (tailLength >= length)
 	{
@@ -140,11 +140,11 @@ void ring_buffer::alloc(int size)
 		assert(0);
 		return;
 	}
-	//³õÊ¼»¯»º³åÇø
+	//åˆå§‹åŒ–ç¼“å†²åŒº
 	m_buffer = (byte*)malloc(size);
 	memset(m_buffer, 0, size);
 
-	//³õÊ¼»¯³ÉÔ±±äÁ¿
+	//åˆå§‹åŒ–æˆå‘˜å˜é‡
 	m_maxSize	= size;
 	m_head		= 0;
 	m_tail		= 0;
@@ -152,11 +152,11 @@ void ring_buffer::alloc(int size)
 
 void ring_buffer::_moveHead(int length)
 {
-	//¶àÏß³Ì»·¾³ÏÂÔÚÕâÀïÊ¹ÓÃm_tailÏÔÈ»»á¿ÉÄÜÔì³ÉÁ½´ÎÈ¡ÖµµÄ²»Ò»Ñù
-	//ÔÚ¶àÏß³ÌÏÂ¿ÉÄÜ³öÏÖÒÔÏÂÇé¾°£º
-	//IsWrappedÊ¹ÓÃÁËm_tailÅĞ¶Ï£¬ËùÒÔ¿ÉÄÜIsWrapped·µ»ØÁËfalse£¬m_head <= m_tail
-	//µ«ÊÇµ±Ö´ĞĞµ½assertf((m_head + length) <= m_tailÊ±£¬ÆäËûÏß³ÌÏòbufferÖĞĞ´ÈëÊı¾İ£¬²¢Ôì³É»·ÈÆ£¬
-	//m_tail´ÓÍ·»·ÈÆ£¬ÕâÊ±¶ÏÑÔ¾ÍÊ§°ÜÁË¡£
+	//å¤šçº¿ç¨‹ç¯å¢ƒä¸‹åœ¨è¿™é‡Œä½¿ç”¨m_tailæ˜¾ç„¶ä¼šå¯èƒ½é€ æˆä¸¤æ¬¡å–å€¼çš„ä¸ä¸€æ ·
+	//åœ¨å¤šçº¿ç¨‹ä¸‹å¯èƒ½å‡ºç°ä»¥ä¸‹æƒ…æ™¯ï¼š
+	//IsWrappedä½¿ç”¨äº†m_tailåˆ¤æ–­ï¼Œæ‰€ä»¥å¯èƒ½IsWrappedè¿”å›äº†falseï¼Œm_head <= m_tail
+	//ä½†æ˜¯å½“æ‰§è¡Œåˆ°assertf((m_head + length) <= m_tailæ—¶ï¼Œå…¶ä»–çº¿ç¨‹å‘bufferä¸­å†™å…¥æ•°æ®ï¼Œå¹¶é€ æˆç¯ç»•ï¼Œ
+	//m_tailä»å¤´ç¯ç»•ï¼Œè¿™æ—¶æ–­è¨€å°±å¤±è´¥äº†ã€‚
 	//if (IsWrapped())
 	//{
 	//	assertf((m_head + length) <= (m_tail + m_maxSize), "m_head = %d, m_tail = %d, length = %d", m_head, m_tail, length);
@@ -180,7 +180,7 @@ void ring_buffer::_moveHead(int length)
 
 void ring_buffer::_moveTail(int length)
 {
-	//²Î¼û_moveHeadËµÃ÷
+	//å‚è§_moveHeadè¯´æ˜
 	//if (IsWrapped())
 	//{
 	//	assertf((m_tail + length) < m_head, "m_head = %d, m_tail = %d, length = %d", m_head, m_tail, length);
@@ -210,7 +210,7 @@ int ring_buffer::used() volatile
 	//int usedLength = 0;
 	//if (currentHead > currentTail) // is wrapped
 	//{
-	//	//m_headµ½bufferÎ²²¿µÄ³¤¶È + Í·²¿µ½m_tailµÄ³¤¶È
+	//	//m_headåˆ°bufferå°¾éƒ¨çš„é•¿åº¦ + å¤´éƒ¨åˆ°m_tailçš„é•¿åº¦
 	//	usedLength = (m_maxSize - currentHead) + currentTail;
 	//}
 	//else
@@ -243,7 +243,7 @@ bool ring_buffer::is_free_wrapped() volatile
 
 int ring_buffer::static_free(const int head, const int tail, const int maxSize)
 {
-	return maxSize - static_used(head, tail, maxSize) - 1;  //ÕâÀï¼õ1ÊÇÒòÎªm_tailÊÇÕ¼Î»·û£¬ËùÕ¼¿Õ¼ä²»±£´æÊı¾İ
+	return maxSize - static_used(head, tail, maxSize) - 1;  //è¿™é‡Œå‡1æ˜¯å› ä¸ºm_tailæ˜¯å ä½ç¬¦ï¼Œæ‰€å ç©ºé—´ä¸ä¿å­˜æ•°æ®
 }
 
 int ring_buffer::static_used(const int head, const int tail, const int maxSize)

@@ -15,12 +15,12 @@ public:
 	buffer(void* p, const int max_length, const int start = 0, const int end = 0);
 	virtual ~buffer();
 
-	//³õÊ¼»¯buffer
-	void	alloc	(const int maxLength);				//·ÖÅäÒ»¿é³¤¶ÈÎªmaxLengthµÄÄÚ´æ,¸ÃÄÚ´æÔÚÀàÎö¹¹µÄÊ±ºò»á±»deleteµô
-	void	init	(void* pData, const int maxLength, const int start = 0, const int end = 0);	//½«pDataÖ¸ÏòµÄÄÚ´æ×÷ÎªÊı¾İÇø£¬×î´óÊ¹ÓÃ³¤¶ÈÎªmaxLength£¬¸ÃÄÚ´æ²»»á±»Ààdelete
+	//åˆå§‹åŒ–buffer
+	void	alloc	(const int maxLength);				//åˆ†é…ä¸€å—é•¿åº¦ä¸ºmaxLengthçš„å†…å­˜,è¯¥å†…å­˜åœ¨ç±»ææ„çš„æ—¶å€™ä¼šè¢«deleteæ‰
+	void	init	(void* pData, const int maxLength, const int start = 0, const int end = 0);	//å°†pDataæŒ‡å‘çš„å†…å­˜ä½œä¸ºæ•°æ®åŒºï¼Œæœ€å¤§ä½¿ç”¨é•¿åº¦ä¸ºmaxLengthï¼Œè¯¥å†…å­˜ä¸ä¼šè¢«ç±»delete
 
 	uint8*	data	()					{ return &(m_buffer[m_start]); }
-	int		length	() const			{ return m_end - m_start; }			//endÕ¼Ò»¸öÎ»ÖÃ
+	int		length	() const			{ return m_end - m_start; }			//endå ä¸€ä¸ªä½ç½®
 	int		read	(void* p, const int length);
 	int		peek	(void* p, const int length);
 	void	write	(const void* const p, const int length);
@@ -31,11 +31,11 @@ public:
 	void	set_length(const int v)		{ m_end = m_start + v; }
 
 private:
-	uint8*			m_buffer;		//Êı¾İ»º³åÇø
-	int				m_start;		//ÆğÊ¼Î»ÖÃ£¬Õâ¸öÎ»ÖÃºÍÊı¾İµÄµÚÒ»¸öbyteÖØºÏ
-	int				m_end;			//½áÊøÎ»ÖÃ£¬Õâ¸öÎ»ÖÃÎ»ÓÚÊı¾İµÄ×îºóÒ»¸öbyteºóÃæ
-	int				m_maxLength;	//Õû¸ö»º³åÇøËùÄÜÈİÄÉµÄÊı¾İ³¤¶È£¬Îªm_bufferµÄ³¤¶È¼õÈ¥m_endÕ¼ÓÃµÄ1
-	bool			m_autoDelete;	//ÊÇ·ñĞèÒªÔÚBinaryStreamerÎö¹¹Ê±delete[] m_buffer
+	uint8*			m_buffer;		//æ•°æ®ç¼“å†²åŒº
+	int				m_start;		//èµ·å§‹ä½ç½®ï¼Œè¿™ä¸ªä½ç½®å’Œæ•°æ®çš„ç¬¬ä¸€ä¸ªbyteé‡åˆ
+	int				m_end;			//ç»“æŸä½ç½®ï¼Œè¿™ä¸ªä½ç½®ä½äºæ•°æ®çš„æœ€åä¸€ä¸ªbyteåé¢
+	int				m_maxLength;	//æ•´ä¸ªç¼“å†²åŒºæ‰€èƒ½å®¹çº³çš„æ•°æ®é•¿åº¦ï¼Œä¸ºm_bufferçš„é•¿åº¦å‡å»m_endå ç”¨çš„1
+	bool			m_autoDelete;	//æ˜¯å¦éœ€è¦åœ¨BinaryStreamerææ„æ—¶delete[] m_buffer
 };
 
 } //namespace scl 

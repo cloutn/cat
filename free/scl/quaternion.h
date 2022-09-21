@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//	ËÄÔªÊı
+//	å››å…ƒæ•°
 //	2010.12.01 caolei
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -22,10 +22,10 @@ public:
 	void	set					(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; normalize(); }
 	void	clear				();
 	void	normalize			();
-	void	from_pivot_radian	(const vector3& v, const float angle); //angleÎª»¡¶ÈÖÆ
+	void	from_pivot_radian	(const vector3& v, const float angle); //angleä¸ºå¼§åº¦åˆ¶
 	void	from_vector4		(const vector4& v);
-	void	from_euler_radian	(const float x, const float y, const float z);		//µ¥Î»ÊÇ»¡¶ÈÖÆ
-	void	from_euler_angle	(const float x, const float y, const float z);		//µ¥Î»ÊÇ½Ç¶ÈÖÆ
+	void	from_euler_radian	(const float x, const float y, const float z);		//å•ä½æ˜¯å¼§åº¦åˆ¶
+	void	from_euler_angle	(const float x, const float y, const float z);		//å•ä½æ˜¯è§’åº¦åˆ¶
 	void	to_euler_radian		(float& _x, float& y, float& z) const;
 	void	to_euler_radian		(scl::vector3& v) const;
 	void	to_euler_angle		(float& _x, float& y, float& z) const;

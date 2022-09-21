@@ -10,8 +10,8 @@
 //TODO:
 //	from_string
 //	to_string
-//	Òç³ö´¦Àí
-//	Õı¸ºÊı´¦Àí
+//	æº¢å‡ºå¤„ç†
+//	æ­£è´Ÿæ•°å¤„ç†
 
 namespace scl {
 
@@ -49,13 +49,13 @@ public:
 	void		add				(const big_int& bi);
 	void		dec				(const big_int& bi);
 	void		mul				(const big_int& bi);
-	void		div				(const big_int& down);				 // up ¡Â div = up.div(down);
-	void		div				(const big_int& down, big_int& mod); // up ¡Â div = up.div(down);
+	void		div				(const big_int& down);				 // up Ã· div = up.div(down);
+	void		div				(const big_int& down, big_int& mod); // up Ã· div = up.div(down);
 
-	//Õı¸ººÅÏà¹Ø
-	void		not				()	{ m_sign = -m_sign;		}		//È¡·´
-	void		absolute		()	{ m_sign = 1;			}		//¾ø¶ÔÖµ
-	char		sign			()	const { assert(m_sign >= -1 && m_sign <= 1); return m_sign;		}		//Õı¸ººÅ	,1±íÊ¾ÕıÊı£¬-1±íÊ¾¸ºÊı
+	//æ­£è´Ÿå·ç›¸å…³
+	void		not				()	{ m_sign = -m_sign;		}		//å–å
+	void		absolute		()	{ m_sign = 1;			}		//ç»å¯¹å€¼
+	char		sign			()	const { assert(m_sign >= -1 && m_sign <= 1); return m_sign;		}		//æ­£è´Ÿå·	,1è¡¨ç¤ºæ­£æ•°ï¼Œ-1è¡¨ç¤ºè´Ÿæ•°
 
 	void		clear			();
 	int			to_int			();
@@ -71,23 +71,23 @@ public:
 	static		big_int			zero;
 
 private:
-	//ÏÂÃæ4¸öº¯Êı£¬½ö¶ÔÖµ×÷ÔËËã£¬²»¿¼ÂÇÕı¸ººÅ
+	//ä¸‹é¢4ä¸ªå‡½æ•°ï¼Œä»…å¯¹å€¼ä½œè¿ç®—ï¼Œä¸è€ƒè™‘æ­£è´Ÿå·
 	void		_add_value		(const big_int& bi);
 	void		_dec_value		(const big_int& bi);
 	void		_mul_value		(const big_int& bi);
-	void		_div_value		(const big_int& down, big_int& result_mod); // up ¡Â div = up.div(down);
+	void		_div_value		(const big_int& down, big_int& result_mod); // up Ã· div = up.div(down);
 	int			_compare_value	(const big_int& bi) const;
 
-	int			_small_div		(const big_int& bi);	//µ÷ÓÃÕâ¸öº¯Êı£¬ÒªÇó±»³ıÊıºÍ³ıÊıµÄÎ»Êı²î²»»á³¬¹ı1
+	int			_small_div		(const big_int& bi);	//è°ƒç”¨è¿™ä¸ªå‡½æ•°ï¼Œè¦æ±‚è¢«é™¤æ•°å’Œé™¤æ•°çš„ä½æ•°å·®ä¸ä¼šè¶…è¿‡1
 	void		_mul_byte		(byte b);
-	void		_shift_left		(const int shift = 1);	//ÀıÈç:0x00AB	_shift_left(1) = 0x0AB0	_shift_left(2) = 0xAB00
-	void		_shift_right	(const int shift = 1);	//ÀıÈç:0xAB00 	_shift_right(1) = 0x0AB0 	_shift_right(2) = 0x00AB
+	void		_shift_left		(const int shift = 1);	//ä¾‹å¦‚:0x00AB	_shift_left(1) = 0x0AB0	_shift_left(2) = 0xAB00
+	void		_shift_right	(const int shift = 1);	//ä¾‹å¦‚:0xAB00 	_shift_right(1) = 0x0AB0 	_shift_right(2) = 0x00AB
 	int			_length			() const;
-	void		_copy			(big_int& dest, const int src_start, const int src_length = -1);	//src_start		´ÓµÍÎ»¿ªÊ¼µÄË÷Òı src_length	¸´ÖÆ³¤¶È£¬Èç¹ûÎª-1£¬ÄÇÃ´³¤¶ÈÎª _length() - src_start
+	void		_copy			(big_int& dest, const int src_start, const int src_length = -1);	//src_start		ä»ä½ä½å¼€å§‹çš„ç´¢å¼• src_length	å¤åˆ¶é•¿åº¦ï¼Œå¦‚æœä¸º-1ï¼Œé‚£ä¹ˆé•¿åº¦ä¸º _length() - src_start
 
 private:
-	char	m_sign;								//Õı¸ººÅ	,1±íÊ¾ÕıÊı£¬-1±íÊ¾¸ºÊı
-	byte	m_buffer	[MAX_BYTE_COUNT];		// m_bufferÊ¹ÓÃlittle-endian¡£ ´Ó×ó£¨µÍµØÖ·£©ÏòÓÒ£¨¸ßµØÖ·£©£¬Îª´ÓµÍÎ»Ïò¸ßÎ»¡£ m_buffer[0]ÊÇ×îµÍÎ»£¨lsb£©£¬m_buffer[MAX - 1]ÊÇ×î¸ßÎ»£¨msb£©
+	char	m_sign;								//æ­£è´Ÿå·	,1è¡¨ç¤ºæ­£æ•°ï¼Œ-1è¡¨ç¤ºè´Ÿæ•°
+	byte	m_buffer	[MAX_BYTE_COUNT];		// m_bufferä½¿ç”¨little-endianã€‚ ä»å·¦ï¼ˆä½åœ°å€ï¼‰å‘å³ï¼ˆé«˜åœ°å€ï¼‰ï¼Œä¸ºä»ä½ä½å‘é«˜ä½ã€‚ m_buffer[0]æ˜¯æœ€ä½ä½ï¼ˆlsbï¼‰ï¼Œm_buffer[MAX - 1]æ˜¯æœ€é«˜ä½ï¼ˆmsbï¼‰
 };
 
 template <int MAX_BYTE_COUNT> big_int<MAX_BYTE_COUNT> big_int<MAX_BYTE_COUNT>::zero;
@@ -255,17 +255,17 @@ void big_int<MAX_BYTE_COUNT>::to_string(char* buffer, const int buffer_size)
 template <int MAX_BYTE_COUNT>
 void big_int<MAX_BYTE_COUNT>::add(const big_int& bi)
 {
-	if (this->sign() * bi.sign() >= 0)			//Í¬ºÅ,Ö±½ÓÏà¼Ó
+	if (this->sign() * bi.sign() >= 0)			//åŒå·,ç›´æ¥ç›¸åŠ 
 	{
 		_add_value(bi);
 	}
-	else										//ÒìºÅ
+	else										//å¼‚å·
 	{
-		if (this->_compare_value(bi) > 0)		//±¾Éí¾ø¶ÔÖµ´ó
+		if (this->_compare_value(bi) > 0)		//æœ¬èº«ç»å¯¹å€¼å¤§
 		{
 			_dec_value(bi);
 		}
-		else									//±¾Éí¾ø¶ÔÖµĞ¡
+		else									//æœ¬èº«ç»å¯¹å€¼å°
 		{
 			big_int t;
 			t = *this;
@@ -279,11 +279,11 @@ void big_int<MAX_BYTE_COUNT>::add(const big_int& bi)
 template <int MAX_BYTE_COUNT>
 void big_int<MAX_BYTE_COUNT>::dec(const big_int& bi)
 {
-	if (this->sign() * bi.sign() <= 0)	//ÒìºÅÏà¼õ£¬Ö±½ÓÖµÏà¼Ó
+	if (this->sign() * bi.sign() <= 0)	//å¼‚å·ç›¸å‡ï¼Œç›´æ¥å€¼ç›¸åŠ 
 	{
 		_add_value(bi);
 	}
-	else								//Í¬ºÅÏà¼õ£¬×ö¼õ·¨
+	else								//åŒå·ç›¸å‡ï¼Œåšå‡æ³•
 	{
 		const int compare = this->_compare_value(bi);
 		if (compare == 0)
@@ -422,13 +422,13 @@ void big_int<MAX_BYTE_COUNT>::_div_value(const big_int& down, big_int& result_mo
 	assert(m_buffer != down.m_buffer);
 	assert(down._length() > 0);
 
-	if (_compare_value(down) < 0)		//±»³ıÊı±È³ıÊıĞ¡£¬·µ»Ø0
+	if (_compare_value(down) < 0)		//è¢«é™¤æ•°æ¯”é™¤æ•°å°ï¼Œè¿”å›0
 	{
 		result_mod = *this;
 		memset(m_buffer, 0, sizeof(m_buffer));
 		return;
 	}
-	else if (_compare_value(down) == 0)//±»³ıÊıÓë³ıÊıÏàµÈ£¬·µ»Ø1
+	else if (_compare_value(down) == 0)//è¢«é™¤æ•°ä¸é™¤æ•°ç›¸ç­‰ï¼Œè¿”å›1
 	{
 		result_mod.clear();
 		memset(m_buffer, 0, sizeof(m_buffer));
@@ -442,12 +442,12 @@ void big_int<MAX_BYTE_COUNT>::_div_value(const big_int& down, big_int& result_mo
 	big_int result;
 	result.m_sign = this->m_sign;
 
-	//Èç¹û³ıÊıÎªnÎ»£¬ÄÇÃ´±»³ıÊıµÄ¸ßn-1Î»µÄÉÌ¶¼ÊÇ0£¬ËùÒÔÕâÀïÖ±½Ó¿½±´±»³ıÊıµÄ¸ßn-1Î»µ½modÖĞ£¬Ôö¼ÓĞ§ÂÊ
+	//å¦‚æœé™¤æ•°ä¸ºnä½ï¼Œé‚£ä¹ˆè¢«é™¤æ•°çš„é«˜n-1ä½çš„å•†éƒ½æ˜¯0ï¼Œæ‰€ä»¥è¿™é‡Œç›´æ¥æ‹·è´è¢«é™¤æ•°çš„é«˜n-1ä½åˆ°modä¸­ï¼Œå¢åŠ æ•ˆç‡
 	big_int mod;
 	_copy(mod, up_len - down_len + 1, down_len - 1);
 	mod.m_sign = this->m_sign;
 
-	//´Ó×î¸ßÎ»ÓÒ²àµÄn-1Î»¿ªÊ¼³ı
+	//ä»æœ€é«˜ä½å³ä¾§çš„n-1ä½å¼€å§‹é™¤
 	for (int i = (up_len - 1) - (down_len - 1); i >= 0; --i)
 	{
 		mod._shift_left();
@@ -455,12 +455,12 @@ void big_int<MAX_BYTE_COUNT>::_div_value(const big_int& down, big_int& result_mo
 		int quotient		= mod._small_div(down);
 		result.m_buffer[i]	= static_cast<byte>(quotient);
 
-		//¼ÆËãÓàÊı
-		//¼ÆËãÉÌºÍ³ıÊıµÄÕûÊı³Ë»ı
+		//è®¡ç®—ä½™æ•°
+		//è®¡ç®—å•†å’Œé™¤æ•°çš„æ•´æ•°ä¹˜ç§¯
 		big_int product(quotient);
 		product._mul_value(down);
 
-		//¼ÆËãÓàÊı
+		//è®¡ç®—ä½™æ•°
 		mod._dec_value(product);
 	}
 
@@ -475,7 +475,7 @@ int big_int<MAX_BYTE_COUNT>::_small_div(const big_int& bi)
 {
 	assert(m_buffer != bi.m_buffer);
 
-	//È¡Á½¸öbig intµÄ³¤¶È
+	//å–ä¸¤ä¸ªbig intçš„é•¿åº¦
 	int up_len		= this->_length();
 	int down_len	= bi._length();
 
@@ -638,7 +638,7 @@ template <int MAX_BYTE_COUNT>
 bool scl::big_int<MAX_BYTE_COUNT>::is_zero() const 
 { 
 	assert(m_sign >= -1 && m_sign <= 1);
-	assert(_compare_value(zero) == scl::absolute(m_sign)); //Ğ£ÑévalueÓëvalueÊÇ·ñÆ¥Åä
+	assert(_compare_value(zero) == scl::absolute(m_sign)); //æ ¡éªŒvalueä¸valueæ˜¯å¦åŒ¹é…
 	return m_sign == 0;
 }
 
@@ -647,7 +647,7 @@ template <int MAX_BYTE_COUNT>
 bool scl::big_int<MAX_BYTE_COUNT>::is_positive() const 
 { 
 	assert(m_sign >= -1 && m_sign <= 1);
-	assert(_compare_value(zero) == scl::absolute(m_sign)); //Ğ£Ñévalue
+	assert(_compare_value(zero) == scl::absolute(m_sign)); //æ ¡éªŒvalue
 	return m_sign == 1;
 }
 
@@ -656,7 +656,7 @@ template <int MAX_BYTE_COUNT>
 bool scl::big_int<MAX_BYTE_COUNT>::is_negative() const 
 { 
 	assert(m_sign >= -1 && m_sign <= 1);
-	assert(_compare_value(zero) == scl::absolute(m_sign)); //Ğ£Ñévalue
+	assert(_compare_value(zero) == scl::absolute(m_sign)); //æ ¡éªŒvalue
 	return m_sign == -1;
 }
 
@@ -678,7 +678,7 @@ void scl::big_int<MAX_BYTE_COUNT>::from(const char* const s)
 			if (_compare_value(zero) != 0)
 				m_sign = sign;
 		}
-		else	//·ÇÊı×Ö×Ö·ûµÄ´¦Àí
+		else	//éæ•°å­—å­—ç¬¦çš„å¤„ç†
 		{
 			if (is_zero())
 			{

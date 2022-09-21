@@ -24,8 +24,8 @@ class matrix
 public:
 	union 
 	{
-		//µÚÒ»¸öÀ¨ºÅÊÇĞĞ£¬µÚ¶ş¸öÀ¨ºÅÊÇÁĞ£¬
-		//ÀıÈçµÚ3ĞĞµÚ2¸ö m[3 - 1][2 - 1] = y3;
+		//ç¬¬ä¸€ä¸ªæ‹¬å·æ˜¯è¡Œï¼Œç¬¬äºŒä¸ªæ‹¬å·æ˜¯åˆ—ï¼Œ
+		//ä¾‹å¦‚ç¬¬3è¡Œç¬¬2ä¸ª m[3 - 1][2 - 1] = y3;
 		float m[4][4];
 		struct
 		{
@@ -50,71 +50,71 @@ public:
 	//inline void set(const float** new_m);
 
 
-	//¾ØÕó¼Ó·¨
+	//çŸ©é˜µåŠ æ³•
 	static void add(const matrix& m1, const matrix& m2, matrix& result);
 	static void dec(const matrix& m1, const matrix& m2, matrix& result);
 	matrix operator+(const matrix& o);
 	matrix operator-(const matrix& o);
 
-	//¾ØÕó³Ë·¨
+	//çŸ©é˜µä¹˜æ³•
 	inline void mul(const matrix& other);
 
 	inline bool operator==(const matrix& other) const;
 
 	////////////////////////////////////////////////////////////
-	//static º¯Êı
+	//static å‡½æ•°
 	////////////////////////////////////////////////////////////
-	//Ğı×ª¾ØÕó
-	static matrix& rotate_x(float a) { return rotate_x_radian(radian(a)); }	//½Ç¶ÈÖÆ
-	static matrix& rotate_y(float a) { return rotate_y_radian(radian(a)); };	//½Ç¶ÈÖÆ
-	static matrix& rotate_z(float a) { return rotate_z_radian(radian(a)); };	//½Ç¶ÈÖÆ
-	static matrix& rotate_x_radian(float r);	//»¡¶ÈÖÆ
-	static matrix& rotate_y_radian(float r);	//»¡¶ÈÖÆ
-	static matrix& rotate_z_radian(float r);	//»¡¶ÈÖÆ
+	//æ—‹è½¬çŸ©é˜µ
+	static matrix& rotate_x(float a) { return rotate_x_radian(radian(a)); }	//è§’åº¦åˆ¶
+	static matrix& rotate_y(float a) { return rotate_y_radian(radian(a)); };	//è§’åº¦åˆ¶
+	static matrix& rotate_z(float a) { return rotate_z_radian(radian(a)); };	//è§’åº¦åˆ¶
+	static matrix& rotate_x_radian(float r);	//å¼§åº¦åˆ¶
+	static matrix& rotate_y_radian(float r);	//å¼§åº¦åˆ¶
+	static matrix& rotate_z_radian(float r);	//å¼§åº¦åˆ¶
 	
-	//Æ½ÒÆ£¬Õı·½ÏòÎª¸÷×ø±êÏµµÄÕı°ëÖá
-	//ÀıÈçxÖá£¬µ±d > 0£¬±íÊ¾ÓÒÒÆd¸öµ¥Î»(xÖáÓÒ²àÎªÕı·½Ïò)
+	//å¹³ç§»ï¼Œæ­£æ–¹å‘ä¸ºå„åæ ‡ç³»çš„æ­£åŠè½´
+	//ä¾‹å¦‚xè½´ï¼Œå½“d > 0ï¼Œè¡¨ç¤ºå³ç§»dä¸ªå•ä½(xè½´å³ä¾§ä¸ºæ­£æ–¹å‘)
 	static matrix& move(float dx, float dy, float dz);
 	static matrix& move_x(float d) { return move(d, 0, 0); }
 	static matrix& move_y(float d) { return move(0, d, 0); }
 	static matrix& move_z(float d) { return move(0, 0, d); }
 	
-	//Ëõ·Å
+	//ç¼©æ”¾
 	static matrix& scale(float x, float y, float z);
 
-	//µ¥Î»¾ØÕó
+	//å•ä½çŸ©é˜µ
 	static matrix& identity();
 
-	//ÈÆÏòÁ¿vĞı×ªangle½Ç¶ÈµÄ¾ØÕó
+	//ç»•å‘é‡væ—‹è½¬angleè§’åº¦çš„çŸ©é˜µ
 	static matrix& rotate_axis(const vector3& v, float angle);
 
-	//ÈÆÏòÁ¿v = v2 - v1 Ğı×ªangle½Ç¶ÈµÄ¾ØÕó
-	//v1ÊÇÆğÊ¼µã£¬v2ÊÇ½áÊøµã
+	//ç»•å‘é‡v = v2 - v1 æ—‹è½¬angleè§’åº¦çš„çŸ©é˜µ
+	//v1æ˜¯èµ·å§‹ç‚¹ï¼Œv2æ˜¯ç»“æŸç‚¹
 	static matrix& rotate_any_axis(const vector3& v1, const vector3& v2, float angle);
 
-	//Çó´Óv1ÏòÁ¿Ğı×ªµ½v2ÏòÁ¿µÄ¾ØÕó
+	//æ±‚ä»v1å‘é‡æ—‹è½¬åˆ°v2å‘é‡çš„çŸ©é˜µ
 	static matrix& rotate_between(const vector3& v1, const vector3& v2);
 
-	//ÒÔÄ³¸öµãÎª»ù×¼µã£¬ËÄÔªÊı×öĞı×ª²ÎÊı
+	//ä»¥æŸä¸ªç‚¹ä¸ºåŸºå‡†ç‚¹ï¼Œå››å…ƒæ•°åšæ—‹è½¬å‚æ•°
 	static matrix& rotate_pivot_quaternion(const vector3& pivot, const quaternion& q);
 
-	//Í¶Ó°¾ØÕó
+	//æŠ•å½±çŸ©é˜µ
 	static void ortho		(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
 	static void perspective	(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ);
 	static void frustum		(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
 	//static void frustum2	(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
 
-	//ÉãÏñ»ú¾ØÕó
+	//æ‘„åƒæœºçŸ©é˜µ
 	static void lookat		(scl::matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ);
 	static matrix lookat2	(scl::vector3 pos, scl::vector3 lookAt, scl::vector3 up);
 
-	//ÇóÄæ¾ØÕó
+	//æ±‚é€†çŸ©é˜µ
 	static bool inverse		(scl::matrix& m, scl::matrix& result);
 };
 
 ////////////////////////////////////
 //	
-//	MatrixÊµÏÖ	
+//	Matrixå®ç°	
 //	
 ////////////////////////////////////
 inline void matrix::set(

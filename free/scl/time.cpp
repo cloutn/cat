@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//	Ê±¼äÏà¹Ø
+//	æ—¶é—´ç›¸å…³
 //	
 //	2010.09.03 caolei
 ////////////////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ void time::do_local(int _millisecond)
 #endif
 }
 
-//»ñÈ¡ÏµÍ³µ±Ç°Tick£¬µ¥Î»ºÁÃë(ms)
+//è·å–ç³»ç»Ÿå½“å‰Tickï¼Œå•ä½æ¯«ç§’(ms)
 uint64 get_realtime_tick()
 {
 #ifdef SCL_WIN
@@ -273,7 +273,7 @@ uint64 get_realtime_tick()
 
 
 	//RDTSC, result in eax, edx
-	//ÓÉÓÚ¶àºËÏÂ¿ÉÄÜ´æÔÚÎÊÌâ£¬Òò´ËÔİ²»Ê¹ÓÃ
+	//ç”±äºå¤šæ ¸ä¸‹å¯èƒ½å­˜åœ¨é—®é¢˜ï¼Œå› æ­¤æš‚ä¸ä½¿ç”¨
 	//_asm
 	//{
 	//	_emit 0x0F
@@ -352,14 +352,14 @@ void usleep(unsigned int useconds)
 //}
 
 
-void timer::start(int interval) //µ¥Î»£ººÁÃë
+void timer::start(int interval) //å•ä½ï¼šæ¯«ç§’
 {
 	m_interval = interval;
 	m_nextTick = SCL_TICK + m_interval;
 }
 
 
-void timer::start() //µ¥Î»£ººÁÃë
+void timer::start() //å•ä½ï¼šæ¯«ç§’
 {
 	start(m_interval);
 }
@@ -414,7 +414,7 @@ void timer::resume()
 	m_paused = false;
 }
 
-void timer2::start(const uint64 interval) 	//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë; // interval = 0
+void timer2::start(const uint64 interval) 	//å¼€å¯è®¡æ—¶å™¨ã€‚å•ä½ï¼Œæ¯«ç§’; // interval = 0
 {
 	if (interval == 0)
 		return;
@@ -424,7 +424,7 @@ void timer2::start(const uint64 interval) 	//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë; // interval
 	resume();
 }
 
-void timer2::start() 	//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë; // interval = 0
+void timer2::start() 	//å¼€å¯è®¡æ—¶å™¨ã€‚å•ä½ï¼Œæ¯«ç§’; // interval = 0
 {
 	if (m_interval == 0)
 		return;

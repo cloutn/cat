@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //	thread.cpp
-//	ThreadÀà
+//	Threadç±»
 //	2010.09.11 caolei
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -88,7 +88,7 @@ int __g_threads_getFreeSlot(thread* t)
 	}
 	if (global_index == -1)
 	{
-		//Ïß³ÌÊı×éÒÑÂú
+		//çº¿ç¨‹æ•°ç»„å·²æ»¡
 		assert(false);
 		return -1;
 	}
@@ -134,7 +134,7 @@ uint __stdcall PlatformThreadFunction(void* p)
 	pinfo->id			= ::GetCurrentThreadId();
 	pinfo->process_id	= ::GetCurrentProcessId();
 
-	//¿ªÊ¼Ö´ĞĞ
+	//å¼€å§‹æ‰§è¡Œ
 	pinfo->is_running 	= true;
 	assert(pinfo->function);
 	pinfo->exit_code 	= pinfo->function(pinfo->param, &(pinfo->signal));
@@ -166,7 +166,7 @@ void* PlatformThreadFunction(void* p)
 	while (pinfo->signal == thread::SIGNAL_HUNG)
 		scl::sleep(1);
 
-	//¿ªÊ¼Ö´ĞĞ
+	//å¼€å§‹æ‰§è¡Œ
 	pinfo->is_running = true;
 	assert(pinfo->function);
 	pinfo->exit_code = pinfo->function(pinfo->param, &(pinfo->signal));
@@ -189,7 +189,7 @@ thread::thread()
 
 thread::~thread() 
 {
-	//ÔÚÏß³Ì¹Ø±ÕÇ°£¬¾ÍÎö¹¹ÁËthread¶ÔÏó£¬Õâ»áµ¼ÖÂg_threadsÊı×éÖĞ´æÔÚÒ°Ö¸Õë
+	//åœ¨çº¿ç¨‹å…³é—­å‰ï¼Œå°±ææ„äº†threadå¯¹è±¡ï¼Œè¿™ä¼šå¯¼è‡´g_threadsæ•°ç»„ä¸­å­˜åœ¨é‡æŒ‡é’ˆ
 	if (m_info.is_running)
 	{
 		//assert(false);
@@ -208,7 +208,7 @@ int thread::start(ThreadFunction function, void* param, bool start_at_once, bool
 
 	m_info.clear();
 
-	//ÕÒµ½Ò»¸ö¿ÕÏĞµÄg_threadsµÄÎ»ÖÃ
+	//æ‰¾åˆ°ä¸€ä¸ªç©ºé—²çš„g_threadsçš„ä½ç½®
 	m_info.index = __g_threads_getFreeSlot(this);
 	m_info.function			= function;
 	m_info.param			= param;
@@ -263,7 +263,7 @@ int thread::start(ThreadFunction function, void* param, bool start_at_once, bool
 	}
 #endif
 
-	//ÕâÀï±ØĞëµÈ´ıÏß³ÌÆô¶¯²¢ÉèÖÃis_runningºó²ÅÄÜ·µ»Ø
+	//è¿™é‡Œå¿…é¡»ç­‰å¾…çº¿ç¨‹å¯åŠ¨å¹¶è®¾ç½®is_runningåæ‰èƒ½è¿”å›
 	if (start_at_once) while(!m_info.is_running);
 	
 	return 0;
@@ -375,7 +375,7 @@ bool thread::wait(const int timeout, bool check_thread)
 			}
 			if (t->m_info.id == m_info.id)
 			{	
-				g_threads[i] = NULL; //TODO Ïß³Ì°²È«£¿
+				g_threads[i] = NULL; //TODO çº¿ç¨‹å®‰å…¨ï¼Ÿ
 				break;
 			}
 		}
@@ -456,15 +456,15 @@ bool thread::force_kill()
 #endif
 
 #if defined(SCL_LINUX) || defined(SCL_APPLE)
-	//linuxÏÂÃ»ÓĞÇ¿ÖÆÖÕÖ¹Ïß³ÌµÄ·½·¨£¬ËùÒÔÕâÀïÊ¹ÓÃsend_stop_signalÍ¨ÖªÊÖ¶¯¼ì²ésignalµÄµã£¬²¢µ÷ÓÃpthread_cancelÀ´ÖĞ¶Ï×èÈûµÄÏµÍ³µ÷ÓÃ
+	//linuxä¸‹æ²¡æœ‰å¼ºåˆ¶ç»ˆæ­¢çº¿ç¨‹çš„æ–¹æ³•ï¼Œæ‰€ä»¥è¿™é‡Œä½¿ç”¨send_stop_signalé€šçŸ¥æ‰‹åŠ¨æ£€æŸ¥signalçš„ç‚¹ï¼Œå¹¶è°ƒç”¨pthread_cancelæ¥ä¸­æ–­é˜»å¡çš„ç³»ç»Ÿè°ƒç”¨
 	send_stop_signal();
 	int r = pthread_cancel(reinterpret_cast<pthread_t>(m_info.handle));
 #endif
 
 #if defined(SCL_ANDROID) || defined(SCL_HTML5)
 	send_stop_signal();
-	//TODO androidÃ»ÊµÏÖ
-	//androidÏÂ¿¼ÂÇÊ¹ÓÃpthread_kill(id, SIGUSR1£¬µ«ÊÇÏß³Ìº¯Êı±ØĞëÒª´¦ÀíSIGUSR1ĞÅºÅ
+	//TODO androidæ²¡å®ç°
+	//androidä¸‹è€ƒè™‘ä½¿ç”¨pthread_kill(id, SIGUSR1ï¼Œä½†æ˜¯çº¿ç¨‹å‡½æ•°å¿…é¡»è¦å¤„ç†SIGUSR1ä¿¡å·
 	int r = -1;
 	assert(0);
 #endif

@@ -123,3 +123,8 @@ add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DSCL_FORCE_SLEEP)
 
 
+if(WIN32)
+  add_definitions("/wd4819")
+endif(WIN32)
+
+

@@ -112,10 +112,10 @@ void vector3::mul_matrix( const matrix& m )
 
 vector3& vector3::cross( const vector3& v1, const vector3& v2 )
 {
-	//¼ÆËã·½·¨ËµÃ÷£º
+	//è®¡ç®—æ–¹æ³•è¯´æ˜ï¼š
 	//vector a = (a1, a2, a3)	here as v1(x, y, z)
 	//vector b = (b1, b2, b3)	here as v2(x, y, z)
-	//a ¡Á b = [a2b3 ? a3b2, a3b1 ? a1b3, a1b2 ? a2b1]
+	//a Ã— b = [a2b3 ? a3b2, a3b1 ? a1b3, a1b2 ? a2b1]
 
 	static vector3 result;
 	result.x = v1.y * v2.z - v1.z * v2.y;
@@ -132,7 +132,7 @@ scl::vector3 vector3::cross(const vector3& v)
 
 float vector3::dot( const vector3& v1, const vector3& v2 )
 {
-	//TODO vector.dÃ»ÓĞ´¦Àí£¿
+	//TODO vector.dæ²¡æœ‰å¤„ç†ï¼Ÿ
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
@@ -144,7 +144,7 @@ scl::vector3 vector3::dot(const vector3& v)
 
 float vector3::cosa( const vector3& v1, const vector3& v2 )
 {
-	//¼ÆËã²æ»ı
+	//è®¡ç®—å‰ç§¯
 	float dotProduct = vector3::dot(v1, v2);
 	float cosa = dotProduct / ( v1.length() * v2.length() );
 	return cosa;
@@ -224,16 +224,16 @@ void vector4::fromPoint( const point& from, const point& to )
 	y = to.y - from.y;
 	z = to.z - from.z;
 
-	//TODO dÓ¦¸ÃÔõÃ´´¦Àí?
+	//TODO dåº”è¯¥æ€ä¹ˆå¤„ç†?
 	d = to.d - from.d;
 }
 
 vector4& vector4::cross( const vector4& v1, const vector4& v2 )
 {
-	//¼ÆËã·½·¨ËµÃ÷£º
+	//è®¡ç®—æ–¹æ³•è¯´æ˜ï¼š
 	//vector a = (a1, a2, a3)	here as v1(x, y, z)
 	//vector b = (b1, b2, b3)	here as v2(x, y, z)
-	//a ¡Á b = [a2b3 ? a3b2, a3b1 ? a1b3, a1b2 ? a2b1]
+	//a Ã— b = [a2b3 ? a3b2, a3b1 ? a1b3, a1b2 ? a2b1]
 
 	static vector4 result;
 	result.x = v1.y * v2.z - v1.z * v2.y;
@@ -245,13 +245,13 @@ vector4& vector4::cross( const vector4& v1, const vector4& v2 )
 
 float vector4::dot( const vector4& v1, const vector4& v2 )
 {
-	//TODO vector.dÃ»ÓĞ´¦Àí£¿
+	//TODO vector.dæ²¡æœ‰å¤„ç†ï¼Ÿ
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
 float vector4::cosa( const vector4& v1, const vector4& v2 )
 {
-	//¼ÆËã²æ»ı
+	//è®¡ç®—å‰ç§¯
 	float dotProduct = dot(v1, v2);
 	float cosa = dotProduct / ( v1.length() * v2.length() );
 	return cosa;

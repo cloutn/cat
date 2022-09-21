@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //	tree.h
-//	TreeÄ£°å¶¨ÒåÓëÊµÏÖ£¬AVLÊ÷
+//	Treeæ¨¡æ¿å®šä¹‰ä¸å®ç°ï¼ŒAVLæ ‘
 //	2010.05.04 caolei
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -35,7 +35,7 @@ public:
 	tree_node*		right;
 	tree_node*		parent;
 	
-	//Æ½ºâÒò×Ó(blanceFactor)£¬¶¨ÒåÎª¡°ÓÒ²à¼õ×ó²àµÄÖµ¡±£¬//¼´×ó²àÔö¼ÓÎª¸ºÖµ£¬ÓÒ²àÔö¼ÓÎªÕıÖµ
+	//å¹³è¡¡å› å­(blanceFactor)ï¼Œå®šä¹‰ä¸ºâ€œå³ä¾§å‡å·¦ä¾§çš„å€¼â€ï¼Œ//å³å·¦ä¾§å¢åŠ ä¸ºè´Ÿå€¼ï¼Œå³ä¾§å¢åŠ ä¸ºæ­£å€¼
 	int			bf;	
 	
 	tree_node() : left(NULL), right(NULL), parent(NULL), bf(0) {}
@@ -57,7 +57,7 @@ public:
 	tree(): m_pRoot(NULL), m_size(0), m_is_avl(true)  {};
 	virtual ~tree() { clear(); };
 
-	//stl¼æÈİ½Ó¿Ú
+	//stlå…¼å®¹æ¥å£
 	pair<iterator, bool>	insert	(const tree_value_insert_T& val);
 	iterator				begin	()	const	{ return iterator(_left_most(m_pRoot));	}
 	iterator				end		()	const	{ return iterator(NULL);				}
@@ -65,17 +65,17 @@ public:
 	iterator				rend	()	const	{ return iterator(NULL);				}
 	void					clear	()			{ _free_node_recursion(m_pRoot); m_pRoot = NULL;	}
 	bool					empty	() const	{ return m_pRoot == NULL;				}
-	void					erase	(iterator where)		{ _remove(where.p->key); }	//TODO ·µ»Ø±»É¾³ı½ÚµãµÄÏÂÒ»¸ö½Úµã
-	void					erase	(const key_T& key)		{ _remove(key); _checkbf(m_pRoot); }					//TODO ·µ»Ø±»É¾³ı½ÚµãµÄÏÂÒ»¸ö½Úµã
+	void					erase	(iterator where)		{ _remove(where.p->key); }	//TODO è¿”å›è¢«åˆ é™¤èŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+	void					erase	(const key_T& key)		{ _remove(key); _checkbf(m_pRoot); }					//TODO è¿”å›è¢«åˆ é™¤èŠ‚ç‚¹çš„ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
 	iterator				find	(const key_T& key) const	{ return iterator(find_node(key)); }
 	int						count	(const key_T& key) const { return find(key) == end() ? 0 : 1; }
 	int						size	() const { return m_size; }
 	value_T&				operator[](const key_T& key);
 	const value_T&			operator[](const key_T& key) const;
 	
-	//·Çstl¼æÈİ½Ó¿Ú
+	//éstlå…¼å®¹æ¥å£
 	iterator	add			(const key_T& key, const value_T& value)	{ return iterator(add_node(key, value)); _checkbf(m_pRoot); }
-	node_T*		add_node	(const key_T& key, const value_T& value);	//Add ·µ»ØĞÂÔö¼ÓµÄ½Úµã
+	node_T*		add_node	(const key_T& key, const value_T& value);	//Add è¿”å›æ–°å¢åŠ çš„èŠ‚ç‚¹
 	node_T*		find_node	(const key_T& key) const;
 	value_T&	find_value	(const key_T& key) const;
 	node_T*		root		() const { return m_pRoot; }
@@ -128,7 +128,7 @@ public:
 	};
 
 private:
-	//²åÈëÉ¾³ı
+	//æ’å…¥åˆ é™¤
 	node_T*	_insert				(const key_T& key, const value_T& elem, node_T* pPosition, const TREE_CHILD_TYPE& child_type);
 	node_T*	_insert_recursion	(const key_T& key, const value_T& elem, node_T* pPosition, bool& needChangeBlanceFactor);
 	node_T*	_insert_recursion_not_avl(const key_T& key, const value_T& elem, node_T* pPosition);
@@ -136,19 +136,19 @@ private:
 	void	_free_node			(node_T* pNode);
 	void	_free_node_recursion(node_T* pNode);
 
-	//Ğı×ªº¯Êı
-	int		_left_rotate		(node_T* const oldRoot);	//Ğı×ªº¯Êı£¬·µ»ØÖµÎªĞı×ªºó¸ß¶È±ä»¯£¬Ö»ÄÜÎª-1»ò0£¬¼´Ê÷µÄ¸ß¶È¼õ1»òÕßÊ÷µÄ¸ß¶È²»±ä
+	//æ—‹è½¬å‡½æ•°
+	int		_left_rotate		(node_T* const oldRoot);	//æ—‹è½¬å‡½æ•°ï¼Œè¿”å›å€¼ä¸ºæ—‹è½¬åé«˜åº¦å˜åŒ–ï¼Œåªèƒ½ä¸º-1æˆ–0ï¼Œå³æ ‘çš„é«˜åº¦å‡1æˆ–è€…æ ‘çš„é«˜åº¦ä¸å˜
 	int		_right_rotate		(node_T* const oldRoot);
 	int		_left_right_rotate	(node_T* const oldRoot);
 	int		_right_left_rotate	(node_T* const oldRoot);
 
-	//×î×ó²à½ÚµãÓë×îÓÒ²à½Úµã
+	//æœ€å·¦ä¾§èŠ‚ç‚¹ä¸æœ€å³ä¾§èŠ‚ç‚¹
 	node_T*	_left_most			(node_T* pNode) const	{ if (NULL != pNode && NULL != pNode->left)	return _left_most(pNode->left);		else return pNode;	}
 	node_T*	_right_most			(node_T* pNode) const	{ if (NULL != pNode && NULL != pNode->right) return _right_most(pNode->right);	else return pNode;	}
 
 	void	_adjust_remove_node	(node_T* pNode, int bfChanged);
 	void	_attach_node		(node_T* pParent, node_T* pChild, const TREE_CHILD_TYPE childType);
-	TREE_CHILD_TYPE _get_child_type(const node_T* const pNode) const; //·µ»ØNodeÊÇNode-parentµÄ×ó×Ó½Úµã»¹ÊÇÓÒ×Ó½Úµã
+	TREE_CHILD_TYPE _get_child_type(const node_T* const pNode) const; //è¿”å›Nodeæ˜¯Node-parentçš„å·¦å­èŠ‚ç‚¹è¿˜æ˜¯å³å­èŠ‚ç‚¹
 	void	_swap_node			(node_T* n1, node_T* n2);
 	
 private:
@@ -159,7 +159,7 @@ private:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// treeÊµÏÖ
+// treeå®ç°
 ////////////////////////////////////////////////////////////////////////////////
 template<typename key_T, typename value_T, typename Alloc>
 tree_node<key_T, value_T>* tree<key_T, value_T, Alloc>::add_node(const key_T& key, const value_T& value)
@@ -187,43 +187,43 @@ tree_node<key_T, value_T>* tree<key_T, value_T, Alloc>::add_node(const key_T& ke
 }
 
 ////////////////////////////////////////////////////////////
-//	RemoveÊµÏÖ£º
-//	ÕÒµ½ĞèÒªÉ¾³ıµÄ½Úµã£¬È»ºó¸ù¾İ¸Ã½ÚµãÊÇ·ñ°üº¬×Ó½ÚµãÀ´·Ö±ğ´¦Àí
-//	1.Èç¹û¸Ã½Úµã²»°üº¬×Ó½Úµã£¬ÄÇÃ´Ö±½ÓÉ¾³ı¼´¿É
-//	2.Èç¹û¸Ã½Úµã°üº¬×ó½Úµã£¬µ«²»°üº¬ÓÒ½Úµã£¬ÔòÓÃ×ó½ÚµãÌæ´ú¸Ã½Úµã
-//	3.µÚ2Ìõ·´Ö®ÒàÈ»
-//	4.Èç¹û¸Ã½ÚµãÍ¬Ê±°üº¬×óÓÒ½Úµã£¬ÄÇÃ´Òªµİ¹éµÄÕÒµ½¡°¸Ã½ÚµãµÄ×ó½ÚµãµÄ×î¿¿ÓÒµÄÒ¶×Ó½Úµã¡±rightMost£¬
-//	  È»ºóÓÃrightMostÌæ»»¸Ã½Úµã£¬×îºóÉ¾³ı¸Ã½Úµã
-//	5.½«±»É¾³ı½ÚµãµÄ¸¸½Úµã´«µİ¸øadjustRemoveNode£¬×öavlÆ½ºâ
+//	Removeå®ç°ï¼š
+//	æ‰¾åˆ°éœ€è¦åˆ é™¤çš„èŠ‚ç‚¹ï¼Œç„¶åæ ¹æ®è¯¥èŠ‚ç‚¹æ˜¯å¦åŒ…å«å­èŠ‚ç‚¹æ¥åˆ†åˆ«å¤„ç†
+//	1.å¦‚æœè¯¥èŠ‚ç‚¹ä¸åŒ…å«å­èŠ‚ç‚¹ï¼Œé‚£ä¹ˆç›´æ¥åˆ é™¤å³å¯
+//	2.å¦‚æœè¯¥èŠ‚ç‚¹åŒ…å«å·¦èŠ‚ç‚¹ï¼Œä½†ä¸åŒ…å«å³èŠ‚ç‚¹ï¼Œåˆ™ç”¨å·¦èŠ‚ç‚¹æ›¿ä»£è¯¥èŠ‚ç‚¹
+//	3.ç¬¬2æ¡åä¹‹äº¦ç„¶
+//	4.å¦‚æœè¯¥èŠ‚ç‚¹åŒæ—¶åŒ…å«å·¦å³èŠ‚ç‚¹ï¼Œé‚£ä¹ˆè¦é€’å½’çš„æ‰¾åˆ°â€œè¯¥èŠ‚ç‚¹çš„å·¦èŠ‚ç‚¹çš„æœ€é å³çš„å¶å­èŠ‚ç‚¹â€rightMostï¼Œ
+//	  ç„¶åç”¨rightMostæ›¿æ¢è¯¥èŠ‚ç‚¹ï¼Œæœ€ååˆ é™¤è¯¥èŠ‚ç‚¹
+//	5.å°†è¢«åˆ é™¤èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹ä¼ é€’ç»™adjustRemoveNodeï¼Œåšavlå¹³è¡¡
 ////////////////////////////////////////////////////////////
 template<typename key_T, typename value_T, typename Alloc>
 void tree<key_T, value_T, Alloc>::_remove(const key_T& key)
 {
 	node_T* pRemove = find_node(key);
-	if (NULL == pRemove) //Ã»ÓĞÕÒµ½ĞèÒªÉ¾³ıµÄ½Úµã
+	if (NULL == pRemove) //æ²¡æœ‰æ‰¾åˆ°éœ€è¦åˆ é™¤çš„èŠ‚ç‚¹
 		return;
 
 	node_T*			pRemoveParent	= NULL;
 	TREE_CHILD_TYPE	bfChanged		= TREE_CHILD_TYPE_INVALID;
 
-	//step2.É¾³ı¸Ã½Úµã
+	//step2.åˆ é™¤è¯¥èŠ‚ç‚¹
 	if (NULL != pRemove->left && NULL != pRemove->right)
 	{
-		//step2.1 Èç¹û×óÓÒ×Ó½Úµã¾ù²»Îª¿Õ£¬ÄÇÃ´½»»»·¨É¾³ı¸Ã½Úµã
+		//step2.1 å¦‚æœå·¦å³å­èŠ‚ç‚¹å‡ä¸ä¸ºç©ºï¼Œé‚£ä¹ˆäº¤æ¢æ³•åˆ é™¤è¯¥èŠ‚ç‚¹
 		node_T* pRightMost = _right_most(pRemove->left);
 
-		//pRightMostÖÁÉÙ¿ÉÒÔÊÇpRemove->left£¬¶øpRemove->left != NULL£¬Òò´ËpRightMost²»¿ÉÄÜÎªNULL
+		//pRightMostè‡³å°‘å¯ä»¥æ˜¯pRemove->leftï¼Œè€ŒpRemove->left != NULLï¼Œå› æ­¤pRightMostä¸å¯èƒ½ä¸ºNULL
 		assert(NULL != pRightMost);	
 
 		bool adjacent = (pRightMost->parent == pRemove);
 		assert(pRightMost->parent);
 
-		//Èç¹ûpRemoveºÍpRightMostÊÇÏàÁÚ½Úµã£¬ĞèÒªÌØÊâ´¦Àí
+		//å¦‚æœpRemoveå’ŒpRightMostæ˜¯ç›¸é‚»èŠ‚ç‚¹ï¼Œéœ€è¦ç‰¹æ®Šå¤„ç†
 		if (adjacent)
 		{
-			//Õı³£Çé¿öÏÂ£¬rightMostÊÇ¸öÓÒ²à½Úµã
-			//µ«ÊÇµ±É¾³ı½ÚµãµÄ×ó×ÓÊ÷Ö»ÓĞÒ»¸ö½ÚµãÊ±£¬Õâ¸ö½Úµã¾ÍÊÇrightMost£¬
-			//´ËÊ±¸Ã½ÚµãÊÇpRemoveµÄ×ó×Ó½Úµã£¬ĞèÒªÌØÊâ´¦Àí
+			//æ­£å¸¸æƒ…å†µä¸‹ï¼ŒrightMostæ˜¯ä¸ªå³ä¾§èŠ‚ç‚¹
+			//ä½†æ˜¯å½“åˆ é™¤èŠ‚ç‚¹çš„å·¦å­æ ‘åªæœ‰ä¸€ä¸ªèŠ‚ç‚¹æ—¶ï¼Œè¿™ä¸ªèŠ‚ç‚¹å°±æ˜¯rightMostï¼Œ
+			//æ­¤æ—¶è¯¥èŠ‚ç‚¹æ˜¯pRemoveçš„å·¦å­èŠ‚ç‚¹ï¼Œéœ€è¦ç‰¹æ®Šå¤„ç†
 			pRemoveParent = pRightMost;
 			bfChanged = TREE_CHILD_TYPE_LEFT;
 
@@ -261,33 +261,33 @@ void tree<key_T, value_T, Alloc>::_remove(const key_T& key)
 				pRemove->parent->right = NULL;
 		}
 
-		//É¾³ıRightMost½Úµã
+		//åˆ é™¤RightMostèŠ‚ç‚¹
 		_free_node(pRemove);
 	}
 	else if (NULL == pRemove->left)
 	{
-		//step2.2 Èç¹û×ó½ÚµãÎª¿Õ£¬ÔòÓÃÓÒ×Ó½Úµã´úÌæµ±Ç°½Úµã
+		//step2.2 å¦‚æœå·¦èŠ‚ç‚¹ä¸ºç©ºï¼Œåˆ™ç”¨å³å­èŠ‚ç‚¹ä»£æ›¿å½“å‰èŠ‚ç‚¹
 		bfChanged = _get_child_type(pRemove);
 		_attach_node(pRemove->parent, pRemove->right, bfChanged);
 
-		//±£´æĞèÒªµ÷ÕûÆ½ºâÒò×ÓµÄ¸¸½Úµã
+		//ä¿å­˜éœ€è¦è°ƒæ•´å¹³è¡¡å› å­çš„çˆ¶èŠ‚ç‚¹
 		pRemoveParent = pRemove->parent;
 
 		_free_node(pRemove);
 	}
 	else if (NULL == pRemove->right)
 	{
-		//step2.3 Èç¹ûÓÒ½ÚµãÎª¿Õ£¬ÔòÓÃ×ó×Ó½Úµã´úÌæµ±Ç°½Úµã
+		//step2.3 å¦‚æœå³èŠ‚ç‚¹ä¸ºç©ºï¼Œåˆ™ç”¨å·¦å­èŠ‚ç‚¹ä»£æ›¿å½“å‰èŠ‚ç‚¹
 		bfChanged = _get_child_type(pRemove);
 		_attach_node(pRemove->parent, pRemove->left, bfChanged);
 
-		//±£´æĞèÒªµ÷ÕûÆ½ºâÒò×ÓµÄ¸¸½Úµã
+		//ä¿å­˜éœ€è¦è°ƒæ•´å¹³è¡¡å› å­çš„çˆ¶èŠ‚ç‚¹
 		pRemoveParent = pRemove->parent;
 
 		_free_node(pRemove);
 	}
 
-	//step3 µ÷ÕûÆ½ºâÒò×Ó
+	//step3 è°ƒæ•´å¹³è¡¡å› å­
 	if (is_avl() && NULL != pRemoveParent)
 	{
 		_adjust_remove_node(pRemoveParent, bfChanged);
@@ -312,7 +312,7 @@ tree_node<key_T, value_T>* tree<key_T, value_T, Alloc>::find_node(const key_T& k
 	node_T* pNode = m_pRoot;
 	node_T* pRemove = NULL;
 
-	//step1.ÕÒµ½ĞèÒªÉ¾³ıµÄ½Úµã
+	//step1.æ‰¾åˆ°éœ€è¦åˆ é™¤çš„èŠ‚ç‚¹
 	while (pNode)
 	{
 		if (key < pNode->key)
@@ -342,7 +342,7 @@ value_T& tree<key_T, value_T, Alloc>::find_value(const key_T& key) const
 }
 
 
-//µ÷ÕûÒ»¸ö±»É¾³ı½ÚµãµÄ¸¸½Úµã
+//è°ƒæ•´ä¸€ä¸ªè¢«åˆ é™¤èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹
 template<typename key_T, typename value_T, typename Alloc>
 void tree<key_T, value_T, Alloc>::_adjust_remove_node(node_T* pNode, int bfChanged)
 {
@@ -354,16 +354,16 @@ void tree<key_T, value_T, Alloc>::_adjust_remove_node(node_T* pNode, int bfChang
 
 	node_T* pOldParent = pNode->parent;
 
-	//±»É¾³ı½ÚµãµÄ¸¸½ÚµãÔ­À´µÄbfÎª0£¬É¾³ıµ¥¸ö½Úµãºó£¬bfÎª1»òÕß-1£¬Òò´ËÎŞĞè½øĞĞµ÷Õû£¬½áÊøµİ¹é
+	//è¢«åˆ é™¤èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹åŸæ¥çš„bfä¸º0ï¼Œåˆ é™¤å•ä¸ªèŠ‚ç‚¹åï¼Œbfä¸º1æˆ–è€…-1ï¼Œå› æ­¤æ— éœ€è¿›è¡Œè°ƒæ•´ï¼Œç»“æŸé€’å½’
 	if (0 == pNode->bf)
 	{
 		pNode->bf += bfChanged;
 		
-		//½áÊøµİ¹é
+		//ç»“æŸé€’å½’
 		return;
 	} 
-	//±»É¾³ı½ÚµãµÄ¸¸½ÚµãÔ­À´µÄbfÎª1£¬ÔòÈç¹ûÉ¾³ı×ó²à½Úµãºó¿ÉÄÜµ¼ÖÂ²»Æ½ºâ
-	//Í¬Ê±»¹Òªµİ¹éµÄµ÷Õû¸Ã½ÚµãµÄ¸¸½Úµã
+	//è¢«åˆ é™¤èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹åŸæ¥çš„bfä¸º1ï¼Œåˆ™å¦‚æœåˆ é™¤å·¦ä¾§èŠ‚ç‚¹åå¯èƒ½å¯¼è‡´ä¸å¹³è¡¡
+	//åŒæ—¶è¿˜è¦é€’å½’çš„è°ƒæ•´è¯¥èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹
 	else if (1 == pNode->bf)
 	{
 		pNode->bf += bfChanged;
@@ -371,7 +371,7 @@ void tree<key_T, value_T, Alloc>::_adjust_remove_node(node_T* pNode, int bfChang
 		int heightChanged = (bfChanged != 0);
 		if (pNode->bf >= 2)
 		{
-			//ĞèÒª½øĞĞĞı×ª
+			//éœ€è¦è¿›è¡Œæ—‹è½¬
 			if (pNode->right->bf >= 0)
 			{
 				heightChanged = _left_rotate(pNode);
@@ -390,8 +390,8 @@ void tree<key_T, value_T, Alloc>::_adjust_remove_node(node_T* pNode, int bfChang
 			return;
 		}
 	} 
-	//±»É¾³ı½ÚµãµÄ¸¸½ÚµãÔ­À´µÄbfÎª-1£¬ÔòÈç¹ûÉ¾³ıÓÒ²à½Úµãºó¿ÉÄÜµ¼ÖÂ²»Æ½ºâ
-	//Í¬Ê±»¹Òªµİ¹éµÄµ÷Õû¸Ã½ÚµãµÄ¸¸½Úµã
+	//è¢«åˆ é™¤èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹åŸæ¥çš„bfä¸º-1ï¼Œåˆ™å¦‚æœåˆ é™¤å³ä¾§èŠ‚ç‚¹åå¯èƒ½å¯¼è‡´ä¸å¹³è¡¡
+	//åŒæ—¶è¿˜è¦é€’å½’çš„è°ƒæ•´è¯¥èŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹
 	else if (-1 == pNode->bf)
 	{
 		pNode->bf += bfChanged;
@@ -399,7 +399,7 @@ void tree<key_T, value_T, Alloc>::_adjust_remove_node(node_T* pNode, int bfChang
 		int heightChanged = (bfChanged != 0);
 		if (pNode->bf <= -2)
 		{
-			//ĞèÒª½øĞĞĞı×ª
+			//éœ€è¦è¿›è¡Œæ—‹è½¬
 			if (pNode->left->bf <= 0)
 			{
 				heightChanged = _right_rotate(pNode);
@@ -418,7 +418,7 @@ void tree<key_T, value_T, Alloc>::_adjust_remove_node(node_T* pNode, int bfChang
 			return;
 		}
 	}
-	 //Èç¹û±»É¾³ı½Úµã¸¸½ÚµãµÄbf²»Îª1,-1»ò0£¬±íÊ¾Ô­À´Ê÷ÒÑ¾­²»Æ½ºâ£¬³ö´í
+	 //å¦‚æœè¢«åˆ é™¤èŠ‚ç‚¹çˆ¶èŠ‚ç‚¹çš„bfä¸ä¸º1,-1æˆ–0ï¼Œè¡¨ç¤ºåŸæ¥æ ‘å·²ç»ä¸å¹³è¡¡ï¼Œå‡ºé”™
 	else
 	{
 		assert(false);
@@ -435,34 +435,34 @@ int tree<key_T, value_T, Alloc>::_right_rotate(node_T* const oldRoot)
 	//			 / \
 	//		   h+1  a
 
-	ÆäÖĞ	a <= h + 1;
+	å…¶ä¸­	a <= h + 1;
 
-	// Ğı×ªºó£º
+	// æ—‹è½¬åï¼š
 	//		O (newRoot) 
 	//	   / \
 	//   h+1  O (oldRoot)   
 	//		 / \
 	//	    a   h
 
-	µ± newRoot->bf == 0 £¨¼´a = h + 1£©Ê±£¬Ğı×ªºó¸ß¶È²»±ä
-	·ñÔòĞı×ªºó¸ß¶È¼õ1
+	å½“ newRoot->bf == 0 ï¼ˆå³a = h + 1ï¼‰æ—¶ï¼Œæ—‹è½¬åé«˜åº¦ä¸å˜
+	å¦åˆ™æ—‹è½¬åé«˜åº¦å‡1
 	*/
 
-	//TODO Ö¸Õë°²È«ÅĞ¶Ï
-	//TODO ´¦ÀíparentÖ¸Õë
+	//TODO æŒ‡é’ˆå®‰å…¨åˆ¤æ–­
+	//TODO å¤„ç†parentæŒ‡é’ˆ
 	assert(oldRoot);
 	assert(oldRoot->left);
 
-	//oldRootµÄ×ó½Úµã×÷Îª¸Ã×ÓÊ÷µÄĞÂµÄ¶¥µãroot
+	//oldRootçš„å·¦èŠ‚ç‚¹ä½œä¸ºè¯¥å­æ ‘çš„æ–°çš„é¡¶ç‚¹root
 	node_T* const newRoot = oldRoot->left;
 
-	//±£´æĞÂrootµÄĞı×ªÇ°µÄÓÒ½Úµã
+	//ä¿å­˜æ–°rootçš„æ—‹è½¬å‰çš„å³èŠ‚ç‚¹
 	node_T* const oldRight = newRoot->right;	
 
-	//±£´æÔ­À´oldRootµÄparent½Úµã
+	//ä¿å­˜åŸæ¥oldRootçš„parentèŠ‚ç‚¹
 	node_T* const oldParent = oldRoot->parent;
 
-	//½«oldRootĞı×ªµ½newRootµÄÓÒ½Úµã
+	//å°†oldRootæ—‹è½¬åˆ°newRootçš„å³èŠ‚ç‚¹
 	newRoot->right = oldRoot;
 	oldRoot->parent = newRoot;
 	newRoot->parent = oldParent;
@@ -486,7 +486,7 @@ int tree<key_T, value_T, Alloc>::_right_rotate(node_T* const oldRoot)
 		m_pRoot = newRoot;
 	}
 
-	//½«newRootµÄÔ­ÓĞÓÒ½ÚµãÒÆ¶¯µ½oldRootµÄ×ó½Úµã
+	//å°†newRootçš„åŸæœ‰å³èŠ‚ç‚¹ç§»åŠ¨åˆ°oldRootçš„å·¦èŠ‚ç‚¹
 	oldRoot->left = oldRight;
 	if (oldRight)
 	{	
@@ -494,7 +494,7 @@ int tree<key_T, value_T, Alloc>::_right_rotate(node_T* const oldRoot)
 	}
 
 	int heightChanged = 0;
-	//µ÷ÕûÆ½ºâÒò×Ó£¬¾ßÌå·ÖÎö±È½Ï¸´ÔÓ
+	//è°ƒæ•´å¹³è¡¡å› å­ï¼Œå…·ä½“åˆ†ææ¯”è¾ƒå¤æ‚
 	if (newRoot->bf == 0)
 	{
 		newRoot->bf = 1;
@@ -510,42 +510,42 @@ int tree<key_T, value_T, Alloc>::_right_rotate(node_T* const oldRoot)
 	return heightChanged;
 }
 
-//·µ»ØÖµÎª£º¡°ÒÔoldRootËùÔÚµÄÎ»ÖÃ×÷Îª¸ù½ÚµãµÄ×ÓÊ÷¡±ÔÚĞı×ªÖ®ºó¸ß¶ÈµÄ±ä»¯Çé¿ö
+//è¿”å›å€¼ä¸ºï¼šâ€œä»¥oldRootæ‰€åœ¨çš„ä½ç½®ä½œä¸ºæ ¹èŠ‚ç‚¹çš„å­æ ‘â€åœ¨æ—‹è½¬ä¹‹åé«˜åº¦çš„å˜åŒ–æƒ…å†µ
 template<typename key_T, typename value_T, typename Alloc>
 int tree<key_T, value_T, Alloc>::_left_rotate(node_T* const oldRoot)
 {
 	/*
 	//		O (oldRoot)
 	//	   / \
-	//	  ¿Ú O (newRoot) 
+	//	  å£ O (newRoot) 
 	//	     / \
-	//		¿Ú O  
-	// Ğı×ªºó£º
+	//		å£ O  
+	// æ—‹è½¬åï¼š
 	//				 O (newRoot) 
 	//				/ \
 	//	(oldRoot)  O   O  
 	//			  / \
-	//           ¿Ú ¿Ú
+	//           å£ å£
 
-	¹ØÓÚÆ½ºâÒò×Ó±ä»¯ºÍ¸ß¶È±ä»¯µÄ½âÊÍ²Î¼ûrightRotate
+	å…³äºå¹³è¡¡å› å­å˜åŒ–å’Œé«˜åº¦å˜åŒ–çš„è§£é‡Šå‚è§rightRotate
 
 	*/
 
-	//TODO Ö¸Õë°²È«ÅĞ¶Ï
-	//TODO ´¦ÀíparentÖ¸Õë
+	//TODO æŒ‡é’ˆå®‰å…¨åˆ¤æ–­
+	//TODO å¤„ç†parentæŒ‡é’ˆ
 	assert(oldRoot);
 	assert(oldRoot->right);
 
-	//oldRootµÄÓÒ½Úµã×÷Îª¸Ã×ÓÊ÷µÄĞÂµÄ¶¥µãroot
+	//oldRootçš„å³èŠ‚ç‚¹ä½œä¸ºè¯¥å­æ ‘çš„æ–°çš„é¡¶ç‚¹root
 	node_T* const newRoot = oldRoot->right;
 
-	//±£´æĞÂrootµÄĞı×ªÇ°µÄ×ó½Úµã
+	//ä¿å­˜æ–°rootçš„æ—‹è½¬å‰çš„å·¦èŠ‚ç‚¹
 	node_T* const oldLeft = newRoot->left;	
 
-	//±£´æÔ­À´oldRootµÄparent½Úµã
+	//ä¿å­˜åŸæ¥oldRootçš„parentèŠ‚ç‚¹
 	node_T* const oldParent = oldRoot->parent;
 
-	//½«oldRootĞı×ªµ½newRootµÄ×ó½Úµã
+	//å°†oldRootæ—‹è½¬åˆ°newRootçš„å·¦èŠ‚ç‚¹
 	newRoot->left = oldRoot;
 	oldRoot->parent = newRoot;
 	newRoot->parent = oldParent;
@@ -569,7 +569,7 @@ int tree<key_T, value_T, Alloc>::_left_rotate(node_T* const oldRoot)
 		m_pRoot = newRoot;
 	}
 
-	//½«newRootµÄÔ­ÓĞ×ó½ÚµãÒÆ¶¯µ½oldRootµÄÓÒ½Úµã
+	//å°†newRootçš„åŸæœ‰å·¦èŠ‚ç‚¹ç§»åŠ¨åˆ°oldRootçš„å³èŠ‚ç‚¹
 	oldRoot->right = oldLeft;
 	if (oldLeft)
 	{	
@@ -577,7 +577,7 @@ int tree<key_T, value_T, Alloc>::_left_rotate(node_T* const oldRoot)
 	}
 
 	int heightChanged = 0;
-	//µ÷ÕûÆ½ºâÒò×Ó£¬¾ßÌå·ÖÎö±È½Ï¸´ÔÓ
+	//è°ƒæ•´å¹³è¡¡å› å­ï¼Œå…·ä½“åˆ†ææ¯”è¾ƒå¤æ‚
 	if (newRoot->bf == 0)
 	{
 		newRoot->bf = -1;
@@ -604,7 +604,7 @@ int tree<key_T, value_T, Alloc>::_left_right_rotate(node_T* const oldRoot)
 	//				h	O	oldLeftRightBlanceFactor == 1
 	//				   / \
 	//				  h-1 h
-	// »òÕß
+	// æˆ–è€…
 	//					O (oldRoot)
 	//				   / \
 	//	   (oldLeft)  O   h
@@ -621,15 +621,15 @@ int tree<key_T, value_T, Alloc>::_left_right_rotate(node_T* const oldRoot)
 	//				   / \
 	//				  a   b
 
-	ÆäÖĞ	a = h »ò h-1
-			b = h »ò h-1
-			µ±²åÈë²Ù×÷Ê±£¬²»¿ÉÄÜÍ¬Ê±³öÏÖa = h, b = h£¬±ØÈ»ÊÇaºÍbµÄÖµÔÚhºÍh-1ÖĞ¸÷È¡Ò»¸ö
-			µ±É¾³ı²Ù×÷Ê±£¬¿ÉÄÜÍ¬Ê±³öÏÖ a = h, b = h, ´ËÊ±Òª×¢ÒâÖØĞÂÆÀ¹ÀÆ½ºâÒò×Ó
-			ÀıÍâÇé¿ö£¬µ± a == b == 0µÄÊ±ºò£¬ÎŞÂÛ²åÈëºÍÉ¾³ı¶¼¿ÉÄÜ³öÏÖ a == b
+	å…¶ä¸­	a = h æˆ– h-1
+			b = h æˆ– h-1
+			å½“æ’å…¥æ“ä½œæ—¶ï¼Œä¸å¯èƒ½åŒæ—¶å‡ºç°a = h, b = hï¼Œå¿…ç„¶æ˜¯aå’Œbçš„å€¼åœ¨hå’Œh-1ä¸­å„å–ä¸€ä¸ª
+			å½“åˆ é™¤æ“ä½œæ—¶ï¼Œå¯èƒ½åŒæ—¶å‡ºç° a = h, b = h, æ­¤æ—¶è¦æ³¨æ„é‡æ–°è¯„ä¼°å¹³è¡¡å› å­
+			ä¾‹å¤–æƒ…å†µï¼Œå½“ a == b == 0çš„æ—¶å€™ï¼Œæ— è®ºæ’å…¥å’Œåˆ é™¤éƒ½å¯èƒ½å‡ºç° a == b
 
-	Ğı×ªºó£º
+	æ—‹è½¬åï¼š
 
-	µÚÒ»²½:
+	ç¬¬ä¸€æ­¥:
 					O  (oldRoot)
 				   / \
 			      O   h  oldLeftRightBlanceFactor == 1
@@ -638,7 +638,7 @@ int tree<key_T, value_T, Alloc>::_left_right_rotate(node_T* const oldRoot)
 			   / \   
 			  h	  a 
 
-	 µÚ¶ş²½£º
+	 ç¬¬äºŒæ­¥ï¼š
 			        O  oldLeftRightBlanceFactor == 1
 				  /   \
 	(oldLeft)   O		O	(oldRoot)
@@ -651,18 +651,18 @@ int tree<key_T, value_T, Alloc>::_left_right_rotate(node_T* const oldRoot)
 	assert(oldRoot);
 	assert(oldRoot->left);
 
-	//±£´æÔ­×´Ì¬½Úµã£¬ÓÃÓÚĞı×ªºóµ÷Õûbf
+	//ä¿å­˜åŸçŠ¶æ€èŠ‚ç‚¹ï¼Œç”¨äºæ—‹è½¬åè°ƒæ•´bf
 	node_T* oldLeft				= oldRoot->left;
 	node_T* oldLeftRight			= oldRoot->left->right;
 	const int oldLeftRightBlanceFactor	= oldLeftRight->bf;
 	assert(oldLeftRight);
-	//µ± a == b == 0 µÄÊ±ºò£¬¿ÉÄÜ³öÏÖ oldLeftRightBlanceFactor == 0
+	//å½“ a == b == 0 çš„æ—¶å€™ï¼Œå¯èƒ½å‡ºç° oldLeftRightBlanceFactor == 0
 	//assert(oldLeftRightBlanceFactor == 1 || oldLeftRightBlanceFactor == -1);
 	
 	_left_rotate(oldRoot->left);
 	_right_rotate(oldRoot);
 
-	//µ÷ÕûÆ½ºâÒò×Ó
+	//è°ƒæ•´å¹³è¡¡å› å­
 	if (oldLeftRightBlanceFactor == 1)
 	{
 		oldLeft->bf = -1;
@@ -678,17 +678,17 @@ int tree<key_T, value_T, Alloc>::_left_right_rotate(node_T* const oldRoot)
 	else if (oldLeftRightBlanceFactor == 0)
 	{
 		//caolei 2010.09.29
-		//Õı³£µÄÌí¼ÓÂß¼­²»»áÓĞoldLeftRightBlacneFactor = 0µÄÇé¿ö
-		//Õı³£µÄÉ¾³ıÂß¼­ÔÚoldLeftRightBlacneFactor = 0 µÄÊ±ºò»áµ¥¶À²ÉÈ¡×óĞı×ª»òÕßÓÒĞı×ª£¬
-		//ËùÒÔÄ¿Ç°²»»áÖ´ĞĞÕâÀïµÄÂß¼­
-		//caolei 2011.02.12µ± a == b == 0 µÄÊ±ºò£¬¿ÉÄÜ³öÏÖ oldLeftRightBlanceFactor == 0
+		//æ­£å¸¸çš„æ·»åŠ é€»è¾‘ä¸ä¼šæœ‰oldLeftRightBlacneFactor = 0çš„æƒ…å†µ
+		//æ­£å¸¸çš„åˆ é™¤é€»è¾‘åœ¨oldLeftRightBlacneFactor = 0 çš„æ—¶å€™ä¼šå•ç‹¬é‡‡å–å·¦æ—‹è½¬æˆ–è€…å³æ—‹è½¬ï¼Œ
+		//æ‰€ä»¥ç›®å‰ä¸ä¼šæ‰§è¡Œè¿™é‡Œçš„é€»è¾‘
+		//caolei 2011.02.12å½“ a == b == 0 çš„æ—¶å€™ï¼Œå¯èƒ½å‡ºç° oldLeftRightBlanceFactor == 0
 		//assert(false);
 
 		oldLeft->bf = 0;
 		oldRoot->bf = 0;
 		oldLeftRight->bf = 0;
 	}
-	//µ÷Õûºó×ÓÊ÷µÄ¸ß¶È±ØÈ»½µµÍ1
+	//è°ƒæ•´åå­æ ‘çš„é«˜åº¦å¿…ç„¶é™ä½1
 	int heightChange = -1;
 	return heightChange;
 }
@@ -704,7 +704,7 @@ int tree<key_T, value_T, Alloc>::_right_left_rotate(node_T* const oldRoot)
 	//	oldLeftRightBlanceFactor = -1	O   h
 	//								   / \
 	//								  h	 h-1
-	//»òÕß
+	//æˆ–è€…
 	//									O (oldRoot)
 	//								   / \
 	//								  h   O (oldRight)
@@ -713,24 +713,24 @@ int tree<key_T, value_T, Alloc>::_right_left_rotate(node_T* const oldRoot)
 	//								   / \
 	//								 h-1  h
 
-	¾ßÌå¹ı³Ì¿ÉÒÔ²Î¼ûleftRightRotateº¯ÊıµÄ×¢ÊÍ
+	å…·ä½“è¿‡ç¨‹å¯ä»¥å‚è§leftRightRotateå‡½æ•°çš„æ³¨é‡Š
 	*/
 
 	assert(oldRoot);
 	assert(oldRoot->right);
 
-	//±£´æÔ­×´Ì¬½Úµã£¬ÓÃÓÚĞı×ªºóµ÷Õûbf
+	//ä¿å­˜åŸçŠ¶æ€èŠ‚ç‚¹ï¼Œç”¨äºæ—‹è½¬åè°ƒæ•´bf
 	node_T* oldRight = oldRoot->right;
 	node_T* oldRightLeft = oldRoot->right->left;
 	const int oldRightLeftBlanceFactor = oldRightLeft->bf;
 	assert(oldRightLeft);
-	//caolei 2011.02.12µ± a == b == 0 µÄÊ±ºò£¬¿ÉÄÜ³öÏÖ oldRightLeftBlanceFactor == 0
+	//caolei 2011.02.12å½“ a == b == 0 çš„æ—¶å€™ï¼Œå¯èƒ½å‡ºç° oldRightLeftBlanceFactor == 0
 	//assert(oldRightLeftBlanceFactor == 1 || oldRightLeftBlanceFactor == -1);
 
 	_right_rotate(oldRoot->right);
 	_left_rotate(oldRoot);
 
-	//µ÷ÕûÆ½ºâÒò×Ó
+	//è°ƒæ•´å¹³è¡¡å› å­
 	if (oldRightLeftBlanceFactor == 1)
 	{
 		oldRight->bf = 0;
@@ -746,17 +746,17 @@ int tree<key_T, value_T, Alloc>::_right_left_rotate(node_T* const oldRoot)
 	else if (oldRightLeftBlanceFactor == 0)
 	{
 		//caolei 2010.09.29
-		//Õı³£µÄÌí¼ÓÂß¼­²»»áÓĞoldRightLeftBlanceFactor = 0µÄÇé¿ö
-		//Õı³£µÄÉ¾³ıÂß¼­ÔÚoldRightLeftBlanceFactor = 0 µÄÊ±ºò»áµ¥¶À²ÉÈ¡×óĞı×ª»òÕßÓÒĞı×ª£¬
-		//ËùÒÔÄ¿Ç°²»»áÖ´ĞĞÕâÀïµÄÂß¼­
-		//caolei 2011.02.12µ± a == b == 0 µÄÊ±ºò£¬¿ÉÄÜ³öÏÖ oldRightLeftBlanceFactor == 0
+		//æ­£å¸¸çš„æ·»åŠ é€»è¾‘ä¸ä¼šæœ‰oldRightLeftBlanceFactor = 0çš„æƒ…å†µ
+		//æ­£å¸¸çš„åˆ é™¤é€»è¾‘åœ¨oldRightLeftBlanceFactor = 0 çš„æ—¶å€™ä¼šå•ç‹¬é‡‡å–å·¦æ—‹è½¬æˆ–è€…å³æ—‹è½¬ï¼Œ
+		//æ‰€ä»¥ç›®å‰ä¸ä¼šæ‰§è¡Œè¿™é‡Œçš„é€»è¾‘
+		//caolei 2011.02.12å½“ a == b == 0 çš„æ—¶å€™ï¼Œå¯èƒ½å‡ºç° oldRightLeftBlanceFactor == 0
 		//assert(false);
 
 		oldRight->bf = 0;
 		oldRoot->bf = 0;
 		oldRightLeft->bf = 0;
 	}
-	//µ÷Õûºó×ÓÊ÷µÄ¸ß¶È±ØÈ»½µµÍ1
+	//è°ƒæ•´åå­æ ‘çš„é«˜åº¦å¿…ç„¶é™ä½1
 	int heightChange = -1;
 	return heightChange;
 }
@@ -832,38 +832,38 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert(const key_T& ke
 	return NULL;
 }
 
-//µİ¹é²åÈë
+//é€’å½’æ’å…¥
 template<typename key_T, typename value_T, typename Alloc>
 tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion(const key_T& key, const value_T& elem, node_T* pCurrent, bool& needChangeBlanceFactor)
 {
-	//×¢Òâ£¬µ±keyÖµÏàµÈµÄÊ±ºò£¬²åÈëµ½ÓÒ²à£¡
+	//æ³¨æ„ï¼Œå½“keyå€¼ç›¸ç­‰çš„æ—¶å€™ï¼Œæ’å…¥åˆ°å³ä¾§ï¼
 	if (key < pCurrent->key)
 	{
-		//×ó²à²åÈë
+		//å·¦ä¾§æ’å…¥
 		if (NULL != pCurrent->left)
 		{
 			node_T* pNewNode = _insert_recursion(key, elem, pCurrent->left, needChangeBlanceFactor);
 			if (needChangeBlanceFactor)
 			{
-				pCurrent->bf--;	//×ó×ÓÊ÷Ôö¸ß£¬bf¼õÉÙ£¨ÓÉÓÚbf¶¨ÒåÊÇ¡°ÓÒ×ÓÊ÷¸ß¶È¡±¼õ¡°×ó×ÓÊ÷¸ß¶È¡±£©
+				pCurrent->bf--;	//å·¦å­æ ‘å¢é«˜ï¼Œbfå‡å°‘ï¼ˆç”±äºbfå®šä¹‰æ˜¯â€œå³å­æ ‘é«˜åº¦â€å‡â€œå·¦å­æ ‘é«˜åº¦â€ï¼‰
 
-				if (pCurrent->bf == -1) // Ô­À´µÄbfÊÇ 0, ×ó±ßºÍÓÒ±ßÒ»Ñù¸ß£¬ÏÖÔÚ×ó±ß¼ÓÁËÒ»¸ö(bf = bf - 1)£¬bf±äÎª-1ÁË£¬pCurrentµÄÕûÌå¸ß¶ÈÔö¼ÓÁË1£¬ËùÒÔ needChangeBlanceFactor = true 
+				if (pCurrent->bf == -1) // åŸæ¥çš„bfæ˜¯ 0, å·¦è¾¹å’Œå³è¾¹ä¸€æ ·é«˜ï¼Œç°åœ¨å·¦è¾¹åŠ äº†ä¸€ä¸ª(bf = bf - 1)ï¼Œbfå˜ä¸º-1äº†ï¼ŒpCurrentçš„æ•´ä½“é«˜åº¦å¢åŠ äº†1ï¼Œæ‰€ä»¥ needChangeBlanceFactor = true 
 					needChangeBlanceFactor = true;
-				else if (pCurrent->bf == 0) // Ô­À´µÄbfÊÇ 1, ÓÒ±ß±È×ó±ß¸ß¶È¶à1£¬ÏÖÔÚ×ó±ß¼ÓÁËÒ»¸ö(bf = bf - 1)£¬bf±äÎª0ÁË£¬µ«ÊÇpCurrentµÄÕûÌå¸ß¶ÈÃ»±ä£¬ËùÒÔ needChangeBlanceFactor = false
+				else if (pCurrent->bf == 0) // åŸæ¥çš„bfæ˜¯ 1, å³è¾¹æ¯”å·¦è¾¹é«˜åº¦å¤š1ï¼Œç°åœ¨å·¦è¾¹åŠ äº†ä¸€ä¸ª(bf = bf - 1)ï¼Œbfå˜ä¸º0äº†ï¼Œä½†æ˜¯pCurrentçš„æ•´ä½“é«˜åº¦æ²¡å˜ï¼Œæ‰€ä»¥ needChangeBlanceFactor = false
 					needChangeBlanceFactor = false;
 			}
 
 			if (pCurrent->bf == -2)
 			{
 				if (key < pCurrent->left->key)
-					//×ó×óÇé¿ö£¬½øĞĞµ¥´ÎÓÒĞı×ª
+					//å·¦å·¦æƒ…å†µï¼Œè¿›è¡Œå•æ¬¡å³æ—‹è½¬
 					_right_rotate(pCurrent);
 				else
-					//×óÓÒÇé¿ö£¬½øĞĞ×óÓÒĞı×ª
+					//å·¦å³æƒ…å†µï¼Œè¿›è¡Œå·¦å³æ—‹è½¬
 					_left_right_rotate(pCurrent);
 
-				//¡°ÔÚÌí¼Ó½ÚµãµÄÇé¿öÏÂ¡±£¬Ğı×ªºóÊ÷µÄ¸ß¶È±ØÈ»¼õ1£¬ÕâºÍµ¼ÖÂĞı×ªµÄÊ÷µÄ¸ß¶È¼Ó1»¥ÏàµÖÏûÁË£¬
-				//Òò´ËÏòÉÏµÄËùÓĞ×æÏÈ½Úµã¶¼ÎŞĞèĞŞ¸ÄÆ½ºâÒò×Ó
+				//â€œåœ¨æ·»åŠ èŠ‚ç‚¹çš„æƒ…å†µä¸‹â€ï¼Œæ—‹è½¬åæ ‘çš„é«˜åº¦å¿…ç„¶å‡1ï¼Œè¿™å’Œå¯¼è‡´æ—‹è½¬çš„æ ‘çš„é«˜åº¦åŠ 1äº’ç›¸æŠµæ¶ˆäº†ï¼Œ
+				//å› æ­¤å‘ä¸Šçš„æ‰€æœ‰ç¥–å…ˆèŠ‚ç‚¹éƒ½æ— éœ€ä¿®æ”¹å¹³è¡¡å› å­
 				needChangeBlanceFactor = false;
 			}
 
@@ -872,10 +872,10 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion(const
 		else
 		{
 			if (NULL == pCurrent->right)
-				//²åÈë½ÚµãÃ»ÓĞÓÒ×ÓÊ÷£¬ÔÚ×ó²à²åÈëºó»áµ¼ÖÂ¸ß¶È±ä»¯£¬´Ó¶øµ¼ÖÂÆ½ºâÒò×Ó±ä»¯
+				//æ’å…¥èŠ‚ç‚¹æ²¡æœ‰å³å­æ ‘ï¼Œåœ¨å·¦ä¾§æ’å…¥åä¼šå¯¼è‡´é«˜åº¦å˜åŒ–ï¼Œä»è€Œå¯¼è‡´å¹³è¡¡å› å­å˜åŒ–
 				needChangeBlanceFactor = true;
 			else
-				//²åÈë½ÚµãÒÑ¾­ÓĞÓÒ×ÓÊ÷£¬ÔÚ×ó²à²åÈëºó²»»áµ¼ÖÂ¸ß¶È±ä»¯£¬Òò´Ë²»ÓÃĞŞ¸ÄÆ½ºâÒò×Ó
+				//æ’å…¥èŠ‚ç‚¹å·²ç»æœ‰å³å­æ ‘ï¼Œåœ¨å·¦ä¾§æ’å…¥åä¸ä¼šå¯¼è‡´é«˜åº¦å˜åŒ–ï¼Œå› æ­¤ä¸ç”¨ä¿®æ”¹å¹³è¡¡å› å­
 				needChangeBlanceFactor = false;
 
 			pCurrent->bf--;
@@ -884,7 +884,7 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion(const
 	}
 	else if (pCurrent->key < key)
 	{
-		//ÓÒ²à²åÈë
+		//å³ä¾§æ’å…¥
 		if (NULL != pCurrent->right)
 		{	
 			node_T* pNewNode = _insert_recursion(key, elem, pCurrent->right, needChangeBlanceFactor);
@@ -892,25 +892,25 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion(const
 			if (needChangeBlanceFactor)
 			{
 				pCurrent->bf++;
-				if (pCurrent->bf == 1)  // Ô­À´µÄbfÊÇ 0, ×ó±ßºÍÓÒ±ßÒ»Ñù¸ß£¬ÏÖÔÚÓÒ±ß¼ÓÁËÒ»¸ö(bf = bf + 1)£¬bf±äÎª1ÁË£¬pCurrentµÄÕûÌå¸ß¶ÈÔö¼ÓÁË1£¬ËùÒÔ needChangeBlanceFactor = true 
+				if (pCurrent->bf == 1)  // åŸæ¥çš„bfæ˜¯ 0, å·¦è¾¹å’Œå³è¾¹ä¸€æ ·é«˜ï¼Œç°åœ¨å³è¾¹åŠ äº†ä¸€ä¸ª(bf = bf + 1)ï¼Œbfå˜ä¸º1äº†ï¼ŒpCurrentçš„æ•´ä½“é«˜åº¦å¢åŠ äº†1ï¼Œæ‰€ä»¥ needChangeBlanceFactor = true 
 					needChangeBlanceFactor = true;
-				else if (pCurrent->bf == 0) // Ô­À´µÄbfÊÇ -1, ×ó±ß±ÈÓÒ±ß¸ß¶È¶à1£¬ÏÖÔÚÓÒ±ß¼ÓÁËÒ»¸ö(bf = bf + 1)£¬bf±äÎª0ÁË£¬µ«ÊÇpCurrentµÄÕûÌå¸ß¶ÈÃ»±ä£¬ËùÒÔ needChangeBlanceFactor = false
+				else if (pCurrent->bf == 0) // åŸæ¥çš„bfæ˜¯ -1, å·¦è¾¹æ¯”å³è¾¹é«˜åº¦å¤š1ï¼Œç°åœ¨å³è¾¹åŠ äº†ä¸€ä¸ª(bf = bf + 1)ï¼Œbfå˜ä¸º0äº†ï¼Œä½†æ˜¯pCurrentçš„æ•´ä½“é«˜åº¦æ²¡å˜ï¼Œæ‰€ä»¥ needChangeBlanceFactor = false
 					needChangeBlanceFactor = false;
 			}
 			if (pCurrent->bf == 2)
 			{
 				if (key < pCurrent->right->key)
 				{
-					//ÓÒ×óÇé¿ö£¬½øĞĞÓÒ×óĞı×ª
+					//å³å·¦æƒ…å†µï¼Œè¿›è¡Œå³å·¦æ—‹è½¬
 					_right_left_rotate(pCurrent);
 				}
 				else
 				{
-					//ÓÒÓÒÇé¿ö£¬½øĞĞµ¥´Î×óĞı×ª
+					//å³å³æƒ…å†µï¼Œè¿›è¡Œå•æ¬¡å·¦æ—‹è½¬
 					_left_rotate(pCurrent);
 				}
-				//¡°ÔÚÌí¼Ó½ÚµãµÄÇé¿öÏÂ¡±£¬Ğı×ªºóÊ÷µÄ¸ß¶È±ØÈ»¼õ1£¬ÕâºÍµ¼ÖÂĞı×ªµÄÊ÷µÄ¸ß¶È¼Ó1»¥ÏàµÖÏûÁË£¬
-				//Òò´ËÏòÉÏµÄËùÓĞ×æÏÈ½Úµã¶¼ÎŞĞèĞŞ¸ÄÆ½ºâÒò×Ó
+				//â€œåœ¨æ·»åŠ èŠ‚ç‚¹çš„æƒ…å†µä¸‹â€ï¼Œæ—‹è½¬åæ ‘çš„é«˜åº¦å¿…ç„¶å‡1ï¼Œè¿™å’Œå¯¼è‡´æ—‹è½¬çš„æ ‘çš„é«˜åº¦åŠ 1äº’ç›¸æŠµæ¶ˆäº†ï¼Œ
+				//å› æ­¤å‘ä¸Šçš„æ‰€æœ‰ç¥–å…ˆèŠ‚ç‚¹éƒ½æ— éœ€ä¿®æ”¹å¹³è¡¡å› å­
 				needChangeBlanceFactor = false;
 			}
 
@@ -920,12 +920,12 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion(const
 		{
 			if (NULL == pCurrent->left)
 			{
-				//²åÈë½ÚµãÃ»ÓĞ×ó×ÓÊ÷£¬ÔÚÓÒ²à²åÈëºó»áµ¼ÖÂ¸ß¶È±ä»¯£¬´Ó¶øµ¼ÖÂÆ½ºâÒò×Ó±ä»¯
+				//æ’å…¥èŠ‚ç‚¹æ²¡æœ‰å·¦å­æ ‘ï¼Œåœ¨å³ä¾§æ’å…¥åä¼šå¯¼è‡´é«˜åº¦å˜åŒ–ï¼Œä»è€Œå¯¼è‡´å¹³è¡¡å› å­å˜åŒ–
 				needChangeBlanceFactor = true;
 			}
 			else
 			{
-				//²åÈë½ÚµãÒÑ¾­ÓĞ×ó×ÓÊ÷£¬ÔÚÓÒ²à²åÈëºó²»»áµ¼ÖÂ¸ß¶È±ä»¯£¬Òò´Ë²»ÓÃĞŞ¸ÄÆ½ºâÒò×Ó
+				//æ’å…¥èŠ‚ç‚¹å·²ç»æœ‰å·¦å­æ ‘ï¼Œåœ¨å³ä¾§æ’å…¥åä¸ä¼šå¯¼è‡´é«˜åº¦å˜åŒ–ï¼Œå› æ­¤ä¸ç”¨ä¿®æ”¹å¹³è¡¡å› å­
 				needChangeBlanceFactor = false;
 			}
 			pCurrent->bf++;
@@ -934,20 +934,20 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion(const
 	}
 	else // if (pCurrent->key == key)
 	{
-		//ÒÑÓĞÖØ¸´ÖµÁË
+		//å·²æœ‰é‡å¤å€¼äº†
 		assert(false);
 		return NULL;
 	}
 }
 
 
-//µİ¹é²åÈë£¬µ«²»½øĞĞavlĞı×ª
+//é€’å½’æ’å…¥ï¼Œä½†ä¸è¿›è¡Œavlæ—‹è½¬
 template<typename key_T, typename value_T, typename Alloc>
 tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion_not_avl(const key_T& key, const value_T& elem, node_T* pCurrent)
 {
 	if (key < pCurrent->key)
 	{
-		//×ó²à²åÈë
+		//å·¦ä¾§æ’å…¥
 		if (NULL != pCurrent->left)
 			return _insert_recursion_not_avl(key, elem, pCurrent->left);
 		else
@@ -955,7 +955,7 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion_not_a
 	}
 	else if (pCurrent->key < key)
 	{
-		//ÓÒ²à²åÈë
+		//å³ä¾§æ’å…¥
 		if (NULL != pCurrent->right)
 			return _insert_recursion_not_avl(key, elem, pCurrent->right);
 		else
@@ -963,7 +963,7 @@ tree_node<key_T, value_T>*  tree<key_T, value_T, Alloc>::_insert_recursion_not_a
 	}
 	else // if (pCurrent->key == key)
 	{
-		//ÒÑÓĞÖØ¸´ÖµÁË
+		//å·²æœ‰é‡å¤å€¼äº†
 		assert(false);
 		return NULL;
 	}
@@ -992,8 +992,8 @@ TREE_CHILD_TYPE tree<key_T, value_T, Alloc>::_get_child_type(const node_T* const
 template<typename key_T, typename value_T, typename Alloc>
 void tree<key_T, value_T, Alloc>::_attach_node(node_T* pParent, node_T* pChild, const TREE_CHILD_TYPE childType)
 {
-	//´¦Àíparent½Úµã
-	if (pParent == NULL) //½«pChild attachµ½root
+	//å¤„ç†parentèŠ‚ç‚¹
+	if (pParent == NULL) //å°†pChild attachåˆ°root
 		m_pRoot = pChild;
 	else
 	{
@@ -1005,7 +1005,7 @@ void tree<key_T, value_T, Alloc>::_attach_node(node_T* pParent, node_T* pChild, 
 			assert(false);
 	}
 
-	//´¦Àíchild½Úµã
+	//å¤„ç†childèŠ‚ç‚¹
 	if (NULL != pChild)
 		pChild->parent = pParent;
 }
@@ -1154,7 +1154,7 @@ typename tree<key_T, value_T, Alloc>::iterator& tree<key_T, value_T, Alloc>::ite
 	node_T* next = NULL;
 	if (NULL != p->right)
 	{
-		//Èç¹ûÓĞÓÒ×Ó½Úµã£¬ÔòÕÒµ½ÓÒ×Ó½ÚµãµÄ×Ó½áµãÖĞ×î¿¿×óµÄ½Úµã(¼´×î´ó½Úµã)
+		//å¦‚æœæœ‰å³å­èŠ‚ç‚¹ï¼Œåˆ™æ‰¾åˆ°å³å­èŠ‚ç‚¹çš„å­ç»“ç‚¹ä¸­æœ€é å·¦çš„èŠ‚ç‚¹(å³æœ€å¤§èŠ‚ç‚¹)
 		next = p->right;
 		while (next->left)
 		{
@@ -1164,7 +1164,7 @@ typename tree<key_T, value_T, Alloc>::iterator& tree<key_T, value_T, Alloc>::ite
 	}
 	else if (NULL == p->right)
 	{	
-		//Èç¹ûÓÒ×Ó½ÚµãÎª¿Õ£¬Ôò×·Ëİ×æÏÈ½Úµã£¬Ö±µ½ÕÒµ½×æÏÈ½Úµã×ó½ÚµãÎªnextµÄ½Úµã(nextÊÇµİ¹é²éÕÒ½Úµã)
+		//å¦‚æœå³å­èŠ‚ç‚¹ä¸ºç©ºï¼Œåˆ™è¿½æº¯ç¥–å…ˆèŠ‚ç‚¹ï¼Œç›´åˆ°æ‰¾åˆ°ç¥–å…ˆèŠ‚ç‚¹å·¦èŠ‚ç‚¹ä¸ºnextçš„èŠ‚ç‚¹(nextæ˜¯é€’å½’æŸ¥æ‰¾èŠ‚ç‚¹)
 		next = p;
 		while (next->parent && next->parent->right == next)
 		{
@@ -1184,7 +1184,7 @@ typename tree<key_T, value_T, Alloc>::iterator& tree<key_T, value_T, Alloc>::ite
 	node_T* next = NULL;
 	if (NULL != p->left)
 	{
-		//Èç¹ûÓĞ×ó×Ó½Úµã£¬ÔòÕÒµ½×ó×Ó½ÚµãµÄ×Ó½áµãÖĞ×î¿¿ÓÒµÄ½Úµã(¼´×îĞ¡½Úµã)
+		//å¦‚æœæœ‰å·¦å­èŠ‚ç‚¹ï¼Œåˆ™æ‰¾åˆ°å·¦å­èŠ‚ç‚¹çš„å­ç»“ç‚¹ä¸­æœ€é å³çš„èŠ‚ç‚¹(å³æœ€å°èŠ‚ç‚¹)
 		next = p->left;
 		while (next->right)
 		{
@@ -1194,7 +1194,7 @@ typename tree<key_T, value_T, Alloc>::iterator& tree<key_T, value_T, Alloc>::ite
 	}
 	else if (NULL == p->left)
 	{	
-		//Èç¹û×ó×Ó½ÚµãÎª¿Õ£¬Ôò×·Ëİ×æÏÈ½Úµã£¬Ö±µ½ÕÒµ½×æÏÈ½ÚµãÓÒ½ÚµãÎªnextµÄ½Úµã(nextÊÇµİ¹é²éÕÒ½Úµã)
+		//å¦‚æœå·¦å­èŠ‚ç‚¹ä¸ºç©ºï¼Œåˆ™è¿½æº¯ç¥–å…ˆèŠ‚ç‚¹ï¼Œç›´åˆ°æ‰¾åˆ°ç¥–å…ˆèŠ‚ç‚¹å³èŠ‚ç‚¹ä¸ºnextçš„èŠ‚ç‚¹(nextæ˜¯é€’å½’æŸ¥æ‰¾èŠ‚ç‚¹)
 		next = p;
 		while (next->parent && next->parent->left == next)
 		{

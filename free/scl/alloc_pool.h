@@ -1,7 +1,7 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 //	alloc_pool	
-//	Ê¹ÓÃ³ØÀ´·ÖÅäÄÚ´æ
+//	ä½¿ç”¨æ± æ¥åˆ†é…å†…å­˜
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "scl/stack.h"
@@ -33,7 +33,7 @@ private:
 	scl::vstack<int>	m_free;
 	int					m_allocCount;
 	bool				m_hasInit;
-	int					m_maxSize; //µÈÓÚm_free.capacity() µ«ÊÇĞ§ÂÊ¸ü¸ß
+	int					m_maxSize; //ç­‰äºm_free.capacity() ä½†æ˜¯æ•ˆç‡æ›´é«˜
 	//int					m_threadID;
 };
 
@@ -43,8 +43,8 @@ inline void alloc_pool<T>::init(const int maxSize)
 	assert(!m_hasInit);
 	assert(maxSize > 0);
 
-	//ÎªÁË¹æ±ÜinitÊ±¶ÔTµÄ¹¹Ôìº¯ÊıµÄµ÷ÓÃ£¬ÕâÀïÊ¹ÓÃmalloc
-	//ºóÀ´ÎªÁË·½±ãnew_tracerÄÜ¹»¼ÇÂ¼alloc_pool·ÖÅäµÄÄÚ´æ£¬ÕâÀïÓÖ¸Ä³ÉÁËnew byte[]
+	//ä¸ºäº†è§„é¿initæ—¶å¯¹Tçš„æ„é€ å‡½æ•°çš„è°ƒç”¨ï¼Œè¿™é‡Œä½¿ç”¨malloc
+	//åæ¥ä¸ºäº†æ–¹ä¾¿new_tracerèƒ½å¤Ÿè®°å½•alloc_poolåˆ†é…çš„å†…å­˜ï¼Œè¿™é‡Œåˆæ”¹æˆäº†new byte[]
 	m_memory = static_cast<T*>(static_cast<void*>(new byte[maxSize * sizeof(T)]));
 	if (NULL == m_memory)
 	{
@@ -62,10 +62,10 @@ inline void alloc_pool<T>::init(const int maxSize)
 template<typename T>
 inline void alloc_pool<T>::release()
 {
-	//¼ì²âÄÚ´æĞ¹Â©
-	//m_free.size()ÊÇ±»ÊÍ·ÅµÄËùÓĞÔªËØ×ÜºÍ
-	//m_allocCountÊÇ×î³õm_memoryÖĞ»¹Î´±»·ÖÅä³öÈ¥µÄÊıÁ¿
-	//ÕâÁ½²¿·Ö×ÜºÍÔÚreleaseµÄÊ±ºò±ØĞëºÍ·ÖÅäÆ÷µÄ×ÜÊıÁ¿ÏàÍ¬£¬²ÅÄÜ±£Ö¤ËùÓĞallocµÄÄÚ´æ¶¼±»freeÁË
+	//æ£€æµ‹å†…å­˜æ³„æ¼
+	//m_free.size()æ˜¯è¢«é‡Šæ”¾çš„æ‰€æœ‰å…ƒç´ æ€»å’Œ
+	//m_allocCountæ˜¯æœ€åˆm_memoryä¸­è¿˜æœªè¢«åˆ†é…å‡ºå»çš„æ•°é‡
+	//è¿™ä¸¤éƒ¨åˆ†æ€»å’Œåœ¨releaseçš„æ—¶å€™å¿…é¡»å’Œåˆ†é…å™¨çš„æ€»æ•°é‡ç›¸åŒï¼Œæ‰èƒ½ä¿è¯æ‰€æœ‰allocçš„å†…å­˜éƒ½è¢«freeäº†
 	assert(m_free.size() + m_allocCount == m_free.capacity());
 
 	m_hasInit = false;
@@ -107,7 +107,7 @@ inline T* alloc_pool<T>::alloc()
 	}
 	else
 	{
-		//throw(1);	//TODO ¶¨Òå¶ÔÓ¦Òì³£
+		//throw(1);	//TODO å®šä¹‰å¯¹åº”å¼‚å¸¸
 		assert(0);
 		return NULL;
 	}
@@ -123,25 +123,25 @@ inline void alloc_pool<T>::free(T* const pElem)
 	}
 	if (NULL != pElem)
 	{	
-		uint64 index = pElem - &(m_memory[0]); //TODO ÕâÀïÌ«»ìÂÒÁË£¡Ó¦¸Ã¶¨ÒåÒ»¸öÀàËÆÓÚULONG_PTRµÄ¶«Î÷
+		uint64 index = pElem - &(m_memory[0]); //TODO è¿™é‡Œå¤ªæ··ä¹±äº†ï¼åº”è¯¥å®šä¹‰ä¸€ä¸ªç±»ä¼¼äºULONG_PTRçš„ä¸œè¥¿
 		int32 index32 = static_cast<int32>(index);
 
-		//¼ì²éÖ¸ÕëÊÇ·ñÔÚ·¶Î§ÄÚ£¬Èç¹û²»ÔÚ·ÖÅäÆ÷ÄÚ²¿£¬¿ÉÄÜÊÇÆäËûÏß³Ì·ÖÅäµÄÄÚ´æ£¬ĞèÒª¼ì²éÉÏ²ãµÄÏß³ÌÂß¼­
+		//æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦åœ¨èŒƒå›´å†…ï¼Œå¦‚æœä¸åœ¨åˆ†é…å™¨å†…éƒ¨ï¼Œå¯èƒ½æ˜¯å…¶ä»–çº¿ç¨‹åˆ†é…çš„å†…å­˜ï¼Œéœ€è¦æ£€æŸ¥ä¸Šå±‚çš„çº¿ç¨‹é€»è¾‘
 		if (index32 < 0 || index32 >= m_free.capacity())
 		{
 			assertf(false, "index = %d", index32);
 			return;
 		}
 
-		//Îö¹¹
+		//ææ„
 		pElem->~T();
 		
-		//ÖÃflag
+		//ç½®flag
 		int i32 = static_cast<int>(index);
 		assertf(m_flags[i32] == 1, "flag[%d] = %d", i32, m_flags[i32]);
 		m_flags[i32] = 0;
 
-		//Ìí¼Óµ½¿ÉÓÃ¶ÑÕ»ÖĞ
+		//æ·»åŠ åˆ°å¯ç”¨å †æ ˆä¸­
 		m_free.push(i32);
 	}
 }

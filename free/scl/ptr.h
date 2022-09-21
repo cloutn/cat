@@ -5,7 +5,7 @@ namespace scl {
 typedef void* ptr_t;
 
 ////////////////////////////////////
-//class ptrµÄ×÷ÓÃÊÇ±£Ö¤ÎŞÂÛ³ÌĞòÒÔÊ²Ã´·½Ê½ÍË³ö£¬Ö¸Õë¶¼¿ÉÒÔÕıÈ·µÄ±»delete
+//class ptrçš„ä½œç”¨æ˜¯ä¿è¯æ— è®ºç¨‹åºä»¥ä»€ä¹ˆæ–¹å¼é€€å‡ºï¼ŒæŒ‡é’ˆéƒ½å¯ä»¥æ­£ç¡®çš„è¢«delete
 ////////////////////////////////////
 template<typename T, bool IS_ARRAY = false>
 class ptr
@@ -37,10 +37,10 @@ private:
 
 class _None__TagClass { public : int _i; void _none__tagF(); };
 
-//¶¨ÒåÀàº¯ÊıÖ¸ÕëÀàĞÍ
-//×¢Òâ:		ÔÚlinux32ÏÂ£¬		sizeof(class_function) = 8
-//			ÔÚlinux64ÏÂ£¬		sizeof(class_function) = 16
-//			ÔÚwindows32ÏÂ£¬	sizeof(class_function) = 4
+//å®šä¹‰ç±»å‡½æ•°æŒ‡é’ˆç±»å‹
+//æ³¨æ„:		åœ¨linux32ä¸‹ï¼Œ		sizeof(class_function) = 8
+//			åœ¨linux64ä¸‹ï¼Œ		sizeof(class_function) = 16
+//			åœ¨windows32ä¸‹ï¼Œ	sizeof(class_function) = 4
 typedef void (_None__TagClass::*class_function)();
 
 typedef void (*normal_function)();

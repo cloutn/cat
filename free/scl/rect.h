@@ -8,8 +8,8 @@ namespace scl	{
 ////////////////////////////////////
 //	rect:
 //		x	y	z
-//	ÔÚspaceÖĞx y ÎªµØÃæ£¬zÎª´¹Ö±·½Ïò
-//  ÔÚscreenÖĞx y ÎªÒÔ×óÉÏ½Ç×÷Îª(0,0)¿ªÊ¼ËãµÄ×ø±ê£¬zÎŞĞ§
+//	åœ¨spaceä¸­x y ä¸ºåœ°é¢ï¼Œzä¸ºå‚ç›´æ–¹å‘
+//  åœ¨screenä¸­x y ä¸ºä»¥å·¦ä¸Šè§’ä½œä¸º(0,0)å¼€å§‹ç®—çš„åæ ‡ï¼Œzæ— æ•ˆ
 ////////////////////////////////////
 class rect
 {
@@ -27,7 +27,7 @@ public:
 	void	set_width		(const int _width) { right = left + _width; }
 	void	set_height		(const int _height) { bottom = top + _height; }
 	void	set_size		(const int _width, const int _height) { set_width(_width); set_height(_height); }
-	void	cut				(const rect& bound);	//¸ù¾İbound½ØÈ¡rectfµÄÒ»²¿·Ö
+	void	cut				(const rect& bound);	//æ ¹æ®boundæˆªå–rectfçš„ä¸€éƒ¨åˆ†
 	bool	contains		(const int x, const int y);
 };
 
@@ -56,19 +56,19 @@ public:
 	void	set_size		(const float _width, const float _height) { set_width(_width); set_height(_height); }
 	bool	contains		(const float x, const float y);
 
-	//¸ù¾İbound½ØÈ¡rectfµÄÒ»²¿·Ö
+	//æ ¹æ®boundæˆªå–rectfçš„ä¸€éƒ¨åˆ†
 	void	cut				(const rectf& bound);
 
-	//¸ù¾İbound½ØÈ¡rectfµÄÒ»²¿·Ö£¬Í¬Ê±Êä³ö¶ÔÓ¦ÎÆÀí×ø±êµÄ½ØÈ¡½á¹û£¬±£´æÔÚtextureRectÖĞ
+	//æ ¹æ®boundæˆªå–rectfçš„ä¸€éƒ¨åˆ†ï¼ŒåŒæ—¶è¾“å‡ºå¯¹åº”çº¹ç†åæ ‡çš„æˆªå–ç»“æœï¼Œä¿å­˜åœ¨textureRectä¸­
 	void	cut_with_texture(const rectf& bound, rectf& textureRect);
 
-	//ÒÆ¶¯rect£¬»ù×¼µãÎªrect×óÉÏ½Ç£¬Ô­À´µÄ(left, top)ÒÆ¶¯µ½(newLeft, newTop)
+	//ç§»åŠ¨rectï¼ŒåŸºå‡†ç‚¹ä¸ºrectå·¦ä¸Šè§’ï¼ŒåŸæ¥çš„(left, top)ç§»åŠ¨åˆ°(newLeft, newTop)
 	void	move_to			(const float newLeft, const float newTop);
 	void	move_to			(const int newLeft, const int newTop) { move_to(static_cast<float>(newLeft), static_cast<float>(newTop)); }
 	void	move			(const float	d_left, const float d_top);
 	void	move			(const int		d_left, const int	d_top) { move(static_cast<float>(d_left), static_cast<float>(d_top)); }
 
-	//rectÏòÍâÅòÕÍ£¬Èç¹ûx£¬yĞ¡ÓÚ0£¬ÔòÎªÊÕËõ
+	//rectå‘å¤–è†¨èƒ€ï¼Œå¦‚æœxï¼Œyå°äº0ï¼Œåˆ™ä¸ºæ”¶ç¼©
 	void	inflate			(const float x, const float	y) { inflate(x, x, y, y); }
 	void 	inflate			(const int   x,	const int   y) { inflate(x, x, y, y); }
 	void 	inflate			(const int   _left,	const int   _right, const int	_top, const int		_bottom);
@@ -81,7 +81,7 @@ public:
 	void 	shrink_ratio	(const float _all) { shrink_ratio(_all, _all, _all, _all); }
 	void	try_contain		(const scl::rectf& r);
 
-	//½«rect·ÅÈëµ½ÊÀ½ç×ø±êÏµÖĞ
+	//å°†rectæ”¾å…¥åˆ°ä¸–ç•Œåæ ‡ç³»ä¸­
 	void	to_world		(const int deviceWidth, const int deviceHeight);
 
 	static const rectf& zero();

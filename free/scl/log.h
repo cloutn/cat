@@ -42,8 +42,8 @@ class log_stream;
 //#define LOG_ERROR(s)	do{log_error	<< s << scl::endl;} while(0)
 
 
-//×¢Òâ£¬log_directÊÇÏß³Ì²»°²È«µÄ£¬²»±£Ö¤²»»á·¢ÉúÈÕÖ¾´òÓ¡´íÎó»òËÀËø£¬ËùÓĞµÄlog_direct¶¼ÊÇerrorÈÕÖ¾
-//µ±Ö»ÓĞÖ÷Ïß³Ì´òÓ¡ÈÕÖ¾µÄÊ±ºò£¬ÊÇ²»»á¿ªÆô¶àÏß³ÌÄ£Ê½µÄ£¬ËùÒÔ¾¡Á¿²»ÒªÊ¹ÓÃlog_direct
+//æ³¨æ„ï¼Œlog_directæ˜¯çº¿ç¨‹ä¸å®‰å…¨çš„ï¼Œä¸ä¿è¯ä¸ä¼šå‘ç”Ÿæ—¥å¿—æ‰“å°é”™è¯¯æˆ–æ­»é”ï¼Œæ‰€æœ‰çš„log_directéƒ½æ˜¯erroræ—¥å¿—
+//å½“åªæœ‰ä¸»çº¿ç¨‹æ‰“å°æ—¥å¿—çš„æ—¶å€™ï¼Œæ˜¯ä¸ä¼šå¼€å¯å¤šçº¿ç¨‹æ¨¡å¼çš„ï¼Œæ‰€ä»¥å°½é‡ä¸è¦ä½¿ç”¨log_direct
 #ifdef SCL_WIN
 #define log_verbose_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_VERBOSE,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
 #define log_debug_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_DEBUG,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
@@ -74,11 +74,11 @@ public:
 	static void out					(LOG_LEVEL level, int log_format, const char* const filename, const char* const function, const int line, const char* format_string, ...);
 	static void direct_out			(LOG_LEVEL level, int log_format, const char* const filename, const char* const function, const int line, const char* format_string, ...);
 
-	//¿ªÆô/¹Ø±ÕÄ³¸ö¼¶±ğµÄÈÕÖ¾
+	//å¼€å¯/å…³é—­æŸä¸ªçº§åˆ«çš„æ—¥å¿—
 	static void enable				(LOG_LEVEL level);
 	static void disable				(LOG_LEVEL level);
 
-	//ÉèÖÃÈÕÖ¾Êä³ö¡£ //¾ÙÀı£ºlog::set_log_output(LOG_LEVEL_DEBUG, LOG_OUTPUT_CONSOLE | LOG_OUTPUT_FILE);
+	//è®¾ç½®æ—¥å¿—è¾“å‡ºã€‚ //ä¸¾ä¾‹ï¼šlog::set_log_output(LOG_LEVEL_DEBUG, LOG_OUTPUT_CONSOLE | LOG_OUTPUT_FILE);
 	static void set_log_output		(LOG_LEVEL level, byte output		);
 	static void set_log_level_info	(LOG_LEVEL level, log_level& info	);
 	static void set_quick_flush		(LOG_LEVEL level, bool quick_flush	);
@@ -117,7 +117,7 @@ public:
 	static void add_handler			(handler_t h);
 	static void remove_handler		(handler_t h);
 
-	//Èç¹ûÏëÉèÖÃÄ³¸öÏß³ÌµÄÈÕÖ¾»º³åÇøµÄ´óĞ¡£¬±ØĞëÔÚÏß³Ì¸Õ¸Õ¿ªÊ¼Ö´ĞĞµÄÊ±ºòµ÷ÓÃinit_in_threadÖ¸¶¨ÈÕÖ¾»º³åÇø´óĞ¡
+	//å¦‚æœæƒ³è®¾ç½®æŸä¸ªçº¿ç¨‹çš„æ—¥å¿—ç¼“å†²åŒºçš„å¤§å°ï¼Œå¿…é¡»åœ¨çº¿ç¨‹åˆšåˆšå¼€å§‹æ‰§è¡Œçš„æ—¶å€™è°ƒç”¨init_in_threadæŒ‡å®šæ—¥å¿—ç¼“å†²åŒºå¤§å°
 	static void	init_in_thread		(const int log_buffer_size) { log::inst()._find_thread_log(log_buffer_size); }
 	
 public:
@@ -148,7 +148,7 @@ private:
 
 private:
 	array<log_level, LOG_LEVEL_COUNT>			m_levels;
-	log_file									m_globalfile;		//È«¾ÖÈÕÖ¾ÎÄ¼ş
+	log_file									m_globalfile;		//å…¨å±€æ—¥å¿—æ–‡ä»¶
 	log_file									m_files[LOG_LEVEL_COUNT];
 	array<thread_log, MAX_THREAD_LOG_COUNT>		m_thread_logs;
 	thread										m_flush_thread;
@@ -195,10 +195,10 @@ private:
 
 extern log_stream::end_of_log endl;
 
-//½ô¼±ÈÕÖ¾
-//Ä³Ğ©Çé¿öÏÂ£¬ÀıÈçassert»òÕßÈÕÖ¾ÏµÍ³downµôµÄÊ±ºò£¬ĞèÒªÊ¹ÓÃ½ô¼±ÈÕÖ¾Ğ´ÈëÒ»¸öÎÄ¼ş
-//½ô¼±ÎÄ¼şÃûÎªurgency.log
-//Èç¹û¸ÃÎÄ¼ş¿ìËÙÔö³¤£¬ËµÃ÷½ø³ÌÒÑ¾­½øÈë·Ç³£ÑÏÖØµÄ´íÎó×´Ì¬£¬ĞèÒªÖÕÖ¹
+//ç´§æ€¥æ—¥å¿—
+//æŸäº›æƒ…å†µä¸‹ï¼Œä¾‹å¦‚assertæˆ–è€…æ—¥å¿—ç³»ç»Ÿdownæ‰çš„æ—¶å€™ï¼Œéœ€è¦ä½¿ç”¨ç´§æ€¥æ—¥å¿—å†™å…¥ä¸€ä¸ªæ–‡ä»¶
+//ç´§æ€¥æ–‡ä»¶åä¸ºurgency.log
+//å¦‚æœè¯¥æ–‡ä»¶å¿«é€Ÿå¢é•¿ï¼Œè¯´æ˜è¿›ç¨‹å·²ç»è¿›å…¥éå¸¸ä¸¥é‡çš„é”™è¯¯çŠ¶æ€ï¼Œéœ€è¦ç»ˆæ­¢
 void urgency_log(const char* const s, const char* const filename="error.log");
 
 

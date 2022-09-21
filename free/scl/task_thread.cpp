@@ -25,7 +25,7 @@ void* task_thread::thread_func(void* param, int* signal)
 SCL_ASSERT_TRY
 {
 		fl.start();
-		//检查信号量
+		//妫�鏌ヤ俊鍙烽噺
 		if (NULL != signal 
 			&& *signal == thread::SIGNAL_STOP 
 			&& tp->m_tasks.used() == 0)
@@ -77,7 +77,7 @@ bool task_thread::process_result(task::funcT func, bool check_thread)
 
 		if (scl::thread::self() != m_resultThreadID)
 		{
-			assert(false); //所有对process_result的调用必须在同一个线程中完成
+			assert(false); //鎵�鏈夊process_result鐨勮皟鐢ㄥ繀椤诲湪鍚屼竴涓嚎绋嬩腑瀹屾垚
 			return false;
 		}
 	}

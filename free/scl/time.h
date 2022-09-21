@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-//	Ê±¼äÏà¹Ø
+//	æ—¶é—´ç›¸å…³
 //	2010.09.03 caolei
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -17,7 +17,7 @@
 
 namespace scl {
 
-//»ñÈ¡ÏµÍ³µ±Ç°Tick£¬µ¥Î»ºÁÃë(ms)
+//è·å–ç³»ç»Ÿå½“å‰Tickï¼Œå•ä½æ¯«ç§’(ms)
 uint64 	get_realtime_tick();	// get current real time with system API
 time_t	get_realtime_time();
 
@@ -39,16 +39,16 @@ time_t	get_realtime_time();
 #define SCL_MILLISECOND ((scl::_DO_NOT_USE_THIS_SCL_INNER_THREAD_MILLISECOND == 0) ? (scl::_DO_NOT_USE_THIS_SCL_INNER_THREAD_MILLISECOND = scl::_scl__inner__init_millisecond()) : scl::_DO_NOT_USE_THIS_SCL_INNER_THREAD_MILLISECOND)
 #endif
 
-//ĞİÃß
-void sleep(uint32 milliseconds);	//µ¥Î»ºÁÃë(ms)
-void usleep(uint32 useconds);		//µ¥Î»Î¢Ãî(us)
+//ä¼‘çœ 
+void sleep(uint32 milliseconds);	//å•ä½æ¯«ç§’(ms)
+void usleep(uint32 useconds);		//å•ä½å¾®å¦™(us)
 
-//»ñÈ¡×Ö·û´®¸ñÊ½Îª 12:30 ÀàĞÍµÄÊ±¼ä
+//è·å–å­—ç¬¦ä¸²æ ¼å¼ä¸º 12:30 ç±»å‹çš„æ—¶é—´
 bool string_to_time(const char* timeStr, int& hour, int& min);
-//»ñÈ¡×Ö·û´®¸ñÊ½Îª 1984-03-21 ÀàĞÍµÄÈÕÆÚ
+//è·å–å­—ç¬¦ä¸²æ ¼å¼ä¸º 1984-03-21 ç±»å‹çš„æ—¥æœŸ
 bool string_to_date(const char* dataStr, uint& year, uint& month, uint& day);
 
-//Ê±¼äÈÕÆÚÀà
+//æ—¶é—´æ—¥æœŸç±»
 class time
 {
 public:
@@ -79,85 +79,85 @@ public:
 };
 
 ////////////////////////////////////
-//[¼ÆÊ±Æ÷1]
-//ÊµÏÖ£º
-//		ÄÚ²¿±£´æÁË¡°ÏÂ´ÎtickµÄÊ±¼äm_nextTick¡±£¬Ã¿´ÎringµÄÊ±ºò¶¼»á¸üĞÂm_nextTick
-//		¸üĞÂm_nextTickÊ±ºòÄÚ²¿»áµ÷ÓÃscl::getTick()º¯Êı
-//ÓĞµã£º
-//		²»Ïñtimer2ÄÇÑù£¬ringº¯ÊıĞèÒªÒ»¸ö²ÎÊı£¬Òò´ËÓÃÆğÀ´¼òµ¥·½±ãÒ»Ğ©
-//È±µã£º
-//		ÓÉÓÚÒÀÀµÓÚscl::getTickº¯Êı£¬ËùÒÔµ±getTick¹éÁãµÄÊ±ºò»áµ¼ÖÂ³¤Ê±¼ä²»»á´¥·¢ring
+//[è®¡æ—¶å™¨1]
+//å®ç°ï¼š
+//		å†…éƒ¨ä¿å­˜äº†â€œä¸‹æ¬¡tickçš„æ—¶é—´m_nextTickâ€ï¼Œæ¯æ¬¡ringçš„æ—¶å€™éƒ½ä¼šæ›´æ–°m_nextTick
+//		æ›´æ–°m_nextTickæ—¶å€™å†…éƒ¨ä¼šè°ƒç”¨scl::getTick()å‡½æ•°
+//æœ‰ç‚¹ï¼š
+//		ä¸åƒtimer2é‚£æ ·ï¼Œringå‡½æ•°éœ€è¦ä¸€ä¸ªå‚æ•°ï¼Œå› æ­¤ç”¨èµ·æ¥ç®€å•æ–¹ä¾¿ä¸€äº›
+//ç¼ºç‚¹ï¼š
+//		ç”±äºä¾èµ–äºscl::getTickå‡½æ•°ï¼Œæ‰€ä»¥å½“getTickå½’é›¶çš„æ—¶å€™ä¼šå¯¼è‡´é•¿æ—¶é—´ä¸ä¼šè§¦å‘ring
 ////////////////////////////////////
 class timer
 {
 public:
 	timer() : m_nextTick(0), m_interval(0), m_paused(false), m_lastPauseTick(0), m_update_to_now(false) {}
 
-	void start				(int interval);		//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë;
-	void start				(); 				//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë;
-	bool ring				();					//ÊÇ·ñÏìÁå
-	void pause				();					//ÔİÍ£¼ÆÊ±Æ÷
-	void resume				();					//»Ö¸´±»ÔİÍ£µÄ¼ÆÊ±Æ÷
+	void start				(int interval);		//å¼€å¯è®¡æ—¶å™¨ã€‚å•ä½ï¼Œæ¯«ç§’;
+	void start				(); 				//å¼€å¯è®¡æ—¶å™¨ã€‚å•ä½ï¼Œæ¯«ç§’;
+	bool ring				();					//æ˜¯å¦å“é“ƒ
+	void pause				();					//æš‚åœè®¡æ—¶å™¨
+	void resume				();					//æ¢å¤è¢«æš‚åœçš„è®¡æ—¶å™¨
 
 	void set_interval		(const int interval) { m_interval = interval; }
 	int	 get_interval		() { return m_interval; }
-	bool is_start			();					//ÊÇ·ñÒÑ¾­¿ªÊ¼
-	bool is_paused			();					//ÊÇ·ñÒÑ¾­ÔİÍ£
-	void set_update_to_now	(bool value) { m_update_to_now = value; } //Ã¿´ÎringµÄÊ±ºò£¬¸üĞÂÊ±¼äÊÇ·ñÎªnow + interval£¬µ±¸ÃÖµÎªtrueµÄÊ±ºò£¬Èç¹ûÁ½´Î¼ì²éringµÄÊ±¼ä´óÓÚ2´Îinterval£¬ÔòÖ»»áring1´Î
+	bool is_start			();					//æ˜¯å¦å·²ç»å¼€å§‹
+	bool is_paused			();					//æ˜¯å¦å·²ç»æš‚åœ
+	void set_update_to_now	(bool value) { m_update_to_now = value; } //æ¯æ¬¡ringçš„æ—¶å€™ï¼Œæ›´æ–°æ—¶é—´æ˜¯å¦ä¸ºnow + intervalï¼Œå½“è¯¥å€¼ä¸ºtrueçš„æ—¶å€™ï¼Œå¦‚æœä¸¤æ¬¡æ£€æŸ¥ringçš„æ—¶é—´å¤§äº2æ¬¡intervalï¼Œåˆ™åªä¼šring1æ¬¡
 
 private:
 	uint64	m_nextTick;
 	int		m_interval;
 
-	//pauseÂß¼­Ïà¹Ø
+	//pauseé€»è¾‘ç›¸å…³
 	bool	m_paused;
 	uint64	m_lastPauseTick;
-	bool	m_update_to_now;		//Ã¿´ÎringµÄÊ±ºò£¬¸üĞÂÊ±¼äÊÇ·ñÎªnow + interval£¬µ±¸ÃÖµÎªtrueµÄÊ±ºò£¬Èç¹ûÁ½´Î¼ì²éringµÄÊ±¼ä´óÓÚ2´Îinterval£¬ÔòÖ»»áring1´Î
+	bool	m_update_to_now;		//æ¯æ¬¡ringçš„æ—¶å€™ï¼Œæ›´æ–°æ—¶é—´æ˜¯å¦ä¸ºnow + intervalï¼Œå½“è¯¥å€¼ä¸ºtrueçš„æ—¶å€™ï¼Œå¦‚æœä¸¤æ¬¡æ£€æŸ¥ringçš„æ—¶é—´å¤§äº2æ¬¡intervalï¼Œåˆ™åªä¼šring1æ¬¡
 };
 
 ////////////////////////////////////
-//[¼ÆÊ±Æ÷2]
-//ÊµÏÖ£º
-//		ÄÚ²¿±£´æÁË¡°ÔÚÒ»¸ötickÄÚ£¬µ±Ç°ÒÑ¾­Á÷ÊÅµÄÊ±¼äm_currentTick¡±
-//		µ±Á÷ÊÅÊ±¼äµ½ÁËµÄÊ±ºò£¬½«Á÷ÊÅÊ±¼ä¼õÈ¥Ò»¸ötickµÄ³¤¶È£¬È»ºó¼ÌĞø
-//ÓÅµã£º
-//		²»ÒÀÀµÓÚscl::get_tickº¯Êı
-//È±µã£º
-//		ringĞèÒª´«ÈëÒ»¸ö²ÎÊıdiff£¬±íÊ¾ÉÏ´Îµ÷ÓÃringºÍÕâ´Îµ÷ÓÃringµÄÊ±¼ä¼ä¸ô
-//		Õâ¸ö²ÎÊıÒ»°ã¿ÉÒÔÍ¨¹ıÁ½Ö¡Ö®¼äµÄÊ±¼ä¼ä¸ôÀ´È·¶¨
+//[è®¡æ—¶å™¨2]
+//å®ç°ï¼š
+//		å†…éƒ¨ä¿å­˜äº†â€œåœ¨ä¸€ä¸ªtickå†…ï¼Œå½“å‰å·²ç»æµé€çš„æ—¶é—´m_currentTickâ€
+//		å½“æµé€æ—¶é—´åˆ°äº†çš„æ—¶å€™ï¼Œå°†æµé€æ—¶é—´å‡å»ä¸€ä¸ªtickçš„é•¿åº¦ï¼Œç„¶åç»§ç»­
+//ä¼˜ç‚¹ï¼š
+//		ä¸ä¾èµ–äºscl::get_tickå‡½æ•°
+//ç¼ºç‚¹ï¼š
+//		ringéœ€è¦ä¼ å…¥ä¸€ä¸ªå‚æ•°diffï¼Œè¡¨ç¤ºä¸Šæ¬¡è°ƒç”¨ringå’Œè¿™æ¬¡è°ƒç”¨ringçš„æ—¶é—´é—´éš”
+//		è¿™ä¸ªå‚æ•°ä¸€èˆ¬å¯ä»¥é€šè¿‡ä¸¤å¸§ä¹‹é—´çš„æ—¶é—´é—´éš”æ¥ç¡®å®š
 ////////////////////////////////////
 class timer2
 {
 public:
 	timer2() : m_current_tick(0), m_interval(0) {}
 
-	void	start			(const uint64 interval); 								//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë;
-	void	start			(); 													//¿ªÆô¼ÆÊ±Æ÷¡£µ¥Î»£¬ºÁÃë;
-	bool	ring			(const uint64 diff);									//ÊÇ·ñÏìÁå;
-	void	pause			()						{ m_paused = true;			}	//ÔİÍ£¼ÆÊ±Æ÷
-	void	resume			()						{ m_paused = false;			}	//»Ö¸´±»ÔİÍ£µÄ¼ÆÊ±Æ÷
+	void	start			(const uint64 interval); 								//å¼€å¯è®¡æ—¶å™¨ã€‚å•ä½ï¼Œæ¯«ç§’;
+	void	start			(); 													//å¼€å¯è®¡æ—¶å™¨ã€‚å•ä½ï¼Œæ¯«ç§’;
+	bool	ring			(const uint64 diff);									//æ˜¯å¦å“é“ƒ;
+	void	pause			()						{ m_paused = true;			}	//æš‚åœè®¡æ—¶å™¨
+	void	resume			()						{ m_paused = false;			}	//æ¢å¤è¢«æš‚åœçš„è®¡æ—¶å™¨
 
 	void	set_interval	(const uint64 interval) { m_interval = interval;	}
 	uint64	get_interval	() const				{ return m_interval;		}
 	uint64	get_current_tick() const				{ return m_current_tick;	}
-	bool	is_start		() const				{ return m_interval > 0;	}	//ÊÇ·ñÒÑ¾­¿ªÊ¼
-	bool	is_paused		() const				{ return m_paused;			}	//ÊÇ·ñÒÑ¾­ÔİÍ£
+	bool	is_start		() const				{ return m_interval > 0;	}	//æ˜¯å¦å·²ç»å¼€å§‹
+	bool	is_paused		() const				{ return m_paused;			}	//æ˜¯å¦å·²ç»æš‚åœ
 
 private:
 	uint64	m_current_tick;
 	uint64	m_interval;
-	bool	m_paused;		//ÊÇ·ñÔİÍ£
+	bool	m_paused;		//æ˜¯å¦æš‚åœ
 };
 
-// ¹¦ÄÜÀà£¬Ê±¼ä¶Î
+// åŠŸèƒ½ç±»ï¼Œæ—¶é—´æ®µ
 class time_span
 {
 public:
 	time_span	();
 	time_span	(uint64 begin, uint64 end);
-	void	offset		(int sec);											// Ê±¼ä¶ÎÕûÌåÆ«ÒÆsecÃë
-	int		compare		(uint64 t) const;									// ÀàËÆstrcmp. ²âÊÔtÊÇ·ñÔÚÊ±¼ä¶ÎÄÚ,ÔÚµÄ»°,·µ»Ø0,»¹Ã»´ïµ½,·µ»Ø<0,ÒÑ¾­³¬¹ı·µ»Ø>0
-	bool	contains	(uint64 t) const { return compare(t) == 0; };		//ÊÇ·ñ°üº¬Ê±¼äµã
+	void	offset		(int sec);											// æ—¶é—´æ®µæ•´ä½“åç§»secç§’
+	int		compare		(uint64 t) const;									// ç±»ä¼¼strcmp. æµ‹è¯•tæ˜¯å¦åœ¨æ—¶é—´æ®µå†…,åœ¨çš„è¯,è¿”å›0,è¿˜æ²¡è¾¾åˆ°,è¿”å›<0,å·²ç»è¶…è¿‡è¿”å›>0
+	bool	contains	(uint64 t) const { return compare(t) == 0; };		//æ˜¯å¦åŒ…å«æ—¶é—´ç‚¹
 	uint64	begin		() const { return m_begin; }
 	uint64	end			() const { return m_end; }
 
@@ -180,7 +180,7 @@ extern volatile time_t	_DO_NOT_USE_THIS_SCL_INNER_THREAD_TIME;
 extern volatile int		_DO_NOT_USE_THIS_SCL_INNER_THREAD_MILLISECOND; 
 #endif
 
-int timezone(); //·µ»Øµ±Ç°Ê±Çø-12~+12£¬ÎªUTCµÄÏà·´Êı£¬ÀıÈç±±¾©ÊÇUTC+8, ÕâÀïµÄÖµ¾ÍÎª-8
+int timezone(); //è¿”å›å½“å‰æ—¶åŒº-12~+12ï¼Œä¸ºUTCçš„ç›¸åæ•°ï¼Œä¾‹å¦‚åŒ—äº¬æ˜¯UTC+8, è¿™é‡Œçš„å€¼å°±ä¸º-8
 
 
 } //namespace scl

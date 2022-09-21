@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //	math.h
-//	ÊıÑ§¿â
+//	æ•°å­¦åº“
 //	2010.05.01 caolei
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -15,7 +15,7 @@ namespace scl {
 
 rander __scl_inner_global_unsafe_rander;
 
-//ÅĞ¶ÏÒ»¸öintÊÇ·ñÎªËØÊı
+//åˆ¤æ–­ä¸€ä¸ªintæ˜¯å¦ä¸ºç´ æ•°
 bool is_prime(uint n)
 {
 	int find = static_cast<int>(sqrt(static_cast<float>(n)));
@@ -30,7 +30,7 @@ bool is_prime(uint n)
 	return true;
 }
 
-//ÕÒ³öĞ¡ÓÚnµÄ×î´óËØÊı
+//æ‰¾å‡ºå°äºnçš„æœ€å¤§ç´ æ•°
 uint min_prime(uint n)
 {
 	while (n)
@@ -44,7 +44,7 @@ uint min_prime(uint n)
 	return 0;
 }
 
-//ÇóbaseµÄtimes´Î·½
+//æ±‚baseçš„timesæ¬¡æ–¹
 int pow(int base, int times)
 {
 	int result = base;
@@ -81,8 +81,8 @@ int lerp(int from, int to, float t)
 
 rander::rander()
 {
-	//ÕâÀï²»ÄÜÊ¹ÓÃSCL_TICKµÄÔ­ÒòÊÇ£¬Èç¹ûranderÊÇÈ«¾Ö±äÁ¿£¬ÄÇÃ´SCL_TICKÖĞ¿ÉÄÜÏÈ´´½¨Ïß³Ì£¬È»ºó²ÅÖ´ĞĞµ½thread_time_holderµÄ¹¹Ôìº¯Êı£¬³åµôÏÈÇ°´´½¨µÄÏß³ÌĞÅÏ¢
-	//randerµÄ³õÊ¼»¯Ò²²¢·ÇÒ»¸öÆµ·±µ÷ÓÃµÄµØ·½£¬ËùÒÔÒ²Ã»ÓĞ±ØÒªÊ¹ÓÃSCL_TICKÌá¸ßĞ§ÂÊ
+	//è¿™é‡Œä¸èƒ½ä½¿ç”¨SCL_TICKçš„åŸå› æ˜¯ï¼Œå¦‚æœranderæ˜¯å…¨å±€å˜é‡ï¼Œé‚£ä¹ˆSCL_TICKä¸­å¯èƒ½å…ˆåˆ›å»ºçº¿ç¨‹ï¼Œç„¶åæ‰æ‰§è¡Œåˆ°thread_time_holderçš„æ„é€ å‡½æ•°ï¼Œå†²æ‰å…ˆå‰åˆ›å»ºçš„çº¿ç¨‹ä¿¡æ¯
+	//randerçš„åˆå§‹åŒ–ä¹Ÿå¹¶éä¸€ä¸ªé¢‘ç¹è°ƒç”¨çš„åœ°æ–¹ï¼Œæ‰€ä»¥ä¹Ÿæ²¡æœ‰å¿…è¦ä½¿ç”¨SCL_TICKæé«˜æ•ˆç‡
 	m_seed = 0;// static_cast<unsigned int>(get_realtime_tick());
 }
 
@@ -90,8 +90,8 @@ unsigned int rander::rand16()
 {
 	m_seed = m_seed * 214013L + 2531011L;
 
-	//Õı³£ÏßĞÔÍ¬Óà·¨ÊÇÈ¡seed % 32767£¬¼´seedµÄµÍ16Î»£¬
-	//ÕâÀïÖ±½ÓÈ¡seed¸ß16Î»,½á¹ûÊÇÒ»ÑùµÄ
+	//æ­£å¸¸çº¿æ€§åŒä½™æ³•æ˜¯å–seed % 32767ï¼Œå³seedçš„ä½16ä½ï¼Œ
+	//è¿™é‡Œç›´æ¥å–seedé«˜16ä½,ç»“æœæ˜¯ä¸€æ ·çš„
 	return ((m_seed >> 16) & 0x7fff);
 }
 
@@ -133,7 +133,7 @@ void rander::srand(const int seed)
 	m_seed = seed;
 }
 
-unsigned int rand(const int min, const int max) //È«¾Örand£¬Ïß³Ì²»°²È«
+unsigned int rand(const int min, const int max) //å…¨å±€randï¼Œçº¿ç¨‹ä¸å®‰å…¨
 {
 	return __scl_inner_global_unsafe_rander.rand(min, max);
 }

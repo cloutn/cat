@@ -10,12 +10,12 @@ class heap
 public:
 	heap();
 	void		zero_memory	()					{ memset(m_heap, 0, sizeof(m_heap)); }
-	void		add			(const T& a);		//Ìí¼ÓÒ»¸öÔªËØ£¬²¢ÔÚÌí¼Óºóµ÷ÕûÎª¶Ñ
-	void		add_direct	(const T& a);		//½öÔÚÊı×éÎ²²¿Ìí¼ÓÒ»¸öÔªËØ£¬²»½øĞĞµ÷Õû£¬ËùÒÔ²»±£Ö¤Ìí¼ÓºóÈÔÈ»ÊÇ¶Ñ£¬Ò»°ãºÍbuildÒ»ÆğÓÃ
-	void		remove		(const T& a)		{ remove_at(_find(a)); }//É¾³ıÒ»¸öÔªËØ£¬ĞèÒª²éÕÒ£¬Ê±¼ä¸´ÔÓ¶ÈÎªO(n)
-	void		remove_at	(int index);		//É¾³ıÖ¸¶¨Ë÷Òı´¦µÄÔªËØ Ê±¼ä¸´ÔÓ¶ÈÎªO(lg n)
-	bool		is_heap		();					//·µ»Øµ±Ç°heapÊÇ·ñÂú×ã¶ÑµÄ¶¨Òå
-	void		build		();					//½«µ±Ç°heapÄÚÔªËØÕûÀí³É¶Ñ
+	void		add			(const T& a);		//æ·»åŠ ä¸€ä¸ªå…ƒç´ ï¼Œå¹¶åœ¨æ·»åŠ åè°ƒæ•´ä¸ºå †
+	void		add_direct	(const T& a);		//ä»…åœ¨æ•°ç»„å°¾éƒ¨æ·»åŠ ä¸€ä¸ªå…ƒç´ ï¼Œä¸è¿›è¡Œè°ƒæ•´ï¼Œæ‰€ä»¥ä¸ä¿è¯æ·»åŠ åä»ç„¶æ˜¯å †ï¼Œä¸€èˆ¬å’Œbuildä¸€èµ·ç”¨
+	void		remove		(const T& a)		{ remove_at(_find(a)); }//åˆ é™¤ä¸€ä¸ªå…ƒç´ ï¼Œéœ€è¦æŸ¥æ‰¾ï¼Œæ—¶é—´å¤æ‚åº¦ä¸ºO(n)
+	void		remove_at	(int index);		//åˆ é™¤æŒ‡å®šç´¢å¼•å¤„çš„å…ƒç´  æ—¶é—´å¤æ‚åº¦ä¸ºO(lg n)
+	bool		is_heap		();					//è¿”å›å½“å‰heapæ˜¯å¦æ»¡è¶³å †çš„å®šä¹‰
+	void		build		();					//å°†å½“å‰heapå†…å…ƒç´ æ•´ç†æˆå †
 	void		clear		()					{ m_size = 0; }
 	int			size		() const			{ return m_size; }
 	int			count		() const			{ return m_size; }
@@ -29,9 +29,9 @@ private:
 	int			_find			(const T& a);
 	bool		_is_valid_index	(const int i) const	{ return i >= 0 && i < m_size; } 
 	int			_parent_index	(const int i) const	{ return (i - 1) / 2; }
-	void		_swap			(const int isrc, const int idest);	//½»»»srcºÍdestË÷ÒıµÄÔªËØÖµ
-	void		_sift_up		(const int i);	//½«Ë÷ÒıÎªiµÄÖµÏòÉÏ×ªÒÆ
-	void		_sift_down		(const int i);	//½«Ë÷ÒıÎªiµÄÖµÏòÏÂ×ªÒÆ
+	void		_swap			(const int isrc, const int idest);	//äº¤æ¢srcå’Œdestç´¢å¼•çš„å…ƒç´ å€¼
+	void		_sift_up		(const int i);	//å°†ç´¢å¼•ä¸ºiçš„å€¼å‘ä¸Šè½¬ç§»
+	void		_sift_down		(const int i);	//å°†ç´¢å¼•ä¸ºiçš„å€¼å‘ä¸‹è½¬ç§»
 
 private:
 	T	m_heap[MAX_SIZE];
@@ -134,14 +134,14 @@ void heap<T, MAX_SIZE>::_sift_down(const int nodeIndex)
 		return;
 	}
 	int i = nodeIndex;
-	const int lastNodeWithChild = (m_size - 2) / 2; //×îºóÒ»¸ö°üº¬×Ó½ÚµãµÄnode
+	const int lastNodeWithChild = (m_size - 2) / 2; //æœ€åä¸€ä¸ªåŒ…å«å­èŠ‚ç‚¹çš„node
 	while (i <= lastNodeWithChild)
 	{
 		const int left	= 2 * i + 1;
 		const int right	= 2 * i + 2;
 
 		assert(left < m_size);
-		if (right >= m_size) //Èç¹ûÖ»ÓĞ×ó×Ó½Úµã
+		if (right >= m_size) //å¦‚æœåªæœ‰å·¦å­èŠ‚ç‚¹
 		{	
 			if (m_heap[left] < m_heap[i])
 			{
@@ -152,7 +152,7 @@ void heap<T, MAX_SIZE>::_sift_down(const int nodeIndex)
 
 		if (m_heap[left] < m_heap[i] || m_heap[right] < m_heap[i])
 		{	
-			//µ±Ç°½Úµã±ÈÄ³¸ö×Ó½Úµã´ó£¬ËùÒÔ²»Âú×ã¶ÑµÄÌõ¼ş£¬ĞèÒªÒÆ¶¯	
+			//å½“å‰èŠ‚ç‚¹æ¯”æŸä¸ªå­èŠ‚ç‚¹å¤§ï¼Œæ‰€ä»¥ä¸æ»¡è¶³å †çš„æ¡ä»¶ï¼Œéœ€è¦ç§»åŠ¨	
 			const int min = m_heap[left] < m_heap[right] ? left : right;
 			if (!HEAP_IS_VALID_INDEX(i) || !HEAP_IS_VALID_INDEX(min))
 			{ 
@@ -161,7 +161,7 @@ void heap<T, MAX_SIZE>::_sift_down(const int nodeIndex)
 			HEAP_SWAP(i, min);
 			i = min;
 		}
-		else //µ±Ç°½Úµã±ÈÁ½¸ö×Ó½Úµã¶¼Ğ¡£¬ÒÑ¾­ÊÇ¶ÑÁË
+		else //å½“å‰èŠ‚ç‚¹æ¯”ä¸¤ä¸ªå­èŠ‚ç‚¹éƒ½å°ï¼Œå·²ç»æ˜¯å †äº†
 			break;
 	}
 }

@@ -27,7 +27,7 @@ public:
 	template <typename StreamerT> void map(StreamerT& s) { s << x << y; }
 };
 
-//TODO vector3ºÍVector¿É·ñÍ³Ò»£¿
+//TODO vector3å’ŒVectorå¯å¦ç»Ÿä¸€ï¼Ÿ
 class vector3
 {
 public:
@@ -60,26 +60,26 @@ public:
 	bool		operator==	(const vector3& other) const;
 	bool		operator!=	(const vector3& other) const;
 
-	//ÇĞ»»Õı¸º
+	//åˆ‡æ¢æ­£è´Ÿ
 	void		negative	() { x = -x; y = -y; z = -z; }
 
 
-	//ÏòÁ¿²æ³Ë
+	//å‘é‡å‰ä¹˜
 	static vector3&		cross	(const vector3& v1, const vector3& v2);	
 
-	//ÏòÁ¿µã³Ë
+	//å‘é‡ç‚¹ä¹˜
 	static float		dot		(const vector3& v1, const vector3& v2);
 
-	//ÇóÁ½¸öÏòÁ¿¼Ğ½ÇµÄÓàÏÒÖµ(Ê¹ÓÃÁËÏòÁ¿µÄµã³Ë¶¨Òå)
+	//æ±‚ä¸¤ä¸ªå‘é‡å¤¹è§’çš„ä½™å¼¦å€¼(ä½¿ç”¨äº†å‘é‡çš„ç‚¹ä¹˜å®šä¹‰)
 	static float		cosa	(const vector3& v1, const vector3& v2);
 
-	//ÀûÓÃÓàÏÒ¶¨Àí¼ÆËã¼Ğ½ÇµÄÓàÏÒÖµ
+	//åˆ©ç”¨ä½™å¼¦å®šç†è®¡ç®—å¤¹è§’çš„ä½™å¼¦å€¼
 	static float		cosa2	(const vector3& v1, const vector3& v2);
 
-	//ÇóÁ½¸öÏòÁ¿µÄ¼Ğ½Ç¡££¨»¡¶ÈÖÆ£©
+	//æ±‚ä¸¤ä¸ªå‘é‡çš„å¤¹è§’ã€‚ï¼ˆå¼§åº¦åˆ¶ï¼‰
 	static float		angle	(const vector3& v1, const vector3& v2);
 
-	//ÏßĞÔ²åÖµ
+	//çº¿æ€§æ’å€¼
 	static void			lerp	(const vector3& v1, const vector3& v2, const float t, vector3& result);
 
 	static const vector3& zero() { static vector3 _zero = { 0, 0, 0}; return _zero; }
@@ -104,7 +104,7 @@ public:
 
 	void	clear		();
 	void	set			(const float x, const float y, const float z, const float d);
-	float	length		() const;	//ÏòÁ¿³¤¶È
+	float	length		() const;	//å‘é‡é•¿åº¦
 	void	fromPoint	(const point& from, const point& to);
 	void	normalize	();
 	void	mul			(matrix& m);
@@ -112,19 +112,19 @@ public:
 
 	vector4 operator-	(const vector4& vDec) const;
 	
-	//ÏòÁ¿²æ³Ë
+	//å‘é‡å‰ä¹˜
 	static vector4&		cross	(const vector4& v1, const vector4& v2);	
 
-	//ÏòÁ¿µã³Ë
+	//å‘é‡ç‚¹ä¹˜
 	static float		dot		(const vector4& v1, const vector4& v2);
 
-	//ÇóÁ½¸öÏòÁ¿¼Ğ½ÇµÄÓàÏÒÖµ(Ê¹ÓÃÁËÏòÁ¿µÄµã³Ë¶¨Òå)
+	//æ±‚ä¸¤ä¸ªå‘é‡å¤¹è§’çš„ä½™å¼¦å€¼(ä½¿ç”¨äº†å‘é‡çš„ç‚¹ä¹˜å®šä¹‰)
 	static float		cosa	(const vector4& v1, const vector4& v2);
 
-	//ÀûÓÃÓàÏÒ¶¨Àí¼ÆËã¼Ğ½ÇµÄÓàÏÒÖµ
+	//åˆ©ç”¨ä½™å¼¦å®šç†è®¡ç®—å¤¹è§’çš„ä½™å¼¦å€¼
 	static float		cosa2	(const vector4& v1, const vector4& v2);	
 
-	//¼ÆËã·¨ÏòÁ¿
+	//è®¡ç®—æ³•å‘é‡
 	static vector4&		get_normal_vector(const point& p1, const point&p2, const point& p3); 
 };
 
@@ -151,8 +151,8 @@ public:
 	int x;
 	int y;
 
-	//vector2i(const int vx, const int vy) : x(vx), y(vy) {} ·ÀÖ¹¹¹Ôìº¯ÊıÔì³ÉĞ§ÂÊËğÊ§
-	//explicit vector2i(const vector2& v) { x = static_cast<int>(v.x); y = static_cast<int>(v.y); } ·ÀÖ¹¹¹Ôìº¯ÊıÔì³ÉĞ§ÂÊËğÊ§
+	//vector2i(const int vx, const int vy) : x(vx), y(vy) {} é˜²æ­¢æ„é€ å‡½æ•°é€ æˆæ•ˆç‡æŸå¤±
+	//explicit vector2i(const vector2& v) { x = static_cast<int>(v.x); y = static_cast<int>(v.y); } é˜²æ­¢æ„é€ å‡½æ•°é€ æˆæ•ˆç‡æŸå¤±
 
 	void	set			(const int vx, const int vy) { x = vx; y = vy; }
 	void	clear		() { x = 0; y = 0; }

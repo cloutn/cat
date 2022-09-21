@@ -30,7 +30,7 @@ wchar_t dump_path	[MAX_PATH]		= { 0 };
 
 void make_datetime_string(wchar_t* out, SYSTEMTIME* pst = NULL)
 {
-	//¸ù¾ÝÊ±¼äÉú³ÉÎÄ¼þÃû
+	//æ ¹æ®æ—¶é—´ç”Ÿæˆæ–‡ä»¶å
 	SYSTEMTIME st;
 	if (NULL == pst)
 	{
@@ -222,11 +222,11 @@ void dump_print_stack(CONTEXT *context, FILE* f, const char* const datetime = NU
 		pSymbol->MaxNameLen									= 1024;
 		DWORD64 symDisplacement								= 0;
 
-		//´òÓ¡caller functionÔÚÔ´´úÂëÖÐµÄÎÄ¼þºÍÐÐºÅ
+		//æ‰“å°caller functionåœ¨æºä»£ç ä¸­çš„æ–‡ä»¶å’Œè¡Œå·
 		DWORD64  dummy										= 0;
 		HANDLE process										= ::GetCurrentProcess();
 
-		//´òÓ¡caller functionµÄname
+		//æ‰“å°caller functionçš„name
 		char symbol_buffer[sizeof(IMAGEHLP_SYMBOL) + 255]	= { 0 };
 		IMAGEHLP_SYMBOL64* symbol							= (IMAGEHLP_SYMBOL64*)symbol_buffer;
 		symbol->SizeOfStruct									= sizeof(IMAGEHLP_SYMBOL64) + 255;
@@ -241,14 +241,14 @@ void dump_print_stack(CONTEXT *context, FILE* f, const char* const datetime = NU
 		if(!funcs._SymGetLineFromAddr64( hProcess, sf.AddrPC.Offset, &dwLineDisplacement, &lineInfo ) )
 			fprintf(f, "!!!error!!!SymGetLineFromAddr errno[%d]", ::GetLastError());
 
-		//ÎÄ¼þÃû
+		//æ–‡ä»¶å
 		if (NULL != lineInfo.FileName && 0 != lineInfo.FileName[0] )
 			fprintf(f, "%s", lineInfo.FileName);
 
-		//ÐÐºÅ
+		//è¡Œå·
 		fprintf(f, " (%d) ", lineInfo.LineNumber);
 
-		//º¯ÊýÃû
+		//å‡½æ•°å
 		if (NULL != symbol->Name && 0 != symbol->Name[0])
 			fprintf(f, ": %s", symbol->Name);
 

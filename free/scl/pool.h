@@ -29,7 +29,7 @@ public:
 	bool	has_init		() const { return m_hasInit; }
 	T&		operator[]		(const int index) { return m_pool[index]; }
 
-	//以下两个方法需要T有clear成员函数
+	//浠ヤ笅涓や釜鏂规硶闇�瑕乀鏈塩lear鎴愬憳鍑芥暟
 	T*		alloc_clear		() { T* p = this->alloc(); p->clear(); }	
 	void	free_clear		(T* const pElem) { pElem->clear(); this->free(pElem); }	
 
@@ -93,7 +93,7 @@ T* pool<T>::alloc()
 	}
 	else
 	{
-		//throw(1);	//TODO 定义对应异常
+		//throw(1);	//TODO 瀹氫箟瀵瑰簲寮傚父
 		assert(0);
 		return NULL;
 	}

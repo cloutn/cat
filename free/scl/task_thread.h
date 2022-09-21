@@ -7,11 +7,11 @@ namespace scl {
 ////////////////////////////////////////////////////////////////////////
 // class task_thread
 //
-// Ê¹ÓÃÒ»¸öthreadÀ´´¦ÀíÒ»¸ötask¶ÓÁĞ
-// ÄÚ²¿Ê¹ÓÃÒ»¸öµÈ´ı´¦ÀíµÄ»·ĞÎ¶ÓÁĞÀ´±£´æÎ´´¦ÀíµÄtask£¬Íâ²¿²úÉútaskµÄÏß³Ì£¨Îñ±ØÊÇµ¥Ïß³Ì£©À´add¶à¸ötaskµ½Õâ¸ö¶ÓÁĞ£¬task_thread»áÔÚÁíÍâµÄ¹¤×÷Ïß³ÌÖĞÀ´Öğ¸ö´¦ÀíÕâĞ©task
-// Ê¹ÓÃÒ»¸ö´¦ÀíºóµÄtask×é³ÉµÄ»·ĞÎ¶ÓÁĞÀ´±£´æ´¦ÀíºóµÄĞÅÏ¢£¬·½±ãÍâ½ç´¦Àí¡£´¦ÀítaskµÄÏß³Ì£¨Îñ±ØÊÇµ¥Ïß³Ì£©µ÷ÓÃprocess_task_thread_resultÀ´´¦Àí½á¹û¡£
+// ä½¿ç”¨ä¸€ä¸ªthreadæ¥å¤„ç†ä¸€ä¸ªtaské˜Ÿåˆ—
+// å†…éƒ¨ä½¿ç”¨ä¸€ä¸ªç­‰å¾…å¤„ç†çš„ç¯å½¢é˜Ÿåˆ—æ¥ä¿å­˜æœªå¤„ç†çš„taskï¼Œå¤–éƒ¨äº§ç”Ÿtaskçš„çº¿ç¨‹ï¼ˆåŠ¡å¿…æ˜¯å•çº¿ç¨‹ï¼‰æ¥addå¤šä¸ªtaskåˆ°è¿™ä¸ªé˜Ÿåˆ—ï¼Œtask_threadä¼šåœ¨å¦å¤–çš„å·¥ä½œçº¿ç¨‹ä¸­æ¥é€ä¸ªå¤„ç†è¿™äº›task
+// ä½¿ç”¨ä¸€ä¸ªå¤„ç†åçš„taskç»„æˆçš„ç¯å½¢é˜Ÿåˆ—æ¥ä¿å­˜å¤„ç†åçš„ä¿¡æ¯ï¼Œæ–¹ä¾¿å¤–ç•Œå¤„ç†ã€‚å¤„ç†taskçš„çº¿ç¨‹ï¼ˆåŠ¡å¿…æ˜¯å•çº¿ç¨‹ï¼‰è°ƒç”¨process_task_thread_resultæ¥å¤„ç†ç»“æœã€‚
 //
-// ¾ßÌåÊ¹ÓÃÊ¾Àı£º
+// å…·ä½“ä½¿ç”¨ç¤ºä¾‹ï¼š
 //
 //		#include "scl/task_thread.h"
 //
@@ -25,13 +25,13 @@ namespace scl {
 //		{
 //			task_param* p	= static_cast<task_param*>(param);
 //			task_result* r	= static_cast<task_result*>(result);
-//			return true;  //ÕâÀï·µ»Øtrue»áµ¼ÖÂtask±»Ìí¼Óµ½result¶ÓÁĞÖĞ¡£×¢Òâ£¡ÎŞÂÛ·µ»Øtrue»¹ÊÇfalse£¬task¶¼»á±»´Ó´ı´¦Àí¶ÓÁĞÖĞÒÆ³ı¡£
+//			return true;  //è¿™é‡Œè¿”å›trueä¼šå¯¼è‡´taskè¢«æ·»åŠ åˆ°resulté˜Ÿåˆ—ä¸­ã€‚æ³¨æ„ï¼æ— è®ºè¿”å›trueè¿˜æ˜¯falseï¼Œtaskéƒ½ä¼šè¢«ä»å¾…å¤„ç†é˜Ÿåˆ—ä¸­ç§»é™¤ã€‚
 //		}
 //
 //		bool task_result_func(void* result)
 //		{
 //			task_result* r = static_cast<task_result*>(result);
-//			return true;  //ÕâÀï·µ»Øtrue»áµ¼ÖÂtask±»´Óresult¶ÓÁĞÖĞÒÆ³ı£¬·µ»ØfalseÔò²»»á±»ÒÆ³ı£¬ÏÂ´Îµ÷ÓÃprocess_taskÈÔÈ»»á´¦Àí¡£
+//			return true;  //è¿™é‡Œè¿”å›trueä¼šå¯¼è‡´taskè¢«ä»resulté˜Ÿåˆ—ä¸­ç§»é™¤ï¼Œè¿”å›falseåˆ™ä¸ä¼šè¢«ç§»é™¤ï¼Œä¸‹æ¬¡è°ƒç”¨process_taskä»ç„¶ä¼šå¤„ç†ã€‚
 //		}
 //
 //		int main()
@@ -89,14 +89,14 @@ public:
 	int				free_count			() const			{ return m_tasks.free() + m_results.free(); }
 	bool			is_running			() const			{ return m_thread.is_running(); }
 	bool			process_result		(task::funcT func, bool check_thread = false); 
-	int				process_all_results	(task::funcT func, int maxProcessCount = -1); //maxProcessCountÊÇ×î´ó¿É´¦ÀíµÄÊıÁ¿£¬Èç¹ûÎª-1£¬±íÊ¾Òª´¦ÀíÍêËùÓĞÇëÇó
+	int				process_all_results	(task::funcT func, int maxProcessCount = -1); //maxProcessCountæ˜¯æœ€å¤§å¯å¤„ç†çš„æ•°é‡ï¼Œå¦‚æœä¸º-1ï¼Œè¡¨ç¤ºè¦å¤„ç†å®Œæ‰€æœ‰è¯·æ±‚
 	void			set_ignore_result	(bool v) { m_ignoreResult = v; }
 	void			stop				();
 	bool			has_result			() const { return m_results.used() > 0; }
 	bool			has_task			() const { return m_tasks.used() > 0; }
 	void			set_log_buffer_size	(const int v) { m_logBufferSize = v ;}
 
-	//ÈÎÎñÍ³¼ÆÊôĞÔ
+	//ä»»åŠ¡ç»Ÿè®¡å±æ€§
 	int				index				() const		{ return m_index;			}
 	int				processed_count		() const		{ return m_processedCount;	}
 	uint64			processed_time		() const		{ return m_processedTime;	}
@@ -110,21 +110,21 @@ private:
 
 private:
 	scl::thread								m_thread;
-	scl::ring_queue<task, MAX_TASK_COUNT>	m_tasks;			//Î´´¦ÀíÈÎÎñ¶ÓÁĞ
-	scl::ring_queue<task, MAX_TASK_COUNT*2>	m_results;			//ÒÑ´¦ÀíÈÎÎñ½á¹ûµÄ¶ÓÁĞ
-	int										m_resultThreadID;	//½á¹û´¦ÀíÏß³ÌµÄthread id£¬ÓÃÓÚ¼ì²é½á¹û´¦ÀíÊÇ·ñ¶¼ÔÚÍ¬Ò»¸öÏß³ÌÖĞÖ´ĞĞ
-	volatile	void*						m_userData;			//ÓÃ»§×Ô¶¨ÒåÊı¾İ
-	volatile	int							m_processedCount;	//ÒÑ´¦ÀíÊıÁ¿
-	volatile	uint64						m_processedTime;	//´¦ÀíµÚÒ»¸öÈÎÎñÊ±µÄÊ±¼ä
-	int										m_index;			//Ïß³ÌµÄindex
-	bool									m_ignoreResult;		//ºöÂÔ´¦Àí½á¹û
-	int										m_logBufferSize;	//Ïß³ÌÓÃµ½µÄÈÕÖ¾»º³åÇø´óĞ¡
+	scl::ring_queue<task, MAX_TASK_COUNT>	m_tasks;			//æœªå¤„ç†ä»»åŠ¡é˜Ÿåˆ—
+	scl::ring_queue<task, MAX_TASK_COUNT*2>	m_results;			//å·²å¤„ç†ä»»åŠ¡ç»“æœçš„é˜Ÿåˆ—
+	int										m_resultThreadID;	//ç»“æœå¤„ç†çº¿ç¨‹çš„thread idï¼Œç”¨äºæ£€æŸ¥ç»“æœå¤„ç†æ˜¯å¦éƒ½åœ¨åŒä¸€ä¸ªçº¿ç¨‹ä¸­æ‰§è¡Œ
+	volatile	void*						m_userData;			//ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®
+	volatile	int							m_processedCount;	//å·²å¤„ç†æ•°é‡
+	volatile	uint64						m_processedTime;	//å¤„ç†ç¬¬ä¸€ä¸ªä»»åŠ¡æ—¶çš„æ—¶é—´
+	int										m_index;			//çº¿ç¨‹çš„index
+	bool									m_ignoreResult;		//å¿½ç•¥å¤„ç†ç»“æœ
+	int										m_logBufferSize;	//çº¿ç¨‹ç”¨åˆ°çš„æ—¥å¿—ç¼“å†²åŒºå¤§å°
 };
 
-//´ÓÒ»¸ötask_threadÊı×éÖĞÕÒµ½¿ÕÏĞ¶ÓÁĞ×î´óµÄtask_threadµÄÏÂ±êË÷Òı
+//ä»ä¸€ä¸ªtask_threadæ•°ç»„ä¸­æ‰¾åˆ°ç©ºé—²é˜Ÿåˆ—æœ€å¤§çš„task_threadçš„ä¸‹æ ‡ç´¢å¼•
 int				find_free_task_thread		(const task_thread* task_threads, const int max_thread_count);
 
-//Ö÷Ïß³Ì´¦Àí½á¹ûµÄº¯Êı
+//ä¸»çº¿ç¨‹å¤„ç†ç»“æœçš„å‡½æ•°
 int				process_task_thread_result	(task_thread* task_threads, const int max_thread_count, task::funcT func);
 int				process_task_thread_all_results(task_thread* task_threads, const int max_thread_count, task::funcT func, int maxProcessCount);
 

@@ -7,7 +7,7 @@
 
 namespace scl {
 
-//多线程分配器
+//澶氱嚎绋嬪垎閰嶅櫒
 template <typename T>
 class thread_allocator
 {
@@ -92,8 +92,8 @@ public:
 	static int	max_thread_count() { return MAX_THREAD_COUNT; }
 
 private:
-	static grow_pool<T>		m_threads		[MAX_THREAD_COUNT];	//每个线程使用一个alloc_pool
-	static int				m_maxAllocCount	[MAX_THREAD_COUNT]; //每个线程分配器的大小
+	static grow_pool<T>		m_threads		[MAX_THREAD_COUNT];	//姣忎釜绾跨▼浣跨敤涓�涓猘lloc_pool
+	static int				m_maxAllocCount	[MAX_THREAD_COUNT]; //姣忎釜绾跨▼鍒嗛厤鍣ㄧ殑澶у皬
 };
 
 template<typename T>

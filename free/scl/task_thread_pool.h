@@ -1,10 +1,10 @@
 #pragma once
 
 ////////////////////////////////////////////////////////////////////////
-//	ÈÎÎñÏß³Ì³Ø
-//		ÓÃÓÚ¹ÜÀíÒ»¸ötask_threadÊı×é
+//	ä»»åŠ¡çº¿ç¨‹æ± 
+//		ç”¨äºç®¡ç†ä¸€ä¸ªtask_threadæ•°ç»„
 //
-//	Ê¾Àı£º
+//	ç¤ºä¾‹ï¼š
 //	task_thread_pool pool(THREAD_COUNT);
 //	while (true)
 //	{
@@ -26,17 +26,17 @@ public:
 	~task_thread_pool();
 
 	void	set_thread_count(const int size);
-	int		add				(const task& t);	//Ìí¼ÓÒ»¸öÈÎÎñ£¬Èç¹ûÏß³Ì³ØÒÑÂú£¬Ôò·µ»ØÏß³Ì³ØµÄpoolIndex£¬×¢Òâ£¡Õâ¸öÖµºÍthreadIndexÃ»ÓĞ¹ØÏµ£¡
-	bool	add				(const task& t, const int poolIndex);	//ÏòÖ¸¶¨µÄÏß³Ì³ØÌí¼ÓÒ»¸öÈÎÎñ£¬Èç¹ûÏß³Ì³ØÒÑÂú£¬Ôò·µ»Øfalse
+	int		add				(const task& t);	//æ·»åŠ ä¸€ä¸ªä»»åŠ¡ï¼Œå¦‚æœçº¿ç¨‹æ± å·²æ»¡ï¼Œåˆ™è¿”å›çº¿ç¨‹æ± çš„poolIndexï¼Œæ³¨æ„ï¼è¿™ä¸ªå€¼å’ŒthreadIndexæ²¡æœ‰å…³ç³»ï¼
+	bool	add				(const task& t, const int poolIndex);	//å‘æŒ‡å®šçš„çº¿ç¨‹æ± æ·»åŠ ä¸€ä¸ªä»»åŠ¡ï¼Œå¦‚æœçº¿ç¨‹æ± å·²æ»¡ï¼Œåˆ™è¿”å›false
 	void	process_result	(task::funcT func);
 	void	process_all_results(task::funcT func, const int maxProcessCount);
 	void	stop			();
 	int		thread_count	() const { return m_threads.size(); }
-	//bool	has_result		() const; //ÊÇ·ñÓĞÉĞÎ´´¦ÀíµÄresult
-	//bool	has_task		() const; //ÊÇ·ñÓĞÉĞÎ´´¦ÀíµÄtask
+	//bool	has_result		() const; //æ˜¯å¦æœ‰å°šæœªå¤„ç†çš„result
+	//bool	has_task		() const; //æ˜¯å¦æœ‰å°šæœªå¤„ç†çš„task
 	bool	has_task		() const { return m_counter != 0; }
 
-	//ÊôĞÔ
+	//å±æ€§
 	bool	has_free		()					{ return -1 != find_free_task_thread(m_threads.c_array(), m_threads.size()); }
 	int		processed_count	(const int index)	const { return m_threads[index].processed_count(); }
 	uint64	processed_time	(const int index)	const { return m_threads[index].processed_time(); }
@@ -51,7 +51,7 @@ private:
 
 private:
 	varray<task_thread> m_threads;
-	int		m_counter;	//ÈÎÎñ¼ÆÊıÆ÷£¬addÊ±ºò+1£¬´¦ÀíÍêresultÖ®ºó-1
+	int		m_counter;	//ä»»åŠ¡è®¡æ•°å™¨ï¼Œaddæ—¶å€™+1ï¼Œå¤„ç†å®Œresultä¹‹å-1
 };
 
 } //namespace scl

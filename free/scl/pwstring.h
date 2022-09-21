@@ -16,7 +16,7 @@ class pwstring
 public:
 	pwstring();
 
-	//maxCount´«Èë0±íÊ¾ºöÂÔ³¤¶È£¬¼´¶ÔPStringµÄµ÷ÓÃ²»Éæ¼°×î´ó³¤¶È£¬maxCount´«Èë-1±íÊ¾×Ô¶¯¼ÆËã³¤¶È£¬+1ºó×÷ÎªmaxCount
+	//maxCountä¼ å…¥0è¡¨ç¤ºå¿½ç•¥é•¿åº¦ï¼Œå³å¯¹PStringçš„è°ƒç”¨ä¸æ¶‰åŠæœ€å¤§é•¿åº¦ï¼ŒmaxCountä¼ å…¥-1è¡¨ç¤ºè‡ªåŠ¨è®¡ç®—é•¿åº¦ï¼Œ+1åä½œä¸ºmaxCount
 	pwstring	(wchar* s, const int maxCount = -1, const wchar* initString = NULL); 
 	void init	(wchar* s, const int maxCount = -1, const wchar* initString = NULL);
 	void alloc	(const int maxCount, const wchar* initString = NULL) { init(new wchar[maxCount], maxCount, initString); }
@@ -32,13 +32,13 @@ public:
 	//int 	compare		(const pwstring& source, bool ignoreCase = false) const { return compare(source.c_str(), ignoreCase);  }
 	void	erase		(const int startIndex = 0, const int length = -1);
 	void	clear		()	{ ::wmemset(m_string, 0, MAX_COUNT); }
-	int		format			(const wchar* const format, ...);	//·µ»ØĞÂĞ´ÈëµÄ×Ö·ûÊı£¬²»°üº¬'\0'¡£µ±Ô½½çÊ±£¬windowsÏÂ·µ»Ø-1£¬linuxÏÂ·µ»Ø¡°¼ÙÈçÃ»ÓĞÔ½½ç£¬Ó¦µ±Ğ´ÈëµÄ×Ü×Ö·ûÊı¡±
+	int		format			(const wchar* const format, ...);	//è¿”å›æ–°å†™å…¥çš„å­—ç¬¦æ•°ï¼Œä¸åŒ…å«'\0'ã€‚å½“è¶Šç•Œæ—¶ï¼Œwindowsä¸‹è¿”å›-1ï¼Œlinuxä¸‹è¿”å›â€œå‡å¦‚æ²¡æœ‰è¶Šç•Œï¼Œåº”å½“å†™å…¥çš„æ€»å­—ç¬¦æ•°â€
 	int		format_append	(const wchar* const format, ...);
 	int		format_arg		(const wchar* const format, va_list arg);
 	int		format_arg_append(const wchar* const format, va_list arg);
 	int		find			(const wchar c)			const	{ return find_first_of(c); }
 	int		find			(const wchar* const s)	const	{ return find_first_of(s); }
-	int		find_first_of	(const wchar c)			const;	//find_first_of ·µ»ØÕÒµ½µÄ×Ö·û´®µÄÆğÊ¼index£¬Ã»ÕÒµ½·µ»Ø-1
+	int		find_first_of	(const wchar c)			const;	//find_first_of è¿”å›æ‰¾åˆ°çš„å­—ç¬¦ä¸²çš„èµ·å§‹indexï¼Œæ²¡æ‰¾åˆ°è¿”å›-1
 	int		find_first_of	(const wchar* const s)	const;
 	int		find_last_of	(const wchar c)			const;
 	int		find_last_of	(const wchar* const s)	const;
@@ -50,7 +50,7 @@ public:
 	bool	end_with		(const wchar* const s, bool ignoreCase = false) const;
 
 	bool	replace			(const wchar* const oldString, const wchar* const newString);
-	int		replace_all		(const wchar* const oldString, const wchar* const newString);	//·µ»Ø·¢ÉúÌæ»»µÄ´ÎÊı
+	int		replace_all		(const wchar* const oldString, const wchar* const newString);	//è¿”å›å‘ç”Ÿæ›¿æ¢çš„æ¬¡æ•°
 	void	insert			(const int positionIndex, const wchar* const insertString);
 	void	insert			(const int positionIndex, const wchar c);
 
@@ -85,7 +85,7 @@ public:
 	wchar*		c_str		()			{ return m_string; }
 	const wchar*c_str		()	const	{ return m_string; }
 	int			length		()	const	{ return static_cast<int>(wcsnlen(m_string, max_size())); }
-	bool		empty		()	const	{ return m_string[0] == 0; } // ·µ»Ø×Ö·û´®ÊÇ·ñÎª¿Õ
+	bool		empty		()	const	{ return m_string[0] == 0; } // è¿”å›å­—ç¬¦ä¸²æ˜¯å¦ä¸ºç©º
 	int			max_size	()	const	{ return MAX_COUNT;	}
 	int			capacity	()	const	{ return max_size() - 1; }	//max length
 	int			max_sizeof	()	const	{ return max_size() * sizeof(wchar); }

@@ -10,18 +10,18 @@
 
 namespace scl { 
 
-//	Ö»ÓĞµÚ1¸ö×Ö½ÚÓĞhead£¬ÆäËû×Ö½Ú¾ùÎªÊı¾İ±¾ÉíĞÅÏ¢
-//	ÓĞ·ûºÅÊıÓÃzigzag×ªÎªÎŞ·ûºÅÊıºó±àÂë
+//	åªæœ‰ç¬¬1ä¸ªå­—èŠ‚æœ‰headï¼Œå…¶ä»–å­—èŠ‚å‡ä¸ºæ•°æ®æœ¬èº«ä¿¡æ¯
+//	æœ‰ç¬¦å·æ•°ç”¨zigzagè½¬ä¸ºæ— ç¬¦å·æ•°åç¼–ç 
 //	1byte	0xxx xxxx	
 //	2bytes	10xx  xxxx | xxxx xxxx
 //	3bytes	110x  xxxx | xxxx xxxx | xxxx xxxx
 //	4bytes	1110  xxxx | xxxx xxxx | xxxx xxxx | xxxx xxxx
 //	5bytes	1111  0000 | xxxx xxxx | xxxx xxxx | xxxx xxxx | xxxx xxxx
 
-//zip_xxxº¯ÊıµÄ²ÎÊıËµÃ÷£º
-//	byte* p	ÊÇÄ¿±ê»º³åÇø£¬Ñ¹Ëõºó½«Ğ´ÈëÕâ¸ö»º³åÇø
-//	uint i	ÊÇµÈ´ıÑ¹ËõµÄÖµ
-//·µ»ØÖµÊÇÑ¹ËõºóĞ´Èëµ½ byte* pÖĞµÄ×Ö½ÚÊı
+//zip_xxxå‡½æ•°çš„å‚æ•°è¯´æ˜ï¼š
+//	byte* p	æ˜¯ç›®æ ‡ç¼“å†²åŒºï¼Œå‹ç¼©åå°†å†™å…¥è¿™ä¸ªç¼“å†²åŒº
+//	uint i	æ˜¯ç­‰å¾…å‹ç¼©çš„å€¼
+//è¿”å›å€¼æ˜¯å‹ç¼©åå†™å…¥åˆ° byte* pä¸­çš„å­—èŠ‚æ•°
 inline int	zip_int				(byte* p, int	i	);
 inline int	zip_uint			(byte* p, uint	i	);
 inline int	zip_int16			(byte* p, int16	i	);
@@ -36,10 +36,10 @@ inline int	zip_int64_size		(byte* p, uint64 i	);
 inline int	zip_uint64_size		(byte* p, uint64 i	);
 
 
-//unzip_xxxº¯ÊıµÄ²ÎÊıËµÃ÷£º
-//	byte* p	ÊÇ¶ÁÈ¡µÄ»º³åÇø£¬´ÓÕâ¸ö»º³åÇø¶ÁÈ¡Ò»¶Î×Ö½ÚÁ÷£¬È»ºó½âÑ¹Ëõ
-//	uint& i	ÊÇ½âÑ¹Ëõ½á¹û´æÈëµÄÖµ
-//·µ»ØÖµÊÇ±¾´Î½âÑ¹Ëõ¹ı³Ì´Ó byte* pÖĞ¶ÁÈ¡µÄ×Ö½ÚÊı
+//unzip_xxxå‡½æ•°çš„å‚æ•°è¯´æ˜ï¼š
+//	byte* p	æ˜¯è¯»å–çš„ç¼“å†²åŒºï¼Œä»è¿™ä¸ªç¼“å†²åŒºè¯»å–ä¸€æ®µå­—èŠ‚æµï¼Œç„¶åè§£å‹ç¼©
+//	uint& i	æ˜¯è§£å‹ç¼©ç»“æœå­˜å…¥çš„å€¼
+//è¿”å›å€¼æ˜¯æœ¬æ¬¡è§£å‹ç¼©è¿‡ç¨‹ä» byte* pä¸­è¯»å–çš„å­—èŠ‚æ•°
 inline int	unzip_int			(byte* p, int& i);
 inline int	unzip_uint			(byte* p, uint& i);
 inline int	unzip_int16			(byte* p, int& i);
@@ -102,7 +102,7 @@ inline int64 unzigzag64(uint64 c)
 #pragma GCC diagnostic ignored "-Wreturn-type"
 #endif
 
-//16Î»×Ö½ÚĞòµ÷»»
+//16ä½å­—èŠ‚åºè°ƒæ¢
 inline uint16 byteorder16(uint16 s)
 {;
 #ifdef SCL_WIN 
@@ -128,7 +128,7 @@ inline uint16 byteorder16(uint16 s)
 #endif
 }
 
-//32Î»×Ö½ÚĞòµ÷»»
+//32ä½å­—èŠ‚åºè°ƒæ¢
 inline uint byteorder32(uint s)
 {
 #ifdef SCL_WIN
@@ -153,7 +153,7 @@ inline uint byteorder32(uint s)
 #endif
 }
 
-//64Î»×Ö½ÚĞòµ÷»»
+//64ä½å­—èŠ‚åºè°ƒæ¢
 inline uint64 byteorder64(uint64 x)
 {
 #ifdef SCL_LINUX64

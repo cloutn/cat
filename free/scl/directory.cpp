@@ -43,7 +43,7 @@ directory::directory()
 
 }
 
-//NOT TestedÉĞÎ´²âÊÔ
+//NOT Testedå°šæœªæµ‹è¯•
 bool directory::create(const char* const dirname)
 {
 	if (NULL != dirname && 0 == dirname[0])
@@ -57,7 +57,7 @@ bool directory::create(const char* const dirname)
 	if (_mkdir(fullSubDirName.c_str()) == 0)
 #endif
 #if defined(SCL_LINUX) || defined(SCL_APPLE) || defined(SCL_ANDROID) || defined(SCL_HTML5)
-	if (mkdir(fullSubDirName.c_str(), 0777) == 0) //¸øÓèÈ«²¿È¨ÏŞ
+	if (mkdir(fullSubDirName.c_str(), 0777) == 0) //ç»™äºˆå…¨éƒ¨æƒé™
 #endif
 	{
 		return true;
@@ -70,7 +70,7 @@ bool directory::create(const char* const dirname)
 	}
 }
 
-//NOT TestedÉĞÎ´²âÊÔ
+//NOT Testedå°šæœªæµ‹è¯•
 bool directory::create_dir(const char* const dirname)
 {
 	if (NULL == dirname)
@@ -86,7 +86,7 @@ bool directory::create_dir(const char* const dirname)
 	if (_wmkdir(wdirname.c_str()) == 0)
 #endif
 #if defined(SCL_LINUX) || defined(SCL_APPLE) || defined(SCL_ANDROID) || defined(SCL_HTML5)
-	if (mkdir(dirname, 0777) == 0) //¸øÓèÈ«²¿È¨ÏŞ
+	if (mkdir(dirname, 0777) == 0) //ç»™äºˆå…¨éƒ¨æƒé™
 #endif
 	{
 		return true;
@@ -99,14 +99,14 @@ bool directory::create_dir(const char* const dirname)
 	}
 }
 
-//NOT TestedÉĞÎ´²âÊÔ
+//NOT Testedå°šæœªæµ‹è¯•
 bool directory::exists(const char* const subDirName)
 {
 	stringPath fullSubDirName = name().c_str();
 	fullSubDirName += subDirName;
 	if (file::exists(fullSubDirName.c_str()))
 	{
-		//´ò¿ªÎÄ¼şÊôĞÔ£¬¿´ÊÇ·ñÎªdirectory
+		//æ‰“å¼€æ–‡ä»¶å±æ€§ï¼Œçœ‹æ˜¯å¦ä¸ºdirectory
 #ifdef SCL_WIN
 		struct _stat filestat;
 		_stat(fullSubDirName.c_str(), &filestat);
@@ -174,10 +174,10 @@ bool file_find_data::is_any_directory() const
 ////////////////////////////////////
 bool directory::open(const char* const directoryName)
 {
-	//ÖÃÎªÒÑ¾­¶ÁÈ¡ÁËµÚÒ»¸öÊı¾İ
+	//ç½®ä¸ºå·²ç»è¯»å–äº†ç¬¬ä¸€ä¸ªæ•°æ®
 	m_readingFirst = true;
 	
-	//±£´æÄ¿Â¼Ãû
+	//ä¿å­˜ç›®å½•å
 	m_name = directoryName;
 	normalize_path(m_name.pstring());
 	return true;
@@ -187,13 +187,13 @@ bool directory::next()
 {
 	WIN32_FIND_DATAW win32FindData;
 	bool result = false;
-	if (m_readingFirst)	//ÕâÀïÊÇÎªÁËÌØÊâ´¦ÀíFindFirstFileW·µ»ØµÄµÚÒ»¸öÎÄ¼şµÄĞÅÏ¢
+	if (m_readingFirst)	//è¿™é‡Œæ˜¯ä¸ºäº†ç‰¹æ®Šå¤„ç†FindFirstFileWè¿”å›çš„ç¬¬ä¸€ä¸ªæ–‡ä»¶çš„ä¿¡æ¯
 	{
-		//×ª»»Îªwchar
+		//è½¬æ¢ä¸ºwchar
 		wstringPath wcsname;
 		wcsname.from_ansi(m_name.c_str());
 
-		//findÄ¿Â¼ÏÂµÚÒ»¸öÎÄ¼ş
+		//findç›®å½•ä¸‹ç¬¬ä¸€ä¸ªæ–‡ä»¶
 		wcsname += L"\\*";
 		
 		m_handle = FindFirstFileW(wcsname.c_str(), &win32FindData);
@@ -268,7 +268,7 @@ bool directory::open(const char* const directoryName)
 	{
 		perror("directory::open");
 	}
-	//±£´æÄ¿Â¼Ãû
+	//ä¿å­˜ç›®å½•å
 	m_name = directoryName;
 	normalize_path(m_name.pstring());
 
@@ -277,7 +277,7 @@ bool directory::open(const char* const directoryName)
 
 bool directory::next()
 {
-	//¶ÁÈ¡ÏÂ¸öÄ¿Â¼
+	//è¯»å–ä¸‹ä¸ªç›®å½•
 	dirent* pdata = readdir(static_cast<DIR*>(m_handle));
 	if (NULL == pdata)
 	{
@@ -288,11 +288,11 @@ bool directory::next()
 		return false;
 	}
 
-	//×é³ÉÍêÕûµÄÂ·¾¶ÎÄ¼şÃû
+	//ç»„æˆå®Œæ•´çš„è·¯å¾„æ–‡ä»¶å
 	stringPath childName = m_name;
 	childName += pdata->d_name;
 
-	//»ñÈ¡file state
+	//è·å–file state
 	struct stat buf;
 	if (0 != stat(childName.c_str(), &buf))
 	{
@@ -300,7 +300,7 @@ bool directory::next()
 		return false;
 	}
 
-	//½«Êı¾İ×ªÎª¿ç²Ù×÷ÏµÍ³µÄÍ¨ÓÃµÄfile_find_data
+	//å°†æ•°æ®è½¬ä¸ºè·¨æ“ä½œç³»ç»Ÿçš„é€šç”¨çš„file_find_data
 	_convertFileData(buf, m_data, m_name.c_str());
 	m_data.name() = pdata->d_name; 
 	extract_fileext_to(m_data.name(), m_data.extname());

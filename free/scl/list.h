@@ -37,7 +37,7 @@ public:
 	list(const list& other) { *this = other; };
 	//void SetAllocator(IAllocator<Node>& allocator) { m_pAllocator = &allocator; }
 
-	//stl兼容接口
+	//stl鍏煎鎺ュ彛
 	void		push_back	(const T& elem) 					{ _insert(m_pTail, elem); }
 	void		push_front	(const T& elem) 					{ _insert(NULL, elem); }
 	void		pop_back	()									{ _remove(m_pTail); }
@@ -59,14 +59,14 @@ public:
 	T&			back	()			{ return m_pTail->elem; }
 	const T&	back	() const	{ return m_pTail->elem; }
 
-	//stl中没有的接口
+	//stl涓病鏈夌殑鎺ュ彛
 	void		insert_before	(iterator _where, const T& elem);
 	T&			push_back_fast	() { Node* p = _insert(m_pTail); return p->elem;		}
 	iterator	find			(const T& elem) { return iterator(_find(elem));		}
 	iterator	find_last		(const T& elem) { return iterator(_findLast(elem)); }
 	bool		contains		(const T& elem) { return _find(elem) != NULL;		}
 
-	//List层面的深拷贝，list_node中的list_node::elem内如果包含指针，不在该拷贝过程中。因此对于list_node::elem是浅拷贝
+	//List灞傞潰鐨勬繁鎷疯礉锛宭ist_node涓殑list_node::elem鍐呭鏋滃寘鍚寚閽堬紝涓嶅湪璇ユ嫹璐濊繃绋嬩腑銆傚洜姝ゅ浜巐ist_node::elem鏄祬鎷疯礉
 	list& operator=(const list& other);
 
 public:
@@ -143,12 +143,12 @@ void list<T, Alloc>::insert_before(iterator _where, const T& elem)
 	Node* pPosition = _where.p;
 	if (NULL != pPosition->prev)
 	{ 
-		//pPosition不是头结点，直接插入即可
+		//pPosition涓嶆槸澶寸粨鐐癸紝鐩存帴鎻掑叆鍗冲彲
 		_insert(pPosition->prev, elem); 
 	} 
 	else
 	{
-		//pPosition是头结点
+		//pPosition鏄ご缁撶偣
 		Node* pNewNode = Alloc::alloc();
 		pNewNode->elem = elem;
 		pNewNode->prev = NULL;
@@ -173,7 +173,7 @@ void list<T, Alloc>::clear()
 	m_size = 0;
 }
 
-//List层面的深拷贝，list_node中的list_node::elem内如果包含指针，不在该拷贝过程中。因此对于list_node::elem是浅拷贝
+//List灞傞潰鐨勬繁鎷疯礉锛宭ist_node涓殑list_node::elem鍐呭鏋滃寘鍚寚閽堬紝涓嶅湪璇ユ嫹璐濊繃绋嬩腑銆傚洜姝ゅ浜巐ist_node::elem鏄祬鎷疯礉
 template<typename T, typename Alloc>
 list<T, Alloc>& list<T, Alloc>::operator=(const list<T, Alloc>& other)
 {
@@ -187,7 +187,7 @@ list<T, Alloc>& list<T, Alloc>::operator=(const list<T, Alloc>& other)
 	return *this;
 }
 
-//将elem元素插入到pPosition后面
+//灏唀lem鍏冪礌鎻掑叆鍒皃Position鍚庨潰
 template<typename T, typename Alloc>
 list_node<T>* list<T, Alloc>::_insert(Node* pPosition, const T& elem)
 {
@@ -196,7 +196,7 @@ list_node<T>* list<T, Alloc>::_insert(Node* pPosition, const T& elem)
 	return pNewNode;
 }
 
-//将elem元素插入到pPosition后面
+//灏唀lem鍏冪礌鎻掑叆鍒皃Position鍚庨潰
 template<typename T, typename Alloc>
 list_node<T>* list<T, Alloc>::_insert(Node* pPosition)
 {

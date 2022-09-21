@@ -238,7 +238,7 @@ int trim_left(char* s, const int len)
 	if (len > 0) l = len;
 	else l = static_cast<int>(strlen(s));
 
-	//Çå³ý×ó²àµÄ¿Õ×Ö·û
+	//æ¸…é™¤å·¦ä¾§çš„ç©ºå­—ç¬¦
 	int del = 0;
 	for (int i = 0; i < l; ++i)
 	{
@@ -246,7 +246,7 @@ int trim_left(char* s, const int len)
 			break;
 		del++;
 	}
-	//É¾³ýËùÓÐ¿Õ×Ö·û
+	//åˆ é™¤æ‰€æœ‰ç©ºå­—ç¬¦
 	for (int i = 0; i < l - del; ++i)
 		s[i] = s[i + del];
 	s[l - del] = 0;
@@ -285,12 +285,12 @@ bool load_string_to_matrix(char* str, const int str_len, const char* seperator, 
 	int row = 0;
 	int column_count = 0;
 
-	//²ð·Ö³ÉÐÐ
+	//æ‹†åˆ†æˆè¡Œ
 	char* lineContext = NULL;
 	char* line = scl_strtok(str, "\n", &lineContext);
 	while (NULL != line)
 	{
-		//½âÎöÐÐ
+		//è§£æžè¡Œ
 		scl::trim(line);
 		if (line[0] == 0)
 		{
@@ -299,21 +299,21 @@ bool load_string_to_matrix(char* str, const int str_len, const char* seperator, 
 		}
 		int column = 0;
 
-		//²ð·Ö³É×Ö¶Î
+		//æ‹†åˆ†æˆå­—æ®µ
 		char* numContext = NULL;
 		char* num = scl_strtok(line, seperator, &numContext);
 		while (NULL != num)
 		{
-			//½âÎö×Ö¶Î
+			//è§£æžå­—æ®µ
 			if (column + row * column_count >= output_capacity)
 				return false;
 			output_array[column + row * column_count] = static_cast<uint16>(strtol(num, NULL, 10));
 			num = scl_strtok(NULL, seperator, &numContext);
 			++column;
 		}
-		if (column_count == 0)		//ÓÃµÚÒ»ÐÐµÄÁÐÊý×÷Îª½âÎöµÄÁÐÊý 
+		if (column_count == 0)		//ç”¨ç¬¬ä¸€è¡Œçš„åˆ—æ•°ä½œä¸ºè§£æžçš„åˆ—æ•° 
 			column_count = column;
-		if (column != column_count) //Ä³Ð©ÐÐµÄÁÐÊý²»Ò»ÖÂ£¬Í£Ö¹½âÎö
+		if (column != column_count) //æŸäº›è¡Œçš„åˆ—æ•°ä¸ä¸€è‡´ï¼Œåœæ­¢è§£æž
 			return false;
 		line = scl_strtok(NULL, "\n", &lineContext);
 		++row;
@@ -334,16 +334,16 @@ bool load_string_to_array(
 	const int	output_capacity,
 	uint16*		output_length)
 {
-	//½âÎöÐÐ
+	//è§£æžè¡Œ
 	char* line = str;
 	scl::trim(line);
 	int column = 0;
-	//²ð·Ö³É×Ö¶Î
+	//æ‹†åˆ†æˆå­—æ®µ
 	char* numContext = NULL;
 	char* num = scl_strtok(line, seperator, &numContext);
 	while (NULL != num)
 	{
-		//½âÎö×Ö¶Î
+		//è§£æžå­—æ®µ
 		if (column  >= output_capacity)
 			return false;
 		output_array[column] = static_cast<int>(strtol(num, NULL, 10));

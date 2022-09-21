@@ -10,7 +10,7 @@ public:
 	frame_lock() : m_start(0) {}
 
 	void	start	();
-	void	wait	(const int locktime = 20); //ËøÖ¡Ê±¼ä£¬µ¥Î»£ººÁÃë£¬Ä¬ÈÏÖµ20ºÁÃë£¬¼´50Ö¡
+	void	wait	(const int locktime = 20); //é”å¸§æ—¶é—´ï¼Œå•ä½ï¼šæ¯«ç§’ï¼Œé»˜è®¤å€¼20æ¯«ç§’ï¼Œå³50å¸§
 
 private:
 	uint64	m_start;

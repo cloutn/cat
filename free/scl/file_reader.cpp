@@ -42,7 +42,7 @@ bool file_reader::open(const char* const filename)
 {
 	if (NULL != m_file)
 	{
-		//Ö´ĞĞÇå¿Õ
+		//æ‰§è¡Œæ¸…ç©º
 		clear();
 	}
 	m_file = ::fopen(filename, "rb");
@@ -57,7 +57,7 @@ bool file_reader::open_buffer(const char* const buffer, const int len)
 		return false;
 	if (NULL != m_filebuffer)
 	{
-		//Ö´ĞĞÇå¿Õ
+		//æ‰§è¡Œæ¸…ç©º
 		clear();
 	}
 	m_filebuffer		= buffer;
@@ -77,18 +77,18 @@ bool file_reader::nextline()
 
 	if (-1 == m_start)
 	{
-		//µÚÒ»´Î¶ÁÈ¡ÎÄ¼ş
+		//ç¬¬ä¸€æ¬¡è¯»å–æ–‡ä»¶
 		if (!_load_block())
 			return false;
 	}
 	else
 	{
-		//Ìø¹ıÇ°Ò»ĞĞµÄ»»ĞĞ·û
+		//è·³è¿‡å‰ä¸€è¡Œçš„æ¢è¡Œç¬¦
 		if (!_find_next_start())
 			return false;
 	}
 
-	//²éÕÒÏÂÒ»¸ö»»ĞĞ·û
+	//æŸ¥æ‰¾ä¸‹ä¸€ä¸ªæ¢è¡Œç¬¦
 	return _find_end(true);
 }
 
@@ -114,7 +114,7 @@ bool file_reader::_load_block()
 {
 	::memset(m_buffer, 0, m_maxBufferSize);
 
-	//¶ÁÈ¡Ò»¸öĞÂµÄ¿é
+	//è¯»å–ä¸€ä¸ªæ–°çš„å—
 	if (m_filebuffer != NULL)	// file buffer mode
 	{
 		const int remain = m_filebuffer_len - m_filebuffer_pos;
@@ -135,14 +135,14 @@ bool file_reader::_load_block()
 
 bool file_reader::_find_next_start()
 {
-	//Ìø¹ıÇ°Ò»ĞĞµÄ»»ĞĞ·û
+	//è·³è¿‡å‰ä¸€è¡Œçš„æ¢è¡Œç¬¦
 	m_start = m_end + 1;
 	while (m_start < _block_end() && (_is_line_end(m_buffer[m_start])))
 		++m_start;
 
 	if (m_start >= _block_end())
 	{
-		//¼ÓÔØÒ»¸öĞÂ¿é£¬²¢ÔÙ´Î³¢ÊÔÕÒµ½start
+		//åŠ è½½ä¸€ä¸ªæ–°å—ï¼Œå¹¶å†æ¬¡å°è¯•æ‰¾åˆ°start
 		if (!_load_block())
 			return false;
 
@@ -163,10 +163,10 @@ bool file_reader::_find_next_start()
 
 bool file_reader::_find_end(bool useLineCache)
 {
-	//²éÕÒÏÂÒ»¸ö»»ĞĞ·û
+	//æŸ¥æ‰¾ä¸‹ä¸€ä¸ªæ¢è¡Œç¬¦
 	while (m_end <= _block_end())
 	{
-		//µ½ÁËµ±Ç°ÎÄ¼ş»º³å¿éµÄÄ©Î²
+		//åˆ°äº†å½“å‰æ–‡ä»¶ç¼“å†²å—çš„æœ«å°¾
 		if (m_end == _block_end() - 1)
 		{
 			bool reach_end = false;
@@ -177,7 +177,7 @@ bool file_reader::_find_end(bool useLineCache)
 			}
 			else 
 			{
-				if (feof(static_cast<FILE*>(m_file))) //ÎÄ¼şÒÑ¾­µ½Ä©Î²ÁË£¬·µ»ØÈ«²¿×Ö·û´®
+				if (feof(static_cast<FILE*>(m_file))) //æ–‡ä»¶å·²ç»åˆ°æœ«å°¾äº†ï¼Œè¿”å›å…¨éƒ¨å­—ç¬¦ä¸²
 					reach_end = true;
 			}
 
@@ -191,7 +191,7 @@ bool file_reader::_find_end(bool useLineCache)
 			}
 		}
 
-		//ÕÒµ½ÁË»»ĞĞ·û
+		//æ‰¾åˆ°äº†æ¢è¡Œç¬¦
 		if (_is_line_end(m_buffer[m_end]))
 		{
 			--m_end;
@@ -200,7 +200,7 @@ bool file_reader::_find_end(bool useLineCache)
 
 		++m_end;
 	}
-	//Ä©Î²½Ø0£¬ÕâÑùcurrentline()Ö±½Ó·µ»Øm_start¾ÍÊÇÒ»¸ö½Ø¶ÏµÄ×Ö·û´®ÁË
+	//æœ«å°¾æˆª0ï¼Œè¿™æ ·currentline()ç›´æ¥è¿”å›m_startå°±æ˜¯ä¸€ä¸ªæˆªæ–­çš„å­—ç¬¦ä¸²äº†
 	if (m_end >= _block_end())
 	{
 		assert(false && "too long line!");
@@ -211,7 +211,7 @@ bool file_reader::_find_end(bool useLineCache)
 		assert(m_end > 0);
 		--m_end;
 	}
-	//Èç¹ûÖ¸¶¨ÁË±£´æµÄ»»ĞĞ·û£¬ÔòĞèÒªÔÚÕâÀï¼ÓÉÏ»»ĞĞ·û
+	//å¦‚æœæŒ‡å®šäº†ä¿å­˜çš„æ¢è¡Œç¬¦ï¼Œåˆ™éœ€è¦åœ¨è¿™é‡ŒåŠ ä¸Šæ¢è¡Œç¬¦
 	const int linebreak_length = static_cast<int>(::strlen(m_linebreak));
 	assert(linebreak_length < RESERVE_LINEBREAK_SIZE);
 	if (linebreak_length > 0 && m_end + linebreak_length < m_maxBufferSize)
@@ -227,16 +227,16 @@ bool file_reader::_append_string_in_next_block()
 {
 	m_usingLineCache = true;
 
-	//½Ø¶ÏÎÄ¼ş»º³å¿é
+	//æˆªæ–­æ–‡ä»¶ç¼“å†²å—
 	m_buffer[_block_end()] = 0;
 	const int old_len = m_end - m_start + 1;
 
-	//ĞèÒª¶ÁÈëÏÂ¸öÎÄ¼ş¿é£¬ÏÈ°Ñµ±Ç°µÄm_startºÍm_end»º³å¡£
+	//éœ€è¦è¯»å…¥ä¸‹ä¸ªæ–‡ä»¶å—ï¼Œå…ˆæŠŠå½“å‰çš„m_startå’Œm_endç¼“å†²ã€‚
 	::memset(m_line, 0, m_maxLineCacheSize);
 
 	::strcpy(m_line, m_buffer + m_start);
 
-	//¶ÁÈ¡ÎÄ¼ş
+	//è¯»å–æ–‡ä»¶
 	if (!_load_block())
 		return false;
 

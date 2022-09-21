@@ -21,15 +21,15 @@ const	uint64	MAX_UINT64	= 0xFFFFFFFFFFFFFFFF;
 const	int		MIN_INT		= 0x80000000;
 const	int64	MIN_INT64	= 0x8000000000000000;
 
-//Çó¾ø¶ÔÖµ
+//æ±‚ç»å¯¹å€¼
 template<typename T> 
 inline T absolute(T x)
 {
 	return x > 0 ? x : -x;
 }
 
-//½»»»Á½¸öÖµ
-#ifdef SCL_WIN //windowsÏÂÃæµÄ<utility>ÎÄ¼şĞ´µÄÓĞÎÊÌâ£¬µ¼ÖÂ¶ÔswapµÄµ÷ÓÃ»áÆçÒå
+//äº¤æ¢ä¸¤ä¸ªå€¼
+#ifdef SCL_WIN //windowsä¸‹é¢çš„<utility>æ–‡ä»¶å†™çš„æœ‰é—®é¢˜ï¼Œå¯¼è‡´å¯¹swapçš„è°ƒç”¨ä¼šæ­§ä¹‰
 template<typename T> 
 inline void swap(T& a, T& b)
 {
@@ -47,19 +47,19 @@ inline void swap(T& a, T& b)
 }
 #endif
 
-//½Ç¶È×ªÎª»¡¶È
+//è§’åº¦è½¬ä¸ºå¼§åº¦
 inline float radian(const float a)
 {
 	return PI * a / 180;
 }
 
-//»¡¶È×ªÎª½Ç¶È
+//å¼§åº¦è½¬ä¸ºè§’åº¦
 inline float angle(const float r)
 {
 	return 180 * r / PI;
 }
 
-//Çó½Ï´óÖµ
+//æ±‚è¾ƒå¤§å€¼
 #ifdef max
 #undef max
 #endif
@@ -92,55 +92,55 @@ inline T clamp(const T v, const T _min, const T _max)
 }
 
 
-//ÅĞ¶Ï¸¡µãÊıÊÇ·ñÏàµÈ
+//åˆ¤æ–­æµ®ç‚¹æ•°æ˜¯å¦ç›¸ç­‰
 inline bool float_equal(const float a, const float b, const float precision = 0.0001)
 {
 	return absolute(a - b) <= precision;
 }
 
-//ÅĞ¶Ï¸¡µãÊıÊÇ·ñÎª0
+//åˆ¤æ–­æµ®ç‚¹æ•°æ˜¯å¦ä¸º0
 inline bool float_is_zero(const float a, const float precision = 0.0001)
 {
 	return float_equal(a, 0, precision);
 }
 
 
-//¸¡µãÊı´óÓÚ
+//æµ®ç‚¹æ•°å¤§äº
 inline bool float_greater(const float a, const float b, const float precision = 0.0001)
 {
 	return a - b > precision;
 }
 
-//¸¡µãÊıĞ¡ÓÚ
+//æµ®ç‚¹æ•°å°äº
 inline bool float_smaller(const float a, const float b, const float precision = 0.0001)
 {
 	return b - a > precision;
 }
 
-//Ô²Õû¸¡µãÊıÎªÕûÊı
+//åœ†æ•´æµ®ç‚¹æ•°ä¸ºæ•´æ•°
 template <typename T>
 inline int round(const T f)
 {
 	return f > 0 ? static_cast<int>(f + 0.5f) : -static_cast<int>(-f + 0.5f);
 }
 
-//ÅĞ¶ÏÒ»¸öintÊÇ·ñÎªËØÊı
+//åˆ¤æ–­ä¸€ä¸ªintæ˜¯å¦ä¸ºç´ æ•°
 bool is_prime(uint n);
 
-//ÕÒ³öĞ¡ÓÚnµÄ×î´óËØÊı
+//æ‰¾å‡ºå°äºnçš„æœ€å¤§ç´ æ•°
 uint min_prime(uint n);
 
-//ÇóbaseµÄtimes´Î·½
+//æ±‚baseçš„timesæ¬¡æ–¹
 int pow(int base, int times);
 
-//¶Ô2¦ĞÇóÄ£
+//å¯¹2Ï€æ±‚æ¨¡
 inline double mod2PI(const double angel)
 {
 	double r = angel - static_cast<int>(angel / PI2) * PI2;
 	return r;
 }
 
-//ÏßĞÔ²åÖµ
+//çº¿æ€§æ’å€¼
 float	lerpf	(float from, float to, float t);
 int		lerp	(int from, int to, float t);
 
@@ -269,10 +269,10 @@ private:
 };
 
 ////////////////////////////////////
-//È«¾Örandº¯Êı£¬Ïß³Ì²»°²È«
+//å…¨å±€randå‡½æ•°ï¼Œçº¿ç¨‹ä¸å®‰å…¨
 ////////////////////////////////////
 unsigned int rand	(const int min, const int max); //random in [min, max]
-void		 srand	(int);							//ÉèÖÃÈ«¾ÖËæ»úÖÖ×Ó 
+void		 srand	(int);							//è®¾ç½®å…¨å±€éšæœºç§å­ 
 unsigned int rand16	();								//random 16 bit number, [0 ~ 32767] (0x7fff)
 unsigned int rand32	();								//random 32 bit number, [0 ~ 2147483647] (0x7fffffff)
 

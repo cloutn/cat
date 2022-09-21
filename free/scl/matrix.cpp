@@ -18,7 +18,7 @@
 
 namespace scl {
 
-//ÈÆÏòÁ¿vĞı×ªangle½Ç¶ÈµÄ¾ØÕó
+//ç»•å‘é‡væ—‹è½¬angleè§’åº¦çš„çŸ©é˜µ
 matrix& matrix::rotate_axis(const vector3& v, float angle)
 {
 	static matrix result;
@@ -28,16 +28,16 @@ matrix& matrix::rotate_axis(const vector3& v, float angle)
 	return result;
 }
 
-//ÈÆÏòÁ¿v = v2 - v1 Ğı×ªangle½Ç¶ÈµÄ¾ØÕó
-//v1ÊÇÆğÊ¼µã£¬v2ÊÇ½áÊøµã
+//ç»•å‘é‡v = v2 - v1 æ—‹è½¬angleè§’åº¦çš„çŸ©é˜µ
+//v1æ˜¯èµ·å§‹ç‚¹ï¼Œv2æ˜¯ç»“æŸç‚¹
 matrix& matrix::rotate_any_axis(const vector3& v1, const vector3& v2, float angle)
 {
 	static matrix result;
 
-	//ÏÈÆ½ÒÆµ½ÒÔv1.x v1,y v1.zÎªÔ­µãµÄ×ø±êÏµ
+	//å…ˆå¹³ç§»åˆ°ä»¥v1.x v1,y v1.zä¸ºåŸç‚¹çš„åæ ‡ç³»
 	result = matrix::move(-v1.x, -v1.y, -v1.z);
 
-	//ÈÆv2 - v1Ğı×ªangle½Ç¶È
+	//ç»•v2 - v1æ—‹è½¬angleè§’åº¦
 	vector3 temp = { vector3_dec(v2, v1) };
 	vector3 vq = { temp.x, temp.y, temp.z };
 	quaternion q;
@@ -46,13 +46,13 @@ matrix& matrix::rotate_any_axis(const vector3& v1, const vector3& v2, float angl
 	q.to_matrix(rotateAxis);
 	result.mul(rotateAxis);
 
-	//Æ½ÒÆ»ØÔ­À´µÄ×ø±êÏµ
+	//å¹³ç§»å›åŸæ¥çš„åæ ‡ç³»
 	result.mul(matrix::move(v1.x, v1.y, v1.z));
 
 	return result;
 }
 
-//Çó´Óv1ÏòÁ¿Ğı×ªµ½v2ÏòÁ¿µÄ¾ØÕó
+//æ±‚ä»v1å‘é‡æ—‹è½¬åˆ°v2å‘é‡çš„çŸ©é˜µ
 matrix& matrix::rotate_between(const vector3& from_v1, const vector3& to_v2)
 {
 	static matrix result;
@@ -67,17 +67,17 @@ matrix& matrix::rotate_between(const vector3& from_v1, const vector3& to_v2)
 		return result;
 	}
 
-	//Çó³öĞı×ªÖá
+	//æ±‚å‡ºæ—‹è½¬è½´
 	vector3& axis = vector3::cross(v1, v2);
 
-	//Çó³öĞı×ª½Ç¶È
+	//æ±‚å‡ºæ—‹è½¬è§’åº¦
 	float a = vector3::angle(v1, v2);
 
-	//ÀûÓÃĞı×ªÖápivotºÍĞı×ª½Ç¶Èacos(cosa)¼ÆËãĞı×ªËÄÔªÊı
+	//åˆ©ç”¨æ—‹è½¬è½´pivotå’Œæ—‹è½¬è§’åº¦acos(cosa)è®¡ç®—æ—‹è½¬å››å…ƒæ•°
 	quaternion q;
 	q.from_pivot_radian(axis, a);
 
-	//ÀûÓÃËÄÔªÊıÉú³ÉĞı×ª¾ØÕó
+	//åˆ©ç”¨å››å…ƒæ•°ç”Ÿæˆæ—‹è½¬çŸ©é˜µ
 	q.to_matrix(result);
 
 	return result;
@@ -138,7 +138,7 @@ scl::matrix matrix::operator-(const matrix& o)
 
 matrix& matrix::identity()
 {
-	//ÕâÀïÈı²ãÍâÈı²ãµÄÀ¨ºÅÊÇÎªÁËÏû³ılinuxµÄ¾¯¸æ£¡
+	//è¿™é‡Œä¸‰å±‚å¤–ä¸‰å±‚çš„æ‹¬å·æ˜¯ä¸ºäº†æ¶ˆé™¤linuxçš„è­¦å‘Šï¼
 	static matrix m = { { {
 
 		{ 1,	0,	0,	0 },
@@ -185,7 +185,7 @@ matrix& matrix::rotate_x_radian(float a)
 	float sina = sinf(a);
 	m.set
 		(
-		//xzÎªµØÆ½Ãæ£¬×óÊÖ×ø±êÏµ
+		//xzä¸ºåœ°å¹³é¢ï¼Œå·¦æ‰‹åæ ‡ç³»
 		1,		0,		0,		0, 
 		0,		cosa,	sina,	0,
 		0,		-sina,	cosa,	0,
@@ -443,7 +443,7 @@ bool matrix::inverse(scl::matrix& m, scl::matrix& result)
 		}
 		if (rowmaxpos != i)
 		{
-			for (j = 0; j < 4; ++j)//°´´Ó´óµ½Ğ¡µÄË³ĞòÅÅÁĞ¾ØÕó
+			for (j = 0; j < 4; ++j)//æŒ‰ä»å¤§åˆ°å°çš„é¡ºåºæ’åˆ—çŸ©é˜µ
 			{
 				//swap
 				float temp = leftM.m[rowmaxpos][j];
@@ -460,12 +460,12 @@ bool matrix::inverse(scl::matrix& m, scl::matrix& result)
 		if (scl::float_equal(divisor, 0.0f, 0.00000001f))//must be can-inverse matrix
 			return false;
 
-		for (j = 0; j < 4; ++j)//¹éÒ»»¯¾ØÕó
+		for (j = 0; j < 4; ++j)//å½’ä¸€åŒ–çŸ©é˜µ
 		{
 			leftM.m[i][j] /= divisor;
 			rightM.m[i][j] /= divisor;
 		}
-		for (j = 0; j < 4; ++j)//¸ßË¹ÏûÔª·¨´¦ÀíĞĞÁĞÊ½
+		for (j = 0; j < 4; ++j)//é«˜æ–¯æ¶ˆå…ƒæ³•å¤„ç†è¡Œåˆ—å¼
 		{
 			if (j == i)
 				continue;

@@ -5,7 +5,7 @@
 
 namespace scl {
 
-//¶àÏß³Ì·ÖÅäÆ÷
+//å¤šçº¿ç¨‹åˆ†é…å™¨
 template <typename T, int MAX_THREAD_COUNT>
 class thread_allocator
 {
@@ -21,9 +21,9 @@ public:
 	{
 		int tid = thread::self();
 		int index = -1;
-		if (!m_threadIDMap.count(tid))  //²»ÔÚÏß³ÌÁĞ±íÖĞ£¬ĞèÒªÌí¼ÓĞÂµÄalloc_pool
+		if (!m_threadIDMap.count(tid))  //ä¸åœ¨çº¿ç¨‹åˆ—è¡¨ä¸­ï¼Œéœ€è¦æ·»åŠ æ–°çš„alloc_pool
 		{
-			if (m_threadCount >= MAX_THREAD_COUNT) //Ïß³ÌÁĞ±íÒÑÂú
+			if (m_threadCount >= MAX_THREAD_COUNT) //çº¿ç¨‹åˆ—è¡¨å·²æ»¡
 				return NULL;	
 			index = m_threadCount;
 			m_threadIDMap.add(tid, m_threadCount);
@@ -43,7 +43,7 @@ public:
 		int tid = thread::self();
 		if (!m_threadIDMap.count(tid))
 		{
-			assert(false);  //³¢ÊÔÔÚÒ»¸öÃ»ÓĞ½øĞĞ¹ı·ÖÅäµÄÏß³ÌÉÏfreeÖ¸Õë£¬±ØÈ»´íÎó
+			assert(false);  //å°è¯•åœ¨ä¸€ä¸ªæ²¡æœ‰è¿›è¡Œè¿‡åˆ†é…çš„çº¿ç¨‹ä¸ŠfreeæŒ‡é’ˆï¼Œå¿…ç„¶é”™è¯¯
 			return;
 		}
 		int index = m_threadIDMap[tid];

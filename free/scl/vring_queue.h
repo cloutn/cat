@@ -16,7 +16,7 @@ namespace scl {
 
 ////////////////////////////////////////////////////////////////////////////////
 //	class vring_queue
-//	×¢ÒâmaxCount£¬ÓÉÓÚm_tailÕ¼Ò»Î»£¬ËùÒÔÊµ¼ÊÈİÁ¿´óĞ¡ÊÇmaxCount-1
+//	æ³¨æ„maxCountï¼Œç”±äºm_tailå ä¸€ä½ï¼Œæ‰€ä»¥å®é™…å®¹é‡å¤§å°æ˜¯maxCount-1
 ////////////////////////////////////////////////////////////////////////////////
 template<typename T>
 class vring_queue
@@ -32,13 +32,13 @@ public:
 		MAX_COUNT = maxCount;
 	}
 
-	//ÏÂÃæÕâĞ©push_backº¯Êı±ØĞëÔÚÍ¬Ò»¸öÏß³ÌÖĞµ÷ÓÃ
+	//ä¸‹é¢è¿™äº›push_backå‡½æ•°å¿…é¡»åœ¨åŒä¸€ä¸ªçº¿ç¨‹ä¸­è°ƒç”¨
 	void	push_back		(const T& elem);
 	T&		push_back_fast	();
 	T&		push_back_begin	(const int offset = 0);
 	void	push_back_end	(const int count = 1);
 
-	//ÏÂÃæÕâÁ½¸öº¯Êı±ØĞëÔÚÍ¬Ò»¸öÏß³ÌÖĞµ÷ÓÃ
+	//ä¸‹é¢è¿™ä¸¤ä¸ªå‡½æ•°å¿…é¡»åœ¨åŒä¸€ä¸ªçº¿ç¨‹ä¸­è°ƒç”¨
 	void	pop_front		(T& elem);
 	T&		peek_front		();
 	void	drop			(const int count = 1);
@@ -57,7 +57,7 @@ private:
 template<typename T>
 vring_queue<T>::vring_queue()
 {
-	//³õÊ¼»¯³ÉÔ±±äÁ¿
+	//åˆå§‹åŒ–æˆå‘˜å˜é‡
 	m_queue		= NULL;
 	m_head		= 0;
 	m_tail		= 0;
@@ -86,7 +86,7 @@ void vring_queue<T>::push_back(const T& elem)
 
 	m_queue[tail] = elem;
 
-	//×¢Òâ¶Ôm_tailµÄĞŞ¸Ä±ØĞëÊÇÔ­×ÓµÄ£¬ÕâÑù²ÅÄÜ±£Ö¤Ïß³Ì°²È«
+	//æ³¨æ„å¯¹m_tailçš„ä¿®æ”¹å¿…é¡»æ˜¯åŸå­çš„ï¼Œè¿™æ ·æ‰èƒ½ä¿è¯çº¿ç¨‹å®‰å…¨
 	tail++;
 	if (tail >= MAX_COUNT)
 	{
@@ -126,7 +126,7 @@ T& vring_queue<T>::push_back_begin(const int offset)
 template<typename T>
 void vring_queue<T>::push_back_end(int count)
 {
-	//×¢Òâ¶Ôm_tailµÄĞŞ¸Ä±ØĞëÊÇÔ­×ÓµÄ£¬ÕâÑù²ÅÄÜ±£Ö¤Ïß³Ì°²È«
+	//æ³¨æ„å¯¹m_tailçš„ä¿®æ”¹å¿…é¡»æ˜¯åŸå­çš„ï¼Œè¿™æ ·æ‰èƒ½ä¿è¯çº¿ç¨‹å®‰å…¨
 	int tail = m_tail;
 	tail += count;
 	if (tail >= MAX_COUNT)
@@ -153,9 +153,9 @@ void vring_queue<T>::pop_front(T& elem)
 
 	elem = m_queue[head];
 
-	//×¢Òâ,Ö»ÔÊĞíÔÚÕâÀï¶Ôm_head½øĞĞĞŞ¸Ä£¬
-	//µ«ÊÇm_headµÄĞŞ¸Ä±ØĞëÒ»´ÎÍê³É×îÖÕÖµ£¬¶ø²»ÄÜ³öÏÖÖĞ¼äÖµ£¬
-	//·ñÔò»á±»ÆäËûÏß³Ì¶ÁÈ¡µ½ÖĞ¼äÖµ
+	//æ³¨æ„,åªå…è®¸åœ¨è¿™é‡Œå¯¹m_headè¿›è¡Œä¿®æ”¹ï¼Œ
+	//ä½†æ˜¯m_headçš„ä¿®æ”¹å¿…é¡»ä¸€æ¬¡å®Œæˆæœ€ç»ˆå€¼ï¼Œè€Œä¸èƒ½å‡ºç°ä¸­é—´å€¼ï¼Œ
+	//å¦åˆ™ä¼šè¢«å…¶ä»–çº¿ç¨‹è¯»å–åˆ°ä¸­é—´å€¼
 	head++;
 	if (head >= MAX_COUNT)
 	{
@@ -190,9 +190,9 @@ void vring_queue<T>::drop(const int count)
 	}
 	int head = m_head;
 
-	//×¢Òâ,Ö»ÔÊĞíÔÚÕâÀï¶Ôm_head½øĞĞĞŞ¸Ä£¬
-	//µ«ÊÇm_headµÄĞŞ¸Ä±ØĞëÒ»´ÎÍê³É×îÖÕÖµ£¬¶ø²»ÄÜ³öÏÖÖĞ¼äÖµ£¬
-	//·ñÔò»á±»ÆäËûÏß³Ì¶ÁÈ¡µ½ÖĞ¼äÖµ
+	//æ³¨æ„,åªå…è®¸åœ¨è¿™é‡Œå¯¹m_headè¿›è¡Œä¿®æ”¹ï¼Œ
+	//ä½†æ˜¯m_headçš„ä¿®æ”¹å¿…é¡»ä¸€æ¬¡å®Œæˆæœ€ç»ˆå€¼ï¼Œè€Œä¸èƒ½å‡ºç°ä¸­é—´å€¼ï¼Œ
+	//å¦åˆ™ä¼šè¢«å…¶ä»–çº¿ç¨‹è¯»å–åˆ°ä¸­é—´å€¼
 	head += count;
 	if (head >= MAX_COUNT)
 	{
@@ -214,7 +214,7 @@ int scl::vring_queue<T>::used() const
 	int usedLength = 0;
 	if (currentHead > currentTail) // is wrapped
 	{
-		//m_headµ½bufferÎ²²¿µÄ³¤¶È + Í·²¿µ½m_tailµÄ³¤¶È
+		//m_headåˆ°bufferå°¾éƒ¨çš„é•¿åº¦ + å¤´éƒ¨åˆ°m_tailçš„é•¿åº¦
 		usedLength = (MAX_COUNT - currentHead) + currentTail;
 	}
 	else
@@ -227,7 +227,7 @@ int scl::vring_queue<T>::used() const
 template<typename T>
 int scl::vring_queue<T>::free() const
 {
-	return MAX_COUNT - used() - 1; //¼õ1ÊÇÒòÎªm_tailÕ¼ÁËÒ»Î»
+	return MAX_COUNT - used() - 1; //å‡1æ˜¯å› ä¸ºm_tailå äº†ä¸€ä½
 }
 
 

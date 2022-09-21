@@ -39,7 +39,7 @@ void thread_log::write(log_header& header, const char* const s)
 	if (m_thread_id == INVALID_THREAD_ID)
 		return;
 
-	//¼ì²éÈÕÖ¾ÊÇ·ñÖØ¸´
+	//æ£€æŸ¥æ—¥å¿—æ˜¯å¦é‡å¤
 	if (m_levels[header.level].prevent_frequent 
 		&& _is_frequent_log(header))
 		return;
@@ -56,7 +56,7 @@ void thread_log::_write_log(log_header& header, const char* const s)
 	const int total_length = sizeof(header) + header.len + sizeof(END_MARK);
 	if (m_buffer.free() < total_length)
 	{
-		//»º³åÇøÒÑÂú
+		//ç¼“å†²åŒºå·²æ»¡
 		string1024 urgency_msg;
 		urgency_msg.format("thread_log buffer is full! thread id[%d] m_buffer.free = %d, total_log_length = %d\n", m_thread_id, m_buffer.free(), total_length);
 		urgency_log(urgency_msg.c_str(), "logfull.log");
@@ -80,11 +80,11 @@ void thread_log::flush()
 	{	
 		m_buffer.drop(sizeof(header));
 
-		//¶ÁÈ¡logÄÚÈİ
+		//è¯»å–logå†…å®¹
 		m_log.clear();
 		m_buffer.read(m_log.c_str(), header.len);
 
-		//¼ì²élog½áÊø±êÖ¾
+		//æ£€æŸ¥logç»“æŸæ ‡å¿—
 		byte check_mark = 0;
 		m_buffer.read(&check_mark, sizeof(check_mark));
 		if (check_mark != END_MARK)
@@ -93,7 +93,7 @@ void thread_log::flush()
 			return;
 		}
 
-		//´òÓ¡ÈÕÖ¾
+		//æ‰“å°æ—¥å¿—
 		if (NULL != m_log_handler)
 			m_log_handler(header, m_log.c_str(), m_thread_id);
 	}
@@ -117,7 +117,7 @@ void thread_log::_close()
 	m_close_timer	= 0;
 	m_frequent_clear_timer.pause();
 	m_buffer.clear();
-	m_using			= 0; //ÕâÀïÎñ±Ø×îºóÖÃusingÎª0
+	m_using			= 0; //è¿™é‡ŒåŠ¡å¿…æœ€åç½®usingä¸º0
 }
 
 void thread_log::_check_close()
@@ -144,7 +144,7 @@ bool thread_log::_has_a_complete_log(log_header& header)
 	if (buffer_len < static_cast<int>(sizeof(log_header)))
 		return false;
 
-	//¼ì²éheader
+	//æ£€æŸ¥header
 	m_buffer.peek(&header, sizeof(header));
 	if (header.begin_mark != BEGIN_MARK)
 	{
@@ -161,7 +161,7 @@ bool thread_log::_has_a_complete_log(log_header& header)
 
 bool thread_log::_is_frequent_log(log_header& header)
 {
-	//Èç¹ûÆµ·±ÈÕÖ¾Çå¿Õ¼ÆÊ±Æ÷µ½Ê±ÁË
+	//å¦‚æœé¢‘ç¹æ—¥å¿—æ¸…ç©ºè®¡æ—¶å™¨åˆ°æ—¶äº†
 	if (m_frequent_clear_timer.ring())
 	{
 		log_header frequent_header;
@@ -182,7 +182,7 @@ bool thread_log::_is_frequent_log(log_header& header)
 		return false;
 	}
 
-	//²éÕÒÊÇ·ñÒÑ¾­¼ÇÂ¼¸ÃÈÕÖ¾
+	//æŸ¥æ‰¾æ˜¯å¦å·²ç»è®°å½•è¯¥æ—¥å¿—
 	for (int i = 0; i < m_frequent_logs.size(); ++i)
 	{
 		frequent_log& l = m_frequent_logs[i];
@@ -190,14 +190,14 @@ bool thread_log::_is_frequent_log(log_header& header)
 			return ++l.times > FREQUENT_LOG_TIMES_LIMIT;
 	}
 
-	//Ã»ÕÒµ½£¬½«µ±Ç°ÈÕÖ¾ĞÅÏ¢¼ÓÈë
+	//æ²¡æ‰¾åˆ°ï¼Œå°†å½“å‰æ—¥å¿—ä¿¡æ¯åŠ å…¥
 	if (m_frequent_logs.size() < m_frequent_logs.capacity())
 	{
 		_add_frequent_log(header);
 	}
-	else //Æµ·±ÈÕÖ¾¶ÓÁĞÒÑÂú£¬ĞèÒªÇå³ıÒ»¸ö£¬È»ºó½«µ±Ç°¼ÓÈë
+	else //é¢‘ç¹æ—¥å¿—é˜Ÿåˆ—å·²æ»¡ï¼Œéœ€è¦æ¸…é™¤ä¸€ä¸ªï¼Œç„¶åå°†å½“å‰åŠ å…¥
 	{
-		//ÕÒµ½´òÓ¡´ÎÊı×îÉÙµÄÈÕÖ¾µÄindex
+		//æ‰¾åˆ°æ‰“å°æ¬¡æ•°æœ€å°‘çš„æ—¥å¿—çš„index
 		int least_index	= 0;
 		int least		= 0x7FFFFFFF;
 		for (int i = 0; i < m_frequent_logs.size(); ++i)

@@ -78,10 +78,10 @@ DWORD except_handler(LPEXCEPTION_POINTERS lpEP)
 	if(!SymCleanup(GetCurrentProcess()))
 		printf("Cleanup dbghelp failed.\n");
 
-	////ÔÚ×îÇ°¶Ëµ¯³öÒ»¸ömessagebox
+	////åœ¨æœ€å‰ç«¯å¼¹å‡ºä¸€ä¸ªmessagebox
 	//HINSTANCE hInstance = GetModuleHandle(0);
-	////×¢²á´°¿ÚÀà
-	//const TCHAR szWindowClass[] = L"MainWindowClass";			// Ö÷´°¿ÚÀàÃû
+	////æ³¨å†Œçª—å£ç±»
+	//const TCHAR szWindowClass[] = L"MainWindowClass";			// ä¸»çª—å£ç±»å
 	//WNDCLASSEX wcex;
 	//wcex.cbSize			= sizeof(WNDCLASSEX);
 	//wcex.style			= CS_HREDRAW | CS_VREDRAW;
@@ -97,9 +97,9 @@ DWORD except_handler(LPEXCEPTION_POINTERS lpEP)
 	//wcex.hIconSm		= 0;
 	//RegisterClassEx(&wcex);
 
-	//±êÌâÀ¸ÎÄ±¾
+	//æ ‡é¢˜æ æ–‡æœ¬
 	//const TCHAR szTitle[]		= _T("main");
-	//´´½¨´°¿Ú
+	//åˆ›å»ºçª—å£
 	//HWND m_windowHandle = ::CreateWindow(		
 	//	szWindowClass,			//  LPCTSTR lpClassName,
 	//	L"title",				//  LPCTSTR lpWindowName,
@@ -137,13 +137,13 @@ bool _check_frequency()
 	static int		_frequencyCount = 0;
 
 	uint64 now = ::time(NULL);
-	if (now - _frequencyTimer > 60)	//Ã¿¸ôÒ»·ÖÖÓÇå¿ÕÒ»´Î¼ÆÊıÆ÷
+	if (now - _frequencyTimer > 60)	//æ¯éš”ä¸€åˆ†é’Ÿæ¸…ç©ºä¸€æ¬¡è®¡æ•°å™¨
 	{
 		_frequencyTimer = now;
 		_frequencyCount = 0;
 	}
 
-	if (_frequencyCount > 100)		//¼ÆÊıÆ÷´óÓÚ100¾Í²»ÔÙ´òÓ¡ÈÕÖ¾
+	if (_frequencyCount > 100)		//è®¡æ•°å™¨å¤§äº100å°±ä¸å†æ‰“å°æ—¥å¿—
 		return false;
 
 	++_frequencyCount;
@@ -166,10 +166,10 @@ int _print_addr(void* addr, char* out, const int outlen, const int format)
 		init = true;
 	}
 
-	//Êä³öĞÅÏ¢³¤¶È
+	//è¾“å‡ºä¿¡æ¯é•¿åº¦
 	int slen = 0;
 
-	//»ñÈ¡º¯ÊıĞÅÏ¢
+	//è·å–å‡½æ•°ä¿¡æ¯
 	if (format & scl::FUNCTION_NAME)
 	{
 		BYTE			symbolBuffer[sizeof(SYMBOL_INFO)+MAX_SYM_NAME * sizeof(TCHAR)] = { 0 };
@@ -185,7 +185,7 @@ int _print_addr(void* addr, char* out, const int outlen, const int format)
 		}
 	}
 
-	//»ñÈ¡ÎÄ¼şºÍĞĞºÅ
+	//è·å–æ–‡ä»¶å’Œè¡Œå·
 	if (format & scl::FILE_NAME)
 	{
 		IMAGEHLP_LINE64 line;

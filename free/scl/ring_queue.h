@@ -23,7 +23,7 @@ namespace scl {
 
 ////////////////////////////////////////////////////////////////////////////////
 //	class ring_queue
-//	×¢ÒâMAX_COUNTÊÇÊı×éµÄ´óĞ¡£¬ÓÉÓÚm_tailÕ¼Ò»Î»£¬ËùÒÔÊµ¼ÊÈİÁ¿´óĞ¡ÊÇMAX_COUNT - 1
+//	æ³¨æ„MAX_COUNTæ˜¯æ•°ç»„çš„å¤§å°ï¼Œç”±äºm_tailå ä¸€ä½ï¼Œæ‰€ä»¥å®é™…å®¹é‡å¤§å°æ˜¯MAX_COUNT - 1
 ////////////////////////////////////////////////////////////////////////////////
 template<typename T, int MAX_COUNT = 32>
 class ring_queue
@@ -32,14 +32,14 @@ public:
 	ring_queue();
 	~ring_queue();
 
-	//ÏÂÃæÕâĞ©push_backº¯Êı±ØĞëÔÚÍ¬Ò»¸öÏß³ÌÖĞµ÷ÓÃ
+	//ä¸‹é¢è¿™äº›push_backå‡½æ•°å¿…é¡»åœ¨åŒä¸€ä¸ªçº¿ç¨‹ä¸­è°ƒç”¨
 	void	push_back		(const T& elem);
 	// push_back_fast is not thread safe! because after all push_back_fast, the return T& object may be modified both by current thread and other thread.
 	T&		push_back_fast_unsafe();
 	T&		push_back_begin	(const int offset = 0);
 	void	push_back_end	(const int count = 1);
 
-	//ÏÂÃæÕâÁ½¸öº¯Êı±ØĞëÔÚÍ¬Ò»¸öÏß³ÌÖĞµ÷ÓÃ
+	//ä¸‹é¢è¿™ä¸¤ä¸ªå‡½æ•°å¿…é¡»åœ¨åŒä¸€ä¸ªçº¿ç¨‹ä¸­è°ƒç”¨
 	void	pop_front		(T& elem);
 	T&		peek_front		();
 	void	drop			(const int count = 1);
@@ -59,7 +59,7 @@ private:
 template<typename T, int MAX_COUNT>
 ring_queue<T, MAX_COUNT>::ring_queue()
 {
-	//³õÊ¼»¯³ÉÔ±±äÁ¿
+	//åˆå§‹åŒ–æˆå‘˜å˜é‡
 	m_head		= 0;
 	m_tail		= 0;
 }
@@ -81,7 +81,7 @@ void ring_queue<T, MAX_COUNT>::push_back(const T& elem)
 
 	m_queue[tail] = elem;
 
-	//×¢Òâ¶Ôm_tailµÄĞŞ¸Ä±ØĞëÊÇÔ­×ÓµÄ£¬ÕâÑù²ÅÄÜ±£Ö¤Ïß³Ì°²È«
+	//æ³¨æ„å¯¹m_tailçš„ä¿®æ”¹å¿…é¡»æ˜¯åŸå­çš„ï¼Œè¿™æ ·æ‰èƒ½ä¿è¯çº¿ç¨‹å®‰å…¨
 	tail++;
 	if (tail >= MAX_COUNT)
 	{
@@ -121,7 +121,7 @@ T& ring_queue<T, MAX_COUNT>::push_back_begin(const int offset)
 template<typename T, int MAX_COUNT>
 void ring_queue<T, MAX_COUNT>::push_back_end(int count)
 {
-	//×¢Òâ¶Ôm_tailµÄĞŞ¸Ä±ØĞëÊÇÔ­×ÓµÄ£¬ÕâÑù²ÅÄÜ±£Ö¤Ïß³Ì°²È«
+	//æ³¨æ„å¯¹m_tailçš„ä¿®æ”¹å¿…é¡»æ˜¯åŸå­çš„ï¼Œè¿™æ ·æ‰èƒ½ä¿è¯çº¿ç¨‹å®‰å…¨
 	int tail = m_tail;
 	tail += count;
 	if (tail >= MAX_COUNT)
@@ -148,9 +148,9 @@ void ring_queue<T, MAX_COUNT>::pop_front(T& elem)
 
 	elem = m_queue[head];
 
-	//×¢Òâ,Ö»ÔÊĞíÔÚÕâÀï¶Ôm_head½øĞĞĞŞ¸Ä£¬
-	//µ«ÊÇm_headµÄĞŞ¸Ä±ØĞëÒ»´ÎÍê³É×îÖÕÖµ£¬¶ø²»ÄÜ³öÏÖÖĞ¼äÖµ£¬
-	//·ñÔò»á±»ÆäËûÏß³Ì¶ÁÈ¡µ½ÖĞ¼äÖµ
+	//æ³¨æ„,åªå…è®¸åœ¨è¿™é‡Œå¯¹m_headè¿›è¡Œä¿®æ”¹ï¼Œ
+	//ä½†æ˜¯m_headçš„ä¿®æ”¹å¿…é¡»ä¸€æ¬¡å®Œæˆæœ€ç»ˆå€¼ï¼Œè€Œä¸èƒ½å‡ºç°ä¸­é—´å€¼ï¼Œ
+	//å¦åˆ™ä¼šè¢«å…¶ä»–çº¿ç¨‹è¯»å–åˆ°ä¸­é—´å€¼
 	head++;
 	if (head >= MAX_COUNT)
 	{
@@ -185,9 +185,9 @@ void ring_queue<T, MAX_COUNT>::drop(const int count)
 	}
 	int head = m_head;
 
-	//×¢Òâ,Ö»ÔÊĞíÔÚÕâÀï¶Ôm_head½øĞĞĞŞ¸Ä£¬
-	//µ«ÊÇm_headµÄĞŞ¸Ä±ØĞëÒ»´ÎÍê³É×îÖÕÖµ£¬¶ø²»ÄÜ³öÏÖÖĞ¼äÖµ£¬
-	//·ñÔò»á±»ÆäËûÏß³Ì¶ÁÈ¡µ½ÖĞ¼äÖµ
+	//æ³¨æ„,åªå…è®¸åœ¨è¿™é‡Œå¯¹m_headè¿›è¡Œä¿®æ”¹ï¼Œ
+	//ä½†æ˜¯m_headçš„ä¿®æ”¹å¿…é¡»ä¸€æ¬¡å®Œæˆæœ€ç»ˆå€¼ï¼Œè€Œä¸èƒ½å‡ºç°ä¸­é—´å€¼ï¼Œ
+	//å¦åˆ™ä¼šè¢«å…¶ä»–çº¿ç¨‹è¯»å–åˆ°ä¸­é—´å€¼
 	head += count;
 	if (head >= MAX_COUNT)
 	{
@@ -209,7 +209,7 @@ int scl::ring_queue<T, MAX_COUNT>::used() const
 	int usedLength = 0;
 	if (currentHead > currentTail) // is wrapped
 	{
-		//m_headµ½bufferÎ²²¿µÄ³¤¶È + Í·²¿µ½m_tailµÄ³¤¶È
+		//m_headåˆ°bufferå°¾éƒ¨çš„é•¿åº¦ + å¤´éƒ¨åˆ°m_tailçš„é•¿åº¦
 		usedLength = (MAX_COUNT - currentHead) + currentTail;
 	}
 	else
@@ -222,7 +222,7 @@ int scl::ring_queue<T, MAX_COUNT>::used() const
 template<typename T, int MAX_COUNT>
 int scl::ring_queue<T, MAX_COUNT>::free() const
 {
-	return MAX_COUNT - used() - 1; //¼õ1ÊÇÒòÎªm_tailÕ¼ÁËÒ»Î»
+	return MAX_COUNT - used() - 1; //å‡1æ˜¯å› ä¸ºm_tailå äº†ä¸€ä½
 }
 
 template<typename T, int MAX_COUNT>

@@ -18,8 +18,8 @@ using scl::file;
 ////////////////////////////////////
 enum INI_VALUE_END_MODE
 {
-	INI_VALUE_END_MODE_NEW_LINE,	//valueÒÔ¡°»»ĞĞ¡±×÷Îª½áÊø±êÖ¾
-	INI_VALUE_END_MODE_EMAIL_AT,	//valueÒÔ¡°@¡±×÷Îª½áÊø±êÖ¾
+	INI_VALUE_END_MODE_NEW_LINE,	//valueä»¥â€œæ¢è¡Œâ€ä½œä¸ºç»“æŸæ ‡å¿—
+	INI_VALUE_END_MODE_EMAIL_AT,	//valueä»¥â€œ@â€ä½œä¸ºç»“æŸæ ‡å¿—
 };
 
 inline bool	_is_section_end(char c)
@@ -125,7 +125,7 @@ void ini_file::key_value::copy_to_string(char* dest, const int maxSize) const
 class ini_file::section
 {
 public:
-	static const int MAX_KEY_VALUE_COUNT = 1024; //TODO ×Ô¶¯È·¶¨keyValueµÄÊıÁ¿
+	static const int MAX_KEY_VALUE_COUNT = 1024; //TODO è‡ªåŠ¨ç¡®å®škeyValueçš„æ•°é‡
 
 	const char* name;
 	array<key_value, MAX_KEY_VALUE_COUNT> elems;
@@ -197,12 +197,12 @@ bool ini_file::open(const char* const fileName, const char* mode)
 
 	f.skip_bom();
 
-	//³õÊ¼»¯buffer
+	//åˆå§‹åŒ–buffer
 	const int bufferSize = static_cast<int>(f.size()) / sizeof(char) + 1;
 	m_string = new char[bufferSize];
 	memset(m_string, 0, sizeof(char) * bufferSize);
 
-	//¶ÁÈ¡ÎÄ¼şÄÚÈİ
+	//è¯»å–æ–‡ä»¶å†…å®¹
 	f.read(m_string, bufferSize, sizeof(char));
 	f.close();
 	
@@ -222,12 +222,12 @@ bool ini_file::open_buffer(const char* const buffer, const int len)
 		return false;
 	}
 
-	//³õÊ¼»¯buffer
+	//åˆå§‹åŒ–buffer
 	const int bufferSize = len + 1;
 	m_string = new char[bufferSize];
 	memset(m_string, 0, sizeof(char) * bufferSize);
 
-	//¶ÁÈ¡ÎÄ¼şÄÚÈİ
+	//è¯»å–æ–‡ä»¶å†…å®¹
 	memcpy(m_string, buffer, len);
 	
 	_parse(m_string, bufferSize);
@@ -336,10 +336,10 @@ const ini_file::key_value* ini_file::_get_key_value_position(const char* const s
 
 void ini_file::_parse(const char* buffer, const int bufferSize)
 {
-	//TODO£¬ÕâÀï¿ÉÒÔÏÈÍ³¼ÆsectionÊıÁ¿£¬È»ºóÔÙreserve
+	//TODOï¼Œè¿™é‡Œå¯ä»¥å…ˆç»Ÿè®¡sectionæ•°é‡ï¼Œç„¶åå†reserve
 	m_sections.reserve(MAX_SECTION_COUNT);
 
-	//ĞÂ½¨Ò»¸öglobal section
+	//æ–°å»ºä¸€ä¸ªglobal section
 	section& globalSection = m_sections.push_back_fast();
 	globalSection.name = GLOBAL_SECTION_NAME;
 
@@ -350,31 +350,31 @@ void ini_file::_parse(const char* buffer, const int bufferSize)
 	for (int i = 0; i < bufferSize; ++i)
 	{
 		if (buffer[i] == 0)
-			break; //Á¢¼´½áÊøÕû¸öÑ­»·
+			break; //ç«‹å³ç»“æŸæ•´ä¸ªå¾ªç¯
 
 		switch (mode)
 		{
-		case SEARCHING: //ÕıÔÚÑ°ÕÒÒ»¸ösection»òÕßÒ»¸ökeyValue
+		case SEARCHING: //æ­£åœ¨å¯»æ‰¾ä¸€ä¸ªsectionæˆ–è€…ä¸€ä¸ªkeyValue
 			{
 				if (buffer[i] == '[')
 				{
-					//ÕÒµ½ÁËsectionµÄÆğÊ¼·û£¬Ìí¼ÓÒ»¸öĞÂµÄsection
+					//æ‰¾åˆ°äº†sectionçš„èµ·å§‹ç¬¦ï¼Œæ·»åŠ ä¸€ä¸ªæ–°çš„section
 					mode = PARSING_SECTION;
 					pCurrentSection = &(buffer[i + 1]);
 				}
-				else if (buffer[i] == '#') //×¢ÊÍĞĞ
+				else if (buffer[i] == '#') //æ³¨é‡Šè¡Œ
 				{
 					mode = COMMENT;
 				}
 				else if (!scl::isspace(buffer[i]))
 				{
-					//ÕÒµ½ÁËÒ»¸öĞÂµÄkey£¬Ìí¼ÓÒ»¶ÔĞÂµÄKeyValue
+					//æ‰¾åˆ°äº†ä¸€ä¸ªæ–°çš„keyï¼Œæ·»åŠ ä¸€å¯¹æ–°çš„KeyValue
 					mode = PARSING_KEY;
 					pCurrentKey = &(buffer[i]);
 				}
 			}
 			break;
-		case PARSING_SECTION: //ÕıÔÚ½âÎöÒ»¸öSection
+		case PARSING_SECTION: //æ­£åœ¨è§£æä¸€ä¸ªSection
 			{
 				if (buffer[i] == '\t' || buffer[i] == ' ')
 				{
@@ -382,29 +382,29 @@ void ini_file::_parse(const char* buffer, const int bufferSize)
 				}
 				if (buffer[i] == ']')
 				{
-					//½âÎö½áÊø£¬½«section¼ÓÈëµ½sectionsÊı×éÖĞ
+					//è§£æç»“æŸï¼Œå°†sectionåŠ å…¥åˆ°sectionsæ•°ç»„ä¸­
 					m_sections.push_back_fast();
 					m_sections[m_sections.size() - 1].name = pCurrentSection;
 					pCurrentSection = NULL;
 					mode = SEARCHING;
 				}
-				if (buffer[i] == '\r' || buffer[i] == '\n') //ÔÚÕÒµ½½áÊø·û¡°]¡±Ö®Ç°Óöµ½»»ĞĞ·û£¬¶ªÆú¸Ãsection
+				if (buffer[i] == '\r' || buffer[i] == '\n') //åœ¨æ‰¾åˆ°ç»“æŸç¬¦â€œ]â€ä¹‹å‰é‡åˆ°æ¢è¡Œç¬¦ï¼Œä¸¢å¼ƒè¯¥section
 				{
 					mode = SEARCHING;
 				}
 			}
 			break;
-		case PARSING_KEY: //ÕıÔÚ½âÎöÒ»¸öKey
+		case PARSING_KEY: //æ­£åœ¨è§£æä¸€ä¸ªKey
 			{
-				if (buffer[i] == '=') //ÕÒµ½µÈºÅ£¬Ôò¿ªÊ¼Ñ°ÕÒvalue
+				if (buffer[i] == '=') //æ‰¾åˆ°ç­‰å·ï¼Œåˆ™å¼€å§‹å¯»æ‰¾value
 				{
 					key_value& newElem = m_sections[m_sections.size() - 1].elems.push_back_fast();
 					newElem.key = pCurrentKey;
 					pCurrentKey = NULL;
 					mode = SEARCHING_VALUE;
 
-					//×¢Òâ£¡½ô¸ú×Å"="ºóÃæµÄµÚÒ»¸ö"@"±íÊ¾value½âÎöµÄÊ±ºò²»ÒÔ»»ĞĞ×÷Îª½áÊø£¬¶øÊÇÒÔ"@"×÷ÎªvalueµÄ½áÊø
-					//ÔÚÕâÖÖÇé¿öÏÂ£¬value×îÄ©Î»µÄ@·ûºÅ½«±»É¾³ı
+					//æ³¨æ„ï¼ç´§è·Ÿç€"="åé¢çš„ç¬¬ä¸€ä¸ª"@"è¡¨ç¤ºvalueè§£æçš„æ—¶å€™ä¸ä»¥æ¢è¡Œä½œä¸ºç»“æŸï¼Œè€Œæ˜¯ä»¥"@"ä½œä¸ºvalueçš„ç»“æŸ
+					//åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œvalueæœ€æœ«ä½çš„@ç¬¦å·å°†è¢«åˆ é™¤
 					if (i + 1 < bufferSize && buffer[i + 1] == '@')
 					{
 						newElem.valueEndMode = INI_VALUE_END_MODE_EMAIL_AT;
@@ -412,24 +412,24 @@ void ini_file::_parse(const char* buffer, const int bufferSize)
 
 						int elemCount = m_sections[m_sections.size() - 1].elems.size();
 						key_value& elem = m_sections[m_sections.size() - 1].elems[elemCount - 1];
-						elem.value = &(buffer[i + 2]); //+2ÊÇÒòÎªÌø¹ı@·ûºÅ
-						mode = PARSING_VALUE; //Ö±½Ó×ªÈëparsingValueÄ£Ê½£¬¡°²»¡±ÔÙºöÂÔ@ºóÃæµÄ\tºÍ¿Õ¸ñµÈ¿Õ°××Ö·û
+						elem.value = &(buffer[i + 2]); //+2æ˜¯å› ä¸ºè·³è¿‡@ç¬¦å·
+						mode = PARSING_VALUE; //ç›´æ¥è½¬å…¥parsingValueæ¨¡å¼ï¼Œâ€œä¸â€å†å¿½ç•¥@åé¢çš„\tå’Œç©ºæ ¼ç­‰ç©ºç™½å­—ç¬¦
 					}
 				}
-				if (buffer[i] == '\r' || buffer[i] == '\n') //ÔÚÕÒµ½µÈºÅÖ®Ç°Óöµ½»»ĞĞ·û£¬¶ªÆú¸ÃKey
+				if (buffer[i] == '\r' || buffer[i] == '\n') //åœ¨æ‰¾åˆ°ç­‰å·ä¹‹å‰é‡åˆ°æ¢è¡Œç¬¦ï¼Œä¸¢å¼ƒè¯¥Key
 				{
 					mode = SEARCHING;
 				}
 			}
 			break;
-		case SEARCHING_VALUE: //ÕıÔÚÑ°ÕÒÄ³¸öKey¶ÔÓ¦µÄValue
+		case SEARCHING_VALUE: //æ­£åœ¨å¯»æ‰¾æŸä¸ªKeyå¯¹åº”çš„Value
 			{
 				if (buffer[i] == '\r' || buffer[i] == '\n')
 				{
-					//Ñ°ÕÒvalueµÄ¹ı³ÌÖĞÓöµ½ÁË»»ĞĞ·û£¬ÕâËµÃ÷ÏàÓ¦µÄkey¶ÔÓ¦µÄvalueÎª¿Õ
+					//å¯»æ‰¾valueçš„è¿‡ç¨‹ä¸­é‡åˆ°äº†æ¢è¡Œç¬¦ï¼Œè¿™è¯´æ˜ç›¸åº”çš„keyå¯¹åº”çš„valueä¸ºç©º
 					mode = SEARCHING;
 				}
-				else if (!scl::isspace(buffer[i])) //ÕÒµ½ÁËvalue£¬×ªÈë½âÎövalueÄ£Ê½
+				else if (!scl::isspace(buffer[i])) //æ‰¾åˆ°äº†valueï¼Œè½¬å…¥è§£ævalueæ¨¡å¼
 				{
 					mode = PARSING_VALUE;
 					int elemCount = m_sections[m_sections.size() - 1].elems.size();
@@ -438,7 +438,7 @@ void ini_file::_parse(const char* buffer, const int bufferSize)
 				}
 			}
 			break;
-		case PARSING_VALUE: //½âÎövalue
+		case PARSING_VALUE: //è§£ævalue
 			{
 				switch (valueEndMode)
 				{
@@ -474,7 +474,7 @@ void ini_file::_parse(const char* buffer, const int bufferSize)
 			break;
 		case COMMENT:
 			{
-				//Óöµ½»»ĞĞ·ûºó£¬ÍË³ö×¢ÊÍÄ£Ê½
+				//é‡åˆ°æ¢è¡Œç¬¦åï¼Œé€€å‡ºæ³¨é‡Šæ¨¡å¼
 				if (buffer[i] == '\r' || buffer[i] == '\n') 
 				{
 					mode = SEARCHING;
