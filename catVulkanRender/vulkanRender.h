@@ -167,8 +167,9 @@ private:
 	svkSurface			m_surface;
 	svkSwapchain		m_swapchain;
 	VkRenderPass		m_mainRenderPass;
-	VkFramebuffer		m_mainFramebuffers	[svkSwapchain::MAX_IMAGE_COUNT];
-	VkCommandBuffer		m_mainCommandBuffers[svkSwapchain::MAX_IMAGE_COUNT];
+	svkImage			m_mainDepthImage;
+	svkFrame			m_frames[svkSwapchain::MAX_IMAGE_COUNT];
+	int					m_frameCount;
 
 	bool				m_isInit;
 	bool				m_minimized;

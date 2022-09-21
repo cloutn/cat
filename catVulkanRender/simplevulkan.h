@@ -6,7 +6,7 @@
 #include <vulkan/vulkan_core.h>
 #include <shaderc/shaderc.h>
 
-//TODO ºÜ¶àº¯ÊıµÄ²ÎÊıÓ¦¸ÃÌí¼Ó const ĞŞÊÎ·û
+//TODO å¾ˆå¤šå‡½æ•°çš„å‚æ•°åº”è¯¥æ·»åŠ  const ä¿®é¥°ç¬¦
 
 struct svkDevice
 {
@@ -47,24 +47,16 @@ struct svkSwapchain
 	VkFormat							format;
 	VkColorSpaceKHR						colorSpace;
 	unsigned int						imageCount;
-	VkImageView							imageViews				[MAX_IMAGE_COUNT];
-
-	VkFence								fences					[MAX_IMAGE_COUNT];
-	VkSemaphore							imageAcquireSemaphores	[MAX_IMAGE_COUNT];
-	VkSemaphore							drawCompleteSemaphores	[MAX_IMAGE_COUNT];
-
-	//depth
-	svkImage							depthImage;
 };
 
 struct svkFrame
 {
 	VkImageView							imageView;
+	VkFramebuffer						framebuffer;
+	VkCommandBuffer						commandBuffer;
 	VkFence								fence;
 	VkSemaphore							imageAcquireSemaphore;
 	VkSemaphore							drawCompleteSemaphore;
-	VkFramebuffer						framebuffer;
-	VkCommandBuffer						commandBuffer;
 };
 
 struct svkTexture
@@ -116,9 +108,9 @@ struct svkDescriptorData
 		TextureInfo		texture;
 	};
 
-	Info				data[64];	// uniform Êı¾İ¡£µ¥¸ö binding µãÖ§³Ö64¸ö buffer »òÕß texture
-	int					binding;	// ¶ÔÓ¦ shader µÄ DescriptorSetLayout ÖĞµÄ binding Öµ¡£
-	int					dataCount;	// data Êı×éÖĞÓĞĞ§Êı¾İµÄ¸öÊı
+	Info				data[64];	// uniform æ•°æ®ã€‚å•ä¸ª binding ç‚¹æ”¯æŒ64ä¸ª buffer æˆ–è€… texture
+	int					binding;	// å¯¹åº” shader çš„ DescriptorSetLayout ä¸­çš„ binding å€¼ã€‚
+	int					dataCount;	// data æ•°ç»„ä¸­æœ‰æ•ˆæ•°æ®çš„ä¸ªæ•°
 };
 
 struct svkShaderProgram
@@ -151,11 +143,11 @@ void					svkBeginCommandBuffer			(VkCommandBuffer, bool oneTime = false);
 void					svkEndCommandBuffer				(svkDevice&, VkCommandBuffer);
 void					svkBeginSecondaryCommandBuffer	(VkCommandBuffer&, const VkRenderPass& renderPass, const VkFramebuffer& framebuffer);
 
-// TODO pngÖ§³ÖÊ¹ÓÃ gfx ´úÂë½ÓÈëÒıÇæ
-// TODO µ±ÎÄ¼şµÄ pitch ºÍ vulkan createImage µÄ pitch ²»Ò»ÖÂµÄÊ±ºò£¬ĞèÒªÊÖ¶¯ÖØĞÂ¿½±´Ò»´Î£¬¶ø²»ÄÜÖ±½ÓÊ¹ÓÃ map memory ·µ»ØµÄÖ¸ÕëÀ´´´½¨¡£
+// TODO pngæ”¯æŒä½¿ç”¨ gfx ä»£ç æ¥å…¥å¼•æ“
+// TODO å½“æ–‡ä»¶çš„ pitch å’Œ vulkan createImage çš„ pitch ä¸ä¸€è‡´çš„æ—¶å€™ï¼Œéœ€è¦æ‰‹åŠ¨é‡æ–°æ‹·è´ä¸€æ¬¡ï¼Œè€Œä¸èƒ½ç›´æ¥ä½¿ç”¨ map memory è¿”å›çš„æŒ‡é’ˆæ¥åˆ›å»ºã€‚
 svkTexture				svkCreateTexture				(svkDevice&, const char* const filename, VkCommandBuffer commandBuffer);
 svkTexture				svkCreateTexture				(svkDevice& device, const int width, const int height, VkCommandBuffer outCommandBuffer);
-// TODO Ã»ÓĞ¼ì²éÄ¿±ê texutrre µÄ´óĞ¡ºÍÊÇ·ñ¿ÉÒÔĞ´Èë
+// TODO æ²¡æœ‰æ£€æŸ¥ç›®æ ‡ texutrre çš„å¤§å°å’Œæ˜¯å¦å¯ä»¥å†™å…¥
 void					svkCopyTexture					(svkDevice& device, svkTexture& texture, const void* const data, const int sizeofData);
 void					svkDestroyTexture				(svkDevice&, svkTexture&);
 
@@ -164,7 +156,7 @@ svkShaderProgram		svkCreateShaderProgramFromCode	(svkDevice&, const char* const 
 svkShaderProgram		svkCreateShaderProgramFromFile	(svkDevice&, const char* const vertFilename, const char* const tcsFilename, const char* const tesFilename, const char* const geoFilename, const char* const fragFilename, const char* const compFilename);
 void					svkDestroyShaderProgram			(svkDevice&, svkShaderProgram&);
 
-// TODO ÏÈ´´½¨bufferÔÙ¿½±´¹¦ÄÜÃ»ÓĞÊµÏÖ
+// TODO å…ˆåˆ›å»ºbufferå†æ‹·è´åŠŸèƒ½æ²¡æœ‰å®ç°
 svkBuffer				svkCreateVertexBuffer			(svkDevice&, const void* data, const int dataSize);
 svkBuffer				svkCreateIndexBuffer			(svkDevice&, const void* data, const int dataSize);
 svkBuffer				svkCreateUniformBuffer			(svkDevice&, void* data, const int dataSize);
@@ -206,14 +198,16 @@ void					svkCmdSetViewPortDirectly		(VkCommandBuffer cb, const int x, const int 
 void					svkCmdBindVertexBuffers			(VkCommandBuffer cb, int firstBinding, void** vertexBuffers, int attrCount);
 void					svkCmdSetScissor				(VkCommandBuffer cb, uint32_t width, uint32_t height);
 typedef void			(*presentResultCallback)		(void* userData, VkResult);
-int						svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
-void					svkQueueSubmit					(svkDevice& device, svkSwapchain& swapchain, const VkCommandBuffer* commandBuffers, const int commandBufferCount, const int frame, const int prevFrame);
-void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, const int frame,  void* userData, presentResultCallback callback);
+int						svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frameIndex, void* userData, presentResultCallback callback);
+void					svkQueueSubmit					(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, svkFrame* frames, const int frame, const int prevFrame);
+void					svkQueueSubmitFrame				(svkDevice& device, svkFrame* frames, const int frame, const int prevFrame);
+void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame,  void* userData, presentResultCallback callback);
 //void					svkSubmitAndPresent				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
 VkRenderPass			svkCreateRenderPass				(VkDevice device, VkFormat format, VkFormat depthFormat);
 VkFramebuffer			svkCreateFrameBuffer			(VkDevice device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height);
 svkImage				svkCreateImage					(svkDevice& device, VkFormat format, const int width, const int height);
 void					svkDestroyImage					(svkDevice& device, svkImage& image);
-svkFrame				svkCreateFrame					(svkDevice& device);
+int						svkCreateFrames					(svkDevice& device, svkSwapchain& swapchain, VkImageView depthImageView, VkRenderPass renderPass, const int width, const int height, svkFrame* outputFrames, const int outputFrameCapacity);
+void					svkDestroyFrames				(svkDevice& device, svkFrame* frames, const int frameCount);
 
 
