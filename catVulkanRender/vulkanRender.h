@@ -49,8 +49,8 @@ public:
 //	const scl::matrix&		getMVP					();
 //	scl::vector2			unprojectClickPosition	(const float x, const float y);
 
-	void					prepare					(); // call prepare when render target size changed.
-	void					unprepare				(); 
+	//void					prepare					(); // call prepare when render target size changed.
+	//void					unprepare				(); 
 	void					waitIdle				();
 
 	//implenment IRender
@@ -171,9 +171,14 @@ private:
 	svkFrame			m_frames[svkSwapchain::MAX_IMAGE_COUNT];
 	int					m_frameCount;
 
+	// for 3D picking
+	svkImage			m_pickColorImage;
+	svkImage			m_pickDepthImage;
+	VkRenderPass		m_pickRenderPass;
+
 	bool				m_isInit;
 	bool				m_minimized;
-	bool				m_prepared;
+	//bool				m_prepared;
 	int					m_frameIndex;
 	int					m_prevFrameIndex;
 	bool				m_matrixChanged;
@@ -190,7 +195,6 @@ private:
 
 	VkDescriptorPool	m_IMGUIDescriptorPool;
 
-	//uint32				m_clearColor;
 	float				m_clearColor[4];
 
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;

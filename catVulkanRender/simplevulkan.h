@@ -203,9 +203,10 @@ void					svkQueueSubmit					(svkDevice& device, const VkCommandBuffer* commandBu
 void					svkQueueSubmitFrame				(svkDevice& device, svkFrame* frames, const int frame, const int prevFrame);
 void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame,  void* userData, presentResultCallback callback);
 //void					svkSubmitAndPresent				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
-VkRenderPass			svkCreateRenderPass				(VkDevice device, VkFormat format, VkFormat depthFormat);
-VkFramebuffer			svkCreateFrameBuffer			(VkDevice device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height);
-svkImage				svkCreateImage					(svkDevice& device, VkFormat format, const int width, const int height);
+VkRenderPass			svkCreateRenderPass				(svkDevice& device, VkFormat format, VkFormat depthFormat, VkImageLayout colorAttachmentFinalLayout);
+VkFramebuffer			svkCreateFrameBuffer			(svkDevice& device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height);
+svkImage				svkCreateAttachmentDepthImage	(svkDevice& device, VkFormat format, const int width, const int height);
+svkImage				svkCreateAttachmentColorImage	(svkDevice& device, VkFormat format, const int width, const int height);
 void					svkDestroyImage					(svkDevice& device, svkImage& image);
 int						svkCreateFrames					(svkDevice& device, svkSwapchain& swapchain, VkImageView depthImageView, VkRenderPass renderPass, const int width, const int height, svkFrame* outputFrames, const int outputFrameCapacity);
 void					svkDestroyFrames				(svkDevice& device, svkFrame* frames, const int frameCount);

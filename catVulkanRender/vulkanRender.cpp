@@ -38,8 +38,9 @@ VulkanRender::VulkanRender()  :
 	m_mainRenderPass			(NULL),
 	m_frameCount				(0),
 	m_isInit					(false),
+	m_pickRenderPass			(NULL),
 	m_minimized					(false),
-	m_prepared					(false),
+	//m_prepared					(false),
 	m_frameIndex				(-1),
 	m_prevFrameIndex			(-1),
 	m_matrixChanged				(false),
@@ -61,6 +62,8 @@ VulkanRender::VulkanRender()  :
 	memclr(m_frameUniformBuffersMapped);
 	memclr(m_clearColor);
 	memclr(m_frames);
+	memclr(m_pickColorImage);
+	memclr(m_pickDepthImage);
 }
 
 
@@ -82,7 +85,72 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_surface			= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
 	argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
 
-	prepare();
+	//svkRefreshSurfaceSize(m_device, m_surface);
+	//m_minimized = m_surface.width == 0 && m_surface.height == 0;
+	//if (m_minimized)
+	//{
+	//	//m_prepared = false;
+	//	return false;
+	//}
+
+	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, m_swapchain);
+	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
+	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
+	m_frameIndex		= 0;
+
+	// 3D picking
+	m_pickColorImage	= svkCreateAttachmentColorImage	(m_device, VK_FORMAT_R8G8B8A8_UNORM, m_surface.width, m_surface.height);
+	m_pickDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
+	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+
+	// descriptor set
+	//const int DEMO_TEXTURE_COUNT = 1;
+	//m_descriptorCreator = svkCreateDescriptorCreator(m_device, m_swapchain.imageCount, 1, DEMO_TEXTURE_COUNT);
+
+	// mvp matrix
+	//scl::matrix mvp =
+	//{ 
+	//	{1.61543f,	0.92307f,	-0.63852f, -0.63725f,
+	//	0,			-2.07017f,	-0.51553f, -0.5145f,
+	//	-1.79413f, 0.83113f,	-0.57493f, -0.57378f,
+	//	 0,		0,			5.64243f,	5.83095f},
+	//};
+
+	//scl::matrix mvp =
+	//{ 
+	//	{1.449f,	0,			0,		0,
+	//	0,			2.414f,		0,		0,
+	//	0,			0,			-1,		-1,
+	//	0.056f,		-0.833f,	-0.2,	0},
+	//};
+
+	//scl::matrix mvp =
+	//{ 
+	//	{1.449f,	0,			0,		0.056f,
+	//	0,			2.414f,		0,		-0.833f,
+	//	0,			0,			-1,		-0.2,
+	//	0,			0,			-1,		0},
+	//};
+
+	scl::matrix mvp = scl::matrix::identity();
+
+	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
+	{
+		if (NULL != m_frameUniforms[i].buffer)
+		{
+			svkUnmapBuffer	(m_device, m_frameUniforms[i]);
+			svkDestroyBuffer(m_device, m_frameUniforms[i]);
+		}
+
+		int minUniformBufferOffset		= static_cast<int>(m_device.gpuProperties.limits.minUniformBufferOffsetAlignment);
+		int maxBytesPerFrace			= minUniformBufferOffset * MAX_OBJECT_PER_FRAME * MAX_MATRIX_PER_FRAME;
+		m_frameUniforms[i]				= svkCreateUniformBuffer(m_device, NULL, maxBytesPerFrace);
+		m_frameUniformBuffersMapped[i]	= svkMapBuffer			(m_device, m_frameUniforms[i]);
+	}
+
+	//m_prepared = true;
 
 	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
 	{
@@ -301,77 +369,18 @@ void VulkanRender::saveTexture(void* texture, const char* const filename)
 {
 }
 
-void VulkanRender::prepare()
-{
-	svkRefreshSurfaceSize(m_device, m_surface);
-	m_minimized = m_surface.width == 0 && m_surface.height == 0;
-	if (m_minimized)
-	{
-		m_prepared = false;
-		return;
-	}
-
-	m_swapchain			= svkCreateSwapchain	(m_device, m_surface, m_swapchain);
-	m_mainDepthImage	= svkCreateImage		(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
-	m_mainRenderPass	= svkCreateRenderPass	(m_device.device, m_swapchain.format, m_mainDepthImage.format);
-	m_frameCount		= svkCreateFrames		(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
-	m_frameIndex		= 0;
-
-	// descriptor set
-	//const int DEMO_TEXTURE_COUNT = 1;
-	//m_descriptorCreator = svkCreateDescriptorCreator(m_device, m_swapchain.imageCount, 1, DEMO_TEXTURE_COUNT);
-
-	// mvp matrix
-	//scl::matrix mvp =
-	//{ 
-	//	{1.61543f,	0.92307f,	-0.63852f, -0.63725f,
-	//	0,			-2.07017f,	-0.51553f, -0.5145f,
-	//	-1.79413f, 0.83113f,	-0.57493f, -0.57378f,
-	//	 0,		0,			5.64243f,	5.83095f},
-	//};
-
-	//scl::matrix mvp =
-	//{ 
-	//	{1.449f,	0,			0,		0,
-	//	0,			2.414f,		0,		0,
-	//	0,			0,			-1,		-1,
-	//	0.056f,		-0.833f,	-0.2,	0},
-	//};
-
-	//scl::matrix mvp =
-	//{ 
-	//	{1.449f,	0,			0,		0.056f,
-	//	0,			2.414f,		0,		-0.833f,
-	//	0,			0,			-1,		-0.2,
-	//	0,			0,			-1,		0},
-	//};
-
-	scl::matrix mvp = scl::matrix::identity();
-
-	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
-	{
-		if (NULL != m_frameUniforms[i].buffer)
-		{
-			svkUnmapBuffer	(m_device, m_frameUniforms[i]);
-			svkDestroyBuffer(m_device, m_frameUniforms[i]);
-		}
-
-		int minUniformBufferOffset		= static_cast<int>(m_device.gpuProperties.limits.minUniformBufferOffsetAlignment);
-		int maxBytesPerFrace			= minUniformBufferOffset * MAX_OBJECT_PER_FRAME * MAX_MATRIX_PER_FRAME;
-		m_frameUniforms[i]				= svkCreateUniformBuffer(m_device, NULL, maxBytesPerFrace);
-		m_frameUniformBuffersMapped[i]	= svkMapBuffer			(m_device, m_frameUniforms[i]);
-	}
-
-	m_prepared = true;
-}
+//void VulkanRender::prepare()
+//{
+//
+//}
 
 
-void VulkanRender::unprepare()
-{
-	//svkDestroyPipeline(m_device, m_pipeline, true);
-	//svkDestroyDescriptorCreator(m_device, m_descriptorCreator);
-	svkDestroySwapchain(m_device, m_swapchain, true);
-}
+//void VulkanRender::unprepare()
+//{
+//	//svkDestroyPipeline(m_device, m_pipeline, true);
+//	//svkDestroyDescriptorCreator(m_device, m_descriptorCreator);
+//	svkDestroySwapchain(m_device, m_swapchain, true);
+//}
 
 void presentCallback(void* userdata, VkResult err)
 {

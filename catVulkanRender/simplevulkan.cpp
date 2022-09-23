@@ -77,6 +77,7 @@ static VkShaderStageFlagBits _toShaderStageFlagBits(SHADER_TYPE type)
 	}
 }
 
+static VkImageView _CreateColorImageView(svkDevice& device, VkImage image, VkFormat format);
 
 static int _getMemoryTypeIndex(uint typeBits, const VkMemoryType* types, VkFlags require)
 {
@@ -129,9 +130,23 @@ static VkBuffer _genBuffer(svkDevice& device, VkBufferUsageFlags usage, const in
 	return buffer;
 }
 
-static void _createTextureImage(svkDevice& device, svkTexture* texObj, const int32_t texWidth, const int32_t texHeight, const VkFormat texFormat, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps, VkDeviceSize& memoryAllocationSize)
+
+static svkImage _createImage(
+	svkDevice&			device, 
+	const int32_t		texWidth, 
+	const int32_t		texHeight, 
+	const VkFormat		texFormat, 
+	VkImageTiling		tiling, 
+	VkImageUsageFlags	usage, 
+	VkFlags				requiredProps, 
+	VkImageLayout		initialLayout, 
+	VkDeviceSize*		memoryAllocationSize = NULL)
 {
-	VkResult err;
+	VkResult err = VK_SUCCESS;
+	svkImage image;
+	memset(&image, 0, sizeof(image));
+
+	image.format = texFormat;
 
 	VkImageCreateInfo imageCreateInfo;
 	memclr(imageCreateInfo);
@@ -148,13 +163,13 @@ static void _createTextureImage(svkDevice& device, svkTexture* texObj, const int
 	imageCreateInfo.tiling			= tiling;
 	imageCreateInfo.usage			= usage;
 	imageCreateInfo.flags			= 0;
-	imageCreateInfo.initialLayout	= VK_IMAGE_LAYOUT_PREINITIALIZED;
+	imageCreateInfo.initialLayout	= initialLayout;
 
-	err = vkCreateImage(device.device, &imageCreateInfo, NULL, &texObj->image);
+	err = vkCreateImage(device.device, &imageCreateInfo, NULL, &image.image);
 	assert(!err);
 
 	VkMemoryRequirements memReq;
-	vkGetImageMemoryRequirements(device.device, texObj->image, &memReq);
+	vkGetImageMemoryRequirements(device.device, image.image, &memReq);
 
 	VkMemoryAllocateInfo memAlloc;
 	memclr(memAlloc);
@@ -164,15 +179,36 @@ static void _createTextureImage(svkDevice& device, svkTexture* texObj, const int
 	memAlloc.memoryTypeIndex	= _getMemoryTypeIndex(memReq.memoryTypeBits, device.memoryProperties.memoryTypes, requiredProps);
 	assert(memAlloc.memoryTypeIndex != -1);
 
-	memoryAllocationSize		= memAlloc.allocationSize;
+	if (NULL != memoryAllocationSize)
+		*memoryAllocationSize	= memAlloc.allocationSize;
 
 	// allocate memory 
-	err = vkAllocateMemory(device.device, &memAlloc, NULL, &(texObj->memory));
+	err = vkAllocateMemory(device.device, &memAlloc, NULL, &(image.memory));
 	assert(!err);
 
 	// bind memory 
-	err = vkBindImageMemory(device.device, texObj->image, texObj->memory, 0);
+	err = vkBindImageMemory(device.device, image.image, image.memory, 0);
 	assert(!err);
+
+	return image;
+}
+
+
+static void _createTextureImage(
+	svkDevice&			device, 
+	svkTexture*			texObj, 
+	const int32_t		texWidth, 
+	const int32_t		texHeight, 
+	const VkFormat		texFormat, 
+	VkImageTiling		tiling, 
+	VkImageUsageFlags	usage, 
+	VkFlags				requiredProps, 
+	VkImageLayout		initialLayout, 
+	VkDeviceSize*		memoryAllocationSize)
+{
+	svkImage image	= _createImage(device, texWidth, texHeight, texFormat, tiling, usage, requiredProps, initialLayout, memoryAllocationSize);
+	texObj->image	= image.image;
+	texObj->memory	= image.memory;
 }
 
 static bool _copyFromFileToTexture(svkDevice& device, FILE* f, svkTexture* texObj, const VkFlags requiredProps, const VkDeviceSize memroyAllocationSize)
@@ -218,8 +254,7 @@ static void _createTextureImageWithSize(svkDevice& device, const int width, cons
 
 	const VkFormat texFormat = VK_FORMAT_R8G8B8A8_UNORM;
 
-	VkDeviceSize memroyAllocationSize = 0;
-	_createTextureImage(device, texObj, width, height, texFormat, tiling, usage, requiredProps, memroyAllocationSize);
+	_createTextureImage(device, texObj, width, height, texFormat, tiling, usage, requiredProps, VK_IMAGE_LAYOUT_PREINITIALIZED, NULL);
 }
 
 static void _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps) 
@@ -247,7 +282,7 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 	//	texFormat = VK_FORMAT_R8G8B8_UNORM;
 
 	VkDeviceSize memroyAllocationSize = 0;
-	_createTextureImage(device, texObj, texWidth, texHeight, texFormat, tiling, usage, requiredProps, memroyAllocationSize);
+	_createTextureImage(device, texObj, texWidth, texHeight, texFormat, tiling, usage, requiredProps, VK_IMAGE_LAYOUT_PREINITIALIZED, &memroyAllocationSize);
 
 	bool copyResult = _copyFromFileToTexture(device, f, texObj, requiredProps, memroyAllocationSize);
 	if (!copyResult)
@@ -614,8 +649,10 @@ static VkShaderModule _createShaderFromFile(svkDevice& device, const char* const
 	return shaderModule;
 }
 
-VkRenderPass svkCreateRenderPass(VkDevice device, VkFormat format, VkFormat depthFormat)
+VkRenderPass svkCreateRenderPass(svkDevice& svkdevice, VkFormat format, VkFormat depthFormat, VkImageLayout colorAttachmentFinalLayout)
 {
+	VkDevice device = svkdevice.device;
+
 	// render pass
 	VkAttachmentDescription attachments[2];
 	memset(attachments, 0, sizeof(attachments));
@@ -627,7 +664,7 @@ VkRenderPass svkCreateRenderPass(VkDevice device, VkFormat format, VkFormat dept
 	attachments[0].stencilLoadOp	= VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	attachments[0].stencilStoreOp	= VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	attachments[0].initialLayout	= VK_IMAGE_LAYOUT_UNDEFINED;
-	attachments[0].finalLayout		= VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	attachments[0].finalLayout		= colorAttachmentFinalLayout; //VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 	attachments[1].flags			= 0;
 	attachments[1].format			= depthFormat;
@@ -662,23 +699,26 @@ VkRenderPass svkCreateRenderPass(VkDevice device, VkFormat format, VkFormat dept
 	subpass.preserveAttachmentCount	= 0;
 	subpass.pPreserveAttachments	= NULL;
 
-	VkSubpassDependency subpassDep[2];
-	memset(subpassDep, 0, sizeof(subpassDep));
-	subpassDep[0].srcSubpass		= VK_SUBPASS_EXTERNAL;
-	subpassDep[0].dstSubpass		= 0;
-	subpassDep[0].srcStageMask		= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
-	subpassDep[0].dstStageMask		= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
-	subpassDep[0].srcAccessMask		= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-	subpassDep[0].dstAccessMask		= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-	subpassDep[0].dependencyFlags	= 0;
+	VkSubpassDependency subpassDeps[2];
+	memset(subpassDeps, 0, sizeof(subpassDeps));
 
-	subpassDep[1].srcSubpass		= VK_SUBPASS_EXTERNAL;
-	subpassDep[1].dstSubpass		= 0;
-	subpassDep[1].srcStageMask		= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpassDep[1].dstStageMask		= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	subpassDep[1].srcAccessMask		= 0;
-	subpassDep[1].dstAccessMask		= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
-	subpassDep[1].dependencyFlags	= 0;
+	// implict layout transition from (initialLayout → layout) is not enough
+	// https://community.arm.com/arm-community-blogs/b/graphics-gaming-and-vr-blog/posts/vulkan-best-practices-frequently-asked-questions-part-1
+	subpassDeps[0].srcSubpass		= VK_SUBPASS_EXTERNAL;
+	subpassDeps[0].dstSubpass		= 0;
+	subpassDeps[0].srcStageMask		= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpassDeps[0].dstStageMask		= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	subpassDeps[0].srcAccessMask	= 0;
+	subpassDeps[0].dstAccessMask	= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+
+	// multi frame share one depth image: 
+	// https://stackoverflow.com/questions/62371266/why-is-a-single-depth-buffer-sufficient-for-this-vulkan-swapchain-render-loop
+	subpassDeps[1].srcSubpass		= VK_SUBPASS_EXTERNAL;
+	subpassDeps[1].dstSubpass		= 0;
+	subpassDeps[1].srcStageMask		= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+	subpassDeps[1].dstStageMask		= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+	subpassDeps[1].srcAccessMask	= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+	subpassDeps[1].dstAccessMask	= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
 	VkRenderPassCreateInfo renderPassCreateInfo;
 	memclr(renderPassCreateInfo);
@@ -690,7 +730,7 @@ VkRenderPass svkCreateRenderPass(VkDevice device, VkFormat format, VkFormat dept
     renderPassCreateInfo.subpassCount		= 1;
     renderPassCreateInfo.pSubpasses			= &subpass;
     renderPassCreateInfo.dependencyCount	= 2;
-    renderPassCreateInfo.pDependencies		= subpassDep;
+    renderPassCreateInfo.pDependencies		= subpassDeps;
 
 	VkRenderPass renderPass;
 	VkResult err = vkCreateRenderPass(device, &renderPassCreateInfo, NULL, &renderPass);
@@ -698,8 +738,10 @@ VkRenderPass svkCreateRenderPass(VkDevice device, VkFormat format, VkFormat dept
 	return renderPass;
 }
 
-VkFramebuffer svkCreateFrameBuffer(VkDevice device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height)
+VkFramebuffer svkCreateFrameBuffer(svkDevice& svkdevice, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height)
 {
+	VkDevice device = svkdevice.device;
+
 	VkFramebuffer frameBuffer = NULL;
 	VkFramebufferCreateInfo fbCreateInfo;
 	memclr(fbCreateInfo);
@@ -717,55 +759,22 @@ VkFramebuffer svkCreateFrameBuffer(VkDevice device, VkRenderPass renderPass, VkI
 	return frameBuffer;
 }
 
-svkImage svkCreateImage(svkDevice& device, VkFormat format, const int width, const int height)
+svkImage svkCreateAttachmentDepthImage(svkDevice& device, VkFormat format, const int width, const int height)
 {
 	svkImage image;
 	memclr(image);
 	VkResult err = VK_SUCCESS;
 
-	image.format = format;
-
-	////////////////////////////////////
-	// depth buffer	
-	////////////////////////////////////
-	//const VkFormat depth_format = VK_FORMAT_D16_UNORM;
-	//VkFormat depthFormat = VK_FORMAT_D16_UNORM;
-	VkImageCreateInfo imageCreateInfo;
-	memclr(imageCreateInfo);
-	imageCreateInfo.sType			= VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-	imageCreateInfo.pNext			= NULL;
-	imageCreateInfo.imageType		= VK_IMAGE_TYPE_2D;
-	imageCreateInfo.format			= format;
-	imageCreateInfo.extent.width	= width;
-	imageCreateInfo.extent.height	= height;
-	imageCreateInfo.extent.depth	= 1;
-	imageCreateInfo.mipLevels		= 1;
-	imageCreateInfo.arrayLayers		= 1;
-	imageCreateInfo.samples			= VK_SAMPLE_COUNT_1_BIT;
-	imageCreateInfo.tiling			= VK_IMAGE_TILING_OPTIMAL;
-	imageCreateInfo.usage			= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-	imageCreateInfo.flags			= 0;
-
-	err = vkCreateImage(device.device, &imageCreateInfo, NULL, &image.image);
-	assert(!err);
-
-	VkMemoryRequirements memReq;
-	vkGetImageMemoryRequirements(device.device, image.image, &memReq);
-	assert(!err);
-
-	VkMemoryAllocateInfo allocInfo;
-	memclr(allocInfo);
-	allocInfo.sType				= VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	allocInfo.pNext				= NULL;
-	allocInfo.allocationSize	= memReq.size;
-	allocInfo.memoryTypeIndex	= _getMemoryTypeIndex(memReq.memoryTypeBits, device.memoryProperties.memoryTypes, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-	assert(allocInfo.memoryTypeIndex != -1);
-
-	err = vkAllocateMemory(device.device, &allocInfo, NULL, &image.memory);
-	assert(!err);
-
-	err = vkBindImageMemory(device.device, image.image, image.memory, 0);
-	assert(!err);
+	image = _createImage(
+		device, 
+		width, 
+		height, 
+		format, 
+		VK_IMAGE_TILING_OPTIMAL, 
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 
+		VK_IMAGE_LAYOUT_UNDEFINED , 
+		NULL);
 
 	VkImageViewCreateInfo viewCreateInfo;
 	memclr(viewCreateInfo);
@@ -783,6 +792,25 @@ svkImage svkCreateImage(svkDevice& device, VkFormat format, const int width, con
 	viewCreateInfo.subresourceRange.layerCount		= 1;
 	err = vkCreateImageView(device.device, &viewCreateInfo, NULL, &image.imageView);
 	assert(!err);
+
+	return image;
+}
+
+
+svkImage svkCreateAttachmentColorImage(svkDevice& device, VkFormat format, const int width, const int height)
+{
+	svkImage image = _createImage(
+		device, 
+		width, 
+		height, 
+		format, 
+		VK_IMAGE_TILING_OPTIMAL, 
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,	//VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
+		VK_IMAGE_LAYOUT_UNDEFINED, 
+		NULL);	
+
+	image.imageView = _CreateColorImageView(device, image.image, image.format);
 
 	return image;
 }
@@ -818,29 +846,10 @@ int svkCreateFrames(
 	{
 		svkFrame& frame = outputFrames[i];
 
-		VkImageViewCreateInfo colorImageViewCreateInfo;
-		memclr(colorImageViewCreateInfo);
-		colorImageViewCreateInfo.sType			= VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		colorImageViewCreateInfo.pNext			= NULL;
-		colorImageViewCreateInfo.flags			= 0;
-		colorImageViewCreateInfo.image			= swapchainImages[i];
-		colorImageViewCreateInfo.viewType		= VK_IMAGE_VIEW_TYPE_2D;
-		colorImageViewCreateInfo.format			= swapchain.format;
-		colorImageViewCreateInfo.components.r	= VK_COMPONENT_SWIZZLE_R;
-		colorImageViewCreateInfo.components.g	= VK_COMPONENT_SWIZZLE_G;
-		colorImageViewCreateInfo.components.b	= VK_COMPONENT_SWIZZLE_B;
-		colorImageViewCreateInfo.components.a	= VK_COMPONENT_SWIZZLE_A;
-		colorImageViewCreateInfo.subresourceRange.aspectMask		= VK_IMAGE_ASPECT_COLOR_BIT;
-		colorImageViewCreateInfo.subresourceRange.baseMipLevel		= 0;
-		colorImageViewCreateInfo.subresourceRange.levelCount		= 1;
-		colorImageViewCreateInfo.subresourceRange.baseArrayLayer	= 0;
-		colorImageViewCreateInfo.subresourceRange.layerCount		= 1;
-
-		err = vkCreateImageView(device.device, &colorImageViewCreateInfo, NULL, &frame.imageView);
-		assert(!err);
+		frame.imageView							= _CreateColorImageView(device, swapchainImages[i], swapchain.format);
 
 		VkImageView attachments[]				= { frame.imageView, depthImageView };
-		frame.framebuffer						= svkCreateFrameBuffer	(device.device, renderPass, attachments, 2, width, height);
+		frame.framebuffer						= svkCreateFrameBuffer	(device, renderPass, attachments, 2, width, height);
 		frame.commandBuffer						= svkCreateCommandBuffer(device);
 
 		VkFenceCreateInfo fenceCreateInfo;
@@ -1245,6 +1254,32 @@ void svkBeginSecondaryCommandBuffer(VkCommandBuffer& cb, const VkRenderPass& ren
 	vkcheck( vkBeginCommandBuffer(cb, &beginInfo) );
 }
 
+static VkImageView _CreateColorImageView(svkDevice& device, VkImage image, VkFormat format)
+{
+	VkImageViewCreateInfo viewCreateInfo;
+	memclr(viewCreateInfo);
+	viewCreateInfo.sType							= VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewCreateInfo.pNext							= NULL;
+	viewCreateInfo.flags							= 0;
+	viewCreateInfo.image							= image;
+	viewCreateInfo.viewType							= VK_IMAGE_VIEW_TYPE_2D;
+	viewCreateInfo.format							= format;
+	viewCreateInfo.components.r						= VK_COMPONENT_SWIZZLE_R;
+	viewCreateInfo.components.g						= VK_COMPONENT_SWIZZLE_G;
+	viewCreateInfo.components.b						= VK_COMPONENT_SWIZZLE_B;
+	viewCreateInfo.components.a						= VK_COMPONENT_SWIZZLE_A;
+	viewCreateInfo.subresourceRange.aspectMask		= VK_IMAGE_ASPECT_COLOR_BIT;
+	viewCreateInfo.subresourceRange.baseMipLevel	= 0;
+	viewCreateInfo.subresourceRange.levelCount		= 1;
+	viewCreateInfo.subresourceRange.baseArrayLayer	= 0;
+	viewCreateInfo.subresourceRange.layerCount		= 1;
+
+	VkImageView view;
+	VkResult err = vkCreateImageView(device.device, &viewCreateInfo, NULL, &view);
+	assert(!err);
+
+	return view;
+}
 
 void _createSamplerAndImageView(svkDevice& device, svkTexture& _svkTexture, const VkFormat texFormat)
 {
@@ -1269,32 +1304,11 @@ void _createSamplerAndImageView(svkDevice& device, svkTexture& _svkTexture, cons
 	samplerCreateInfo.borderColor					= VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 	samplerCreateInfo.unnormalizedCoordinates		= VK_FALSE;
 
-	VkImageViewCreateInfo viewCreateInfo;
-	memclr(viewCreateInfo);
-	viewCreateInfo.sType							= VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-	viewCreateInfo.pNext							= NULL;
-	viewCreateInfo.flags							= 0;
-	viewCreateInfo.image							= VK_NULL_HANDLE;
-	viewCreateInfo.viewType							= VK_IMAGE_VIEW_TYPE_2D;
-	viewCreateInfo.format							= texFormat;
-	viewCreateInfo.components.r						= VK_COMPONENT_SWIZZLE_R;
-	viewCreateInfo.components.g						= VK_COMPONENT_SWIZZLE_G;
-	viewCreateInfo.components.b						= VK_COMPONENT_SWIZZLE_B;
-	viewCreateInfo.components.a						= VK_COMPONENT_SWIZZLE_A;
-	viewCreateInfo.subresourceRange.aspectMask		= VK_IMAGE_ASPECT_COLOR_BIT;
-	viewCreateInfo.subresourceRange.baseMipLevel	= 0;
-	viewCreateInfo.subresourceRange.levelCount		= 1;
-	viewCreateInfo.subresourceRange.baseArrayLayer	= 0;
-	viewCreateInfo.subresourceRange.layerCount		= 1;
-
 	// sampler
 	err = vkCreateSampler(device.device, &samplerCreateInfo, NULL, &_svkTexture.sampler);
 	assert(!err);
 
-	// view
-	viewCreateInfo.image = _svkTexture.image;
-	err = vkCreateImageView(device.device, &viewCreateInfo, NULL, &_svkTexture.view);
-	assert(!err);
+	_svkTexture.view = _CreateColorImageView(device, _svkTexture.image, texFormat);
 }
 
 svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCommandBuffer outCommandBuffer)
