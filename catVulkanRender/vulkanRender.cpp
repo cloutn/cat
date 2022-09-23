@@ -779,10 +779,17 @@ void VulkanRender::recreateSwapchain()
 	if (_minimized())
 		return;
 
-	svkDestroySwapchain(m_device, m_swapchain);
+	svkDestroyFrames	(m_device, m_frames, m_frameCount);
+	vkDestroyRenderPass	(m_device.device, m_mainRenderPass, NULL);
+	svkDestroyImage		(m_device, m_mainDepthImage);
+	svkDestroySwapchain	(m_device, m_swapchain);
 
 	svkSwapchain oldswapchain = { NULL };
-	m_swapchain = svkCreateSwapchain(m_device, m_surface, oldswapchain, 3, false);
+	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, oldswapchain, 3, false);
+	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
+	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
+	m_frameIndex		= 0;
 }
 
 void VulkanRender::recreateSurface()
