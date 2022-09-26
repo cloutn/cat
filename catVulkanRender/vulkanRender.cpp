@@ -230,6 +230,10 @@ VulkanRender::~VulkanRender()
 		delete m_commandAllocator[i];
 	}
 
+	svkDestroyImage		(m_device, m_pickColorImage);
+	svkDestroyImage		(m_device, m_pickDepthImage);
+	vkDestroyRenderPass	(m_device.device, m_pickRenderPass, NULL);
+
 	vkDestroyRenderPass	(m_device.device, m_mainRenderPass, NULL);
 	svkDestroyFrames	(m_device, m_frames, m_frameCount);
 	svkDestroyImage		(m_device, m_mainDepthImage);
