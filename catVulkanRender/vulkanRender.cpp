@@ -37,10 +37,11 @@ VulkanRender::VulkanRender()  :
 	m_inst						(NULL), 
 	m_mainRenderPass			(NULL),
 	m_frameCount				(0),
-	m_isInit					(false),
 	m_pickRenderPass			(NULL),
+	m_pickFramebuffer			(NULL),
+	m_pickCommandBuffer			(NULL),
+	m_isInit					(false),
 	m_minimized					(false),
-	//m_prepared					(false),
 	m_frameIndex				(-1),
 	m_prevFrameIndex			(-1),
 	m_matrixChanged				(false),
@@ -50,7 +51,6 @@ VulkanRender::VulkanRender()  :
 	m_windowHandle				(NULL),
 	m_IMGUIDescriptorPool		(NULL),
 	m_bindCommandBuffer			(NULL)
-	//m_clearColor				(0)
 	
 {
 	memclr(m_device);
@@ -64,6 +64,7 @@ VulkanRender::VulkanRender()  :
 	memclr(m_frames);
 	memclr(m_pickColorImage);
 	memclr(m_pickDepthImage);
+	memclr(m_drawContext);
 }
 
 
@@ -85,14 +86,6 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_surface			= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
 	argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
 
-	//svkRefreshSurfaceSize(m_device, m_surface);
-	//m_minimized = m_surface.width == 0 && m_surface.height == 0;
-	//if (m_minimized)
-	//{
-	//	//m_prepared = false;
-	//	return false;
-	//}
-
 	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, m_swapchain);
 	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
 	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
@@ -102,7 +95,10 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	// 3D picking
 	m_pickColorImage	= svkCreateAttachmentColorImage	(m_device, VK_FORMAT_R8G8B8A8_UNORM, m_surface.width, m_surface.height);
 	m_pickDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
-	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_pickColorImage.format, m_pickDepthImage.format, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	VkImageView pickImageViews[] = { m_pickColorImage.imageView, m_pickDepthImage.imageView };
+	m_pickFramebuffer	= svkCreateFrameBuffer			(m_device, m_pickRenderPass, pickImageViews, 2, m_surface.width, m_surface.height); 
+	m_pickCommandBuffer	= svkAllocCommandBuffer		(m_device);
 
 
 	// descriptor set
@@ -190,7 +186,7 @@ void VulkanRender::initIMGUI()
 	ImGui_ImplVulkan_Init		(&init_info, m_mainRenderPass);
 
 	// Upload Fonts
-	VkCommandBuffer textureCommandBuffer		= svkCreateCommandBuffer(m_device);
+	VkCommandBuffer textureCommandBuffer		= svkAllocCommandBuffer(m_device);
 	svkBeginCommandBuffer						(textureCommandBuffer);;
 	ImGui_ImplVulkan_CreateFontsTexture			(textureCommandBuffer);
 	svkEndCommandBuffer							(m_device, textureCommandBuffer);
@@ -230,6 +226,8 @@ VulkanRender::~VulkanRender()
 		delete m_commandAllocator[i];
 	}
 
+	vkDestroyFramebuffer(m_device.device, m_pickFramebuffer, NULL);
+	svkFreeCommandBuffer(m_device, m_pickCommandBuffer);	
 	svkDestroyImage		(m_device, m_pickColorImage);
 	svkDestroyImage		(m_device, m_pickDepthImage);
 	vkDestroyRenderPass	(m_device.device, m_pickRenderPass, NULL);
@@ -474,10 +472,16 @@ void VulkanRender::beginDraw()
 	if (_minimized())
 		return;
 
-	m_prevFrameIndex = m_frameIndex;
-	m_frameIndex = svkAcquireNextImage(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
+	m_prevFrameIndex			= m_frameIndex;
+	m_frameIndex				= svkAcquireNextImage(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
+	m_frameUniformBufferOffset	= 0;
+
+	m_drawContext.renderPass	= m_mainRenderPass;
+	m_drawContext.framebuffer	= m_frames[m_frameIndex].framebuffer;
+	m_drawContext.width			= m_surface.width;
+	m_drawContext.height		= m_surface.height;
+
 	m_commandAllocator[m_frameIndex]->reset(m_device);
-	m_frameUniformBufferOffset = 0;
 }
 
 void VulkanRender::endDraw()
@@ -497,6 +501,8 @@ void VulkanRender::endDraw()
 	vkCmdEndRenderPass(primaryCb);
 	err = vkEndCommandBuffer(primaryCb);
 	assert(!err);
+
+	memclr(m_drawContext);
 }
 
 
@@ -643,7 +649,7 @@ void VulkanRender::_preparePipeline(
 		svkShaderProgram*						shaderProgram	= static_cast<svkShaderProgram*>(shader);
 
 		pipeline	= new svkPipeline;
-		*pipeline	= svkCreatePipelineEx(m_device, descriptorAllocator->getLayout(), m_mainRenderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
+		*pipeline	= svkCreatePipelineEx(m_device, descriptorAllocator->getLayout(), m_drawContext.renderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
 		m_pipelines.add(pipelineKey, pipeline);
 	}
 }
@@ -700,7 +706,7 @@ void VulkanRender::draw2(
 	VkCommandBuffer	cmd_buf					= useBindCommandBuffer ? m_bindCommandBuffer : m_commandAllocator[m_frameIndex]->alloc();
 
 	if (!useBindCommandBuffer)
-		svkBeginSecondaryCommandBuffer(cmd_buf, m_mainRenderPass, m_frames[m_frameIndex].framebuffer);
+		svkBeginSecondaryCommandBuffer(cmd_buf, m_drawContext.renderPass, m_drawContext.framebuffer);
 
 	// uniform 数据分为两个部分，
 	//		一个是声明信息，就是uniform bind
@@ -745,9 +751,9 @@ void VulkanRender::draw2(
 
 	vkCmdBindIndexBuffer(cmd_buf, svkIndexBuffer->buffer, indexOffset, _toVkIndexType(indexComponentType));
 
-	svkCmdSetViewPortByGLParams(cmd_buf, 0, 0, m_surface.width, m_surface.height);
+	svkCmdSetViewPortByGLParams(cmd_buf, 0, 0, m_drawContext.width, m_drawContext.height);
 
-	svkCmdSetScissor(cmd_buf, m_surface.width, m_surface.height);
+	svkCmdSetScissor(cmd_buf, m_drawContext.width, m_drawContext.height);
 
 	vkCmdDrawIndexed(
 		cmd_buf, 
@@ -819,7 +825,7 @@ void VulkanRender::drawIMGUI(ImDrawData* draw_data)
 	VkCommandBuffer cb = useBindCommandBuffer ? m_bindCommandBuffer : m_commandAllocator[m_frameIndex]->alloc();
 
 	if (!useBindCommandBuffer)
-		svkBeginSecondaryCommandBuffer(cb, m_mainRenderPass, m_frames[m_frameIndex].framebuffer);
+		svkBeginSecondaryCommandBuffer(cb, m_drawContext.renderPass, m_drawContext.framebuffer);
 
 	ImGui_ImplVulkan_RenderDrawData(draw_data, cb);
 
@@ -834,7 +840,7 @@ void VulkanRender::bindCommandBuffer()
 {
 	assert(NULL == m_bindCommandBuffer);
 	m_bindCommandBuffer = m_commandAllocator[m_frameIndex]->alloc();
-	svkBeginSecondaryCommandBuffer(m_bindCommandBuffer, m_mainRenderPass, m_frames[m_frameIndex].framebuffer);
+	svkBeginSecondaryCommandBuffer(m_bindCommandBuffer, m_drawContext.renderPass, m_drawContext.framebuffer);
 }
 
 void VulkanRender::unbindCommandBuffer()

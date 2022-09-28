@@ -28,6 +28,8 @@ namespace cat {
 class DescriptorAllocator;
 class CommandAllocator;
 
+
+
 class VulkanRender : public cat::IRender
 {
 public:
@@ -152,6 +154,15 @@ private:
 		const scl::matrix*		jointMatrices,
 		const int				jointMatrixCount);
 
+private:
+	class DrawContext
+	{
+	public:
+		VkRenderPass		renderPass;
+		VkFramebuffer		framebuffer;
+		int					width;
+		int					height;
+	};
 
 private:
 	static const int	MAX_FRAME						= svkSwapchain::MAX_IMAGE_COUNT;	// 最大交换帧数量。TODO, 改为动态扩张。开始时2，不够的时候增加
@@ -175,6 +186,11 @@ private:
 	svkImage			m_pickColorImage;
 	svkImage			m_pickDepthImage;
 	VkRenderPass		m_pickRenderPass;
+	VkFramebuffer		m_pickFramebuffer;
+	VkCommandBuffer		m_pickCommandBuffer;
+
+	// for draw context
+	DrawContext			m_drawContext;
 
 	bool				m_isInit;
 	bool				m_minimized;

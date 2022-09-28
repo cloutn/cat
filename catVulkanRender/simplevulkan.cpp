@@ -850,7 +850,7 @@ int svkCreateFrames(
 
 		VkImageView attachments[]				= { frame.imageView, depthImageView };
 		frame.framebuffer						= svkCreateFrameBuffer	(device, renderPass, attachments, 2, width, height);
-		frame.commandBuffer						= svkCreateCommandBuffer(device);
+		frame.commandBuffer						= svkAllocCommandBuffer(device);
 
 		VkFenceCreateInfo fenceCreateInfo;
 		memclr(fenceCreateInfo);
@@ -1199,17 +1199,17 @@ VkCommandPool svkCreateCommandPool(svkDevice& device, bool needResetIndividual)
 	return commandPool;
 }
 
-VkCommandBuffer svkCreateCommandBuffer(svkDevice& device)
+VkCommandBuffer svkAllocCommandBuffer(svkDevice& device)
 {
 	if (NULL == device.commandPool)
 		device.commandPool = svkCreateCommandPool(device, true);
 	VkCommandBuffer cb;
-	svkCreateCommandBuffer(device, device.commandPool, true, 1, &cb);
+	svkAllocCommandBuffer(device, device.commandPool, true, 1, &cb);
 	return cb;
 }
 
 
-void svkCreateCommandBuffer(svkDevice& device, VkCommandPool pool, bool isPrimary, int count, VkCommandBuffer* output)
+void svkAllocCommandBuffer(svkDevice& device, VkCommandPool pool, bool isPrimary, int count, VkCommandBuffer* output)
 {
 	VkResult err;
 
@@ -1225,6 +1225,11 @@ void svkCreateCommandBuffer(svkDevice& device, VkCommandPool pool, bool isPrimar
 	assert(!err);
 }
 
+void svkFreeCommandBuffer(svkDevice& device, VkCommandBuffer commandBuffer)
+{
+	vkFreeCommandBuffers(device.device, device.commandPool, 1, &commandBuffer);
+}
+
 void svkBeginCommandBuffer(VkCommandBuffer cb, bool oneTime)
 {
 	VkCommandBufferBeginInfo cmdBufferBeginInfo;
@@ -1238,7 +1243,8 @@ void svkBeginCommandBuffer(VkCommandBuffer cb, bool oneTime)
 void svkBeginSecondaryCommandBuffer(VkCommandBuffer& cb, const VkRenderPass& renderPass, const VkFramebuffer& framebuffer)
 {
 	VkCommandBufferInheritanceInfo inheritInfo = {};
-	inheritInfo.sType					= VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO, inheritInfo.pNext = NULL;
+	inheritInfo.sType					= VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO; 
+	inheritInfo.pNext					= NULL;
 	inheritInfo.renderPass				= renderPass;
 	inheritInfo.subpass					= 0;
 	inheritInfo.framebuffer				= framebuffer;
@@ -1325,7 +1331,7 @@ svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCom
 	VkCommandBuffer commandBuffer = outCommandBuffer;
 	if (NULL == outCommandBuffer)
 	{
-		commandBuffer = svkCreateCommandBuffer(device);
+		commandBuffer = svkAllocCommandBuffer(device);
 		svkBeginCommandBuffer(commandBuffer);
 	}
 	_setImageLayout(commandBuffer, _svkTexture.image, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_LAYOUT_PREINITIALIZED, _svkTexture.imageLayout, (VkAccessFlagBits)0, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
@@ -1351,7 +1357,7 @@ svkTexture svkCreateTexture(svkDevice& device, const int width, const int height
 	VkCommandBuffer commandBuffer = outCommandBuffer;
 	if (NULL == outCommandBuffer)
 	{
-		commandBuffer = svkCreateCommandBuffer(device);
+		commandBuffer = svkAllocCommandBuffer(device);
 		svkBeginCommandBuffer(commandBuffer);
 	}
 	_setImageLayout(commandBuffer, _svkTexture.image, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_LAYOUT_PREINITIALIZED, _svkTexture.imageLayout, (VkAccessFlagBits)0, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);

@@ -17,7 +17,7 @@ CommandAllocator::CommandAllocator() :
 void CommandAllocator::init(svkDevice& device)
 {
 	m_pool = svkCreateCommandPool(device, false);
-	svkCreateCommandBuffer(device, m_pool, false, MAX_COUNT, m_commandBuffers);
+	svkAllocCommandBuffer(device, m_pool, false, MAX_COUNT, m_commandBuffers);
 }
 
 void CommandAllocator::release(svkDevice& device)
