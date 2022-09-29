@@ -32,12 +32,7 @@ MainGUI::MainGUI() : m_client(nullptr), m_selectObject(nullptr)
 void MainGUI::init(Client* client)
 {
 	m_client = client;
-	_initIMGUI();
-}
 
-
-void MainGUI::_initIMGUI()
-{
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

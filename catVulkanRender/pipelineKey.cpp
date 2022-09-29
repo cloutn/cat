@@ -14,15 +14,17 @@ uint32 PipelineKey::hash() const
 PipelineKey::PipelineKey() : 
 	m_vertexAttrs	(NULL),
 	m_shader		(NULL),
-	m_topology		(0)
+	m_topology		(0),
+	m_renderPass	(NULL)
 {
 
 }
 
-PipelineKey::PipelineKey(const void* const vertexAttrs, const void* const shader, const int topology) :
+PipelineKey::PipelineKey(const void* const vertexAttrs, const void* const shader, const int topology, void* renderPass) :
 	m_vertexAttrs	(vertexAttrs),
 	m_shader		(shader),
-	m_topology		(topology)
+	m_topology		(topology),
+	m_renderPass	(renderPass)
 {
 
 }

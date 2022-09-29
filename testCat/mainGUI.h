@@ -13,7 +13,6 @@ public:
 	MainGUI();
 
 	void	init				(Client* client);
-	void	_initIMGUI			();
 	void	release				();
 
 	void	onGUI				();

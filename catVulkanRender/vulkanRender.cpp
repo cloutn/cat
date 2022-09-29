@@ -40,6 +40,7 @@ VulkanRender::VulkanRender()  :
 	m_pickRenderPass			(NULL),
 	m_pickFramebuffer			(NULL),
 	m_pickCommandBuffer			(NULL),
+	m_pickCommandAllocator		(NULL),
 	m_isInit					(false),
 	m_minimized					(false),
 	m_frameIndex				(-1),
@@ -86,20 +87,15 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_surface			= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
 	argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
 
-	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, m_swapchain);
-	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
-	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
-	m_frameIndex		= 0;
+	_createMainRenderTarget();
 
 	// 3D picking
-	m_pickColorImage	= svkCreateAttachmentColorImage	(m_device, VK_FORMAT_R8G8B8A8_UNORM, m_surface.width, m_surface.height);
-	m_pickDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
-	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_pickColorImage.format, m_pickDepthImage.format, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-	VkImageView pickImageViews[] = { m_pickColorImage.imageView, m_pickDepthImage.imageView };
-	m_pickFramebuffer	= svkCreateFrameBuffer			(m_device, m_pickRenderPass, pickImageViews, 2, m_surface.width, m_surface.height); 
+	_createPickRenderTarget();
 	m_pickCommandBuffer	= svkAllocCommandBuffer		(m_device);
+	m_pickCommandAllocator = new CommandAllocator();
+	m_pickCommandAllocator->init(m_device);
 
+	m_currentFrameCommandBuffers.reserve(16);
 
 	// descriptor set
 	//const int DEMO_TEXTURE_COUNT = 1;
@@ -226,11 +222,12 @@ VulkanRender::~VulkanRender()
 		delete m_commandAllocator[i];
 	}
 
-	vkDestroyFramebuffer(m_device.device, m_pickFramebuffer, NULL);
+	m_pickCommandAllocator->release(m_device);
+	delete m_pickCommandAllocator;
+
 	svkFreeCommandBuffer(m_device, m_pickCommandBuffer);	
-	svkDestroyImage		(m_device, m_pickColorImage);
-	svkDestroyImage		(m_device, m_pickDepthImage);
-	vkDestroyRenderPass	(m_device.device, m_pickRenderPass, NULL);
+
+	_destroyPickRenderTarget();
 
 	vkDestroyRenderPass	(m_device.device, m_mainRenderPass, NULL);
 	svkDestroyFrames	(m_device, m_frames, m_frameCount);
@@ -420,7 +417,19 @@ void VulkanRender::swap()
 		return;
 	}
 
-	svkQueueSubmitFrame(m_device, m_frames, m_frameIndex, m_prevFrameIndex);
+
+	//svkQueueSubmitFrame(m_device, m_frames, m_frameIndex, m_prevFrameIndex);
+
+	//VkCommandBuffer commandBuffers[] = { m_frames[m_frameIndex].commandBuffer, m_pickCommandBuffer };
+	//VkCommandBuffer commandBuffers[] = { m_frames[m_frameIndex].commandBuffer };
+	svkQueueSubmit(
+		m_device, 
+		m_currentFrameCommandBuffers.c_array(), 
+		m_currentFrameCommandBuffers.size(), 
+		m_frames[m_prevFrameIndex].imageAcquireSemaphore,  
+		m_frames[m_frameIndex].drawCompleteSemaphore, 
+		m_frames[m_frameIndex].fence);
+
 	svkPresent(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
 }
 
@@ -472,31 +481,50 @@ void VulkanRender::beginDraw()
 	if (_minimized())
 		return;
 
-	m_prevFrameIndex			= m_frameIndex;
-	m_frameIndex				= svkAcquireNextImage(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
-	m_frameUniformBufferOffset	= 0;
-
-	m_drawContext.renderPass	= m_mainRenderPass;
-	m_drawContext.framebuffer	= m_frames[m_frameIndex].framebuffer;
-	m_drawContext.width			= m_surface.width;
-	m_drawContext.height		= m_surface.height;
-
-	m_commandAllocator[m_frameIndex]->reset(m_device);
+	m_prevFrameIndex					= m_frameIndex;
+	m_frameIndex						= svkAcquireNextImage(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
+	m_frameUniformBufferOffset			= 0;
+	m_currentFrameCommandBuffers.clear();
 }
 
 void VulkanRender::endDraw()
 {
 	if (_minimized())
 		return;
+}
 
+void VulkanRender::beginPickPass()
+{
+	//m_frameUniformBufferOffset	= 0;
+
+	m_drawContext.renderPass			= m_pickRenderPass;
+	m_drawContext.framebuffer			= m_pickFramebuffer;
+	m_drawContext.width					= m_surface.width;
+	m_drawContext.height				= m_surface.height;
+	m_drawContext.commandAllocator		= m_pickCommandAllocator;
+	m_drawContext.uniform				= m_frameUniforms[m_frameIndex];
+	m_drawContext.uniformBufferMapped	= m_frameUniformBuffersMapped[m_frameIndex];
+
+	//m_frameIndex = 0;
+	m_drawContext.commandAllocator->reset(m_device);
+
+	m_currentFrameCommandBuffers.push_back(m_pickCommandBuffer);
+	//bindCommandBuffer();
+}
+
+void VulkanRender::endPickPass()
+{
 	VkResult err;
 
-	VkCommandBuffer& primaryCb = m_frames[m_frameIndex].commandBuffer;
+	//unbindCommandBuffer();
+
+	VkCommandBuffer& primaryCb = m_pickCommandBuffer;
 	svkBeginCommandBuffer(primaryCb);
-	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_mainRenderPass, m_frames[m_frameIndex].framebuffer, m_surface.width, m_surface.height, true);
+	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
 	
-	CommandAllocator* commandAllocator = m_commandAllocator[m_frameIndex];
-	vkCmdExecuteCommands(primaryCb, commandAllocator->getAllocCount(), commandAllocator->getAllocArray());
+	CommandAllocator* commandAllocator = m_drawContext.commandAllocator;
+	if (commandAllocator->getAllocCount() > 0)
+		vkCmdExecuteCommands(primaryCb, commandAllocator->getAllocCount(), commandAllocator->getAllocArray());
 
 	vkCmdEndRenderPass(primaryCb);
 	err = vkEndCommandBuffer(primaryCb);
@@ -505,6 +533,46 @@ void VulkanRender::endDraw()
 	memclr(m_drawContext);
 }
 
+void VulkanRender::beginScenePass()
+{
+	if (_minimized())
+		return;
+
+	// draw context
+	m_drawContext.renderPass			= m_mainRenderPass;
+	m_drawContext.framebuffer			= m_frames[m_frameIndex].framebuffer;
+	m_drawContext.width					= m_surface.width;
+	m_drawContext.height				= m_surface.height;
+	m_drawContext.uniform				= m_frameUniforms[m_frameIndex];
+	m_drawContext.uniformBufferMapped	= m_frameUniformBuffersMapped[m_frameIndex];
+	m_drawContext.commandAllocator		= m_commandAllocator[m_frameIndex];
+
+	m_drawContext.commandAllocator->reset(m_device);
+
+	m_currentFrameCommandBuffers.push_back(m_frames[m_frameIndex].commandBuffer);
+}
+
+void VulkanRender::endScenePass()
+{
+	if (_minimized())
+		return;
+
+	VkResult err;
+
+	VkCommandBuffer& primaryCb = m_frames[m_frameIndex].commandBuffer;
+	svkBeginCommandBuffer(primaryCb);
+	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
+	
+	CommandAllocator* commandAllocator = m_commandAllocator[m_frameIndex];
+	if (commandAllocator->getAllocCount() > 0)
+		vkCmdExecuteCommands(primaryCb, commandAllocator->getAllocCount(), commandAllocator->getAllocArray());
+
+	vkCmdEndRenderPass(primaryCb);
+	err = vkEndCommandBuffer(primaryCb);
+	assert(!err);
+
+	memclr(m_drawContext);
+}
 
 VkIndexType _toVkIndexType(int indexComponentType)
 {
@@ -544,7 +612,7 @@ int VulkanRender::_fillUniformData(
 
 	// [0]
 	int idx = 0;
-	uniformDatas[idx].data[0].buffer.buffer		= m_frameUniforms[m_frameIndex].buffer;
+	uniformDatas[idx].data[0].buffer.buffer		= m_drawContext.uniform.buffer;
 	uniformDatas[idx].data[0].buffer.bufferSize	= sizeof(mvp);
 	uniformDatas[idx].dataCount = 1;
 	uniformDatas[idx].binding = 0;
@@ -556,7 +624,7 @@ int VulkanRender::_fillUniformData(
 		uniformDatas[idx].dataCount					= min(jointMatrixCount, MAX_INFO_COUNT);	
 		for (int i = 0; i < uniformDatas[idx].dataCount; ++i)
 		{
-			uniformDatas[idx].data[i].buffer.buffer	= m_frameUniforms[m_frameIndex].buffer;
+			uniformDatas[idx].data[i].buffer.buffer	= m_drawContext.uniform.buffer;
 			uniformDatas[idx].data[i].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
 		}
 		uniformDatas[idx].dataCount					= 1;
@@ -605,7 +673,7 @@ void VulkanRender::_prepareDescriptorSet(
 		}
 
 		UniformDataKey dataKey;
-		dataKey.init(uniformBinds, uniformBindCount, uniformDatas, m_frameUniforms[m_frameIndex]);
+		dataKey.init(uniformBinds, uniformBindCount, uniformDatas, m_drawContext.uniform);
 		int cacheIndex = m_descriptorSetCache.find_index(dataKey);
 		if (cacheIndex != -1)
 		{
@@ -628,10 +696,11 @@ void VulkanRender::_preparePipeline(
 	void**					vertexBuffers,
 	DescriptorAllocator*	descriptorAllocator,
 	void*					shader,
+	VkRenderPass			renderPass,
 	svkPipeline*&			pipeline)
 {
 	VkPrimitiveTopology	vkTopology  = _toVulkanPrimitiveTopology(static_cast<PRIMITIVE_TYPE>(primitiveType));
-	PipelineKey			pipelineKey(attrs, shader, vkTopology);
+	PipelineKey			pipelineKey(attrs, shader, vkTopology, reinterpret_cast<void*>(renderPass));
 	const int			findIndex	= m_pipelines.find_index(pipelineKey);
 	if (findIndex != -1)
 	{
@@ -668,19 +737,53 @@ uint32_t VulkanRender::_fillDynamicOffsets(
 	}
 	uint32_t dynamicOffsetCount = 0;
 
-	memcpy((byte*)(m_frameUniformBuffersMapped[m_frameIndex]) + m_frameUniformBufferOffset, &mvp, sizeof(mvp));
+	memcpy((byte*)(m_drawContext.uniformBufferMapped) + m_frameUniformBufferOffset, &mvp, sizeof(mvp));
 	dynamicOffsets[0]			= m_frameUniformBufferOffset;
 	m_frameUniformBufferOffset	+= _alignUniformBufferOffset(sizeof(mvp));
 	++dynamicOffsetCount;
 
 	if (jointMatrixCount > 0 && NULL != jointMatrices)
 	{
-		memcpy((byte*)(m_frameUniformBuffersMapped[m_frameIndex]) + m_frameUniformBufferOffset, jointMatrices, sizeof(scl::matrix) * jointMatrixCount);
+		memcpy((byte*)(m_drawContext.uniformBufferMapped) + m_frameUniformBufferOffset, jointMatrices, sizeof(scl::matrix) * jointMatrixCount);
 		dynamicOffsets[1]			= m_frameUniformBufferOffset;
 		m_frameUniformBufferOffset	+= _alignUniformBufferOffset(sizeof(scl::matrix) * jointMatrixCount);
 		++dynamicOffsetCount;
 	}
 	return dynamicOffsetCount;
+}
+
+void VulkanRender::_createPickRenderTarget()
+{
+	m_pickColorImage	= svkCreateAttachmentColorImage	(m_device, VK_FORMAT_R8G8B8A8_UNORM, m_surface.width, m_surface.height);
+	m_pickDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
+	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_pickColorImage.format, m_pickDepthImage.format, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	VkImageView pickImageViews[] = { m_pickColorImage.imageView, m_pickDepthImage.imageView };
+	m_pickFramebuffer	= svkCreateFrameBuffer			(m_device, m_pickRenderPass, pickImageViews, 2, m_surface.width, m_surface.height); 
+}
+
+void VulkanRender::_destroyPickRenderTarget()
+{
+	vkDestroyFramebuffer(m_device.device, m_pickFramebuffer, NULL);
+	svkDestroyImage		(m_device, m_pickColorImage);
+	svkDestroyImage		(m_device, m_pickDepthImage);
+	vkDestroyRenderPass	(m_device.device, m_pickRenderPass, NULL);
+}
+
+void VulkanRender::_createMainRenderTarget()
+{
+	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, { NULL }, 3, false);
+	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
+	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
+	m_frameIndex		= 0;
+}
+
+void VulkanRender::_destroyMainRenderTarget()
+{
+	svkDestroyFrames	(m_device, m_frames, m_frameCount);
+	vkDestroyRenderPass	(m_device.device, m_mainRenderPass, NULL);
+	svkDestroyImage		(m_device, m_mainDepthImage);
+	svkDestroySwapchain	(m_device, m_swapchain);
 }
 
 void VulkanRender::draw2(
@@ -703,7 +806,7 @@ void VulkanRender::draw2(
 
 	//VkCommandBuffer cmd_buf = m_swapchain.commandBuffers[m_frameIndex];
 	bool			useBindCommandBuffer	= m_bindCommandBuffer != NULL;
-	VkCommandBuffer	cmd_buf					= useBindCommandBuffer ? m_bindCommandBuffer : m_commandAllocator[m_frameIndex]->alloc();
+	VkCommandBuffer	cmd_buf					= useBindCommandBuffer ? m_bindCommandBuffer : m_drawContext.commandAllocator->alloc();
 
 	if (!useBindCommandBuffer)
 		svkBeginSecondaryCommandBuffer(cmd_buf, m_drawContext.renderPass, m_drawContext.framebuffer);
@@ -731,7 +834,7 @@ void VulkanRender::draw2(
 	_prepareDescriptorSet(shader, uniformDatas, uniformDataCount, descriptorSet, desAllocator);
 
 	svkPipeline* pipeline = NULL;
-	_preparePipeline(primitiveType, attrs, attrCount, vertexBuffers, desAllocator, shader, pipeline);
+	_preparePipeline(primitiveType, attrs, attrCount, vertexBuffers, desAllocator, shader, m_drawContext.renderPass, pipeline);
 
 	vkCmdBindPipeline(cmd_buf, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);	
 	
@@ -789,17 +892,11 @@ void VulkanRender::recreateSwapchain()
 	if (_minimized())
 		return;
 
-	svkDestroyFrames	(m_device, m_frames, m_frameCount);
-	vkDestroyRenderPass	(m_device.device, m_mainRenderPass, NULL);
-	svkDestroyImage		(m_device, m_mainDepthImage);
-	svkDestroySwapchain	(m_device, m_swapchain);
+	_destroyMainRenderTarget();
+	_createMainRenderTarget();
 
-	svkSwapchain oldswapchain = { NULL };
-	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, oldswapchain, 3, false);
-	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
-	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
-	m_frameIndex		= 0;
+	_destroyPickRenderTarget();
+	_createPickRenderTarget();
 }
 
 void VulkanRender::recreateSurface()
@@ -807,7 +904,6 @@ void VulkanRender::recreateSurface()
 	svkDestroySurface(m_inst, m_device, m_surface);
 	m_surface = svkCreateSurface(m_inst, m_device, m_windowInstance, m_windowHandle);
 }
-
 
 void VulkanRender::releaseIMGUI()
 {
@@ -822,7 +918,7 @@ void VulkanRender::drawIMGUI(ImDrawData* draw_data)
 		return;
 
 	bool useBindCommandBuffer = m_bindCommandBuffer != NULL;
-	VkCommandBuffer cb = useBindCommandBuffer ? m_bindCommandBuffer : m_commandAllocator[m_frameIndex]->alloc();
+	VkCommandBuffer cb = useBindCommandBuffer ? m_bindCommandBuffer : m_drawContext.commandAllocator->alloc();
 
 	if (!useBindCommandBuffer)
 		svkBeginSecondaryCommandBuffer(cb, m_drawContext.renderPass, m_drawContext.framebuffer);
@@ -839,7 +935,7 @@ void VulkanRender::drawIMGUI(ImDrawData* draw_data)
 void VulkanRender::bindCommandBuffer()
 {
 	assert(NULL == m_bindCommandBuffer);
-	m_bindCommandBuffer = m_commandAllocator[m_frameIndex]->alloc();
+	m_bindCommandBuffer = m_drawContext.commandAllocator->alloc();
 	svkBeginSecondaryCommandBuffer(m_bindCommandBuffer, m_drawContext.renderPass, m_drawContext.framebuffer);
 }
 

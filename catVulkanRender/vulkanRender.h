@@ -107,6 +107,12 @@ public:
 	
 	virtual void			beginDraw			();
 	virtual void			endDraw				();
+	
+	void					beginPickPass		();
+	void					endPickPass			();
+
+	void					beginScenePass		();
+	void					endScenePass		();
 
 	//device info
 	virtual int				getDeviceWidth		();
@@ -145,6 +151,7 @@ private:
 		void**					vertexBuffers,
 		DescriptorAllocator*	descriptorAllocator,
 		void*					shader,
+		VkRenderPass			renderPass,
 		svkPipeline*&			pipeline);
 
 	uint32_t				_fillDynamicOffsets(
@@ -154,6 +161,11 @@ private:
 		const scl::matrix*		jointMatrices,
 		const int				jointMatrixCount);
 
+	void					_createPickRenderTarget		();
+	void					_destroyPickRenderTarget	();
+	void					_createMainRenderTarget		();
+	void					_destroyMainRenderTarget	();
+
 private:
 	class DrawContext
 	{
@@ -162,6 +174,9 @@ private:
 		VkFramebuffer		framebuffer;
 		int					width;
 		int					height;
+		svkBuffer			uniform;
+		void*				uniformBufferMapped;
+		CommandAllocator*	commandAllocator;
 	};
 
 private:
@@ -188,13 +203,13 @@ private:
 	VkRenderPass		m_pickRenderPass;
 	VkFramebuffer		m_pickFramebuffer;
 	VkCommandBuffer		m_pickCommandBuffer;
+	CommandAllocator*	m_pickCommandAllocator;
 
 	// for draw context
 	DrawContext			m_drawContext;
 
 	bool				m_isInit;
 	bool				m_minimized;
-	//bool				m_prepared;
 	int					m_frameIndex;
 	int					m_prevFrameIndex;
 	bool				m_matrixChanged;
@@ -203,6 +218,7 @@ private:
 	void*				m_frameUniformBuffersMapped[MAX_FRAME];
 	uint32_t			m_frameUniformBufferOffset;
 	CommandAllocator*	m_commandAllocator[MAX_FRAME];
+	scl::varray<VkCommandBuffer> m_currentFrameCommandBuffers;
 	VkCommandBuffer		m_bindCommandBuffer;
 
 	//for recreate surface

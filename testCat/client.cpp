@@ -69,12 +69,12 @@ void Client::init(const int width, const int height)
 	m_env->setDefaultShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag");
 	m_env->setDefaultMaterial("art/default.png");
 
-	m_camera->set({0, 0, 0}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
+	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
 
 	m_gui.init(this);
 
-	loadGltf("art/chibi_idle/scene.gltf");
 	loadGltf("art/SimpleSkin/SimpleSkin.gltf");
+	loadGltf("art/chibi_idle/scene.gltf");
 
 	m_object = findObject("RootNode (gltf orientation matrix)");
 	m_bonePrimitive = _createBone(m_object, &m_render, m_env);
@@ -154,9 +154,6 @@ Client& Client::inst()
 
 void Client::_renderScene(uint64 diff)
 {
-	m_render.beginDraw();
-
-	updateAnimation(static_cast<double>(diff));
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
 		m_scenes[i]->draw(m_camera->matrix(), &m_render);
@@ -173,11 +170,8 @@ void Client::_renderScene(uint64 diff)
 		m_bonePrimitive->updateVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);
 	}
-
-	m_gui.onGUI();
-
-	m_render.endDraw();
 }
+
 
 #ifdef SCL_WIN
 void Client::run()
@@ -214,12 +208,24 @@ void Client::run()
 		}
 
 
+		updateAnimation(static_cast<double>(diff));
+
 		m_render.clear();
 
 #ifdef TEST_VULKAN
 
-		_renderScene(diff);
+		m_render.beginDraw();
 
+		m_render.beginPickPass();
+		_renderScene(diff);
+		m_render.endPickPass();
+
+		m_render.beginScenePass();
+		_renderScene(diff);
+		m_gui.onGUI();
+		m_render.endScenePass();
+
+		m_render.endDraw();
 #else
 		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);
 
@@ -245,7 +251,6 @@ void Client::run()
 
 }
 #endif
-
 
 
 #ifdef SCL_WIN
