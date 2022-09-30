@@ -41,6 +41,7 @@ VulkanRender::VulkanRender()  :
 	m_pickFramebuffer			(NULL),
 	m_pickCommandBuffer			(NULL),
 	m_pickCommandAllocator		(NULL),
+	m_pickFence					(NULL),
 	m_isInit					(false),
 	m_minimized					(false),
 	m_frameIndex				(-1),
@@ -94,8 +95,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_pickCommandBuffer	= svkAllocCommandBuffer		(m_device);
 	m_pickCommandAllocator = new CommandAllocator();
 	m_pickCommandAllocator->init(m_device);
-
-	m_currentFrameCommandBuffers.reserve(16);
+	m_pickFence = svkCreateFence(m_device, true);
 
 	// descriptor set
 	//const int DEMO_TEXTURE_COUNT = 1;
@@ -226,6 +226,7 @@ VulkanRender::~VulkanRender()
 	delete m_pickCommandAllocator;
 
 	svkFreeCommandBuffer(m_device, m_pickCommandBuffer);	
+	svkDestroyFence(m_device, m_pickFence);
 
 	_destroyPickRenderTarget();
 
@@ -417,18 +418,19 @@ void VulkanRender::swap()
 		return;
 	}
 
-
-	//svkQueueSubmitFrame(m_device, m_frames, m_frameIndex, m_prevFrameIndex);
-
-	//VkCommandBuffer commandBuffers[] = { m_frames[m_frameIndex].commandBuffer, m_pickCommandBuffer };
-	//VkCommandBuffer commandBuffers[] = { m_frames[m_frameIndex].commandBuffer };
-	svkQueueSubmit(
-		m_device, 
-		m_currentFrameCommandBuffers.c_array(), 
-		m_currentFrameCommandBuffers.size(), 
-		m_frames[m_prevFrameIndex].imageAcquireSemaphore,  
-		m_frames[m_frameIndex].drawCompleteSemaphore, 
-		m_frames[m_frameIndex].fence);
+	//for (int i = 0; i < m_currentFrameCommandBuffers.size(); ++i)
+	//{
+	//	svkQueueSubmit(
+	//		m_device, 
+	//		&m_currentFrameCommandBuffers[i],
+	//		1,
+	//		//m_currentFrameCommandBuffers.c_array(), 
+	//		//m_currentFrameCommandBuffers.size(), 
+	//		xxxx m_frames[m_prevFrameIndex].imageAcquireSemaphore,  
+	//		xxxx m_frames[m_frameIndex].drawCompleteSemaphore, 
+	//		//m_frames[m_frameIndex].fence);
+	//		m_currentFrameFences[i]);
+	//}
 
 	svkPresent(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
 }
@@ -483,8 +485,9 @@ void VulkanRender::beginDraw()
 
 	m_prevFrameIndex					= m_frameIndex;
 	m_frameIndex						= svkAcquireNextImage(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
+
+
 	m_frameUniformBufferOffset			= 0;
-	m_currentFrameCommandBuffers.clear();
 }
 
 void VulkanRender::endDraw()
@@ -495,7 +498,7 @@ void VulkanRender::endDraw()
 
 void VulkanRender::beginPickPass()
 {
-	//m_frameUniformBufferOffset	= 0;
+	svkWaitFence(m_device, &m_pickFence, 1);
 
 	m_drawContext.renderPass			= m_pickRenderPass;
 	m_drawContext.framebuffer			= m_pickFramebuffer;
@@ -507,9 +510,6 @@ void VulkanRender::beginPickPass()
 
 	//m_frameIndex = 0;
 	m_drawContext.commandAllocator->reset(m_device);
-
-	m_currentFrameCommandBuffers.push_back(m_pickCommandBuffer);
-	//bindCommandBuffer();
 }
 
 void VulkanRender::endPickPass()
@@ -530,6 +530,14 @@ void VulkanRender::endPickPass()
 	err = vkEndCommandBuffer(primaryCb);
 	assert(!err);
 
+	svkQueueSubmit(
+		m_device,
+		&m_pickCommandBuffer,
+		1,
+		NULL,
+		NULL,
+		m_pickFence);
+
 	memclr(m_drawContext);
 }
 
@@ -537,6 +545,8 @@ void VulkanRender::beginScenePass()
 {
 	if (_minimized())
 		return;
+
+	svkWaitFence(m_device, &m_frames[m_frameIndex].fence, 1);
 
 	// draw context
 	m_drawContext.renderPass			= m_mainRenderPass;
@@ -548,8 +558,6 @@ void VulkanRender::beginScenePass()
 	m_drawContext.commandAllocator		= m_commandAllocator[m_frameIndex];
 
 	m_drawContext.commandAllocator->reset(m_device);
-
-	m_currentFrameCommandBuffers.push_back(m_frames[m_frameIndex].commandBuffer);
 }
 
 void VulkanRender::endScenePass()
@@ -570,6 +578,14 @@ void VulkanRender::endScenePass()
 	vkCmdEndRenderPass(primaryCb);
 	err = vkEndCommandBuffer(primaryCb);
 	assert(!err);
+
+	svkQueueSubmit(
+		m_device,
+		&primaryCb,
+		1,
+		&m_frames[m_prevFrameIndex].imageAcquireSemaphore,
+		&m_frames[m_frameIndex].drawCompleteSemaphore,
+		m_frames[m_frameIndex].fence);
 
 	memclr(m_drawContext);
 }

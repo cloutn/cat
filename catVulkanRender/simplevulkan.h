@@ -200,7 +200,7 @@ void					svkCmdBindVertexBuffers			(VkCommandBuffer cb, int firstBinding, void**
 void					svkCmdSetScissor				(VkCommandBuffer cb, uint32_t width, uint32_t height);
 typedef void			(*presentResultCallback)		(void* userData, VkResult);
 int						svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frameIndex, void* userData, presentResultCallback callback);
-void					svkQueueSubmit					(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore& waitSemaphore, VkSemaphore& signalSemaphore, VkFence& fence);
+void					svkQueueSubmit					(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore* waitSemaphore, VkSemaphore* signalSemaphore, VkFence fence);
 void					svkQueueSubmitFrame				(svkDevice& device, svkFrame* frames, const int frame, const int prevFrame);
 void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame,  void* userData, presentResultCallback callback);
 //void					svkSubmitAndPresent				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
@@ -211,5 +211,8 @@ svkImage				svkCreateAttachmentColorImage	(svkDevice& device, VkFormat format, c
 void					svkDestroyImage					(svkDevice& device, svkImage& image);
 int						svkCreateFrames					(svkDevice& device, svkSwapchain& swapchain, VkImageView depthImageView, VkRenderPass renderPass, const int width, const int height, svkFrame* outputFrames, const int outputFrameCapacity);
 void					svkDestroyFrames				(svkDevice& device, svkFrame* frames, const int frameCount);
+VkFence					svkCreateFence					(svkDevice& device, bool signaled);
+void					svkWaitFence					(svkDevice& device, VkFence* fences, const int fenceCOunt);
+void					svkDestroyFence					(svkDevice& device, VkFence fence);
 
 

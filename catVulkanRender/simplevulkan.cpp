@@ -899,6 +899,32 @@ void svkDestroyFrames(svkDevice& device, svkFrame* frames, const int frameCount)
 	}
 }
 
+VkFence svkCreateFence(svkDevice& device, bool signaled)
+{
+	VkFence fence;
+
+	VkFenceCreateInfo fenceCreateInfo;
+	memclr(fenceCreateInfo);
+	fenceCreateInfo.sType	= VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceCreateInfo.pNext	= NULL;
+	fenceCreateInfo.flags	= signaled ? VK_FENCE_CREATE_SIGNALED_BIT : 0;
+
+	vkcheck( vkCreateFence(device.device, &fenceCreateInfo,	 NULL, &fence) );
+	return fence;
+}
+
+void svkWaitFence(svkDevice& device, VkFence* fences, const int fenceCount)
+{
+	if (fenceCount <= 0)
+		return;
+	vkWaitForFences(device.device, fenceCount, fences, VK_TRUE, UINT64_MAX);
+}
+
+void svkDestroyFence(svkDevice& device, VkFence fence)
+{
+	vkDestroyFence(device.device, fence, NULL);
+}
+
 VkInstance svkCreateInstance(bool enableValidationLayer)
 {
 	uint					allExtensionCount = 32;
@@ -1021,19 +1047,20 @@ svkDevice svkCreateDevice(VkInstance inst)
 	queueCreateInfos[0].pQueuePriorities	= queuePriorities;
 	queueCreateInfos[0].flags				= 0;
 
-	const int				MAX_DEVICE_EXTENSION_COUNT	= 512;
-	uint					allExtensionCount			= MAX_DEVICE_EXTENSION_COUNT;
-	VkExtensionProperties	allExtensions[MAX_DEVICE_EXTENSION_COUNT];
+	//const int				MAX_DEVICE_EXTENSION_COUNT	= 512;
+	uint					allExtensionCount			= 0;
+	vkcheck( vkEnumerateDeviceExtensionProperties(gpu, NULL, &allExtensionCount, NULL) );
+	VkExtensionProperties*	allExtensions = new VkExtensionProperties[allExtensionCount];
 	memset(allExtensions, 0, sizeof(allExtensions));
-	
 	vkcheck( vkEnumerateDeviceExtensionProperties(gpu, NULL, &allExtensionCount, allExtensions) );
 
-	bool		swapchainExtFound						= false;
-	const char*	extensions[MAX_DEVICE_EXTENSION_COUNT]	= { NULL };
-	uint		extensionCount							= 0;
+	bool		swapchainExtFound			= false;
+	const char**extensions					= new const char*[allExtensionCount] { NULL };
+	uint		extensionCount				= 0;
 	for (uint32_t i = 0; i < allExtensionCount; i++)
 	{
-		if (!strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, allExtensions[i].extensionName)) {
+		if (!strcmp(VK_KHR_SWAPCHAIN_EXTENSION_NAME, allExtensions[i].extensionName)) 
+		{
 			swapchainExtFound = true;
 			extensions[extensionCount++] = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 		}
@@ -1063,6 +1090,10 @@ svkDevice svkCreateDevice(VkInstance inst)
 	vkGetPhysicalDeviceMemoryProperties(gpu, &_svkDevice.memoryProperties);
 
 	vkGetPhysicalDeviceFormatProperties(gpu, VK_FORMAT_R8G8B8A8_UNORM, &_svkDevice.formatProperties);
+
+	delete[] allExtensions;
+	delete[] extensions;
+
 	return _svkDevice;
 }
 
@@ -1952,7 +1983,6 @@ int svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* fr
 	VkResult	err;
 	uint32_t	nextFrame		= -1;
 
-	vkWaitForFences	(device.device, 1, &frames[frame].fence, VK_TRUE, UINT64_MAX);
 	do 
 	{
 		err = vkAcquireNextImageKHR(
@@ -1969,10 +1999,12 @@ int svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* fr
 		}
 	} while (err != VK_SUCCESS);
 
+	vkWaitForFences	(device.device, 1, &frames[nextFrame].fence, VK_TRUE, UINT64_MAX);
+
 	return (int)nextFrame;
 }
 
-void svkQueueSubmit(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore& waitSemaphore, VkSemaphore& signalSemaphore, VkFence& fence)
+void svkQueueSubmit(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore* waitSemaphore, VkSemaphore* signalSemaphore, VkFence fence)
 {
 	vkResetFences(device.device, 1, &fence);
 
@@ -1987,12 +2019,12 @@ void svkQueueSubmit(svkDevice& device, const VkCommandBuffer* commandBuffers, co
 	submitInfo.pNext				= NULL;
 	submitInfo.pWaitDstStageMask	= &pipeStageFlags;
 	pipeStageFlags					= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-	submitInfo.waitSemaphoreCount	= 1;
-	submitInfo.pWaitSemaphores		= &waitSemaphore; //&frames[prevFrame].imageAcquireSemaphore;
+	submitInfo.waitSemaphoreCount	= NULL == waitSemaphore ? 0 : 1;
+	submitInfo.pWaitSemaphores		= waitSemaphore; //&frames[prevFrame].imageAcquireSemaphore;
 	submitInfo.commandBufferCount	= commandBufferCount;
 	submitInfo.pCommandBuffers		= commandBuffers;
-	submitInfo.signalSemaphoreCount	= 1;
-	submitInfo.pSignalSemaphores	= &signalSemaphore;	//&frames[frame].drawCompleteSemaphore;
+	submitInfo.signalSemaphoreCount	= NULL == signalSemaphore ? 0 : 1;
+	submitInfo.pSignalSemaphores	= signalSemaphore;	//&frames[frame].drawCompleteSemaphore;
 	VkResult err = vkQueueSubmit(device.queue, 1, &submitInfo, fence);
 	assert(!err);
 }
@@ -2004,8 +2036,8 @@ void svkQueueSubmitFrame(svkDevice& device, svkFrame* frames, const int frame, c
 		device, 
 		&frames[frame].commandBuffer, 
 		1, 
-		frames[prevFrame].imageAcquireSemaphore,  
-		frames[frame].drawCompleteSemaphore, 
+		&frames[prevFrame].imageAcquireSemaphore,  
+		&frames[frame].drawCompleteSemaphore, 
 		frames[frame].fence);
 }
 

@@ -204,6 +204,7 @@ private:
 	VkFramebuffer		m_pickFramebuffer;
 	VkCommandBuffer		m_pickCommandBuffer;
 	CommandAllocator*	m_pickCommandAllocator;
+	VkFence				m_pickFence;
 
 	// for draw context
 	DrawContext			m_drawContext;
@@ -218,7 +219,6 @@ private:
 	void*				m_frameUniformBuffersMapped[MAX_FRAME];
 	uint32_t			m_frameUniformBufferOffset;
 	CommandAllocator*	m_commandAllocator[MAX_FRAME];
-	scl::varray<VkCommandBuffer> m_currentFrameCommandBuffers;
 	VkCommandBuffer		m_bindCommandBuffer;
 
 	//for recreate surface
