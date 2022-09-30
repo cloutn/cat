@@ -498,12 +498,8 @@ void VulkanRender::endDraw()
 
 void VulkanRender::beginPickPass()
 {
-	//svkWaitFence(m_device, &m_pickFence, 1);
 	if (!svkIsFenceSignaled(m_device, m_pickFence))
-	{
-		//printf("pick pass not signaled!\n");
 		return;
-	}
 
 	m_drawContext.renderPass			= m_pickRenderPass;
 	m_drawContext.framebuffer			= m_pickFramebuffer;
@@ -512,6 +508,11 @@ void VulkanRender::beginPickPass()
 	m_drawContext.commandAllocator		= m_pickCommandAllocator;
 	m_drawContext.uniform				= m_frameUniforms[m_frameIndex];
 	m_drawContext.uniformBufferMapped	= m_frameUniformBuffersMapped[m_frameIndex];
+
+	//svkMapImage()
+	//static uint8* data = new uint8[3932160] { 0 };
+	//int copied = 0;
+	//svkCopyImageToData(m_device, m_pickColorImage, data, 3932160, &copied);
 
 	//m_frameIndex = 0;
 	m_drawContext.commandAllocator->reset(m_device);

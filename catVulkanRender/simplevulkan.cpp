@@ -805,8 +805,8 @@ svkImage svkCreateAttachmentColorImage(svkDevice& device, VkFormat format, const
 		height, 
 		format, 
 		VK_IMAGE_TILING_OPTIMAL, 
-		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,	//VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT ,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		VK_IMAGE_LAYOUT_UNDEFINED, 
 		NULL);	
 
@@ -1162,6 +1162,11 @@ svkSurface svkCreateSurface(VkInstance inst, svkDevice& device, void* hinstance,
 	vkcheck( vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device.gpu, surface.surface, &surface.capabilities) );
 	surface.width = surface.capabilities.currentExtent.width;
 	surface.height = surface.capabilities.currentExtent.height;
+
+    if (!(surface.capabilities.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_DST_BIT)) 
+	{
+		printf("Surface cannot be destination of blit.");
+    }
 
 	return surface;
 }
@@ -2167,6 +2172,27 @@ void svkDestroyTexture(svkDevice& device, svkTexture& texture)
 	vkDestroyImage		(device.device, texture.image, NULL);
 	vkFreeMemory		(device.device, texture.memory, NULL);
 	vkDestroySampler	(device.device, texture.sampler, NULL);
+}
+
+void svkCopyImageToData(svkDevice& device, svkImage& image, void* const data, const int dataCapacity, int* outCopiedByteCount)
+{
+	void*					imageData = NULL; 
+	VkMemoryRequirements	memReq;
+	memclr(memReq);
+	int dataSize = memReq.size;
+
+	vkGetImageMemoryRequirements(device.device, image.image, &memReq);
+	VkResult err = vkMapMemory(device.device, image.memory, 0, memReq.size, 0, &imageData);
+
+	if (dataSize > dataCapacity)
+		dataSize = dataCapacity;
+
+	memcpy(data, imageData, dataSize);
+
+	if (NULL != outCopiedByteCount)
+		*outCopiedByteCount = dataSize;
+
+	vkUnmapMemory(device.device, image.memory);
 }
 
 void svkDestroySurface(VkInstance inst, svkDevice& device, svkSurface& surface)

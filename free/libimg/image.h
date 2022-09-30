@@ -42,5 +42,7 @@ void			get_tga_size		(_iobuf* fp, int* out_width, int* out_heigh, int* out_pixel
 uint			load_etc2_to_opengl	(_iobuf* fp, int* out_width, int* out_height, int* pitch, int* pixel);
 #endif
 
+void			save_bmp			(_iobuf* fp, int width, int height, int pitch, const unsigned char* data);
+
 }
 

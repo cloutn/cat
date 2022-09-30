@@ -41,6 +41,10 @@
 
 namespace img {
 
+typedef unsigned char	uint8;
+typedef unsigned short	uint16;
+typedef unsigned int	uint32;
+
 static const int PIXEL_RGBA		= 4;
 static const int PIXEL_RGB		= 3;
 
@@ -746,6 +750,89 @@ uint load_etc2_to_opengl(_iobuf* fp, int* out_width, int* out_height, int* pitch
 	return texture;
 }
 
+
+// .BMP file header.
+#pragma pack(push,1)
+struct BitmapFileHeader
+{
+	uint16 type;
+	uint32 size;
+	uint16 reserved1;
+	uint16 reserved2;
+	uint32 offBits;
+};
+#pragma pack(pop)
+
+// .BMP subheader.
+#pragma pack(push,1)
+struct BitmapInfoHeader
+{
+	uint32 size;
+	uint32 width;
+	int32 height;
+	uint16 planes;
+	uint16 bitCount;
+	uint32 compression;
+	uint32 sizeImage;
+	uint32 xPelsPerMeter;
+	uint32 yPelsPerMeter;
+	uint32 clrUsed;
+	uint32 clrImportant;
+};
+#pragma pack(pop)
+
+template <typename T>
+inline constexpr T Align(T Val, uint32 Alignment)
+{
+	return (T)(((uint32)Val + Alignment - 1) & ~(Alignment - 1));
+}
+
+void save_bmp(_iobuf* fp, int width, int height, int pitch, const unsigned char* data)
+{
+	BitmapFileHeader fileHeader;
+	BitmapInfoHeader infoHeader;
+
+	// file header
+	fileHeader.type				= 'B' + (256 * (int32)'M');
+	fileHeader.reserved1		= 0;
+	fileHeader.reserved2		= 0;
+	int32 sizeImage				= width * height * 3;
+	fileHeader.offBits			= sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
+	fileHeader.size				= fileHeader.offBits + sizeImage;
+
+	fwrite(&fileHeader, sizeof(fileHeader), 1, fp);
+
+	// bmp info header
+	infoHeader.size				= sizeof(BitmapInfoHeader);
+	infoHeader.width			= width;
+	infoHeader.height			= height;
+	infoHeader.planes			= 1;
+	infoHeader.compression		= 0;
+	infoHeader.sizeImage		= sizeImage;
+	infoHeader.bitCount			= 24;
+	infoHeader.xPelsPerMeter	= 0;
+	infoHeader.yPelsPerMeter	= 0;
+	infoHeader.clrUsed			= 0;
+	infoHeader.clrImportant		= 0;
+	
+	fwrite(&infoHeader, sizeof(infoHeader), 1, fp);
+
+	//NOTE: Each row must be 4-byte aligned in a BMP.
+	int paddingCount = Align(width * 3, 4) - width * 3;
+
+	// Upside-down scanlines.
+	for (int32 i = height - 1; i >= 0; i--)
+	{
+		const uint8* rgb = &data[i * width * 4];
+		for (int32 j = width; j > 0; j--)
+		{
+			fwrite(rgb, sizeof(uint8), 3, fp);
+			rgb += 4;
+		}
+		uint8 PadByte = 0;
+		fwrite(&PadByte, sizeof(uint8), paddingCount, fp);
+	}
+}
 
 #endif // end of GFX_ENABLE_ETC2
 

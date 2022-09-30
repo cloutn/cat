@@ -151,20 +151,21 @@ svkTexture				svkCreateTexture				(svkDevice& device, const int width, const int
 // TODO 没有检查目标 texutrre 的大小和是否可以写入
 void					svkCopyTexture					(svkDevice& device, svkTexture& texture, const void* const data, const int sizeofData);
 void					svkDestroyTexture				(svkDevice&, svkTexture&);
+void					svkCopyImageToData				(svkDevice& device, svkImage& image, void* const data, const int dataCapacity, int* outCopiedByteCount);
 
 //shader
-svkShaderProgram		svkCreateShaderProgramFromCode	(svkDevice&, const char* const vertCode, const char* const tcsCode, const char* const tesCode, const char* const geoCode, const char* const fragCode, const char* const compCode);
-svkShaderProgram		svkCreateShaderProgramFromFile	(svkDevice&, const char* const vertFilename, const char* const tcsFilename, const char* const tesFilename, const char* const geoFilename, const char* const fragFilename, const char* const compFilename);
-void					svkDestroyShaderProgram			(svkDevice&, svkShaderProgram&);
+svkShaderProgram		svkCreateShaderProgramFromCode	(svkDevice& device, const char* const vertCode, const char* const tcsCode, const char* const tesCode, const char* const geoCode, const char* const fragCode, const char* const compCode);
+svkShaderProgram		svkCreateShaderProgramFromFile	(svkDevice& device, const char* const vertFilename, const char* const tcsFilename, const char* const tesFilename, const char* const geoFilename, const char* const fragFilename, const char* const compFilename);
+void					svkDestroyShaderProgram			(svkDevice& device, svkShaderProgram&);
 
 // TODO 先创建buffer再拷贝功能没有实现
-svkBuffer				svkCreateVertexBuffer			(svkDevice&, const void* data, const int dataSize);
-svkBuffer				svkCreateIndexBuffer			(svkDevice&, const void* data, const int dataSize);
-svkBuffer				svkCreateUniformBuffer			(svkDevice&, void* data, const int dataSize);
-void					svkCopyBuffer					(svkDevice&, svkBuffer&, const void* data, const int dataSize);
-void*					svkMapBuffer					(svkDevice&, svkBuffer&);
-void					svkUnmapBuffer					(svkDevice&, svkBuffer&);
-void					svkDestroyBuffer				(svkDevice&, svkBuffer& buffer);
+svkBuffer				svkCreateVertexBuffer			(svkDevice& device, const void* data, const int dataSize);
+svkBuffer				svkCreateIndexBuffer			(svkDevice& device, const void* data, const int dataSize);
+svkBuffer				svkCreateUniformBuffer			(svkDevice& device, void* data, const int dataSize);
+void					svkCopyBuffer					(svkDevice& device, svkBuffer&, const void* data, const int dataSize);
+void*					svkMapBuffer					(svkDevice& device, svkBuffer&);
+void					svkUnmapBuffer					(svkDevice& device, svkBuffer&);
+void					svkDestroyBuffer				(svkDevice& device, svkBuffer& buffer);
 VkDescriptorSetLayout	svkCreateDescriptorLayout		(svkDevice& device);
 VkDescriptorSetLayout	svkCreateDescriptorLayoutEx		(svkDevice& device, const VkDescriptorSetLayoutBinding* binds, const int bindCount);
 VkDescriptorPool		svkCreateDescriptorPoolEx		(svkDevice& device, const unsigned int size, const VkDescriptorSetLayoutBinding* binds, const int bindCount);
@@ -203,7 +204,6 @@ int						svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, svk
 void					svkQueueSubmit					(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore* waitSemaphore, VkSemaphore* signalSemaphore, VkFence fence);
 void					svkQueueSubmitFrame				(svkDevice& device, svkFrame* frames, const int frame, const int prevFrame);
 void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame,  void* userData, presentResultCallback callback);
-//void					svkSubmitAndPresent				(svkDevice& device, svkSwapchain& swapchain, const int frameIndex, void* userData, presentResultCallback callback);
 VkRenderPass			svkCreateRenderPass				(svkDevice& device, VkFormat format, VkFormat depthFormat, VkImageLayout colorAttachmentFinalLayout);
 VkFramebuffer			svkCreateFrameBuffer			(svkDevice& device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height);
 svkImage				svkCreateAttachmentDepthImage	(svkDevice& device, VkFormat format, const int width, const int height);
