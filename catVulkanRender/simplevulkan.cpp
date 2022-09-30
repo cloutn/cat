@@ -936,6 +936,14 @@ bool svkIsFenceSignaled(svkDevice& device, VkFence fence)
     return (result == VK_SUCCESS);
 }
 
+svkBuffer svkCreateBuffer(svkDevice& device, VkBufferUsageFlags usage, const int size)
+{
+	VkResult		err;
+	VkDeviceMemory	memory;
+	VkBuffer		buffer = _genBuffer(device, usage, size, &memory);
+	return svkBuffer { buffer, memory };
+}
+
 VkInstance svkCreateInstance(bool enableValidationLayer)
 {
 	uint					allExtensionCount = 32;

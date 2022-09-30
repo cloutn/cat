@@ -96,6 +96,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_pickCommandAllocator = new CommandAllocator();
 	m_pickCommandAllocator->init(m_device);
 	m_pickFence = svkCreateFence(m_device, true);
+	m_pickImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
 
 	// descriptor set
 	//const int DEMO_TEXTURE_COUNT = 1;
@@ -525,6 +526,12 @@ void VulkanRender::endPickPass()
 
 	VkResult err;
 
+	VkCommandBuffer tmpCB = m_pickCommandAllocator->alloc();
+	svkBeginSecondaryCommandBuffer(tmpCB, m_drawContext.renderPass, m_drawContext.framebuffer);
+
+	vkEndCommandBuffer(tmpCB);
+
+
 	//unbindCommandBuffer();
 
 	VkCommandBuffer& primaryCb = m_pickCommandBuffer;
@@ -781,7 +788,7 @@ void VulkanRender::_createPickRenderTarget()
 {
 	m_pickColorImage	= svkCreateAttachmentColorImage	(m_device, VK_FORMAT_R8G8B8A8_UNORM, m_surface.width, m_surface.height);
 	m_pickDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
-	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_pickColorImage.format, m_pickDepthImage.format, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	m_pickRenderPass	= svkCreateRenderPass			(m_device, m_pickColorImage.format, m_pickDepthImage.format, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 	VkImageView pickImageViews[] = { m_pickColorImage.imageView, m_pickDepthImage.imageView };
 	m_pickFramebuffer	= svkCreateFrameBuffer			(m_device, m_pickRenderPass, pickImageViews, 2, m_surface.width, m_surface.height); 
 }

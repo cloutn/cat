@@ -221,6 +221,8 @@ private:
 	CommandAllocator*	m_commandAllocator[MAX_FRAME];
 	VkCommandBuffer		m_bindCommandBuffer;
 
+	svkBuffer			m_pickImageCPUBuffer;
+
 	//for recreate surface
 	void*				m_windowInstance;
 	void*				m_windowHandle;
