@@ -214,5 +214,6 @@ void					svkDestroyFrames				(svkDevice& device, svkFrame* frames, const int fra
 VkFence					svkCreateFence					(svkDevice& device, bool signaled);
 void					svkWaitFence					(svkDevice& device, VkFence* fences, const int fenceCOunt);
 void					svkDestroyFence					(svkDevice& device, VkFence fence);
+bool					svkIsFenceSignaled				(svkDevice& device, VkFence fence);
 
 

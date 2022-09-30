@@ -925,6 +925,17 @@ void svkDestroyFence(svkDevice& device, VkFence fence)
 	vkDestroyFence(device.device, fence, NULL);
 }
 
+bool svkIsFenceSignaled(svkDevice& device, VkFence fence)
+{
+    VkResult result;
+
+    result = vkGetFenceStatus(device.device, fence);
+
+    assert(result == VK_SUCCESS  || result == VK_NOT_READY);
+
+    return (result == VK_SUCCESS);
+}
+
 VkInstance svkCreateInstance(bool enableValidationLayer)
 {
 	uint					allExtensionCount = 32;

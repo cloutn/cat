@@ -498,7 +498,12 @@ void VulkanRender::endDraw()
 
 void VulkanRender::beginPickPass()
 {
-	svkWaitFence(m_device, &m_pickFence, 1);
+	//svkWaitFence(m_device, &m_pickFence, 1);
+	if (!svkIsFenceSignaled(m_device, m_pickFence))
+	{
+		//printf("pick pass not signaled!\n");
+		return;
+	}
 
 	m_drawContext.renderPass			= m_pickRenderPass;
 	m_drawContext.framebuffer			= m_pickFramebuffer;
@@ -514,6 +519,9 @@ void VulkanRender::beginPickPass()
 
 void VulkanRender::endPickPass()
 {
+	if (NULL == m_drawContext.renderPass)
+		return;
+
 	VkResult err;
 
 	//unbindCommandBuffer();
@@ -818,6 +826,9 @@ void VulkanRender::draw2(
 	const int			jointMatrixCount)
 {
 	if (_minimized())
+		return;
+
+	if (NULL == m_drawContext.renderPass)
 		return;
 
 	//VkCommandBuffer cmd_buf = m_swapchain.commandBuffers[m_frameIndex];
