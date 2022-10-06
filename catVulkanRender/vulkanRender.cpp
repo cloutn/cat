@@ -512,7 +512,19 @@ void VulkanRender::beginPickPass()
 
 	//svkMapImage()
 	//static uint8* data = new uint8[3932160] { 0 };
-	//int copied = 0;
+	uint8* data = NULL;
+	if (m_isCopied = 1)
+	{
+		int copied = 0;
+		vkMapMemory(m_device.device, m_pickImageCPUBuffer.memory, 0, 3932160, 0, (void**)&data);
+		FILE* f = fopen("d:/1.bmp", "wb");
+
+		img::save_bmp(f, m_surface.width, m_surface.height, 0, data);
+
+		fclose(f);
+		m_isCopied = 2;
+	}
+
 	//svkCopyImageToData(m_device, m_pickColorImage, data, 3932160, &copied);
 
 	//m_frameIndex = 0;
@@ -529,8 +541,19 @@ void VulkanRender::endPickPass()
 	VkCommandBuffer tmpCB = m_pickCommandAllocator->alloc();
 	svkBeginSecondaryCommandBuffer(tmpCB, m_drawContext.renderPass, m_drawContext.framebuffer);
 
+	VkBufferImageCopy region;
+	memclr(region);
+	region.bufferOffset			= 0;
+	region.bufferRowLength		= m_surface.width;
+	region.bufferImageHeight	= 0;
+	region.imageSubresource		= { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+	region.imageOffset			= { 0, 0, 0 };
+	region.imageExtent			= { (unsigned int)m_surface.width, (unsigned int)m_surface.height, 0 };
+	vkCmdCopyImageToBuffer(tmpCB, m_pickColorImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_pickImageCPUBuffer.buffer, 1, &region);
+
 	vkEndCommandBuffer(tmpCB);
 
+	m_isCopied = 1;
 
 	//unbindCommandBuffer();
 

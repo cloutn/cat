@@ -231,6 +231,8 @@ private:
 
 	float				m_clearColor[4];
 
+	int		m_isCopied = 0;
+
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
 	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key 是 uniform bind 的 hash 值
 	scl::hash_table<UniformDataKey, DescriptorSet>	m_descriptorSetCache;		// 根据不同的 uniform data 来查找对应的 descriptor set
