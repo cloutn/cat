@@ -513,10 +513,12 @@ void VulkanRender::beginPickPass()
 	//svkMapImage()
 	//static uint8* data = new uint8[3932160] { 0 };
 	uint8* data = NULL;
-	if (m_isCopied = 1)
+	if (m_isCopied == 1)
 	{
 		int copied = 0;
-		vkMapMemory(m_device.device, m_pickImageCPUBuffer.memory, 0, 3932160, 0, (void**)&data);
+		const int BYTES = m_surface.width * m_surface.height * 4;
+		VkResult vr = vkMapMemory(m_device.device, m_pickImageCPUBuffer.memory, 0, BYTES, 0, (void**)&data);
+		assert(vr == VK_SUCCESS);
 		FILE* f = fopen("d:/1.bmp", "wb");
 
 		img::save_bmp(f, m_surface.width, m_surface.height, 0, data);
@@ -553,7 +555,8 @@ void VulkanRender::endPickPass()
 
 	vkEndCommandBuffer(tmpCB);
 
-	m_isCopied = 1;
+	if (0 == m_isCopied)
+		m_isCopied = 1;
 
 	//unbindCommandBuffer();
 

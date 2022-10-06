@@ -826,7 +826,8 @@ void save_bmp(_iobuf* fp, int width, int height, int pitch, const unsigned char*
 		const uint8* rgb = &data[i * width * 4];
 		for (int32 j = width; j > 0; j--)
 		{
-			fwrite(rgb, sizeof(uint8), 3, fp);
+			uint8 bgr[3] = { rgb[2], rgb[1], rgb[0] };
+			fwrite(bgr, sizeof(uint8), 3, fp);
 			rgb += 4;
 		}
 		uint8 PadByte = 0;
