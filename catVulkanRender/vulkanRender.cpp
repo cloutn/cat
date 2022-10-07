@@ -100,7 +100,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_pickCommandAllocator = new CommandAllocator();
 	m_pickCommandAllocator->init(m_device);
 	m_pickFence = svkCreateFence(m_device, true);
-	m_prevPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
+	m_pickPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
 
 	// descriptor set
 	//const int DEMO_TEXTURE_COUNT = 1;
@@ -522,7 +522,7 @@ void VulkanRender::beginPickPass()
 	{
 		int copied = 0;
 		const int BYTES = m_surface.width * m_surface.height * 4;
-		VkResult vr = vkMapMemory(m_device.device, m_prevPassImageCPUBuffer.memory, 0, BYTES, 0, (void**)&data);
+		VkResult vr = vkMapMemory(m_device.device, m_pickPassImageCPUBuffer.memory, 0, BYTES, 0, (void**)&data);
 		assert(vr == VK_SUCCESS);
 		FILE* f = fopen("d:/1.bmp", "wb");
 
@@ -556,7 +556,7 @@ void VulkanRender::endPickPass()
 	region.imageSubresource		= { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
 	region.imageOffset			= { 0, 0, 0 };
 	region.imageExtent			= { (unsigned int)m_surface.width, (unsigned int)m_surface.height, 0 };
-	vkCmdCopyImageToBuffer(tmpCB, m_pickRenderTarget.colorImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_prevPassImageCPUBuffer.buffer, 1, &region);
+	vkCmdCopyImageToBuffer(tmpCB, m_pickRenderTarget.colorImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_pickPassImageCPUBuffer.buffer, 1, &region);
 
 	vkEndCommandBuffer(tmpCB);
 
@@ -975,8 +975,8 @@ void VulkanRender::recreateSwapchain()
 	//vkDestroyRenderPass(m_device.device, m_pickRenderPass, NULL);
 	//m_pickRenderPass = svkCreateRenderPass(m_device, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_D16_UNORM, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
-	svkDestroyBuffer(m_device, m_prevPassImageCPUBuffer);
-	m_prevPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
+	svkDestroyBuffer(m_device, m_pickPassImageCPUBuffer);
+	m_pickPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
 
 	_destroyRenderTarget(m_device, m_pickRenderTarget);
 	m_pickRenderTarget = _createRenderTarget(m_device, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_D16_UNORM, m_pickRenderPass, m_surface.width, m_surface.height);
