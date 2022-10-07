@@ -818,8 +818,12 @@ void save_bmp(_iobuf* fp, int width, int height, int pitch, const unsigned char*
 	fwrite(&infoHeader, sizeof(infoHeader), 1, fp);
 
 	//NOTE: Each row must be 4-byte aligned in a BMP.
-	int paddingCount = Align(width * 3, 4) - width * 3;
+	int lineWidth				= Align(width * 3, 4);
+	int paddingCount			= lineWidth - width * 3;
 
+	uint8* fileBuffer = new uint8[lineWidth * height];
+	memset(fileBuffer, 0, lineWidth * height);
+	uint8* dst = fileBuffer;
 	// Upside-down scanlines.
 	for (int32 i = height - 1; i >= 0; i--)
 	{
@@ -827,12 +831,17 @@ void save_bmp(_iobuf* fp, int width, int height, int pitch, const unsigned char*
 		for (int32 j = width; j > 0; j--)
 		{
 			uint8 bgr[3] = { rgb[2], rgb[1], rgb[0] };
-			fwrite(bgr, sizeof(uint8), 3, fp);
+			memcpy(dst, bgr, 3);
+			dst += 3;
+
 			rgb += 4;
 		}
-		uint8 PadByte = 0;
-		fwrite(&PadByte, sizeof(uint8), paddingCount, fp);
+		uint8 PadByte[4] = { 0 };
+		memcpy(dst, PadByte, paddingCount);
+		dst += paddingCount;
 	}
+	fwrite(fileBuffer, sizeof(uint8), lineWidth * height, fp);
+	delete[] fileBuffer;
 }
 
 #endif // end of GFX_ENABLE_ETC2

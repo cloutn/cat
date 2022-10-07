@@ -28,6 +28,13 @@ namespace cat {
 class DescriptorAllocator;
 class CommandAllocator;
 
+class RenderTarget
+{
+public:
+	svkImage		colorImage;
+	svkImage		depthImage;
+	VkFramebuffer	framebuffer;
+};
 
 
 class VulkanRender : public cat::IRender
@@ -161,8 +168,12 @@ private:
 		const scl::matrix*		jointMatrices,
 		const int				jointMatrixCount);
 
-	void					_createPickRenderTarget		();
-	void					_destroyPickRenderTarget	();
+
+
+	static RenderTarget		_createRenderTarget		(svkDevice& device, VkFormat colorFormat, VkFormat depthFormat, VkRenderPass renderPass, const int width, const int height);
+	static void				_destroyRenderTarget	(svkDevice& device, RenderTarget& renderTarget);
+
+	//void					_destroyPickRenderTarget	();
 	void					_createMainRenderTarget		();
 	void					_destroyMainRenderTarget	();
 
@@ -198,10 +209,11 @@ private:
 	int					m_frameCount;
 
 	// for 3D picking
-	svkImage			m_pickColorImage;
-	svkImage			m_pickDepthImage;
+	//svkImage			m_pickColorImage;
+	//svkImage			m_pickDepthImage;
 	VkRenderPass		m_pickRenderPass;
-	VkFramebuffer		m_pickFramebuffer;
+	RenderTarget		m_pickRenderTarget;
+	//VkFramebuffer		m_pickFramebuffer;
 	VkCommandBuffer		m_pickCommandBuffer;
 	CommandAllocator*	m_pickCommandAllocator;
 	VkFence				m_pickFence;
@@ -221,7 +233,7 @@ private:
 	CommandAllocator*	m_commandAllocator[MAX_FRAME];
 	VkCommandBuffer		m_bindCommandBuffer;
 
-	svkBuffer			m_pickImageCPUBuffer;
+	svkBuffer			m_pickPassImageCPUBuffer;
 
 	//for recreate surface
 	void*				m_windowInstance;
