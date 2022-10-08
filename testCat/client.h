@@ -67,7 +67,9 @@ public:
 #endif
 
 private:
-	void					_renderScene		(uint64 diff);
+	void					_renderScene		();
+	static void				OnButtonClick_DebugTest1(void* caller);
+	void					OnButtonClick_DebugTest1();
 
 private:
 

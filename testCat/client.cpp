@@ -72,6 +72,7 @@ void Client::init(const int width, const int height)
 	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
 
 	m_gui.init(this);
+	m_gui.setDebugButton1ClickEvent(this, OnButtonClick_DebugTest1);
 
 	loadGltf("art/SimpleSkin/SimpleSkin.gltf");
 	loadGltf("art/chibi_idle/scene.gltf");
@@ -152,7 +153,7 @@ Client& Client::inst()
 	return g_client;
 }
 
-void Client::_renderScene(uint64 diff)
+void Client::_renderScene()
 {
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
@@ -172,6 +173,21 @@ void Client::_renderScene(uint64 diff)
 	}
 }
 
+
+void Client::OnButtonClick_DebugTest1(void* caller)
+{
+	Client* client = static_cast<Client*>(caller);
+	if (NULL == client)
+		return;
+	client->OnButtonClick_DebugTest1();
+}
+
+void Client::OnButtonClick_DebugTest1()
+{
+	m_render.beginPickPass();
+	_renderScene();
+	m_render.endPickPass();
+}
 
 #ifdef SCL_WIN
 void Client::run()
@@ -208,6 +224,8 @@ void Client::run()
 		}
 
 
+		m_gui.onGUI();
+
 		updateAnimation(static_cast<double>(diff));
 
 		m_render.clear();
@@ -216,13 +234,11 @@ void Client::run()
 
 		m_render.beginDraw();
 
-		m_render.beginPickPass();
-		_renderScene(diff);
-		m_render.endPickPass();
+
 
 		m_render.beginScenePass();
-		_renderScene(diff);
-		m_gui.onGUI();
+		_renderScene();
+		m_gui.Render();
 		m_render.endScenePass();
 
 		m_render.endDraw();

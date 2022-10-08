@@ -24,7 +24,7 @@ namespace cat {
 
 using scl::file;
 
-MainGUI::MainGUI() : m_client(nullptr), m_selectObject(nullptr)
+MainGUI::MainGUI() : m_client(NULL), m_selectObject(NULL), m_debugButton1ClickCaller(NULL), m_debugButton1ClickFunc(NULL)
 {
 
 }
@@ -102,6 +102,18 @@ void MainGUI::onGUI()
 	_endFrame();
 }
 
+void MainGUI::Render()
+{
+	// Rendering
+	ImGui::Render();
+	ImDrawData* draw_data = ImGui::GetDrawData();
+	const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
+	if (!is_minimized)
+	{
+		m_client->render().drawIMGUI(draw_data);
+	}
+}
+
 void MainGUI::onEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
 {
 	ImGui_ImplWin32_WndProcHandler((HWND)hWnd, message, wParam, lParam);
@@ -117,6 +129,12 @@ bool MainGUI::wantCaptureMouse()
 {
 	ImGuiIO& io = ImGui::GetIO();
 	return io.WantCaptureMouse;
+}
+
+void MainGUI::setDebugButton1ClickEvent(void* caller, ButtonClickFunc func)
+{
+	m_debugButton1ClickCaller = caller;
+	m_debugButton1ClickFunc = func;
 }
 
 void MainGUI::_windowScene()
@@ -231,14 +249,7 @@ void MainGUI::_beginFrame()
 
 void MainGUI::_endFrame()
 {
-	// Rendering
-	ImGui::Render();
-	ImDrawData* draw_data = ImGui::GetDrawData();
-	const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
-	if (!is_minimized)
-	{
-		m_client->render().drawIMGUI(draw_data);
-	}
+
 }
 
 void MainGUI::_windowProperty(Object* const object)
@@ -277,6 +288,13 @@ void MainGUI::_windowDebug()
 
 	if (NULL != m_selectObject)
 		ImGui::Text(m_selectObject->name().c_str());               // Display some text (you can use a format strings too)
+
+	if (ImGui::Button("context menu item 222"))
+	{
+		//printf("context menu pressed.");
+		if (NULL != m_debugButton1ClickFunc)
+			m_debugButton1ClickFunc(m_debugButton1ClickCaller);
+	}
 
 	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::End();
