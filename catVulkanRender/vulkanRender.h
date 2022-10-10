@@ -117,6 +117,7 @@ public:
 	
 	void					beginPickPass		();
 	void					endPickPass			();
+	void					savePickPass		();
 
 	void					beginScenePass		();
 	void					endScenePass		();
@@ -209,11 +210,8 @@ private:
 	int					m_frameCount;
 
 	// for 3D picking
-	//svkImage			m_pickColorImage;
-	//svkImage			m_pickDepthImage;
 	VkRenderPass		m_pickRenderPass;
 	RenderTarget		m_pickRenderTarget;
-	//VkFramebuffer		m_pickFramebuffer;
 	VkCommandBuffer		m_pickCommandBuffer;
 	CommandAllocator*	m_pickCommandAllocator;
 	VkFence				m_pickFence;
@@ -242,8 +240,6 @@ private:
 	VkDescriptorPool	m_IMGUIDescriptorPool;
 
 	float				m_clearColor[4];
-
-	int		m_isCopied = 0;
 
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
 	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key 是 uniform bind 的 hash 值

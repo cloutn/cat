@@ -38,7 +38,6 @@ VulkanRender::VulkanRender()  :
 	m_mainRenderPass			(NULL),
 	m_frameCount				(0),
 	m_pickRenderPass			(NULL),
-	//m_pickFramebuffer			(NULL),
 	m_pickCommandBuffer			(NULL),
 	m_pickCommandAllocator		(NULL),
 	m_pickFence					(NULL),
@@ -64,8 +63,6 @@ VulkanRender::VulkanRender()  :
 	memclr(m_frameUniformBuffersMapped);
 	memclr(m_clearColor);
 	memclr(m_frames);
-	//memclr(m_pickColorImage);
-	//memclr(m_pickDepthImage);
 	memclr(m_drawContext);
 	memclr(m_pickRenderTarget);
 }
@@ -81,55 +78,26 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_descriptorAllocators.init	(MAX_DESCRITOR_ALLOCATOR_COUNT * MAX_CONFLICT);
 	m_descriptorSetCache.init	(MAX_DESCRIPTOR_SET_CACHE_SIZE * MAX_CONFLICT);
 
-	m_windowInstance	= hInstance;
-	m_windowHandle		= hwnd;
+	m_windowInstance			= hInstance;
+	m_windowHandle				= hwnd;
 
-	m_inst				= svkCreateInstance	(ENABLE_VALIDATION_LAYER);
-	m_device			= svkCreateDevice	(m_inst);
-	m_surface			= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
+	m_inst						= svkCreateInstance	(ENABLE_VALIDATION_LAYER);
+	m_device					= svkCreateDevice	(m_inst);
+	m_surface					= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
 	argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
 
 	_createMainRenderTarget();
 
 	// 3D picking
-	VkFormat colorFormat	= VK_FORMAT_R8G8B8A8_UNORM;
-	VkFormat depthFormat	= VK_FORMAT_D16_UNORM;
-	m_pickRenderPass		= svkCreateRenderPass(m_device, colorFormat, depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-	m_pickRenderTarget		= _createRenderTarget(m_device, colorFormat, depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
-	m_pickCommandBuffer	= svkAllocCommandBuffer		(m_device);
-	m_pickCommandAllocator = new CommandAllocator();
+	VkFormat colorFormat		= VK_FORMAT_R8G8B8A8_UNORM;
+	VkFormat depthFormat		= VK_FORMAT_D16_UNORM;
+	m_pickRenderPass			= svkCreateRenderPass(m_device, colorFormat, depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+	m_pickRenderTarget			= _createRenderTarget(m_device, colorFormat, depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
+	m_pickCommandBuffer			= svkAllocCommandBuffer		(m_device);
+	m_pickCommandAllocator		= new CommandAllocator();
 	m_pickCommandAllocator->init(m_device);
-	m_pickFence = svkCreateFence(m_device, true);
-	m_pickPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
-
-	// descriptor set
-	//const int DEMO_TEXTURE_COUNT = 1;
-	//m_descriptorCreator = svkCreateDescriptorCreator(m_device, m_swapchain.imageCount, 1, DEMO_TEXTURE_COUNT);
-
-	// mvp matrix
-	//scl::matrix mvp =
-	//{ 
-	//	{1.61543f,	0.92307f,	-0.63852f, -0.63725f,
-	//	0,			-2.07017f,	-0.51553f, -0.5145f,
-	//	-1.79413f, 0.83113f,	-0.57493f, -0.57378f,
-	//	 0,		0,			5.64243f,	5.83095f},
-	//};
-
-	//scl::matrix mvp =
-	//{ 
-	//	{1.449f,	0,			0,		0,
-	//	0,			2.414f,		0,		0,
-	//	0,			0,			-1,		-1,
-	//	0.056f,		-0.833f,	-0.2,	0},
-	//};
-
-	//scl::matrix mvp =
-	//{ 
-	//	{1.449f,	0,			0,		0.056f,
-	//	0,			2.414f,		0,		-0.833f,
-	//	0,			0,			-1,		-0.2,
-	//	0,			0,			-1,		0},
-	//};
+	m_pickFence					= svkCreateFence(m_device, true);
+	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
 
 	scl::matrix mvp = scl::matrix::identity();
 
@@ -146,8 +114,6 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 		m_frameUniforms[i]				= svkCreateUniformBuffer(m_device, NULL, maxBytesPerFrace);
 		m_frameUniformBuffersMapped[i]	= svkMapBuffer			(m_device, m_frameUniforms[i]);
 	}
-
-	//m_prepared = true;
 
 	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
 	{
@@ -515,26 +481,6 @@ void VulkanRender::beginPickPass()
 	m_drawContext.uniform				= m_frameUniforms[m_frameIndex];
 	m_drawContext.uniformBufferMapped	= m_frameUniformBuffersMapped[m_frameIndex];
 
-	//svkMapImage()
-	//static uint8* data = new uint8[3932160] { 0 };
-	uint8* data = NULL;
-	if (m_isCopied == 1)
-	{
-		int copied = 0;
-		const int BYTES = m_surface.width * m_surface.height * 4;
-		VkResult vr = vkMapMemory(m_device.device, m_pickPassImageCPUBuffer.memory, 0, BYTES, 0, (void**)&data);
-		assert(vr == VK_SUCCESS);
-		FILE* f = fopen("d:/1.bmp", "wb");
-
-		img::save_bmp(f, m_surface.width, m_surface.height, 0, data);
-
-		fclose(f);
-		m_isCopied = 2;
-	}
-
-	//svkCopyImageToData(m_device, m_pickColorImage, data, 3932160, &copied);
-
-	//m_frameIndex = 0;
 	m_drawContext.commandAllocator->reset(m_device);
 }
 
@@ -560,11 +506,8 @@ void VulkanRender::endPickPass()
 
 	vkEndCommandBuffer(tmpCB);
 
-	if (0 == m_isCopied)
-		m_isCopied = 1;
 
-	//unbindCommandBuffer();
-
+	// scene command buffer
 	VkCommandBuffer& primaryCb = m_pickCommandBuffer;
 	svkBeginCommandBuffer(primaryCb);
 	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
@@ -586,6 +529,24 @@ void VulkanRender::endPickPass()
 		m_pickFence);
 
 	memclr(m_drawContext);
+}
+
+void VulkanRender::savePickPass()
+{
+	svkWaitFence(m_device, &m_pickFence, 1);
+
+	uint8*		data	= NULL;
+	int			copied	= 0;
+	const int	BYTES	= m_surface.width * m_surface.height * 4;
+	VkResult	vr		= vkMapMemory(m_device.device, m_pickPassImageCPUBuffer.memory, 0, BYTES, 0, (void**)&data);
+	assert(vr == VK_SUCCESS);
+
+	static int i = 0;
+	string32 fname;
+	fname.format("d:/testCat_%d.bmp", i++);
+	FILE* f = fopen(fname.c_str(), "wb");
+	img::save_bmp(f, m_surface.width, m_surface.height, 0, data);
+	fclose(f);
 }
 
 void VulkanRender::beginScenePass()

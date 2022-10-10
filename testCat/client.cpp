@@ -187,6 +187,7 @@ void Client::OnButtonClick_DebugTest1()
 	m_render.beginPickPass();
 	_renderScene();
 	m_render.endPickPass();
+	m_render.savePickPass();
 }
 
 #ifdef SCL_WIN
