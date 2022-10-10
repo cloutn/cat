@@ -215,6 +215,9 @@ private:
 	VkCommandBuffer		m_pickCommandBuffer;
 	CommandAllocator*	m_pickCommandAllocator;
 	VkFence				m_pickFence;
+	VkSemaphore			m_pickSemaphore;
+	VkCommandBuffer		m_pickCopyCommandBuffer;
+	svkBuffer			m_pickPassImageCPUBuffer;
 
 	// for draw context
 	DrawContext			m_drawContext;
@@ -231,7 +234,6 @@ private:
 	CommandAllocator*	m_commandAllocator[MAX_FRAME];
 	VkCommandBuffer		m_bindCommandBuffer;
 
-	svkBuffer			m_pickPassImageCPUBuffer;
 
 	//for recreate surface
 	void*				m_windowInstance;

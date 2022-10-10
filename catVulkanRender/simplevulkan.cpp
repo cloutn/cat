@@ -944,6 +944,24 @@ svkBuffer svkCreateBuffer(svkDevice& device, VkBufferUsageFlags usage, const int
 	return svkBuffer { buffer, memory };
 }
 
+VkSemaphore svkCreateSemaphore(svkDevice& device)
+{
+	VkSemaphore semaphore;
+	VkSemaphoreCreateInfo semaphoreCreateInfo;
+	memclr(semaphoreCreateInfo);
+	semaphoreCreateInfo.sType				= VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+	semaphoreCreateInfo.pNext				= NULL;
+	semaphoreCreateInfo.flags				= 0;
+	vkcheck( vkCreateSemaphore(device.device, &semaphoreCreateInfo,	NULL, &semaphore) );
+
+	return semaphore;
+}
+
+void svkDestroySemaphore(svkDevice& device, VkSemaphore semaphore)
+{
+	vkDestroySemaphore(device.device, semaphore, NULL);	
+}
+
 VkInstance svkCreateInstance(bool enableValidationLayer)
 {
 	uint					allExtensionCount = 32;
@@ -1392,7 +1410,7 @@ svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCom
 	_setImageLayout(commandBuffer, _svkTexture.image, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_LAYOUT_PREINITIALIZED, _svkTexture.imageLayout, (VkAccessFlagBits)0, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 	if (NULL == outCommandBuffer)
 	{
-		svkEndCommandBuffer(device, commandBuffer);
+		svkEndCommandBufferAndSubmit(device, commandBuffer);
 	}
 
 	_createSamplerAndImageView(device, _svkTexture, texFormat);
@@ -1418,7 +1436,7 @@ svkTexture svkCreateTexture(svkDevice& device, const int width, const int height
 	_setImageLayout(commandBuffer, _svkTexture.image, VK_IMAGE_ASPECT_COLOR_BIT, VK_IMAGE_LAYOUT_PREINITIALIZED, _svkTexture.imageLayout, (VkAccessFlagBits)0, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 	if (NULL == outCommandBuffer)
 	{
-		svkEndCommandBuffer(device, commandBuffer);
+		svkEndCommandBufferAndSubmit(device, commandBuffer);
 	}
 
 	_createSamplerAndImageView(device, _svkTexture, texFormat);
@@ -1455,43 +1473,20 @@ void svkCopyTexture(svkDevice& device, svkTexture& texture, const void* const da
 	//texObj->imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 }
 
-void svkEndCommandBuffer(svkDevice& device, VkCommandBuffer commandBuffer)
+void svkEndCommandBufferAndSubmit(svkDevice& device, VkCommandBuffer commandBuffer)
 {
 	VkResult err;
 
 	vkEndCommandBuffer(commandBuffer);
 
-	VkFence fence;
-	
-	VkFenceCreateInfo fenceCreateInfo;
-	memclr(fenceCreateInfo);
-	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceCreateInfo.pNext = NULL;
-	fenceCreateInfo.flags = 0;
+	VkFence fence = svkCreateFence(device, false);
 
-	err = vkCreateFence(device.device, &fenceCreateInfo, NULL, &fence);
-	assert(!err);
-
-	const VkCommandBuffer cmdBufs[] = { commandBuffer };
-	VkSubmitInfo submitInfo;
-	memclr(submitInfo);
-	submitInfo.sType				= VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submitInfo.pNext				= NULL;
-	submitInfo.waitSemaphoreCount	= 0;
-	submitInfo.pWaitSemaphores		= NULL;
-	submitInfo.pWaitDstStageMask	= NULL;
-	submitInfo.commandBufferCount	= 1;
-	submitInfo.pCommandBuffers		= cmdBufs;
-	submitInfo.signalSemaphoreCount	= 0;
-	submitInfo.pSignalSemaphores	= NULL;
-
-	err = vkQueueSubmit(device.queue, 1, &submitInfo, fence);
-	assert(!err);
+	svkQueueSubmit(device, &commandBuffer, 1, NULL, NULL, fence);
 
 	err = vkWaitForFences(device.device, 1, &fence, VK_TRUE, UINT64_MAX);
 	assert(!err);
 
-	vkFreeCommandBuffers(device.device, device.commandPool, 1, cmdBufs);
+	vkFreeCommandBuffers(device.device, device.commandPool, 1, &commandBuffer);
 	vkDestroyFence(device.device, fence, NULL);
 }
 
@@ -2030,7 +2025,8 @@ int svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* fr
 
 void svkQueueSubmit(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore* waitSemaphore, VkSemaphore* signalSemaphore, VkFence fence)
 {
-	vkResetFences(device.device, 1, &fence);
+	if (NULL != fence)
+		vkResetFences(device.device, 1, &fence);
 
 	// Wait for the image acquired semaphore to be signaled to ensure
 	// that the image won't be rendered to until the presentation

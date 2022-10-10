@@ -141,7 +141,7 @@ VkCommandBuffer			svkAllocCommandBuffer			(svkDevice& device);
 void					svkAllocCommandBuffer			(svkDevice& device, VkCommandPool pool, bool isPrimary, int count, VkCommandBuffer* output);
 void					svkFreeCommandBuffer			(svkDevice& device, VkCommandBuffer commandBuffer);
 void					svkBeginCommandBuffer			(VkCommandBuffer, bool oneTime = false);
-void					svkEndCommandBuffer				(svkDevice&, VkCommandBuffer);
+void					svkEndCommandBufferAndSubmit	(svkDevice&, VkCommandBuffer);
 void					svkBeginSecondaryCommandBuffer	(VkCommandBuffer&, const VkRenderPass& renderPass, const VkFramebuffer& framebuffer);
 
 // TODO png支持使用 gfx 代码接入引擎
@@ -216,5 +216,7 @@ void					svkWaitFence					(svkDevice& device, VkFence* fences, const int fenceCO
 void					svkDestroyFence					(svkDevice& device, VkFence fence);
 bool					svkIsFenceSignaled				(svkDevice& device, VkFence fence);
 svkBuffer				svkCreateBuffer					(svkDevice& device, VkBufferUsageFlags usage, const int size);
+VkSemaphore				svkCreateSemaphore				(svkDevice& device);
+void					svkDestroySemaphore				(svkDevice& device, VkSemaphore semaphore);
 
 
