@@ -201,7 +201,7 @@ void Client::run()
 		uint64 diff = now - lastTick;
 		lastTick = now;
 
-		if (!m_gui.wantCaptureKeyboard())
+		if (!m_gui.wantCaptureKeyboard() && m_window.IsForegroundWindow())
 		{
 			float speed = 0.25f;
 			if (Keydown('W'))

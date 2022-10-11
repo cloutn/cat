@@ -43,6 +43,7 @@ public:
 	bool	registerEventHandler	(void* caller, EventHandlerFuncT func);
 	bool	unregisterEventHandler	(void* caller, EventHandlerFuncT func);
 	bool	postEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
+	bool	IsForegroundWindow		();
 
 	int		getWidth				() { return m_width; };
 	int		getHeight				() { return m_height; };

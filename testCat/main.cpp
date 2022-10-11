@@ -30,19 +30,6 @@ int main()
 	//_CrtSetBreakAlloc(1535);
 #endif
 
-	//FILE* f = fopen("e:/1.bmp", "wb");
-	//uint* data = new uint[100 * 100];
-	//for (int i = 0; i < 100; ++i)
-	//{
-	//	for (int j = 0; j < 100; ++j)
-	//	{
-	//		data[i * 100 + j] = i * i * j * j;
-	//	}
-	//}
-	//img::save_bmp(f, 100, 100, 0, (uint8*)data);
-	//fclose(f);
-	//delete[] data;
-
 	test();
 
 	scl::log::release();

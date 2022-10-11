@@ -738,6 +738,11 @@ VkRenderPass svkCreateRenderPass(svkDevice& svkdevice, VkFormat format, VkFormat
 	return renderPass;
 }
 
+void svkDestroyRenderPass(svkDevice& device, VkRenderPass renderPass)
+{
+	vkDestroyRenderPass(device.device, renderPass, NULL);
+}
+
 VkFramebuffer svkCreateFrameBuffer(svkDevice& svkdevice, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height)
 {
 	VkDevice device = svkdevice.device;
@@ -757,6 +762,11 @@ VkFramebuffer svkCreateFrameBuffer(svkDevice& svkdevice, VkRenderPass renderPass
 	VkResult err = vkCreateFramebuffer(device, &fbCreateInfo, NULL, &frameBuffer);
 	assert(!err);
 	return frameBuffer;
+}
+
+void svkDestroyFrameBuffer(svkDevice& device, VkFramebuffer framebuffer)
+{
+	vkDestroyFramebuffer(device.device, framebuffer, NULL);
 }
 
 svkImage svkCreateAttachmentDepthImage(svkDevice& device, VkFormat format, const int width, const int height)
@@ -1042,6 +1052,11 @@ VkInstance svkCreateInstance(bool enableValidationLayer)
 	vkcheck(vkCreateInstance(&createInfo, NULL, &inst));
 
 	return inst;
+}
+
+void svkDestroyInstance(VkInstance instance)
+{
+	vkDestroyInstance(instance, NULL);
 }
 
 svkDevice svkCreateDevice(VkInstance inst)
@@ -1333,6 +1348,16 @@ void svkBeginSecondaryCommandBuffer(VkCommandBuffer& cb, const VkRenderPass& ren
 	vkcheck( vkBeginCommandBuffer(cb, &beginInfo) );
 }
 
+void svkResetCommandBuffer(VkCommandBuffer& cb)
+{
+	vkResetCommandBuffer(cb, 0);
+}
+
+VkResult svkEndCommandBuffer(VkCommandBuffer& cb)
+{
+	return vkEndCommandBuffer(cb);
+}
+
 static VkImageView _CreateColorImageView(svkDevice& device, VkImage image, VkFormat format)
 {
 	VkImageViewCreateInfo viewCreateInfo;
@@ -1547,20 +1572,31 @@ void svkCopyBuffer(svkDevice& device, svkBuffer& buffer, const void* data, const
 
 void* svkMapBuffer(svkDevice& device, svkBuffer& buffer)
 {
+	return svkMapBuffer(device, buffer, VK_WHOLE_SIZE);
+}
+
+void* svkMapBuffer(svkDevice& device, svkBuffer& buffer, const int bytes)
+{
+	return svkMapMemory(device, buffer.memory, bytes);
+}
+
+void* svkMapMemory(svkDevice& device, VkDeviceMemory& memory, const int bytes)
+{
 	VkResult	err;
-	void*		mapmm = NULL;
-	err = vkMapMemory(device.device, buffer.memory, 0, VK_WHOLE_SIZE, 0, &mapmm);
+	void*		mapmem = NULL;
+	err = vkMapMemory(device.device, memory, 0, bytes, 0, &mapmem);
 	assert(!err);
-	return mapmm;
+	return mapmem;
 }
 
 void svkUnmapBuffer(svkDevice& device, svkBuffer& buffer)
 {
-	if (NULL == device.device)
-		return;
-	if (NULL == buffer.memory)
-		return;
-	vkUnmapMemory(device.device, buffer.memory);
+	svkUnmapMemory(device, buffer.memory);
+}
+
+void svkUnmapMemory(svkDevice& device, VkDeviceMemory& memory)
+{
+	vkUnmapMemory(device.device, memory);
 }
 
 VkDescriptorSetLayout svkCreateDescriptorLayout(svkDevice& device)
@@ -2245,6 +2281,11 @@ void svkDestroyDevice(svkDevice& device)
 	vkDestroyDevice				(device.device, NULL);
 }
 
+void svkDeviceWaitIdle(svkDevice& device)
+{
+	vkDeviceWaitIdle(device.device);
+}
+
 svkShaderProgram svkCreateShaderProgramFromCode(
 	svkDevice&						device,
 	const char* const				vertCode, 
@@ -2636,4 +2677,8 @@ void svkUpdateDescriptorSet(svkDevice& device, VkDescriptorSet descriptorSet, co
 	}
 }
 
+void svkDestroyDescriptorPool(svkDevice& device, VkDescriptorPool pool)
+{
+	vkDestroyDescriptorPool(device.device, pool, NULL);
+}
 

@@ -15,7 +15,7 @@ namespace cat {
 //typedef DPI_AWARENESS_CONTEXT(WINAPI* PFN_SetThreadDpiAwarenessContext)(DPI_AWARENESS_CONTEXT); // User32.lib + dll, Windows 10 v1607+ (Creators Update)
 void EnableDpiAwareness()
 {
-	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	::SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	//static HINSTANCE user32_dll = ::LoadLibraryA("user32.dll"); // Reference counted per-process
 	//if (PFN_SetThreadDpiAwarenessContext SetThreadDpiAwarenessContextFn = (PFN_SetThreadDpiAwarenessContext)::GetProcAddress(user32_dll, "SetThreadDpiAwarenessContext"))
 	//{
@@ -53,7 +53,7 @@ bool Win32Window::init(const int width, const int height, const wchar* const tit
 	if (enableDpiAwareness)
 		EnableDpiAwareness();
 
-	HINSTANCE hInstance = GetModuleHandle(0);
+	HINSTANCE hInstance = ::GetModuleHandle(0);
 	m_hInstance = hInstance;
 
 	//初始化屏幕尺寸相关变量
@@ -78,13 +78,13 @@ bool Win32Window::init(const int width, const int height, const wchar* const tit
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, szIconName);
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hIcon			= ::LoadIcon(hInstance, szIconName);
+	wcex.hCursor		= ::LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
 	wcex.lpszMenuName	= NULL;
 	wcex.lpszClassName	= szWindowClass;
 	wcex.hIconSm		= 0;
-	RegisterClassEx(&wcex);
+	::RegisterClassEx(&wcex);
 
 	//标题栏文本
 	//const TCHAR szTitle[]		= _T("main");
@@ -105,8 +105,8 @@ bool Win32Window::init(const int width, const int height, const wchar* const tit
 	if (!m_windowHandle)
 		return false;
 
-	ShowWindow(static_cast<HWND>(m_windowHandle), SW_SHOW);
-	UpdateWindow(static_cast<HWND>(m_windowHandle));
+	::ShowWindow(static_cast<HWND>(m_windowHandle), SW_SHOW);
+	::UpdateWindow(static_cast<HWND>(m_windowHandle));
 
 	return true;
 }
@@ -144,18 +144,18 @@ ptr_int __stdcall Win32Window::WndProc(void* hWnd, uint32 message, ptr_int wPara
 	}
 	//从HWND中获取Win32Window的指针
 	Win32Window* pWindow = reinterpret_cast<Win32Window*>(
-		GetWindowLongPtr(static_cast<HWND>(hWnd), GWLP_USERDATA));
+		::GetWindowLongPtr(static_cast<HWND>(hWnd), GWLP_USERDATA));
 	if (NULL == pWindow)
 	{
 		if (message != WM_GETMINMAXINFO)
 			assert(false);
-		return DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
+		return ::DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
 	}
 	//遍历所有handler，尝试处理消息
 	if (pWindow->postEvent(hWnd, message, wParam, lParam)) 
 		return 0;
 
-	return DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
+	return ::DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
 }
 
 bool Win32Window::registerEventHandler(void* caller, EventHandlerFuncT func)
@@ -207,9 +207,14 @@ bool Win32Window::postEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lP
 	return false;
 }
 
+bool Win32Window::IsForegroundWindow()
+{
+	return ::GetForegroundWindow() == m_windowHandle;
+}
+
 Win32Window::~Win32Window()
 {
-	DestroyWindow(static_cast<HWND>(m_windowHandle));
+	::DestroyWindow(static_cast<HWND>(m_windowHandle));
 }
 
 

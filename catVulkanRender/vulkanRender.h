@@ -218,6 +218,8 @@ private:
 	VkSemaphore			m_pickSemaphore;
 	VkCommandBuffer		m_pickCopyCommandBuffer;
 	svkBuffer			m_pickPassImageCPUBuffer;
+	scl::vector2i		m_pickImageOffset;
+	scl::vector2i		m_pickImageSize;
 
 	// for draw context
 	DrawContext			m_drawContext;
