@@ -32,6 +32,7 @@ Primitive::Primitive() :
 	m_primitiveType				(cat::PRIMITIVE_TYPE_POINTS),
 	m_material					(NULL),
 	m_shader					(NULL),
+	m_pickShader				(NULL),
 	m_parent					(NULL)
 {
 
@@ -268,8 +269,9 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 		m_material	= m_env->getDefaultMaterial();
 	}
 
-	ShaderMacro macros[128];
-	int			macroCount = 0;
+	//ShaderMacro macros[128];
+	//int			macroCount = 0;
+	ShaderMacroArray macros;
 
 	assert(NULL == m_shader);
 
@@ -277,29 +279,22 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 	bool hasWeights	= _hasAttr(primitive, "weights");
 	if (skinJointCount > 0 && hasJoints && hasWeights)
 	{
-		macros[macroCount].name = "SKIN";
-		++macroCount;
-
-		macros[macroCount].name = "JOINT_MATRIX_COUNT";
-		macros[macroCount].value.from_int(skinJointCount);
-		++macroCount;
+		macros.add("SKIN");
+		macros.add("JOINT_MATRIX_COUNT", skinJointCount);
 	}
 	if (_hasAttr(primitive, "NORMAL"))
 	{
-		macros[macroCount].name = "NORMAL";
-		++macroCount;
+		macros.add("NORMAL");
 	}
 	if (_hasAttr(primitive, "TANGENT"))
 	{
-		macros[macroCount].name = "TANGENT";
-		++macroCount;
+		macros.add("TANGENT");
 	}
 	if (_hasAttr(primitive, "TEXCOORD"))
 	{
 		if (NULL != m_material && NULL != m_material->texture())
 		{
-			macros[macroCount].name = "TEXTURE";
-			++macroCount;
+			macros.add("TEXTURE");
 		}
 		else
 		{
@@ -310,11 +305,20 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 	}
 	if (_hasAttr(primitive, "COLOR"))
 	{
-		macros[macroCount].name = "COLOR";
-		++macroCount;
+		macros.add("COLOR");
 	}
 
-	m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, macroCount);
+	m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
+
+
+	//macros.remove("TEXTURE");
+	//macros.remove("COLOR");
+	//macros.remove("TANGENT");
+	//macros.remove("NORMAL");
+
+	macros.add("PICK");
+	m_pickShader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag",  macros.data(), macros.size());
+
 }
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render)

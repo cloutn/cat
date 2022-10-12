@@ -79,6 +79,7 @@ private:
 	PRIMITIVE_TYPE		m_primitiveType;
 	Material*			m_material;
 	Shader*				m_shader;
+	Shader*				m_pickShader;
 	//TODO parent is for debug
 	Mesh*				m_parent;
 };

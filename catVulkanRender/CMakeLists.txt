@@ -18,6 +18,7 @@ set(header_files
 	vulkanRender.h
 	xxh3.h
 	xxhash.h
+	deviceInfo.h
 )
 
 set(src_files

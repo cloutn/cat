@@ -3,10 +3,11 @@
 ////////////////////////////////////
 #pragma once
 
-#include "simplevulkan.h"
-#include "pipelineKey.h"
-#include "uniformDataKey.h"
-#include "descriptorAllocator.h"
+#include "catVulkanRender/simplevulkan.h"
+#include "catVulkanRender/pipelineKey.h"
+#include "catVulkanRender/uniformDataKey.h"
+#include "catVulkanRender/descriptorAllocator.h"
+#include "catVulkanRender/deviceInfo.h"
 
 #include "cat/IRender.h"
 
@@ -125,6 +126,7 @@ public:
 	//device info
 	virtual int				getDeviceWidth		();
 	virtual int				getDeviceHeight		();
+	const DeviceInfo&		getDeviceInfo		() const { return m_deviceInfo; }
 
 	void					recreateSwapchain	();
 	void					recreateSurface		();
@@ -169,14 +171,14 @@ private:
 		const scl::matrix*		jointMatrices,
 		const int				jointMatrixCount);
 
-
-
 	static RenderTarget		_createRenderTarget		(svkDevice& device, VkFormat colorFormat, VkFormat depthFormat, VkRenderPass renderPass, const int width, const int height);
 	static void				_destroyRenderTarget	(svkDevice& device, RenderTarget& renderTarget);
 
 	//void					_destroyPickRenderTarget	();
 	void					_createMainRenderTarget		();
 	void					_destroyMainRenderTarget	();
+
+	static void				_fillDeviceInfo				(svkDevice& device, DeviceInfo& info);
 
 private:
 	class DrawContext
@@ -208,6 +210,7 @@ private:
 	svkImage			m_mainDepthImage;
 	svkFrame			m_frames[svkSwapchain::MAX_IMAGE_COUNT];
 	int					m_frameCount;
+	DeviceInfo			m_deviceInfo;
 
 	// for 3D picking
 	VkRenderPass		m_pickRenderPass;

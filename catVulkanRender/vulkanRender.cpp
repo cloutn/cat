@@ -1,7 +1,8 @@
-#include "./vulkanRender.h"
-#include "./descriptorAllocator.h"
-#include "./commandAllocator.h"
+#include "catVulkanRender/vulkanRender.h"
 
+#include "catVulkanRender/descriptorAllocator.h"
+#include "catVulkanRender/commandAllocator.h"
+#include "catVulkanRender/xxhash.h"
 
 #include "libimg/image.h"
 
@@ -9,7 +10,6 @@
 #include "scl/log.h"
 #include "scl/math.h"
 
-#include "xxhash.h"
 
 #include "imgui/imgui.h"
 #include "imgui_impl_vulkan.h"
@@ -17,6 +17,10 @@
 #include <assert.h>
 
 #define memclr(s) memset(&s, 0, sizeof(s))
+
+#ifdef DEVICE_TYPE
+    #undef DEVICE_TYPE
+#endif
 
 #ifdef _DEBUG
 static const bool ENABLE_VALIDATION_LAYER = true;
@@ -66,6 +70,7 @@ VulkanRender::VulkanRender()  :
 	memclr(m_frames);
 	memclr(m_drawContext);
 	memclr(m_pickRenderTarget);
+	memclr(m_deviceInfo);
 	m_pickImageSize.clear();
 	m_pickImageOffset.clear();
 }
@@ -102,7 +107,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_pickCommandAllocator->init(m_device);
 	m_pickFence					= svkCreateFence(m_device, true);
 	m_pickSemaphore				= svkCreateSemaphore(m_device);
-	m_pickImageSize.set(100, 100);
+	m_pickImageSize.set(10, 10);
 	m_pickImageOffset.set(m_surface.width / 2 - m_pickImageSize.x / 2, m_surface.height / 2 - m_pickImageSize.y / 2);
 	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_pickImageSize.x * m_pickImageSize.y * 4);
 
@@ -128,6 +133,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 		m_commandAllocator[i]->init(m_device);
 	}
 
+	_fillDeviceInfo(m_device, m_deviceInfo);
 	m_isInit = true;
 
 	return true;
@@ -859,6 +865,126 @@ void VulkanRender::_destroyMainRenderTarget()
 	svkDestroyRenderPass(m_device, m_mainRenderPass);
 	svkDestroyImage		(m_device, m_mainDepthImage);
 	svkDestroySwapchain	(m_device, m_swapchain);
+}
+
+void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
+{
+	// device info
+    info.apiVersion		= device.gpuProperties.apiVersion;
+    info.driverVersion	= device.gpuProperties.driverVersion;
+    info.vendorID		= device.gpuProperties.vendorID;
+    info.deviceID		= device.gpuProperties.deviceID;
+    info.deviceType		= (cat::DeviceInfo::DEVICE_TYPE)(device.gpuProperties.deviceType);
+    scl::strcpy			(info.deviceName, 256, device.gpuProperties.deviceName);
+    memcpy				(info.pipelineCacheUUID, device.gpuProperties.pipelineCacheUUID, sizeof(info.pipelineCacheUUID));
+
+	// limits
+	info.limits.maxImageDimension1D								= device.gpuProperties.limits.maxImageDimension1D;
+	info.limits.maxImageDimension2D								= device.gpuProperties.limits.maxImageDimension2D;
+	info.limits.maxImageDimension3D								= device.gpuProperties.limits.maxImageDimension3D;
+	info.limits.maxImageDimensionCube							= device.gpuProperties.limits.maxImageDimensionCube;
+	info.limits.maxImageArrayLayers								= device.gpuProperties.limits.maxImageArrayLayers;
+	info.limits.maxTexelBufferElements							= device.gpuProperties.limits.maxTexelBufferElements;
+	info.limits.maxUniformBufferRange							= device.gpuProperties.limits.maxUniformBufferRange;
+	info.limits.maxStorageBufferRange							= device.gpuProperties.limits.maxStorageBufferRange;
+	info.limits.maxPushConstantsSize							= device.gpuProperties.limits.maxPushConstantsSize;
+	info.limits.maxMemoryAllocationCount						= device.gpuProperties.limits.maxMemoryAllocationCount;
+	info.limits.maxSamplerAllocationCount						= device.gpuProperties.limits.maxSamplerAllocationCount;
+	info.limits.bufferImageGranularity							= device.gpuProperties.limits.bufferImageGranularity;
+	info.limits.sparseAddressSpaceSize							= device.gpuProperties.limits.sparseAddressSpaceSize;
+	info.limits.maxBoundDescriptorSets							= device.gpuProperties.limits.maxBoundDescriptorSets;
+	info.limits.maxPerStageDescriptorSamplers					= device.gpuProperties.limits.maxPerStageDescriptorSamplers;
+	info.limits.maxPerStageDescriptorUniformBuffers				= device.gpuProperties.limits.maxPerStageDescriptorUniformBuffers;
+	info.limits.maxPerStageDescriptorStorageBuffers				= device.gpuProperties.limits.maxPerStageDescriptorStorageBuffers;
+	info.limits.maxPerStageDescriptorSampledImages				= device.gpuProperties.limits.maxPerStageDescriptorSampledImages;
+	info.limits.maxPerStageDescriptorStorageImages				= device.gpuProperties.limits.maxPerStageDescriptorStorageImages;
+	info.limits.maxPerStageDescriptorInputAttachments			= device.gpuProperties.limits.maxPerStageDescriptorInputAttachments;
+	info.limits.maxPerStageResources							= device.gpuProperties.limits.maxPerStageResources;
+	info.limits.maxDescriptorSetSamplers						= device.gpuProperties.limits.maxDescriptorSetSamplers;
+	info.limits.maxDescriptorSetUniformBuffers					= device.gpuProperties.limits.maxDescriptorSetUniformBuffers;
+	info.limits.maxDescriptorSetUniformBuffersDynamic			= device.gpuProperties.limits.maxDescriptorSetUniformBuffersDynamic;
+	info.limits.maxDescriptorSetStorageBuffers					= device.gpuProperties.limits.maxDescriptorSetStorageBuffers;
+	info.limits.maxDescriptorSetStorageBuffersDynamic			= device.gpuProperties.limits.maxDescriptorSetStorageBuffersDynamic;
+	info.limits.maxDescriptorSetSampledImages					= device.gpuProperties.limits.maxDescriptorSetSampledImages;
+	info.limits.maxDescriptorSetStorageImages					= device.gpuProperties.limits.maxDescriptorSetStorageImages;
+	info.limits.maxDescriptorSetInputAttachments				= device.gpuProperties.limits.maxDescriptorSetInputAttachments;
+	info.limits.maxVertexInputAttributes						= device.gpuProperties.limits.maxVertexInputAttributes;
+	info.limits.maxVertexInputBindings							= device.gpuProperties.limits.maxVertexInputBindings;
+	info.limits.maxVertexInputAttributeOffset					= device.gpuProperties.limits.maxVertexInputAttributeOffset;
+	info.limits.maxVertexInputBindingStride						= device.gpuProperties.limits.maxVertexInputBindingStride;
+	info.limits.maxVertexOutputComponents						= device.gpuProperties.limits.maxVertexOutputComponents;
+	info.limits.maxTessellationGenerationLevel					= device.gpuProperties.limits.maxTessellationGenerationLevel;
+	info.limits.maxTessellationPatchSize						= device.gpuProperties.limits.maxTessellationPatchSize;
+	info.limits.maxTessellationControlPerVertexInputComponents	= device.gpuProperties.limits.maxTessellationControlPerVertexInputComponents;
+	info.limits.maxTessellationControlPerVertexOutputComponents	= device.gpuProperties.limits.maxTessellationControlPerVertexOutputComponents;
+	info.limits.maxTessellationControlPerPatchOutputComponents	= device.gpuProperties.limits.maxTessellationControlPerPatchOutputComponents;
+	info.limits.maxTessellationControlTotalOutputComponents		= device.gpuProperties.limits.maxTessellationControlTotalOutputComponents;
+	info.limits.maxTessellationEvaluationInputComponents		= device.gpuProperties.limits.maxTessellationEvaluationInputComponents;
+	info.limits.maxTessellationEvaluationOutputComponents		= device.gpuProperties.limits.maxTessellationEvaluationOutputComponents;
+	info.limits.maxGeometryShaderInvocations					= device.gpuProperties.limits.maxGeometryShaderInvocations;
+	info.limits.maxGeometryInputComponents						= device.gpuProperties.limits.maxGeometryInputComponents;
+	info.limits.maxGeometryOutputComponents						= device.gpuProperties.limits.maxGeometryOutputComponents;
+	info.limits.maxGeometryOutputVertices						= device.gpuProperties.limits.maxGeometryOutputVertices;
+	info.limits.maxGeometryTotalOutputComponents				= device.gpuProperties.limits.maxGeometryTotalOutputComponents;
+	info.limits.maxFragmentInputComponents						= device.gpuProperties.limits.maxFragmentInputComponents;
+	info.limits.maxFragmentOutputAttachments					= device.gpuProperties.limits.maxFragmentOutputAttachments;
+	info.limits.maxFragmentDualSrcAttachments					= device.gpuProperties.limits.maxFragmentDualSrcAttachments;
+	info.limits.maxFragmentCombinedOutputResources				= device.gpuProperties.limits.maxFragmentCombinedOutputResources;
+	info.limits.maxComputeSharedMemorySize						= device.gpuProperties.limits.maxComputeSharedMemorySize;
+	memcpy(info.limits.maxComputeWorkGroupCount, device.gpuProperties.limits.maxComputeWorkGroupCount, sizeof(info.limits.maxComputeWorkGroupCount));
+	info.limits.maxComputeWorkGroupInvocations					= device.gpuProperties.limits.maxComputeWorkGroupInvocations;
+	memcpy(info.limits.maxComputeWorkGroupSize, device.gpuProperties.limits.maxComputeWorkGroupSize, sizeof(info.limits.maxComputeWorkGroupSize));
+	info.limits.subPixelPrecisionBits							= device.gpuProperties.limits.subPixelPrecisionBits;
+	info.limits.subTexelPrecisionBits							= device.gpuProperties.limits.subTexelPrecisionBits;
+	info.limits.mipmapPrecisionBits								= device.gpuProperties.limits.mipmapPrecisionBits;
+	info.limits.maxDrawIndexedIndexValue						= device.gpuProperties.limits.maxDrawIndexedIndexValue;
+	info.limits.maxDrawIndirectCount							= device.gpuProperties.limits.maxDrawIndirectCount;
+	info.limits.maxSamplerLodBias								= device.gpuProperties.limits.maxSamplerLodBias;
+	info.limits.maxSamplerAnisotropy							= device.gpuProperties.limits.maxSamplerAnisotropy;
+	info.limits.maxViewports									= device.gpuProperties.limits.maxViewports;
+	memcpy(info.limits.maxViewportDimensions, device.gpuProperties.limits.maxViewportDimensions, sizeof(info.limits.maxViewportDimensions));
+	memcpy(info.limits.viewportBoundsRange, device.gpuProperties.limits.viewportBoundsRange, sizeof(info.limits.viewportBoundsRange));
+	info.limits.viewportSubPixelBits							= device.gpuProperties.limits.viewportSubPixelBits;
+	info.limits.minMemoryMapAlignment							= device.gpuProperties.limits.minMemoryMapAlignment;
+	info.limits.minTexelBufferOffsetAlignment					= device.gpuProperties.limits.minTexelBufferOffsetAlignment;
+	info.limits.minUniformBufferOffsetAlignment					= device.gpuProperties.limits.minUniformBufferOffsetAlignment;
+	info.limits.minStorageBufferOffsetAlignment					= device.gpuProperties.limits.minStorageBufferOffsetAlignment;
+	info.limits.minTexelOffset									= device.gpuProperties.limits.minTexelOffset;
+	info.limits.maxTexelOffset									= device.gpuProperties.limits.maxTexelOffset;
+	info.limits.minTexelGatherOffset							= device.gpuProperties.limits.minTexelGatherOffset;
+	info.limits.maxTexelGatherOffset							= device.gpuProperties.limits.maxTexelGatherOffset;
+	info.limits.minInterpolationOffset							= device.gpuProperties.limits.minInterpolationOffset;
+	info.limits.maxInterpolationOffset							= device.gpuProperties.limits.maxInterpolationOffset;
+	info.limits.subPixelInterpolationOffsetBits					= device.gpuProperties.limits.subPixelInterpolationOffsetBits;
+	info.limits.maxFramebufferWidth								= device.gpuProperties.limits.maxFramebufferWidth;
+	info.limits.maxFramebufferHeight							= device.gpuProperties.limits.maxFramebufferHeight;
+	info.limits.maxFramebufferLayers							= device.gpuProperties.limits.maxFramebufferLayers;
+	info.limits.framebufferColorSampleCounts					= device.gpuProperties.limits.framebufferColorSampleCounts;
+	info.limits.framebufferDepthSampleCounts					= device.gpuProperties.limits.framebufferDepthSampleCounts;
+	info.limits.framebufferStencilSampleCounts					= device.gpuProperties.limits.framebufferStencilSampleCounts;
+	info.limits.framebufferNoAttachmentsSampleCounts			= device.gpuProperties.limits.framebufferNoAttachmentsSampleCounts;
+	info.limits.maxColorAttachments								= device.gpuProperties.limits.maxColorAttachments;
+	info.limits.sampledImageColorSampleCounts					= device.gpuProperties.limits.sampledImageColorSampleCounts;
+	info.limits.sampledImageIntegerSampleCounts					= device.gpuProperties.limits.sampledImageIntegerSampleCounts;
+	info.limits.sampledImageDepthSampleCounts					= device.gpuProperties.limits.sampledImageDepthSampleCounts;
+	info.limits.sampledImageStencilSampleCounts					= device.gpuProperties.limits.sampledImageStencilSampleCounts;
+	info.limits.storageImageSampleCounts						= device.gpuProperties.limits.storageImageSampleCounts;
+	info.limits.maxSampleMaskWords								= device.gpuProperties.limits.maxSampleMaskWords;
+	info.limits.timestampComputeAndGraphics						= device.gpuProperties.limits.timestampComputeAndGraphics;
+	info.limits.timestampPeriod									= device.gpuProperties.limits.timestampPeriod;
+	info.limits.maxClipDistances								= device.gpuProperties.limits.maxClipDistances;
+	info.limits.maxCullDistances								= device.gpuProperties.limits.maxCullDistances;
+	info.limits.maxCombinedClipAndCullDistances					= device.gpuProperties.limits.maxCombinedClipAndCullDistances;
+	info.limits.discreteQueuePriorities							= device.gpuProperties.limits.discreteQueuePriorities;
+	memcpy(info.limits.pointSizeRange, device.gpuProperties.limits.pointSizeRange, sizeof(info.limits.pointSizeRange));
+	memcpy(info.limits.lineWidthRange, device.gpuProperties.limits.lineWidthRange, sizeof(info.limits.lineWidthRange));
+	info.limits.pointSizeGranularity							= device.gpuProperties.limits.pointSizeGranularity;
+	info.limits.lineWidthGranularity							= device.gpuProperties.limits.lineWidthGranularity;
+	info.limits.strictLines										= device.gpuProperties.limits.strictLines;
+	info.limits.standardSampleLocations							= device.gpuProperties.limits.standardSampleLocations;
+	info.limits.optimalBufferCopyOffsetAlignment				= device.gpuProperties.limits.optimalBufferCopyOffsetAlignment;
+	info.limits.optimalBufferCopyRowPitchAlignment				= device.gpuProperties.limits.optimalBufferCopyRowPitchAlignment;
+	info.limits.nonCoherentAtomSize								= device.gpuProperties.limits.nonCoherentAtomSize;
 }
 
 void VulkanRender::draw2(
