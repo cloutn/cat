@@ -29,6 +29,7 @@ private:
 	void	_windowScene		();
 	void	_windowProperty		(Object* const object);
 	void	_windowDebug		();
+	void	_windowDeviceInfo	();
 
 	void	_onGUIScene			(const int sceneIndex, bool& isContextMenuOpen);
 	void	_onGUIObject		(Object* const object, bool& isContextMenuOpen);

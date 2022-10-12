@@ -129,7 +129,10 @@ public:
 		DEVICE_TYPE_CPU				= 4,
 	};
 
-    uint32		        apiVersion;
+    //uint32		        apiVersion; //uint major = VK_VERSION_MAJOR(prop.apiVersion); //uint minor = VK_VERSION_MINOR(prop.apiVersion); //uint patch = VK_VERSION_PATCH(prop.apiVersion);
+    uint16              apiVersionMajor;
+    uint16              apiVersionMinor;
+    uint16              apiVersionPatch;
     uint32		        driverVersion;
     uint32		        vendorID;
     uint32		        deviceID;

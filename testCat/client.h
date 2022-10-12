@@ -47,6 +47,7 @@ public:
 	float					fps					();
 	VulkanRender&			render				() { return m_render; }
 	void*					windowHandle		() { return m_window.getHandle(); }
+	const DeviceInfo&		getDeviceInfo		() const { return m_render.getDeviceInfo(); }
 
 #ifdef SCL_APPLE
 	void					tick				();

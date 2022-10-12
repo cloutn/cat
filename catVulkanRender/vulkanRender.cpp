@@ -870,13 +870,15 @@ void VulkanRender::_destroyMainRenderTarget()
 void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
 {
 	// device info
-    info.apiVersion		= device.gpuProperties.apiVersion;
-    info.driverVersion	= device.gpuProperties.driverVersion;
-    info.vendorID		= device.gpuProperties.vendorID;
-    info.deviceID		= device.gpuProperties.deviceID;
-    info.deviceType		= (cat::DeviceInfo::DEVICE_TYPE)(device.gpuProperties.deviceType);
-    scl::strcpy			(info.deviceName, 256, device.gpuProperties.deviceName);
-    memcpy				(info.pipelineCacheUUID, device.gpuProperties.pipelineCacheUUID, sizeof(info.pipelineCacheUUID));
+    info.apiVersionMajor	= VK_VERSION_MAJOR(device.gpuProperties.apiVersion);
+    info.apiVersionMinor	= VK_VERSION_MINOR(device.gpuProperties.apiVersion);
+    info.apiVersionPatch	= VK_VERSION_PATCH(device.gpuProperties.apiVersion);
+    info.driverVersion		= device.gpuProperties.driverVersion;
+    info.vendorID			= device.gpuProperties.vendorID;
+    info.deviceID			= device.gpuProperties.deviceID;
+    info.deviceType			= (cat::DeviceInfo::DEVICE_TYPE)(device.gpuProperties.deviceType);
+    scl::strcpy				(info.deviceName, 256, device.gpuProperties.deviceName);
+    memcpy					(info.pipelineCacheUUID, device.gpuProperties.pipelineCacheUUID, sizeof(info.pipelineCacheUUID));
 
 	// limits
 	info.limits.maxImageDimension1D								= device.gpuProperties.limits.maxImageDimension1D;
@@ -931,9 +933,9 @@ void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
 	info.limits.maxFragmentDualSrcAttachments					= device.gpuProperties.limits.maxFragmentDualSrcAttachments;
 	info.limits.maxFragmentCombinedOutputResources				= device.gpuProperties.limits.maxFragmentCombinedOutputResources;
 	info.limits.maxComputeSharedMemorySize						= device.gpuProperties.limits.maxComputeSharedMemorySize;
-	memcpy(info.limits.maxComputeWorkGroupCount, device.gpuProperties.limits.maxComputeWorkGroupCount, sizeof(info.limits.maxComputeWorkGroupCount));
+	memcpy(info.limits.maxComputeWorkGroupCount,				device.gpuProperties.limits.maxComputeWorkGroupCount, sizeof(info.limits.maxComputeWorkGroupCount));
 	info.limits.maxComputeWorkGroupInvocations					= device.gpuProperties.limits.maxComputeWorkGroupInvocations;
-	memcpy(info.limits.maxComputeWorkGroupSize, device.gpuProperties.limits.maxComputeWorkGroupSize, sizeof(info.limits.maxComputeWorkGroupSize));
+	memcpy(info.limits.maxComputeWorkGroupSize,					device.gpuProperties.limits.maxComputeWorkGroupSize, sizeof(info.limits.maxComputeWorkGroupSize));
 	info.limits.subPixelPrecisionBits							= device.gpuProperties.limits.subPixelPrecisionBits;
 	info.limits.subTexelPrecisionBits							= device.gpuProperties.limits.subTexelPrecisionBits;
 	info.limits.mipmapPrecisionBits								= device.gpuProperties.limits.mipmapPrecisionBits;
@@ -942,8 +944,8 @@ void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
 	info.limits.maxSamplerLodBias								= device.gpuProperties.limits.maxSamplerLodBias;
 	info.limits.maxSamplerAnisotropy							= device.gpuProperties.limits.maxSamplerAnisotropy;
 	info.limits.maxViewports									= device.gpuProperties.limits.maxViewports;
-	memcpy(info.limits.maxViewportDimensions, device.gpuProperties.limits.maxViewportDimensions, sizeof(info.limits.maxViewportDimensions));
-	memcpy(info.limits.viewportBoundsRange, device.gpuProperties.limits.viewportBoundsRange, sizeof(info.limits.viewportBoundsRange));
+	memcpy(info.limits.maxViewportDimensions,					device.gpuProperties.limits.maxViewportDimensions, sizeof(info.limits.maxViewportDimensions));
+	memcpy(info.limits.viewportBoundsRange,						device.gpuProperties.limits.viewportBoundsRange, sizeof(info.limits.viewportBoundsRange));
 	info.limits.viewportSubPixelBits							= device.gpuProperties.limits.viewportSubPixelBits;
 	info.limits.minMemoryMapAlignment							= device.gpuProperties.limits.minMemoryMapAlignment;
 	info.limits.minTexelBufferOffsetAlignment					= device.gpuProperties.limits.minTexelBufferOffsetAlignment;
@@ -976,8 +978,8 @@ void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
 	info.limits.maxCullDistances								= device.gpuProperties.limits.maxCullDistances;
 	info.limits.maxCombinedClipAndCullDistances					= device.gpuProperties.limits.maxCombinedClipAndCullDistances;
 	info.limits.discreteQueuePriorities							= device.gpuProperties.limits.discreteQueuePriorities;
-	memcpy(info.limits.pointSizeRange, device.gpuProperties.limits.pointSizeRange, sizeof(info.limits.pointSizeRange));
-	memcpy(info.limits.lineWidthRange, device.gpuProperties.limits.lineWidthRange, sizeof(info.limits.lineWidthRange));
+	memcpy(info.limits.pointSizeRange,							device.gpuProperties.limits.pointSizeRange, sizeof(info.limits.pointSizeRange));
+	memcpy(info.limits.lineWidthRange,							device.gpuProperties.limits.lineWidthRange, sizeof(info.limits.lineWidthRange));
 	info.limits.pointSizeGranularity							= device.gpuProperties.limits.pointSizeGranularity;
 	info.limits.lineWidthGranularity							= device.gpuProperties.limits.lineWidthGranularity;
 	info.limits.strictLines										= device.gpuProperties.limits.strictLines;
