@@ -14,6 +14,7 @@ class Material;
 class Shader;
 class Env;
 class ShaderMacro;
+class ShaderMacroArray;
 
 class Primitive
 {
@@ -24,7 +25,8 @@ public:
 	void				load			(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env);
 	void				draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render);
 	void				release			();
-	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int macroCount);
+	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int shaderMacroCount);
+	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacroArray& macros);
 	void				setTexture		(const char* const filename);
 	void				loadMemory		(
 		void*			indices, 

@@ -454,16 +454,25 @@ void Primitive::loadMemory(
 	m_shader = shader;
 }
 
-void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int macroCount)
+void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, ShaderMacroArray& macros)
 {
 	if (NULL != m_shader)
 	{
 		assert(false);
 		return;
 	}
-	m_shader = m_env->getShader(vs_filename, ps_filename, macros, macroCount);
-	//m_shader = new Shader();
-	//m_shader->load(vs_filename, ps_filename);
+	m_shader = m_env->getShader(vs_filename, ps_filename, macros.data(), macros.size());
+
+	macros.add("PICK");
+	m_pickShader = m_env->getShader(vs_filename, ps_filename, macros.data(), macros.size());
+}
+
+void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int macroCount)
+{
+	ShaderMacroArray macroArray;
+	for (int i = 0; i < macroCount; ++i)
+		macroArray.add(macros[i]);
+	loadShader(vs_filename, ps_filename, macroArray);
 }
 
 void Primitive::setTexture(const char* const filename)

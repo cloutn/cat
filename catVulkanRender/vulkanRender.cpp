@@ -122,8 +122,8 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 		}
 
 		int minUniformBufferOffset		= static_cast<int>(m_device.gpuProperties.limits.minUniformBufferOffsetAlignment);
-		int maxBytesPerFrace			= minUniformBufferOffset * MAX_OBJECT_PER_FRAME * MAX_MATRIX_PER_FRAME;
-		m_frameUniforms[i]				= svkCreateUniformBuffer(m_device, NULL, maxBytesPerFrace);
+		int maxBytesPerFrame			= minUniformBufferOffset * MAX_OBJECT_PER_FRAME * MAX_MATRIX_PER_FRAME;
+		m_frameUniforms[i]				= svkCreateUniformBuffer(m_device, NULL, maxBytesPerFrame);
 		m_frameUniformBuffersMapped[i]	= svkMapBuffer			(m_device, m_frameUniforms[i]);
 	}
 

@@ -23,6 +23,11 @@ public:
 		add(name, "");
 	}
 
+	void add(const ShaderMacro& macro)
+	{
+		add(macro.name.c_str(), macro.value.c_str());
+	}
+
 	void add(const char* const name, const int value)
 	{
 		ShaderMacro& m = m_macros.push_back_fast();

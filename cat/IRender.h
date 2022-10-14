@@ -9,27 +9,27 @@ namespace scl { class matrix; }
 namespace cat {
 
 // see the shader example at the bottom of this file.
-enum SHADER
-{
-	SHADER_INVALID = -1,
+//enum SHADER
+//{
+//	SHADER_INVALID = -1,
+//
+//	SHADER_DEFAULT,
+//	SHADER_ADD_COLOR,
+//	SHADER_COLOR,
+//	SHADER_FONT,
+//	SHADER_FONT_OUTLINE,
+//	SHADER_GRAY,
+//	SHADER_VIDEO,
+//
+//	SHADER_COUNT,
+//};
 
-	SHADER_DEFAULT,
-	SHADER_ADD_COLOR,
-	SHADER_COLOR,
-	SHADER_FONT,
-	SHADER_FONT_OUTLINE,
-	SHADER_GRAY,
-	SHADER_VIDEO,
-
-	SHADER_COUNT,
-};
-
-enum CAMERA
-{
-	CAMERA_ORTHO,		//user defined camera with ortho projection. 
-	CAMERA_PERSPECTIVE,	//user defined camera with perspective projection.
-	CAMERA_WORLD,		//camera is auto selected by game world.
-};
+//enum CAMERA
+//{
+//	CAMERA_ORTHO,		//user defined camera with ortho projection. 
+//	CAMERA_PERSPECTIVE,	//user defined camera with perspective projection.
+//	CAMERA_WORLD,		//camera is auto selected by game world.
+//};
 
 
 // Same as opengl's glDrawPrimitive(mode) and cgltf_primitive_type
@@ -44,6 +44,24 @@ enum PRIMITIVE_TYPE
 	PRIMITIVE_TYPE_TRIANGLE_STRIP,
 	PRIMITIVE_TYPE_TRIANGLE_FAN,
 };
+
+//enum SHADER_STAGE
+//{
+//	SHADER_STAGE_VERT,
+//	SHADER_STAGE_TCS,
+//	SHADER_STAGE_TES,
+//	SHADER_STAGE_GEO,
+//	SHADER_STAGE_FRAG,
+//	SHADER_STAGE_COMP,
+//};
+//
+//class PushConstRange
+//{
+//public:
+//	SHADER_STAGE    shaderStage;
+//    uint32			offset;
+//    uint32			size;
+//};
 
 class VertexAttr
 {
@@ -163,19 +181,23 @@ public:
 	//	) = 0;
 
 	virtual void draw2(
-		void*		texture, 
-		void**		vertexBuffers, 
-		const int	primitiveType,
-		void*		indexBuffer, 
-		const int	indexCount, 
-		const int	indexComponentType,
-		const int	indexOffset,
-		int			attrCount,
-		const VertexAttr* attrs,
-		void*		shader,
-		const scl::matrix& mvp,
-		const scl::matrix* jointMatrices,
-		const int jointMatrixCount
+		void*					texture, 
+		void**					vertexBuffers, 
+		const int				primitiveType,
+		void*					indexBuffer, 
+		const int				indexCount, 
+		const int				indexComponentType,
+		const int				indexOffset,
+		int						attrCount,
+		const VertexAttr*		attrs,
+		void*					shader,
+		const scl::matrix&		mvp,
+		const scl::matrix*		jointMatrices,
+		const int				jointMatrixCount
+		//void*					vsPushConstBuffer,
+		//const int				vsPushConstBufferSize,
+		//void*					psPushConstBuffer,
+		//const int				psPushConstBufferSize
 		) = 0;
 
 	//debug for vulkan

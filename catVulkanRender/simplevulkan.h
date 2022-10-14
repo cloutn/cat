@@ -125,6 +125,9 @@ struct svkShaderProgram
 	// uniform bindings
 	VkDescriptorSetLayoutBinding*	layoutBinds;
 	int								layoutBindCount;
+
+	VkPushConstantRange*			pushConstRanges;
+	int								pushConstRangeCount;
 };
 
 // instance and device

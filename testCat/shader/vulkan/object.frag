@@ -11,6 +11,13 @@ layout(location = 1) in vec3 i_position;
 layout(location = 2) in vec4 i_color;
 #endif
 
+#ifdef PICK
+layout(push_constant) uniform PushConst
+{
+	vec4 pickColor;
+} pushConst;
+#endif
+
 //////////////////////////////
 // outputs
 //////////////////////////////

@@ -336,8 +336,9 @@ void MainGUI::_windowDeviceInfo()
 	ImGui::LabelText("Vulkan API version", "%u.%u.%u", info.apiVersionMajor, info.apiVersionMinor, info.apiVersionPatch);
 
 	// limits
-	ImGui::LabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
+	ImGui::LabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
 	ImGui::LabelText("limits.minUniformBufferOffsetAlignment",						"%llu", info.limits.minUniformBufferOffsetAlignment);
+	ImGui::LabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
 
 	// others info and limits
 	if (ImGui::CollapsingHeader("Other info"))
@@ -357,7 +358,7 @@ void MainGUI::_windowDeviceInfo()
 		ImGui::LabelText("limits.maxImageDimensionCube",								"%u", info.limits.maxImageDimensionCube);
 		ImGui::LabelText("limits.maxImageArrayLayers",									"%u", info.limits.maxImageArrayLayers);
 		ImGui::LabelText("limits.maxTexelBufferElements",								"%u", info.limits.maxTexelBufferElements);
-		ImGui::LabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
+		//ImGui::LabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
 		ImGui::LabelText("limits.maxStorageBufferRange",								"%u", info.limits.maxStorageBufferRange);
 		//ImGui::LabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
 		ImGui::LabelText("limits.maxMemoryAllocationCount",								"%u", info.limits.maxMemoryAllocationCount);

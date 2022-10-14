@@ -509,18 +509,67 @@ static int _getDescriptorCountFromShader(spvc_compiler compiler_glsl, spvc_type_
 	return descriptorCount;
 }
 
+static VkPushConstantRange _getPushConstRangeFromShader(spvc_compiler compiler_glsl, spvc_reflected_resource pushConstStruct, SHADER_TYPE shaderType)
+{
+	VkPushConstantRange pushConstRange;
+	memset(&pushConstRange, 0, sizeof(pushConstRange));
 
-static void _getLayoutBindsFromShader(const char* bytes, const int bytesLen, SHADER_TYPE shaderType, const char* const filename, VkDescriptorSetLayoutBinding* layoutBinds, int* pLayoutBindCount, int layoutBindCapacity)
+	int				offset			= spvc_compiler_get_member_decoration(compiler_glsl, pushConstStruct.base_type_id, 0, SpvDecorationOffset);
+	spvc_type		structType		= spvc_compiler_get_type_handle(compiler_glsl, pushConstStruct.type_id);
+	spvc_basetype	structBaseType	= spvc_type_get_basetype(structType);
+	if (structBaseType != SPVC_BASETYPE_STRUCT)
+	{
+		assert(false);
+		return pushConstRange;
+	}
+
+	int				memberCount		= spvc_type_get_num_member_types(structType);
+	if (memberCount <= 0)
+		return pushConstRange;
+
+	size_t structTotalSize = 0;
+	spvc_compiler_get_declared_struct_size(compiler_glsl, structType, &structTotalSize);
+
+	pushConstRange.stageFlags		= _toShaderStageFlagBits(shaderType);
+	pushConstRange.offset			= offset;
+	pushConstRange.size				= structTotalSize - offset;
+
+	return pushConstRange;
+
+	//for (int i = 0; i < memberCount; ++i)
+	//{
+	//	spvc_type_id	memberTypeID		= spvc_type_get_member_type(structType, i);
+	//	spvc_type		memberType			= spvc_compiler_get_type_handle(compiler_glsl, memberTypeID);
+	//	int				memberOffset		= spvc_compiler_get_member_decoration(compiler_glsl, type_id, i, SpvDecorationOffset);
+	//	const char* qq = spvc_compiler_get_decoration_string(compiler_glsl, memberTypeID, SpvDecorationOffset);
+	//	const char* memberName = spvc_compiler_get_member_name(compiler_glsl, type_id, i);
+	//	int a = memberOffset * memberOffset;
+	//}
+	//return sz;
+}
+
+
+static void _getLayoutBindsFromShader(
+	const char*						bytes, 
+	const int						bytesLen, 
+	SHADER_TYPE						shaderType, 
+	const char* const				filename, 
+	VkDescriptorSetLayoutBinding*	layoutBinds, 
+	int*							pLayoutBindCount, 
+	const int						layoutBindCapacity,
+	VkPushConstantRange*			pushConstRanges,
+	int*							pPushConstRangeCount,
+	const int						pushConstRangeCapacity)
 {
 	const SpvId*					spirv			= (const SpvId*)bytes;
-	size_t							word_count		= bytesLen / sizeof(SpvId);
+	size_t							wordCount		= bytesLen / sizeof(SpvId);
 	spvc_context					context			= NULL;
 	spvc_parsed_ir					ir				= NULL;
-	spvc_compiler					compiler_glsl	= NULL;
+	spvc_compiler					compiler		= NULL;
 	spvc_compiler_options			options			= NULL;
 	spvc_resources					resources		= NULL;
 	const spvc_reflected_resource*	list			= NULL;
-	const char*						spvc_result		= NULL;
+	const char*						spvcResult		= NULL;
 	size_t							count			= 0;
 
 	// Create context.
@@ -530,16 +579,17 @@ static void _getLayoutBindsFromShader(const char* bytes, const int bytesLen, SHA
 	spvc_context_set_error_callback(context, sprvc_error_callback, NULL);
 
 	// Parse the SPIR-V.
-	spvc_context_parse_spirv(context, spirv, word_count, &ir);
+	spvc_context_parse_spirv(context, spirv, wordCount, &ir);
 
 	// Hand it off to a compiler instance and give it ownership of the IR.
-	spvc_context_create_compiler(context, SPVC_BACKEND_GLSL, ir, SPVC_CAPTURE_MODE_TAKE_OWNERSHIP, &compiler_glsl);
+	spvc_context_create_compiler(context, SPVC_BACKEND_GLSL, ir, SPVC_CAPTURE_MODE_TAKE_OWNERSHIP, &compiler);
 
 	// Do some basic reflection.
-	if (NULL != compiler_glsl)
+	if (NULL != compiler)
 	{
-		spvc_compiler_create_shader_resources(compiler_glsl, &resources);
+		spvc_compiler_create_shader_resources(compiler, &resources);
 
+		// uniform buffer
 		spvc_resources_get_resource_list_for_type(resources, SPVC_RESOURCE_TYPE_UNIFORM_BUFFER, &list, &count);
 		for (size_t i = 0; i < count; i++)
 		{
@@ -552,8 +602,8 @@ static void _getLayoutBindsFromShader(const char* bytes, const int bytesLen, SHA
 
 			VkDescriptorSetLayoutBinding& bind = layoutBinds[bindCount];	
 			memset(&bind, 0, sizeof(bind));
-			bind.binding			= spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecorationBinding);
-			bind.descriptorCount	= _getDescriptorCountFromShader(compiler_glsl, list[i].type_id);
+			bind.binding			= spvc_compiler_get_decoration(compiler, list[i].id, SpvDecorationBinding);
+			bind.descriptorCount	= _getDescriptorCountFromShader(compiler, list[i].type_id);
 			bind.descriptorType		= VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 			bind.stageFlags			= _toShaderStageFlagBits(shaderType);
 			bind.pImmutableSamplers	= NULL;
@@ -561,6 +611,7 @@ static void _getLayoutBindsFromShader(const char* bytes, const int bytesLen, SHA
 			++bindCount;
 		}
 
+		// texture sampler
 		spvc_resources_get_resource_list_for_type(resources, SPVC_RESOURCE_TYPE_SAMPLED_IMAGE, &list, &count);
 		for (size_t i = 0; i < count; i++)
 		{
@@ -573,13 +624,45 @@ static void _getLayoutBindsFromShader(const char* bytes, const int bytesLen, SHA
 
 			VkDescriptorSetLayoutBinding& bind = layoutBinds[bindCount];	
 			memset(&bind, 0, sizeof(bind));
-			bind.binding			= spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecorationBinding);
-			bind.descriptorCount	= _getDescriptorCountFromShader(compiler_glsl, list[i].type_id);
+			bind.binding			= spvc_compiler_get_decoration(compiler, list[i].id, SpvDecorationBinding);
+			bind.descriptorCount	= _getDescriptorCountFromShader(compiler, list[i].type_id);
 			bind.descriptorType		= VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 			bind.stageFlags			= _toShaderStageFlagBits(shaderType);
 			bind.pImmutableSamplers	= NULL;
 
 			++bindCount;
+		}
+
+		// push constant
+		spvc_resources_get_resource_list_for_type(resources, SPVC_RESOURCE_TYPE_PUSH_CONSTANT, &list, &count);
+		for (size_t i = 0; i < count; i++)
+		if (count > 0)
+		{
+			VkPushConstantRange pushConstRange = _getPushConstRangeFromShader(compiler, list[0], shaderType);
+			if (pushConstRange.size > 0)
+			{
+				int& pushConstRangeCount = *pPushConstRangeCount;
+				if (pushConstRangeCount + 1 > pushConstRangeCapacity)
+				{
+					assert(false);
+					return;
+				}
+				pushConstRanges[pushConstRangeCount] = pushConstRange;
+				++pushConstRangeCount;
+			}
+
+			//const char* sss = spvc_compiler_get_name(compiler, list[i].id);
+			//const char* sss1 = spvc_compiler_get_member_name(compiler, list[i].base_type_id, 0);
+			//const char* sss2 = spvc_compiler_get_member_decoration_string(compiler, list[i].base_type_id, 0, SpvDecorationOffset);
+			//int sq	= spvc_compiler_get_member_decoration(compiler, list[i].base_type_id, 0, SpvDecorationOffset);
+			//const char* qq = spvc_compiler_get_decoration_string(compiler, list[i].type_id, SpvDecorationOffset);
+
+			//pushConstRange.stageFlags	= _toShaderStageFlagBits(shaderType);
+			//pushConstRange.offset		=  spvc_compiler_get_decoration(compiler_glsl, list[i].id, SpvDecorationOffset);
+			//pushConstRange.size			=  ;
+
+			//size_t pushConstTotalSize = 0;
+			//spvc_compiler_get_declared_struct_size(compiler_glsl, list[i].type_id, &pushConstTotalSize);
 		}
 	}
 
@@ -596,7 +679,10 @@ static VkShaderModule _createShaderFromCode(
 	const char* const				filename, 
 	VkDescriptorSetLayoutBinding*	layoutBinds, 
 	int*							layoutBindCount, 
-	int								layoutBindCapacity)
+	const int						layoutBindCapacity,
+	VkPushConstantRange*			pushConstRanges,
+	int*							pushConstRangeCount,
+	const int						pushConstRangeCapacity)
 {
 	shaderc_compiler_t				compiler	= device.shaderCompiler;
 	shaderc_compilation_result_t	result		= shaderc_compile_into_spv(
@@ -621,7 +707,7 @@ static VkShaderModule _createShaderFromCode(
 	const int	bytesLen	= shaderc_result_get_length(result);
 
 	//__testSpirv_Cross(bytes, bytesLen, filename);
-	_getLayoutBindsFromShader(bytes, bytesLen, shaderType, filename, layoutBinds, layoutBindCount, layoutBindCapacity);
+	_getLayoutBindsFromShader(bytes, bytesLen, shaderType, filename, layoutBinds, layoutBindCount, layoutBindCapacity, pushConstRanges, pushConstRangeCount, pushConstRangeCapacity);
 
 	VkShaderModule shaderModule = _createShader(device.device, (uint*)bytes, bytesLen);
 	shaderc_result_release(result);
@@ -630,7 +716,7 @@ static VkShaderModule _createShaderFromCode(
 	return shaderModule;
 }
 
-static VkShaderModule _createShaderFromFile(svkDevice& device, const char* const filename, SHADER_TYPE shaderType, VkDescriptorSetLayoutBinding* layoutBinds, int* layoutBindCount, int layoutBindCapacity)
+static VkShaderModule _createShaderFromFile(svkDevice& device, const char* const filename, SHADER_TYPE shaderType, VkDescriptorSetLayoutBinding* layoutBinds, int* layoutBindCount, int layoutBindCapacity, VkPushConstantRange* pushConstRanges, int* pushConstRangeCount, const int pushConstRangeCapacity)
 {
 #pragma warning(push)
 #pragma warning(disable:4996)
@@ -641,7 +727,7 @@ static VkShaderModule _createShaderFromFile(svkDevice& device, const char* const
 	memset(buf, 0, BUF_SIZE);
 	int len = fread(buf, 1, BUF_SIZE, f);
 
-	VkShaderModule shaderModule = _createShaderFromCode(device, buf, len, shaderType, filename, layoutBinds, layoutBindCount, layoutBindCapacity);
+	VkShaderModule shaderModule = _createShaderFromCode(device, buf, len, shaderType, filename, layoutBinds, layoutBindCount, layoutBindCapacity, pushConstRanges, pushConstRangeCount, pushConstRangeCapacity);
 	fclose(f);
 	delete[] buf;
 
@@ -1869,8 +1955,8 @@ svkPipeline svkCreatePipeline(svkDevice& device, VkDescriptorSetLayout descLayou
 	ms.pSampleMask				= NULL;
 	ms.rasterizationSamples		= VK_SAMPLE_COUNT_1_BIT;
 
-	VkShaderModule vertShader	= _createShaderFromFile(device, "1.vert", SHADER_TYPE_VERT, NULL, NULL, 0);
-	VkShaderModule fragShader	= _createShaderFromFile(device, "1.frag", SHADER_TYPE_FRAG, NULL, NULL, 0);
+	VkShaderModule vertShader	= _createShaderFromFile(device, "1.vert", SHADER_TYPE_VERT, NULL, NULL, 0, NULL, NULL, 0);
+	VkShaderModule fragShader	= _createShaderFromFile(device, "1.frag", SHADER_TYPE_FRAG, NULL, NULL, 0, NULL, NULL, 0);
 
 	//// Two stages: vs and fs
 	VkPipelineShaderStageCreateInfo shaderStages[2];
@@ -2302,18 +2388,22 @@ svkShaderProgram svkCreateShaderProgramFromCode(
 	VkDescriptorSetLayoutBinding binds[MAX_LAYOUT_BIND] = { 0 };
 	int bindCount = 0;
 
+	const int MAX_PUSH_CONST_RANGE = 16;
+	VkPushConstantRange pushConstRanges[MAX_PUSH_CONST_RANGE] = { 0 };
+	int pushConstRangeCount = 0;
+
 	if (NULL != vertCode && 0 != vertCode[0])
-		prog.vert	= _createShaderFromCode(device, vertCode, strlen(vertCode), SHADER_TYPE_VERT, "[vert_code]", binds, &bindCount, countof(binds));
+		prog.vert	= _createShaderFromCode(device, vertCode, strlen(vertCode), SHADER_TYPE_VERT, "[vert_code]", binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != tcsCode && 0 != tcsCode[0])
-		prog.tcs	= _createShaderFromCode(device, tcsCode, strlen(tcsCode), SHADER_TYPE_TCS, "[tcs_code]", binds, &bindCount, countof(binds));
+		prog.tcs	= _createShaderFromCode(device, tcsCode, strlen(tcsCode), SHADER_TYPE_TCS, "[tcs_code]", binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != tesCode && 0 != tesCode[0])
-		prog.tes	= _createShaderFromCode(device, tesCode, strlen(tesCode), SHADER_TYPE_TES, "[tes_code]", binds, &bindCount, countof(binds));
+		prog.tes	= _createShaderFromCode(device, tesCode, strlen(tesCode), SHADER_TYPE_TES, "[tes_code]", binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != geoCode && 0 != geoCode[0])
-		prog.geo	= _createShaderFromCode(device, geoCode, strlen(geoCode), SHADER_TYPE_GEO, "[geo_code]", binds, &bindCount, countof(binds));
+		prog.geo	= _createShaderFromCode(device, geoCode, strlen(geoCode), SHADER_TYPE_GEO, "[geo_code]", binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != fragCode && 0 != fragCode[0])
-		prog.frag	= _createShaderFromCode(device, fragCode, strlen(fragCode), SHADER_TYPE_FRAG, "[frag_code]", binds, &bindCount, countof(binds));
+		prog.frag	= _createShaderFromCode(device, fragCode, strlen(fragCode), SHADER_TYPE_FRAG, "[frag_code]", binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != compCode && 0 != compCode[0])
-		prog.comp	= _createShaderFromCode(device, compCode, strlen(compCode), SHADER_TYPE_COMP, "[comp_code]", binds, &bindCount, countof(binds));
+		prog.comp	= _createShaderFromCode(device, compCode, strlen(compCode), SHADER_TYPE_COMP, "[comp_code]", binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 
 	if (bindCount > 0)
 	{
@@ -2321,6 +2411,14 @@ svkShaderProgram svkCreateShaderProgramFromCode(
 		prog.layoutBinds = new VkDescriptorSetLayoutBinding[bindCount];
 		memcpy(prog.layoutBinds, binds, sizeof(VkDescriptorSetLayoutBinding) * bindCount);
 		prog.layoutBindCount = bindCount;
+	}
+
+	if (pushConstRangeCount)
+	{
+		assert(NULL == prog.pushConstRanges);
+		prog.pushConstRanges = new VkPushConstantRange[pushConstRangeCount];
+		memcpy(prog.pushConstRanges, pushConstRanges, sizeof(VkPushConstantRange) * pushConstRangeCount);
+		prog.pushConstRangeCount = pushConstRangeCount;
 	}
 
 	return prog;
@@ -2341,19 +2439,23 @@ svkShaderProgram svkCreateShaderProgramFromFile(
 	const int MAX_LAYOUT_BIND = 128;
 	VkDescriptorSetLayoutBinding binds[MAX_LAYOUT_BIND] = { 0 };
 	int bindCount = 0;
+	
+	const int MAX_PUSH_CONST_RANGE = 16;
+	VkPushConstantRange pushConstRanges[MAX_PUSH_CONST_RANGE] = { 0 };
+	int pushConstRangeCount = 0;
 
 	if (NULL != vertFilename && 0 != vertFilename[0])
-		prog.vert	= _createShaderFromFile(device, vertFilename, SHADER_TYPE_VERT, binds, &bindCount, countof(binds));
+		prog.vert	= _createShaderFromFile(device, vertFilename, SHADER_TYPE_VERT, binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != tcsFilename && 0 != tcsFilename[0])
-		prog.tcs	= _createShaderFromFile(device, tcsFilename, SHADER_TYPE_TCS, binds, &bindCount, countof(binds));
+		prog.tcs	= _createShaderFromFile(device, tcsFilename, SHADER_TYPE_TCS, binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != tesFilename && 0 != tesFilename[0])
-		prog.tes	= _createShaderFromFile(device, tesFilename, SHADER_TYPE_TES, binds, &bindCount, countof(binds));
+		prog.tes	= _createShaderFromFile(device, tesFilename, SHADER_TYPE_TES, binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != geoFilename && 0 != geoFilename[0])
-		prog.geo	= _createShaderFromFile(device, geoFilename, SHADER_TYPE_GEO, binds, &bindCount, countof(binds));
+		prog.geo	= _createShaderFromFile(device, geoFilename, SHADER_TYPE_GEO, binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != fragFilename && 0 != fragFilename[0])
-		prog.frag	= _createShaderFromFile(device, fragFilename, SHADER_TYPE_FRAG, binds, &bindCount, countof(binds));
+		prog.frag	= _createShaderFromFile(device, fragFilename, SHADER_TYPE_FRAG, binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 	if (NULL != compFilename && 0 != compFilename[0])
-		prog.comp	= _createShaderFromFile(device, compFilename, SHADER_TYPE_COMP, binds, &bindCount, countof(binds));
+		prog.comp	= _createShaderFromFile(device, compFilename, SHADER_TYPE_COMP, binds, &bindCount, countof(binds), pushConstRanges, &pushConstRangeCount, countof(pushConstRanges));
 
 	if (bindCount > 0)
 	{
@@ -2361,6 +2463,14 @@ svkShaderProgram svkCreateShaderProgramFromFile(
 		prog.layoutBinds = new VkDescriptorSetLayoutBinding[bindCount];
 		memcpy(prog.layoutBinds, binds, sizeof(VkDescriptorSetLayoutBinding) * bindCount);
 		prog.layoutBindCount = bindCount;
+	}
+
+	if (pushConstRangeCount)
+	{
+		assert(NULL == prog.pushConstRanges);
+		prog.pushConstRanges = new VkPushConstantRange[pushConstRangeCount];
+		memcpy(prog.pushConstRanges, pushConstRanges, sizeof(VkPushConstantRange) * pushConstRangeCount);
+		prog.pushConstRangeCount = pushConstRangeCount;
 	}
 
 	return prog;
@@ -2388,6 +2498,9 @@ void svkDestroyShaderProgram(svkDevice& device, svkShaderProgram& shaderProgram)
 
 	if (NULL != shaderProgram.layoutBinds)
 		delete[] shaderProgram.layoutBinds;
+
+	if (NULL != shaderProgram.pushConstRanges)
+		delete[] shaderProgram.pushConstRanges;
 }
 
 int _buildShaderStageCreateInfo(VkPipelineShaderStageCreateInfo* shaderStages, const int shaderStagesCapacity, svkShaderProgram& prog)
@@ -2546,8 +2659,8 @@ svkPipeline svkCreatePipelineEx(
 	pipelineLayoutCreateInfo.flags					= 0;
 	pipelineLayoutCreateInfo.setLayoutCount			= 1;
 	pipelineLayoutCreateInfo.pSetLayouts			= &pipelineLayout;
-	pipelineLayoutCreateInfo.pushConstantRangeCount	= 0;
-	pipelineLayoutCreateInfo.pPushConstantRanges	= NULL;
+	pipelineLayoutCreateInfo.pushConstantRangeCount	= shaderProgram.pushConstRangeCount;
+	pipelineLayoutCreateInfo.pPushConstantRanges	= shaderProgram.pushConstRanges;
 
 	err = vkCreatePipelineLayout(device.device, &pipelineLayoutCreateInfo, NULL, &pipeline.layout);
 	assert(!err);
