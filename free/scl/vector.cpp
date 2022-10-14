@@ -225,7 +225,7 @@ void vector4::fromPoint( const point& from, const point& to )
 	z = to.z - from.z;
 
 	//TODO d应该怎么处理?
-	d = to.d - from.d;
+	w = to.d - from.d;
 }
 
 vector4& vector4::cross( const vector4& v1, const vector4& v2 )
@@ -239,7 +239,7 @@ vector4& vector4::cross( const vector4& v1, const vector4& v2 )
 	result.x = v1.y * v2.z - v1.z * v2.y;
 	result.y = v1.z * v2.x - v1.x * v2.z;
 	result.z = v1.x * v2.y - v1.y * v2.x;
-	result.d = 0;
+	result.w = 0;
 	return result;
 }
 
@@ -274,7 +274,7 @@ vector4 vector4::operator-( const vector4& vDec ) const
 	v.x = x - vDec.x;
 	v.y = y - vDec.y;
 	v.z = z - vDec.z;
-	v.d = 0;
+	v.w = 0;
 	return v;
 }
 
@@ -296,16 +296,16 @@ void vector4::set( const float x, const float y, const float z, const float d)
 	this->x = x;
 	this->y = y;
 	this->z = z;
-	this->d = d;
+	this->w = d;
 }
 
 void vector4::mul( matrix& m )
 {
 	vector4 temp;
-	temp.x = x * m.x1 + y * m.x2 + z * m.x3 + d * m.x4;
-	temp.y = x * m.y1 + y * m.y2 + z * m.y3 + d * m.y4;
-	temp.z = x * m.z1 + y * m.z2 + z * m.z3 + d * m.z4;
-	temp.d = x * m.d1 + y * m.d2 + z * m.d3 + d * m.d4;
+	temp.x = x * m.x1 + y * m.x2 + z * m.x3 + w * m.x4;
+	temp.y = x * m.y1 + y * m.y2 + z * m.y3 + w * m.y4;
+	temp.z = x * m.z1 + y * m.z2 + z * m.z3 + w * m.z4;
+	temp.w = x * m.d1 + y * m.d2 + z * m.d3 + w * m.d4;
 	*this = temp;
 }
 
@@ -316,7 +316,7 @@ void vector4::div(const float v)
 	x /= v;
 	y /= v;
 	z /= v;
-	d /= v;
+	w /= v;
 }
 
 vector4& vector4::get_normal_vector( const point& p1, const point&p2, const point& p3 )

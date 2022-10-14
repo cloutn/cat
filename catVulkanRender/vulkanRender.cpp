@@ -66,7 +66,7 @@ VulkanRender::VulkanRender()  :
 	memclr(m_surface);
 	memclr(m_frameUniforms);
 	memclr(m_frameUniformBuffersMapped);
-	memclr(m_clearColor);
+	//memclr(m_clearColor);
 	memclr(m_frames);
 	memclr(m_drawContext);
 	memclr(m_pickRenderTarget);
@@ -76,7 +76,7 @@ VulkanRender::VulkanRender()  :
 }
 
 
-bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
+bool VulkanRender::init(void* hInstance, void* hwnd)
 {
 	if (is_init())
 		return false;
@@ -92,7 +92,7 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_inst						= svkCreateInstance	(ENABLE_VALIDATION_LAYER);
 	m_device					= svkCreateDevice	(m_inst);
 	m_surface					= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
-	argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
+	//argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
 
 	_createMainRenderTarget();
 
@@ -107,7 +107,8 @@ bool VulkanRender::init(void* hInstance, void* hwnd, const uint32 clearColor)
 	m_pickCommandAllocator->init(m_device);
 	m_pickFence					= svkCreateFence(m_device, true);
 	m_pickSemaphore				= svkCreateSemaphore(m_device);
-	m_pickImageSize.set(10, 10);
+	//m_pickImageSize.set(10, 10);
+	m_pickImageSize.set(m_surface.width, m_surface.height);
 	m_pickImageOffset.set(m_surface.width / 2 - m_pickImageSize.x / 2, m_surface.height / 2 - m_pickImageSize.y / 2);
 	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_pickImageSize.x * m_pickImageSize.y * 4);
 
@@ -485,7 +486,7 @@ void VulkanRender::endDraw()
 		return;
 }
 
-void VulkanRender::beginPickPass()
+void VulkanRender::beginPickPass(scl::vector4& clearColorRGBA)
 {
 	if (!svkIsFenceSignaled(m_device, m_pickFence))
 		return;
@@ -497,6 +498,7 @@ void VulkanRender::beginPickPass()
 	m_drawContext.commandAllocator		= m_pickCommandAllocator;
 	m_drawContext.uniform				= m_frameUniforms[m_frameIndex];
 	m_drawContext.uniformBufferMapped	= m_frameUniformBuffersMapped[m_frameIndex];
+	m_drawContext.clearColorRGBA		= clearColorRGBA;
 
 	m_drawContext.commandAllocator->reset(m_device);
 }
@@ -527,7 +529,8 @@ void VulkanRender::endPickPass()
 	VkCommandBuffer& primaryCb = m_pickCommandBuffer;
 	svkResetCommandBuffer(primaryCb);
 	svkBeginCommandBuffer(primaryCb);
-	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
+	scl::vector4& clearColor = m_drawContext.clearColorRGBA;
+	svkCmdBeginRenderPass(primaryCb, clearColor.r, clearColor.g, clearColor.b, clearColor.a, 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
 	
 	CommandAllocator* commandAllocator = m_drawContext.commandAllocator;
 	if (commandAllocator->getAllocCount() > 0)
@@ -596,7 +599,7 @@ void VulkanRender::savePickPass()
 	fclose(f);
 }
 
-void VulkanRender::beginScenePass()
+void VulkanRender::beginScenePass(scl::vector4& clearColorRGBA)
 {
 	if (_minimized())
 		return;
@@ -611,6 +614,7 @@ void VulkanRender::beginScenePass()
 	m_drawContext.uniform				= m_frameUniforms[m_frameIndex];
 	m_drawContext.uniformBufferMapped	= m_frameUniformBuffersMapped[m_frameIndex];
 	m_drawContext.commandAllocator		= m_commandAllocator[m_frameIndex];
+	m_drawContext.clearColorRGBA		= clearColorRGBA;
 
 	m_drawContext.commandAllocator->reset(m_device);
 }
@@ -624,7 +628,8 @@ void VulkanRender::endScenePass()
 
 	VkCommandBuffer& primaryCb = m_frames[m_frameIndex].commandBuffer;
 	svkBeginCommandBuffer(primaryCb);
-	svkCmdBeginRenderPass(primaryCb, m_clearColor[1], m_clearColor[2], m_clearColor[3], m_clearColor[0], 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
+	scl::vector4& clearColor = m_drawContext.clearColorRGBA;
+	svkCmdBeginRenderPass(primaryCb, clearColor.r, clearColor.g, clearColor.b, clearColor.a, 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
 	
 	CommandAllocator* commandAllocator = m_commandAllocator[m_frameIndex];
 	if (commandAllocator->getAllocCount() > 0)
@@ -850,6 +855,23 @@ void VulkanRender::_destroyRenderTarget(svkDevice& device, RenderTarget& renderT
 	memclr(renderTarget);
 }
 
+void VulkanRender::_fillPushConst(VkCommandBuffer commandBuffer, svkPipeline& pipeline, void* _shader, void* pushConstBuffer, const int pushConstBufferSize)
+{
+	if (NULL == _shader)
+		return;
+	if (NULL == pushConstBuffer)
+		return;
+
+	svkShaderProgram* shader = static_cast<svkShaderProgram*>(_shader);
+	for (int i = 0; i < shader->pushConstRangeCount; ++i)
+	{
+		VkPushConstantRange& range = shader->pushConstRanges[i];
+		if (range.offset + range.size > pushConstBufferSize)
+			continue;
+		vkCmdPushConstants(commandBuffer, pipeline.layout, range.stageFlags, range.offset, range.size, static_cast<byte*>(pushConstBuffer) + range.offset);		
+	}
+}
+
 void VulkanRender::_createMainRenderTarget()
 {
 	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, { NULL }, 3, false);
@@ -989,6 +1011,15 @@ void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
 	info.limits.nonCoherentAtomSize								= device.gpuProperties.limits.nonCoherentAtomSize;
 }
 
+//
+// 2022.10.14 尝试拆解该方法为以下几个部分供 client 更加灵活的调用：
+//		1. beginCommandBuffer
+//		2. bindUniform
+//		3. setVertex
+//		4. draw
+//		5. endCommandBuffer
+//		但是由于 uniform 和 vertex 都和 pipeline 偶合，所以 2,3,4 很难拆开。 :(
+//
 void VulkanRender::draw2(
 	void*				texture,
 	void**				vertexBuffers, 
@@ -1002,7 +1033,10 @@ void VulkanRender::draw2(
 	void*				shader,
 	const scl::matrix&	mvp,
 	const scl::matrix*	jointMatrices,
-	const int			jointMatrixCount)
+	const int			jointMatrixCount,
+	void*				pushConstBuffer,
+	const int			pushConstBufferSize
+)
 {
 	if (_minimized())
 		return;
@@ -1059,6 +1093,8 @@ void VulkanRender::draw2(
 	svkBuffer* svkIndexBuffer = static_cast<svkBuffer*>(indexBuffer);
 
 	vkCmdBindIndexBuffer(cmd_buf, svkIndexBuffer->buffer, indexOffset, _toVkIndexType(indexComponentType));
+
+	_fillPushConst(cmd_buf, *pipeline, shader, pushConstBuffer, pushConstBufferSize);
 
 	svkCmdSetViewPortByGLParams(cmd_buf, 0, 0, m_drawContext.width, m_drawContext.height);
 

@@ -335,6 +335,8 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 	else
 		texture = m_material->texture();
 
+	scl::vector4 v = { 0, 0, 1, 0};
+
 	render->draw2(
 		texture,
 		vertexBuffers(),
@@ -345,11 +347,13 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 		m_indexOffset,
 		attrCount(),
 		attrs(),
-		//material->deviceShader(),
 		m_shader->shader(render),
+		//m_pickShader->shader(render),
 		mvp,
 		jointMatrices,
-		jointMatrixCount);
+		jointMatrixCount,
+		NULL, 0);
+		//&v, sizeof(v));
 }
 
 template <typename T>

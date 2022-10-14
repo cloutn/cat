@@ -44,7 +44,7 @@ public:
 	VulkanRender();
 	~VulkanRender();
 
-	bool					init					(void* hInstance, void* hwnd, const uint32 clearColor);
+	bool					init					(void* hInstance, void* hwnd);
 	bool					is_init					()const { return m_isInit; };
 	void					swap					();
 	void					clear					();
@@ -110,17 +110,19 @@ public:
 		void*				shader,
 		const scl::matrix&	mvp,
 		const scl::matrix*	jointMatrices,
-		const int			jointMatrixCount
+		const int			jointMatrixCount,
+		void*				pushConstBuffer,
+		const int			pushConstBufferSize
 	);
 	
 	virtual void			beginDraw			();
 	virtual void			endDraw				();
 	
-	void					beginPickPass		();
+	void					beginPickPass		(scl::vector4& clearColorRGBA);
 	void					endPickPass			();
 	void					savePickPass		();
 
-	void					beginScenePass		();
+	void					beginScenePass		(scl::vector4& clearColorRGBA);
 	void					endScenePass		();
 
 	//device info
@@ -173,6 +175,8 @@ private:
 
 	static RenderTarget		_createRenderTarget		(svkDevice& device, VkFormat colorFormat, VkFormat depthFormat, VkRenderPass renderPass, const int width, const int height);
 	static void				_destroyRenderTarget	(svkDevice& device, RenderTarget& renderTarget);
+	
+	static void				_fillPushConst			(VkCommandBuffer commandBuffer, svkPipeline& pipeline, void* _shader, void* pushConstBuffer, const int pushConstBufferSize);
 
 	//void					_destroyPickRenderTarget	();
 	void					_createMainRenderTarget		();
@@ -191,6 +195,7 @@ private:
 		svkBuffer			uniform;
 		void*				uniformBufferMapped;
 		CommandAllocator*	commandAllocator;
+		scl::vector4		clearColorRGBA;
 	};
 
 private:
@@ -246,7 +251,7 @@ private:
 
 	VkDescriptorPool	m_IMGUIDescriptorPool;
 
-	float				m_clearColor[4];
+	//float				m_clearColor[4];
 
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
 	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key 是 uniform bind 的 hash 值

@@ -28,11 +28,11 @@ void quaternion::from_vector4(const vector4& v)
 {
 	vector3 nv = {v.x, v.y, v.z};
 	nv.normalize();
-	float sina = ::sinf(v.d / 2);
+	float sina = ::sinf(v.w / 2);
 	x = sina * nv.x;
 	y = sina * nv.y;
 	z = sina * nv.z;
-	w = ::cosf(v.d / 2);
+	w = ::cosf(v.w / 2);
 }
 
 void quaternion::to_matrix(matrix& matrix) const
@@ -72,16 +72,16 @@ void quaternion::to_vector4(vector4& v) const
 		v.z = z * invLength;
 		if (w <= 1.0f)
 		{
-			v.d = 2.0f * ::acosf(w);
+			v.w = 2.0f * ::acosf(w);
 		}
 		else
 		{
-			v.d = 0;
+			v.w = 0;
 		}
 	}
 	else 
 	{
-		v.d = 0;
+		v.w = 0;
 		v.x = 1;
 		v.y = 0;
 		v.z = 0;

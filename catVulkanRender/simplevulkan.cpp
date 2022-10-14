@@ -708,6 +708,11 @@ static VkShaderModule _createShaderFromCode(
 
 	//__testSpirv_Cross(bytes, bytesLen, filename);
 	_getLayoutBindsFromShader(bytes, bytesLen, shaderType, filename, layoutBinds, layoutBindCount, layoutBindCapacity, pushConstRanges, pushConstRangeCount, pushConstRangeCapacity);
+	for (int i = 0; i < *pushConstRangeCount; ++i)
+	{
+		if (pushConstRanges[i].offset + pushConstRanges[i].size > device.gpuProperties.limits.maxPushConstantsSize)
+			assert(false);
+	}
 
 	VkShaderModule shaderModule = _createShader(device.device, (uint*)bytes, bytesLen);
 	shaderc_result_release(result);
@@ -1414,7 +1419,7 @@ void svkBeginCommandBuffer(VkCommandBuffer cb, bool oneTime)
 	vkcheck( vkBeginCommandBuffer(cb, &cmdBufferBeginInfo) );
 }
 
-void svkBeginSecondaryCommandBuffer(VkCommandBuffer& cb, const VkRenderPass& renderPass, const VkFramebuffer& framebuffer)
+void svkBeginSecondaryCommandBuffer(VkCommandBuffer cb, const VkRenderPass renderPass, const VkFramebuffer framebuffer)
 {
 	VkCommandBufferInheritanceInfo inheritInfo = {};
 	inheritInfo.sType					= VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO; 
@@ -1434,12 +1439,12 @@ void svkBeginSecondaryCommandBuffer(VkCommandBuffer& cb, const VkRenderPass& ren
 	vkcheck( vkBeginCommandBuffer(cb, &beginInfo) );
 }
 
-void svkResetCommandBuffer(VkCommandBuffer& cb)
+void svkResetCommandBuffer(VkCommandBuffer cb)
 {
 	vkResetCommandBuffer(cb, 0);
 }
 
-VkResult svkEndCommandBuffer(VkCommandBuffer& cb)
+VkResult svkEndCommandBuffer(VkCommandBuffer cb)
 {
 	return vkEndCommandBuffer(cb);
 }

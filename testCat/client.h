@@ -42,7 +42,7 @@ public:
 	Object*					findObject			(const char* const objectName);
 	Object*					getObject			(int sceneIndex, int index);
 
-	Config&					config				() { return m_config; }
+	game::Config&			config				() { return m_config; }
 	scl::varray<Scene*>&	scenes				() { return m_scenes; }
 	float					fps					();
 	VulkanRender&			render				() { return m_render; }
@@ -105,7 +105,7 @@ private:
 	scl::varray<Scene*>		m_scenes;
 	scl::varray<Animation*>	m_animations;
 
-	Config					m_config;
+	game::Config			m_config;
 	MainGUI					m_gui;
 
 	//Object*					m_selectObject;

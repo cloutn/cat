@@ -95,8 +95,22 @@ public:
 class vector4
 {
 public:
-	float x; float y; float z;
-	float d;
+	union {
+		float x; 
+		float r;
+	};
+	union {
+		float y; 
+		float g;
+	};
+	union {
+		float z;
+		float b;
+	};
+	union {
+		float w;
+		float a;
+	};
 
 	//vector4				() {}
 	//vector4				(const float x, const float y, const float z, const float d = 0);

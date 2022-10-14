@@ -46,6 +46,7 @@ set(src_files
 	main.cpp
 	mainGUI.cpp
 	testPrimitive.cpp
+	config.cpp
 )
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${header_files})

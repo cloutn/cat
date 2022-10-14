@@ -272,7 +272,7 @@ void MainGUI::_windowProperty(Object* const object)
 
 void MainGUI::_windowDebug()
 {
-	Config& config = m_client->config();
+	game::Config& config = m_client->config();
 
 	if (config.showDemoWindow)
 		ImGui::ShowDemoWindow(&config.showDemoWindow);

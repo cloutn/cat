@@ -25,17 +25,20 @@ layout(location = 0) out vec4 o_color;
 
 void main()
 {
-
-#ifdef COLOR
+#if defined(COLOR)
 	vec4 color = i_color;
 #else
-	vec4 color = vec4(1);
+	vec4 color = vec4(1, 1, 1, 1);
 #endif
 
-#ifdef TEXTURE
-	o_color = texture(tex, i_texcoord.xy) * color;
+#ifdef PICK
+	o_color = pushConst.pickColor;
 #else
-	o_color = color;
+	#if defined(TEXTURE)
+		o_color = texture(tex, i_texcoord.xy) * color;
+	#else
+		o_color = color;
+	#endif
 #endif
 }
 

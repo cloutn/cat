@@ -193,11 +193,9 @@ public:
 		void*					shader,
 		const scl::matrix&		mvp,
 		const scl::matrix*		jointMatrices,
-		const int				jointMatrixCount
-		//void*					vsPushConstBuffer,
-		//const int				vsPushConstBufferSize,
-		//void*					psPushConstBuffer,
-		//const int				psPushConstBufferSize
+		const int				jointMatrixCount,
+		void*					pushConstBuffer,
+		const int				pushConstBufferSize
 		) = 0;
 
 	//debug for vulkan

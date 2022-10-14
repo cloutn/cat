@@ -149,9 +149,9 @@ void					svkAllocCommandBuffer			(svkDevice& device, VkCommandPool pool, bool is
 void					svkFreeCommandBuffer			(svkDevice& device, VkCommandBuffer commandBuffer);
 void					svkBeginCommandBuffer			(VkCommandBuffer, bool oneTime = false);
 void					svkEndCommandBufferAndSubmit	(svkDevice&, VkCommandBuffer);
-void					svkBeginSecondaryCommandBuffer	(VkCommandBuffer&, const VkRenderPass& renderPass, const VkFramebuffer& framebuffer);
-void					svkResetCommandBuffer			(VkCommandBuffer& cb);
-VkResult				svkEndCommandBuffer				(VkCommandBuffer& cb);
+void					svkBeginSecondaryCommandBuffer	(VkCommandBuffer, const VkRenderPass renderPass, const VkFramebuffer framebuffer);
+void					svkResetCommandBuffer			(VkCommandBuffer cb);
+VkResult				svkEndCommandBuffer				(VkCommandBuffer cb);
 
 // texture
 //		TODO png支持使用 gfx 代码接入引擎

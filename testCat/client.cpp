@@ -60,7 +60,7 @@ void Client::init(const int width, const int height)
 {
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
-	m_render.init(m_window.getInstance(), m_window.getHandle(), m_config.clearColor);
+	m_render.init(m_window.getInstance(), m_window.getHandle());
 	m_window.registerEventHandler(this, Client::staticOnEvent);
 #endif
 
@@ -184,7 +184,7 @@ void Client::OnButtonClick_DebugTest1(void* caller)
 
 void Client::OnButtonClick_DebugTest1()
 {
-	m_render.beginPickPass();
+	m_render.beginPickPass(scl::vector4{0, 0, 0, 0});
 	_renderScene();
 	m_render.endPickPass();
 	m_render.savePickPass();
@@ -235,9 +235,7 @@ void Client::run()
 
 		m_render.beginDraw();
 
-
-
-		m_render.beginScenePass();
+		m_render.beginScenePass(m_config.clearColorf());
 		_renderScene();
 		m_gui.Render();
 		m_render.endScenePass();
