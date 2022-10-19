@@ -24,17 +24,21 @@ Shader* ShaderCache::getShader(const char* const vsFilename, const char* const p
 	string256 strVsFilename = vsFilename;
 	strVsFilename.trim();
 	key += strVsFilename.c_str();
+	key += ";";
 
 	string256 strPsFilename = psFilename;
 	strPsFilename.trim();
 	key += strPsFilename.c_str();
+	key += ";";
 
 	for (int i = 0; i < macroCount; ++i)
 	{
 		macros[i].name.trim();
 		macros[i].value.trim();
 		key += macros[i].name.c_str();
+		key += ":";
 		key += macros[i].value.c_str();
+		key += ":";
 	}
 
 	ShaderTree::iterator iter = m_shaders.find(key);

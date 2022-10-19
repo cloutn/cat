@@ -102,6 +102,7 @@ struct svkDescriptorData
 		VkSampler		sampler;
 		VkImageView		imageView;
 	};
+
 	union Info 
 	{
 		BufferInfo		buffer;
@@ -123,8 +124,8 @@ struct svkShaderProgram
 	VkShaderModule					comp;
 
 	// uniform bindings
-	VkDescriptorSetLayoutBinding*	layoutBinds;
-	int								layoutBindCount;
+	VkDescriptorSetLayoutBinding*	descriptorSetLayoutBinds;
+	int								descriptorSetLayoutBindCount;
 
 	VkPushConstantRange*			pushConstRanges;
 	int								pushConstRangeCount;

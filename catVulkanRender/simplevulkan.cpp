@@ -2412,10 +2412,10 @@ svkShaderProgram svkCreateShaderProgramFromCode(
 
 	if (bindCount > 0)
 	{
-		assert(NULL == prog.layoutBinds);
-		prog.layoutBinds = new VkDescriptorSetLayoutBinding[bindCount];
-		memcpy(prog.layoutBinds, binds, sizeof(VkDescriptorSetLayoutBinding) * bindCount);
-		prog.layoutBindCount = bindCount;
+		assert(NULL == prog.descriptorSetLayoutBinds);
+		prog.descriptorSetLayoutBinds = new VkDescriptorSetLayoutBinding[bindCount];
+		memcpy(prog.descriptorSetLayoutBinds, binds, sizeof(VkDescriptorSetLayoutBinding) * bindCount);
+		prog.descriptorSetLayoutBindCount = bindCount;
 	}
 
 	if (pushConstRangeCount)
@@ -2464,10 +2464,10 @@ svkShaderProgram svkCreateShaderProgramFromFile(
 
 	if (bindCount > 0)
 	{
-		assert(NULL == prog.layoutBinds);
-		prog.layoutBinds = new VkDescriptorSetLayoutBinding[bindCount];
-		memcpy(prog.layoutBinds, binds, sizeof(VkDescriptorSetLayoutBinding) * bindCount);
-		prog.layoutBindCount = bindCount;
+		assert(NULL == prog.descriptorSetLayoutBinds);
+		prog.descriptorSetLayoutBinds = new VkDescriptorSetLayoutBinding[bindCount];
+		memcpy(prog.descriptorSetLayoutBinds, binds, sizeof(VkDescriptorSetLayoutBinding) * bindCount);
+		prog.descriptorSetLayoutBindCount = bindCount;
 	}
 
 	if (pushConstRangeCount)
@@ -2501,8 +2501,8 @@ void svkDestroyShaderProgram(svkDevice& device, svkShaderProgram& shaderProgram)
 	if (NULL != shaderProgram.comp)
 		vkDestroyShaderModule(device.device, shaderProgram.comp, NULL);
 
-	if (NULL != shaderProgram.layoutBinds)
-		delete[] shaderProgram.layoutBinds;
+	if (NULL != shaderProgram.descriptorSetLayoutBinds)
+		delete[] shaderProgram.descriptorSetLayoutBinds;
 
 	if (NULL != shaderProgram.pushConstRanges)
 		delete[] shaderProgram.pushConstRanges;

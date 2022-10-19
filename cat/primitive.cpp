@@ -316,6 +316,8 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 	//macros.remove("TANGENT");
 	//macros.remove("NORMAL");
 
+	macros.remove("COLOR");
+	macros.remove("TEXTURE");
 	macros.add("PICK");
 	m_pickShader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag",  macros.data(), macros.size());
 

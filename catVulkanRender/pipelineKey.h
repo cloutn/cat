@@ -22,6 +22,15 @@ private:
 }; // class PipelineKey
 
 
-} // namespace cat {
+} // namespace cat 
+
+namespace scl
+{
+	inline uint hash_function(const cat::PipelineKey& s)
+	{
+		return s.hash();
+	}
+
+}
 
 

@@ -5,7 +5,7 @@
 
 #include "catVulkanRender/simplevulkan.h"
 #include "catVulkanRender/pipelineKey.h"
-#include "catVulkanRender/uniformDataKey.h"
+#include "catVulkanRender/DescriptorDataKey.h"
 #include "catVulkanRender/descriptorAllocator.h"
 #include "catVulkanRender/deviceInfo.h"
 
@@ -154,7 +154,9 @@ private:
 		svkDescriptorData*		uniformDatas,
 		const int				uniformDataCount,
 		DescriptorSet&			descriptorSet,
-		DescriptorAllocator*&	descriptorAllocator);
+		DescriptorAllocator*&	descriptorAllocator,
+		uint32_t*				dynamicOffsets,
+		uint32_t				dynamicOffsetCount);
 
 	void					_preparePipeline(
 		const int				primitiveType,
@@ -255,21 +257,10 @@ private:
 
 	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
 	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key 是 uniform bind 的 hash 值
-	scl::hash_table<UniformDataKey, DescriptorSet>	m_descriptorSetCache;		// 根据不同的 uniform data 来查找对应的 descriptor set
+	scl::hash_table<DescriptorDataKey, DescriptorSet>	m_descriptorSetCache;		// 根据不同的 uniform data 来查找对应的 descriptor set
 
 }; // class VulkanRender
 
 } //namespace cat
 
-namespace scl
-{
-	inline uint hash_function(const cat::PipelineKey& s)
-	{
-		return s.hash();
-	}
-	inline uint hash_function(const cat::UniformDataKey& s)
-	{
-		return s.hash();
-	}
-}
 

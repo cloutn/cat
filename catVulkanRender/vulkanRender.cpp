@@ -697,12 +697,14 @@ int VulkanRender::_fillUniformData(
 	// [1]
 	if (jointMatrixCount > 0)
 	{
-		uniformDatas[idx].dataCount					= min(jointMatrixCount, MAX_INFO_COUNT);	
-		for (int i = 0; i < uniformDatas[idx].dataCount; ++i)
-		{
-			uniformDatas[idx].data[i].buffer.buffer	= m_drawContext.uniform.buffer;
-			uniformDatas[idx].data[i].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
-		}
+		//uniformDatas[idx].dataCount					= min(jointMatrixCount, MAX_INFO_COUNT);	
+		//for (int i = 0; i < uniformDatas[idx].dataCount; ++i)
+		//{
+		//	uniformDatas[idx].data[i].buffer.buffer	= m_drawContext.uniform.buffer;
+		//	uniformDatas[idx].data[i].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
+		//}
+		uniformDatas[idx].data[0].buffer.buffer		= m_drawContext.uniform.buffer;
+		uniformDatas[idx].data[0].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
 		uniformDatas[idx].dataCount					= 1;
 		uniformDatas[idx].binding					= 2;
 		++idx;
@@ -724,32 +726,34 @@ int VulkanRender::_fillUniformData(
 
 void VulkanRender::_prepareDescriptorSet(
 	void*					shader, 
-	svkDescriptorData*		uniformDatas,
-	const int				uniformDataCount,
+	svkDescriptorData*		descriptorDatas,
+	const int				descriptorDataCount,
 	DescriptorSet&			descriptorSet,
-	DescriptorAllocator*&	descriptorAllocator)
+	DescriptorAllocator*&	descriptorAllocator,
+	uint32_t*				dynamicOffsets,
+	uint32					dynamicOffsetCount)
 {
 	svkShaderProgram* shaderProgram = static_cast<svkShaderProgram*>(shader);
 
-	VkDescriptorSetLayoutBinding*	uniformBinds		= shaderProgram->layoutBinds;
-	int								uniformBindCount	= shaderProgram->layoutBindCount;
-	if (NULL != shaderProgram->layoutBinds && shaderProgram->layoutBindCount > 0)
+	VkDescriptorSetLayoutBinding*	layoutBinds		= shaderProgram->descriptorSetLayoutBinds;
+	int								layoutBindCount	= shaderProgram->descriptorSetLayoutBindCount;
+	if (NULL != shaderProgram->descriptorSetLayoutBinds && shaderProgram->descriptorSetLayoutBindCount > 0)
 	{
-		int			uniformBindHash = XXH32(uniformBinds, sizeof(VkDescriptorSetLayoutBinding) * uniformBindCount, 0);	
-		const int	findIndex		= m_descriptorAllocators.find_index(uniformBindHash);
+		int			descriptorSetLayoutHash = XXH32(layoutBinds, sizeof(VkDescriptorSetLayoutBinding) * layoutBindCount, 0);	
+		const int	findIndex				= m_descriptorAllocators.find_index(descriptorSetLayoutHash);
 		if (findIndex != -1)
 		{
-			descriptorAllocator		= m_descriptorAllocators.get_value(findIndex);
+			descriptorAllocator	= m_descriptorAllocators.get_value(findIndex);
 		}
 		else
 		{
-			descriptorAllocator		= new DescriptorAllocator();
-			descriptorAllocator->init(m_device, uniformBinds, uniformBindCount);
-			m_descriptorAllocators.add(uniformBindHash, descriptorAllocator);
+			descriptorAllocator = new DescriptorAllocator();
+			descriptorAllocator->init(m_device, layoutBinds, layoutBindCount);
+			m_descriptorAllocators.add(descriptorSetLayoutHash, descriptorAllocator);
 		}
 
-		UniformDataKey dataKey;
-		dataKey.init(uniformBinds, uniformBindCount, uniformDatas, m_drawContext.uniform);
+		DescriptorDataKey dataKey;
+		dataKey.init(layoutBinds, layoutBindCount, descriptorDatas, m_drawContext.uniform, dynamicOffsets, dynamicOffsetCount);
 		int cacheIndex = m_descriptorSetCache.find_index(dataKey);
 		if (cacheIndex != -1)
 		{
@@ -758,7 +762,7 @@ void VulkanRender::_prepareDescriptorSet(
 		else
 		{
 			descriptorSet = descriptorAllocator->alloc();
-			svkUpdateDescriptorSet(m_device, descriptorSet.set, uniformBinds, uniformBindCount, uniformDatas, uniformDataCount);
+			svkUpdateDescriptorSet(m_device, descriptorSet.set, layoutBinds, layoutBindCount, descriptorDatas, descriptorDataCount);
 			m_descriptorSetCache.add(dataKey, descriptorSet);
 		}
 	}
@@ -1071,7 +1075,7 @@ void VulkanRender::draw2(
 
 	DescriptorSet			descriptorSet;
 	DescriptorAllocator*	desAllocator = NULL;
-	_prepareDescriptorSet(shader, uniformDatas, uniformDataCount, descriptorSet, desAllocator);
+	_prepareDescriptorSet(shader, uniformDatas, uniformDataCount, descriptorSet, desAllocator, dynamicOffsets, dynamicOffsetCount);
 
 	svkPipeline* pipeline = NULL;
 	_preparePipeline(primitiveType, attrs, attrCount, vertexBuffers, desAllocator, shader, m_drawContext.renderPass, pipeline);

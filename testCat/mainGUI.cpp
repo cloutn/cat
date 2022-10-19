@@ -339,6 +339,7 @@ void MainGUI::_windowDeviceInfo()
 	ImGui::LabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
 	ImGui::LabelText("limits.minUniformBufferOffsetAlignment",						"%llu", info.limits.minUniformBufferOffsetAlignment);
 	ImGui::LabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
+	ImGui::LabelText("limits.maxBoundDescriptorSets",								"%u", info.limits.maxBoundDescriptorSets);
 
 	// others info and limits
 	if (ImGui::CollapsingHeader("Other info"))
@@ -365,7 +366,7 @@ void MainGUI::_windowDeviceInfo()
 		ImGui::LabelText("limits.maxSamplerAllocationCount",							"%u", info.limits.maxSamplerAllocationCount);
 		ImGui::LabelText("limits.bufferImageGranularity",								"%llu", info.limits.bufferImageGranularity);
 		ImGui::LabelText("limits.sparseAddressSpaceSize",								"%llu", info.limits.sparseAddressSpaceSize);
-		ImGui::LabelText("limits.maxBoundDescriptorSets",								"%u", info.limits.maxBoundDescriptorSets);
+		//ImGui::LabelText("limits.maxBoundDescriptorSets",								"%u", info.limits.maxBoundDescriptorSets);
 		ImGui::LabelText("limits.maxPerStageDescriptorSamplers",						"%u", info.limits.maxPerStageDescriptorSamplers);
 		ImGui::LabelText("limits.maxPerStageDescriptorUniformBuffers",					"%u", info.limits.maxPerStageDescriptorUniformBuffers);
 		ImGui::LabelText("limits.maxPerStageDescriptorStorageBuffers",					"%u", info.limits.maxPerStageDescriptorStorageBuffers);
