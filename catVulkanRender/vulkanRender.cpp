@@ -689,7 +689,10 @@ int VulkanRender::_fillUniformData(
 	// [0]
 	int idx = 0;
 	uniformDatas[idx].data[0].buffer.buffer		= m_drawContext.uniform.buffer;
-	uniformDatas[idx].data[0].buffer.bufferSize	= sizeof(mvp);
+	//uniformDatas[idx].data[0].buffer.bufferSize	= sizeof(mvp);
+	//uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1 - dynamicOffsets[0];
+	// !!! Set buffer size to max limits, so all the descriptor has the same size, we can use less descriptor.
+	uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1;
 	uniformDatas[idx].dataCount = 1;
 	uniformDatas[idx].binding = 0;
 	++idx;
@@ -702,9 +705,11 @@ int VulkanRender::_fillUniformData(
 		//{
 		//	uniformDatas[idx].data[i].buffer.buffer	= m_drawContext.uniform.buffer;
 		//	uniformDatas[idx].data[i].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
-		//}
+		//}s
 		uniformDatas[idx].data[0].buffer.buffer		= m_drawContext.uniform.buffer;
-		uniformDatas[idx].data[0].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
+		//uniformDatas[idx].data[0].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
+		//uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1 - dynamicOffsets[1];
+		uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1;
 		uniformDatas[idx].dataCount					= 1;
 		uniformDatas[idx].binding					= 2;
 		++idx;
@@ -721,6 +726,16 @@ int VulkanRender::_fillUniformData(
 		++idx;
 	}
 
+	//if (dynamicOffsets != NULL && dynamicOffsetCount > 0)
+	//{
+	//	for (int i = 0; i < idx; ++i)
+	//	{
+	//		for (int j = 0; j < uniformDatas[i].dataCount; ++j)
+	//		{
+	//			uniformDatas[i].data[j].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1 - dynamicOffsets[i];
+	//		}
+	//	}
+	//}
 	return idx;
 }
 
@@ -1059,7 +1074,6 @@ void VulkanRender::draw2(
 	//		一个是声明信息，就是uniform bind
 	//		一个是具体数据信息，就是 uniform data
 	//		具体数据要和前面声明的类型对应上。
-
 	svkDescriptorData uniformDatas[3];
 	int uniformDataCount = _fillUniformData(mvp, texture, jointMatrixCount, uniformDatas, countof(uniformDatas));
 

@@ -30,11 +30,11 @@ void DescriptorDataKey::init(const VkDescriptorSetLayoutBinding* descriptorSetLa
 
 	_streamToHandles();
 
-	for (int i = 0 ; i < dynamicOffsetCount; ++i)
-	{
-		assert(m_dataHandleIndex < MAX_DESC_COUNT);
-		m_dataHandles[m_dataHandleIndex++] = dynamicOffsets[i];
-	}
+	//for (int i = 0 ; i < dynamicOffsetCount; ++i)
+	//{
+	//	assert(m_dataHandleIndex < MAX_DESC_COUNT);
+	//	m_dataHandles[m_dataHandleIndex++] = dynamicOffsets[i];
+	//}
 }
 
 int DescriptorDataKey::hash() const
@@ -56,8 +56,8 @@ void DescriptorDataKey::_streamToHandles()
 				const svkDescriptorData::BufferInfo& bufferInfo = m_descriptorDatas[bindIndex].data[descIndex].buffer;
 				assert(m_dataHandleIndex < MAX_DESC_COUNT);
 				m_dataHandles[m_dataHandleIndex++] = (uint64_t)(bufferInfo.buffer);
-				assert(m_dataHandleIndex < MAX_DESC_COUNT);
-				m_dataHandles[m_dataHandleIndex++] = (uint64_t)(m_descriptorDatas[bindIndex].data[descIndex].buffer.bufferSize);
+				//assert(m_dataHandleIndex < MAX_DESC_COUNT);
+				//m_dataHandles[m_dataHandleIndex++] = (uint64_t)(m_descriptorDatas[bindIndex].data[descIndex].buffer.bufferSize);
 			}
 			else if (layoutBind.descriptorType == VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
 			{

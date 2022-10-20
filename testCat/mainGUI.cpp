@@ -337,6 +337,7 @@ void MainGUI::_windowDeviceInfo()
 
 	// limits
 	ImGui::LabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
+	ImGui::LabelText("limits.maxStorageBufferRange",								"%u", info.limits.maxStorageBufferRange);
 	ImGui::LabelText("limits.minUniformBufferOffsetAlignment",						"%llu", info.limits.minUniformBufferOffsetAlignment);
 	ImGui::LabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
 	ImGui::LabelText("limits.maxBoundDescriptorSets",								"%u", info.limits.maxBoundDescriptorSets);
@@ -360,7 +361,7 @@ void MainGUI::_windowDeviceInfo()
 		ImGui::LabelText("limits.maxImageArrayLayers",									"%u", info.limits.maxImageArrayLayers);
 		ImGui::LabelText("limits.maxTexelBufferElements",								"%u", info.limits.maxTexelBufferElements);
 		//ImGui::LabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
-		ImGui::LabelText("limits.maxStorageBufferRange",								"%u", info.limits.maxStorageBufferRange);
+		//ImGui::LabelText("limits.maxStorageBufferRange",								"%u", info.limits.maxStorageBufferRange);
 		//ImGui::LabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
 		ImGui::LabelText("limits.maxMemoryAllocationCount",								"%u", info.limits.maxMemoryAllocationCount);
 		ImGui::LabelText("limits.maxSamplerAllocationCount",							"%u", info.limits.maxSamplerAllocationCount);

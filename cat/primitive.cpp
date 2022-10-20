@@ -308,6 +308,7 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 		macros.add("COLOR");
 	}
 
+	//macros.remove("TEXTURE");
 	m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
 
 
