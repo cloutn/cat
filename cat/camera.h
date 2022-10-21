@@ -23,6 +23,7 @@ public:
 	void					set				(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up, float fov, float aspect, float near, float far);
 	void					setView			(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up);
 	void					setProjection	(float fov, float aspect, float near, float far);
+	void					setAspect		(float aspect);
 
 	void					move			(scl::vector3 d);
 	void					move			(float dx, float dy, float dz) { move({dx, dy, dz}); }

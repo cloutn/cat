@@ -128,7 +128,7 @@ class class_thread : public thread
 public:
 	struct class_thread_info
 	{
-		class_function	function;
+		class_function_ptr	function;
 		void*			ptr;
 
 		class_thread_info() :
@@ -139,7 +139,7 @@ public:
 	typedef void* (T::*functionT)(int*);
 	int start(functionT func, T* param = NULL, bool startAtOnce = true)
 	{
-		m_class_info.function	= reinterpret_cast<class_function>(func);
+		m_class_info.function	= reinterpret_cast<class_function_ptr>(func);
 		m_class_info.ptr		= static_cast<void*>(param);
 		return thread::start(_class_thread_function_dispatcher, this, startAtOnce);
 	}

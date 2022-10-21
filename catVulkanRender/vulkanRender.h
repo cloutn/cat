@@ -16,6 +16,7 @@
 #include "scl/matrix.h"
 #include "scl/vector.h"
 #include "scl/hash_table.h"
+#include "scl/function.h"
 
 #include "vulkan/vulkan.h"
 #include "shaderc/shaderc.h"
@@ -44,10 +45,14 @@ public:
 	VulkanRender();
 	~VulkanRender();
 
+	typedef scl::caller_function<void, int, int> FuncOnSurfaceSizeChanged;
+
 	bool					init					(void* hInstance, void* hwnd);
 	bool					is_init					()const { return m_isInit; };
 	void					swap					();
 	void					clear					();
+	//void					setOnSurfaceSizeChanged	(void* caller, FuncOnSurfaceSizeChanged::FuncT func) { m_onSurfaceSizeChanged.set(caller, func); }
+	void					setOnSurfaceSizeChanged	(FuncOnSurfaceSizeChanged func) { m_onSurfaceSizeChanged = func; }
 
 	void					updateMVP				(const scl::matrix& mvp);
 //	void					onResize				(const int width, const int height, bool forceSet = false);
@@ -255,10 +260,10 @@ private:
 
 	//float				m_clearColor[4];
 
-	scl::hash_table<PipelineKey, svkPipeline*>		m_pipelines;
-	scl::hash_table<int, DescriptorAllocator*>		m_descriptorAllocators;		// key 是 uniform bind 的 hash 值
+	scl::hash_table<PipelineKey, svkPipeline*>			m_pipelines;
+	scl::hash_table<int, DescriptorAllocator*>			m_descriptorAllocators;		// key 是 uniform bind 的 hash 值
 	scl::hash_table<DescriptorDataKey, DescriptorSet>	m_descriptorSetCache;		// 根据不同的 uniform data 来查找对应的 descriptor set
-
+	FuncOnSurfaceSizeChanged							m_onSurfaceSizeChanged;
 }; // class VulkanRender
 
 } //namespace cat

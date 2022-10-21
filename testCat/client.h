@@ -71,6 +71,8 @@ private:
 	void					_renderScene		();
 	static void				OnButtonClick_DebugTest1(void* caller);
 	void					OnButtonClick_DebugTest1();
+	static void				OnSurfaceSizeChanged(void* caller, int width, int height) { static_cast<Client*>(caller)->OnSurfaceSizeChanged(width, height); }
+	void					OnSurfaceSizeChanged(int width, int height);
 
 private:
 

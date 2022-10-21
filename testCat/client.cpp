@@ -61,6 +61,7 @@ void Client::init(const int width, const int height)
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle());
+	m_render.setOnSurfaceSizeChanged({ this, &Client::OnSurfaceSizeChanged } );
 	m_window.registerEventHandler(this, Client::staticOnEvent);
 #endif
 
@@ -188,6 +189,12 @@ void Client::OnButtonClick_DebugTest1()
 	_renderScene();
 	m_render.endPickPass();
 	m_render.savePickPass();
+}
+
+
+void Client::OnSurfaceSizeChanged(int width, int height)
+{
+	m_camera->setAspect(static_cast<float>(width) / height);
 }
 
 #ifdef SCL_WIN

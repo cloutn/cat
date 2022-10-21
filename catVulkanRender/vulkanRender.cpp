@@ -1152,6 +1152,8 @@ void VulkanRender::recreateSwapchain()
 	if (_minimized())
 		return;
 
+	m_onSurfaceSizeChanged(m_surface.width, m_surface.height);
+
 	_destroyMainRenderTarget();
 	_createMainRenderTarget();
 

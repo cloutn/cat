@@ -66,7 +66,8 @@ set(header_files
 	vector.h
 	vring_queue.h
 	wstring.h
-	zip_int.h)
+	zip_int.h
+	function.h)
 
 set(src_files
 	android.cpp
@@ -124,7 +125,8 @@ add_definitions(-DSCL_FORCE_SLEEP)
 
 
 if(WIN32)
-  add_definitions("/wd4819")
+  #add_definitions("/wd4819") 
+  add_definitions("/source-charset:utf-8")
 endif(WIN32)
 
 

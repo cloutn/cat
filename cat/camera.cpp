@@ -49,6 +49,13 @@ void Camera::setProjection(float fov, float aspect, float near, float far)
 	m_far				= far;
 }
 
+void Camera::setAspect(float aspect)
+{
+	m_projectionDirty	= true;
+	m_dirty				= true;
+	m_aspect			= aspect;
+}
+
 void Camera::move(scl::vector3 d)
 {
 	vector3 lookat	= _front();

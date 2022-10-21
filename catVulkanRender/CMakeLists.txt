@@ -14,7 +14,7 @@ set(header_files
 	load_png.h
 	pipelineKey.h
 	simplevulkan.h
-	uniformDataKey.h
+	descriptorDataKey.h
 	vulkanRender.h
 	xxh3.h
 	xxhash.h
@@ -29,7 +29,7 @@ set(src_files
 	load_png.cpp
 	pipelineKey.cpp
 	simplevulkan.cpp
-	uniformDataKey.cpp
+	descriptorDataKey.cpp
 	vulkanRender.cpp
 )
 
