@@ -73,6 +73,7 @@ private:
 	void					OnButtonClick_DebugTest1();
 	static void				OnSurfaceSizeChanged(void* caller, int width, int height) { static_cast<Client*>(caller)->OnSurfaceSizeChanged(width, height); }
 	void					OnSurfaceSizeChanged(int width, int height);
+	void					OnTest(int width, int height);
 
 private:
 

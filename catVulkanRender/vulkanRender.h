@@ -29,6 +29,7 @@ namespace cat {
 
 class DescriptorAllocator;
 class CommandAllocator;
+class MYCLASS;
 
 class RenderTarget
 {
@@ -46,6 +47,8 @@ public:
 	~VulkanRender();
 
 	typedef scl::caller_function<void, int, int> FuncOnSurfaceSizeChanged;
+	typedef scl::class_function<MYCLASS, void, int, int> FuncOnTest;
+	FuncOnTest m_ontest;
 
 	bool					init					(void* hInstance, void* hwnd);
 	bool					is_init					()const { return m_isInit; };
@@ -53,6 +56,7 @@ public:
 	void					clear					();
 	//void					setOnSurfaceSizeChanged	(void* caller, FuncOnSurfaceSizeChanged::FuncT func) { m_onSurfaceSizeChanged.set(caller, func); }
 	void					setOnSurfaceSizeChanged	(FuncOnSurfaceSizeChanged func) { m_onSurfaceSizeChanged = func; }
+	void					setOnTest				(FuncOnTest func) { m_ontest = func; }
 
 	void					updateMVP				(const scl::matrix& mvp);
 //	void					onResize				(const int width, const int height, bool forceSet = false);
