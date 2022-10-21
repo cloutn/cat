@@ -125,7 +125,8 @@ add_definitions(-DGFX_WIN32)
 
 
 if(WIN32)
-  add_definitions("/wd4819")
+  #add_definitions("/wd4819") 
+  add_definitions("/source-charset:utf-8")
 endif(WIN32)
 
 

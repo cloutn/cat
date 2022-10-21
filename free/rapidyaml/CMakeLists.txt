@@ -116,6 +116,7 @@ target_include_directories(
 add_definitions(-DUNICODE -D_UNICODE)
 
 if(WIN32)
-  add_definitions("/wd4819")
+  #add_definitions("/wd4819") 
+  add_definitions("/source-charset:utf-8")
 endif(WIN32)
 

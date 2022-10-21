@@ -63,7 +63,8 @@ add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DVK_USE_PLATFORM_WIN32_KHR -DGFX_ENABLE_IMAGE)
 
 if(WIN32)
-  add_definitions("/wd4819")
+  #add_definitions("/wd4819") 
+  add_definitions("/source-charset:utf-8")
 endif(WIN32)
 
 
