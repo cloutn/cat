@@ -63,17 +63,14 @@ public:
 #ifdef SCL_WIN
 	void					run					();
 
-	static bool				staticOnEvent		(void* caller, void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam) { return static_cast<Client*>(caller)->onEvent(hWnd, message, wParam, lParam); }  
-	bool					onEvent				(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam);
+	bool					onEvent				(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lParam);
 #endif
 
 private:
 	void					_renderScene		();
 	static void				OnButtonClick_DebugTest1(void* caller);
 	void					OnButtonClick_DebugTest1();
-	static void				OnSurfaceSizeChanged(void* caller, int width, int height) { static_cast<Client*>(caller)->OnSurfaceSizeChanged(width, height); }
-	void					OnSurfaceSizeChanged(int width, int height);
-	void					OnTest(int width, int height);
+	void					OnSurfaceResize		(int width, int height);
 
 private:
 

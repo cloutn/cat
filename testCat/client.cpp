@@ -56,24 +56,13 @@ Client::Client()
 	m_totalTime					= 1;
 }
 
-typedef void (Client::*FuncTestType)(int, int);
-
-template<typename M> inline void* GetMethodPointer(M ptr)
-{
-    return *reinterpret_cast<void**>(&ptr);
-}
-
 void Client::init(const int width, const int height)
 {
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle());
-	m_render.setOnSurfaceSizeChanged({ this, &Client::OnSurfaceSizeChanged } );
-	//void** p0 = (void**)(&Client::OnTest);
-	void* p1 = GetMethodPointer(&Client::OnTest);
-	VulkanRender::FuncOnTest mytest((MYCLASS*)this, *(VulkanRender::FuncOnTest::FuncT*)(p1));
-	m_render.setOnTest( mytest );
-	m_window.registerEventHandler(this, Client::staticOnEvent);
+	m_render.setOnSurfaceResize(this, reinterpret_cast<scl::class_function_ptr>(&Client::OnSurfaceResize));
+	m_window.registerEventHandler(this, reinterpret_cast<scl::class_function_ptr>(&Client::onEvent));
 #endif
 
 	m_env = new Env();
@@ -203,14 +192,9 @@ void Client::OnButtonClick_DebugTest1()
 }
 
 
-void Client::OnSurfaceSizeChanged(int width, int height)
+void Client::OnSurfaceResize(int width, int height)
 {
 	m_camera->setAspect(static_cast<float>(width) / height);
-}
-
-void Client::OnTest(int width, int height)
-{
-
 }
 
 #ifdef SCL_WIN
@@ -293,7 +277,7 @@ void Client::run()
 
 #ifdef SCL_WIN
 
-bool Client::onEvent(void* hWnd, unsigned int message, unsigned int wParam, unsigned int lParam)
+bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lParam)
 {
 	m_gui.onEvent(hWnd, message, wParam, lParam);
 	bool WantCaptureMouse = m_gui.wantCaptureMouse();

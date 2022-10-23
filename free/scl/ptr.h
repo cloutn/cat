@@ -35,13 +35,13 @@ private:
 };
 
 
-class _None__TagClass { public : int _i; void _none__tagF(); };
+class __any_class { public : int _i; void _none__tagF() {} };
 
 //定义类函数指针类型
 //注意:		在linux32下，		sizeof(class_function) = 8
 //			在linux64下，		sizeof(class_function) = 16
 //			在windows32下，	sizeof(class_function) = 4
-typedef void (_None__TagClass::*class_function_ptr)();
+typedef void (__any_class::*class_function_ptr)();
 
 typedef void (*function_ptr)();
 

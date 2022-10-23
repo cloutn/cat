@@ -1,18 +1,14 @@
 
 #include "./client.h"
 
-//#include "libimg/image.h"
-
 #include "scl/log.h"
 
-// ####################################
 #ifdef _WIN32
 #include <crtdbg.h>
 #include <Windows.h>
 //#include "vld_runtime/include/vld.h"
 //#include <C:\\Program Files (x86)\\Visual Leak Detector\\include\\vld.h>
 #endif
-// ####################################
 
 void test()
 {

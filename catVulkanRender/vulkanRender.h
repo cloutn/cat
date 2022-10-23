@@ -10,7 +10,6 @@
 #include "catVulkanRender/deviceInfo.h"
 
 #include "cat/IRender.h"
-
 #include "cat/color.h"
 
 #include "scl/matrix.h"
@@ -21,15 +20,12 @@
 #include "vulkan/vulkan.h"
 #include "shaderc/shaderc.h"
 
-// TODO 很多接口  not implemented
-
 struct ImDrawData;
 
 namespace cat {
 
 class DescriptorAllocator;
 class CommandAllocator;
-class MYCLASS;
 
 class RenderTarget
 {
@@ -46,17 +42,11 @@ public:
 	VulkanRender();
 	~VulkanRender();
 
-	typedef scl::caller_function<void, int, int> FuncOnSurfaceSizeChanged;
-	typedef scl::class_function<MYCLASS, void, int, int> FuncOnTest;
-	FuncOnTest m_ontest;
-
 	bool					init					(void* hInstance, void* hwnd);
 	bool					is_init					()const { return m_isInit; };
 	void					swap					();
 	void					clear					();
-	//void					setOnSurfaceSizeChanged	(void* caller, FuncOnSurfaceSizeChanged::FuncT func) { m_onSurfaceSizeChanged.set(caller, func); }
-	void					setOnSurfaceSizeChanged	(FuncOnSurfaceSizeChanged func) { m_onSurfaceSizeChanged = func; }
-	void					setOnTest				(FuncOnTest func) { m_ontest = func; }
+	void					setOnSurfaceResize		(void* caller, scl::class_function_ptr func) { m_onSurfaceResize.set(caller, func); }
 
 	void					updateMVP				(const scl::matrix& mvp);
 //	void					onResize				(const int width, const int height, bool forceSet = false);
@@ -267,7 +257,7 @@ private:
 	scl::hash_table<PipelineKey, svkPipeline*>			m_pipelines;
 	scl::hash_table<int, DescriptorAllocator*>			m_descriptorAllocators;		// key 是 uniform bind 的 hash 值
 	scl::hash_table<DescriptorDataKey, DescriptorSet>	m_descriptorSetCache;		// 根据不同的 uniform data 来查找对应的 descriptor set
-	FuncOnSurfaceSizeChanged							m_onSurfaceSizeChanged;
+	scl::any_class_function<void, int, int>				m_onSurfaceResize;
 }; // class VulkanRender
 
 } //namespace cat

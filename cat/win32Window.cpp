@@ -41,7 +41,7 @@ Win32Window::Win32Window() :
 	//}
 }
 
-bool Win32Window::init(const int width, const int height, const wchar* const titleName, const wchar* const szIconName, bool enableDpiAwareness) //  titleName = "main"
+bool Win32Window::init(const int width, const int height, const wchar_t* const titleName, const wchar_t* const szIconName, bool enableDpiAwareness) //  titleName = "main"
 {
 	//不允许反复初始化
 	if (hasInit())
@@ -124,7 +124,7 @@ bool Win32Window::run()
 	return true;
 }
 
-ptr_int __stdcall Win32Window::WndProc(void* hWnd, uint32 message, ptr_int wParam, ptr_int lParam)
+intptr_t __stdcall Win32Window::WndProc(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lParam)
 {
 	//首先处理窗口的WM_DESTROY消息
 	if (message == WM_DESTROY)
@@ -158,9 +158,9 @@ ptr_int __stdcall Win32Window::WndProc(void* hWnd, uint32 message, ptr_int wPara
 	return ::DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
 }
 
-bool Win32Window::registerEventHandler(void* caller, EventHandlerFuncT func)
+bool Win32Window::registerEventHandler(void* caller, scl::class_function_ptr func)
 {
-	EventHandler eventHandler(caller, func);
+	EventHandlerFuncT eventHandler(caller, func);
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
 		if (m_eventHandlers[i] == eventHandler)
@@ -174,9 +174,9 @@ bool Win32Window::registerEventHandler(void* caller, EventHandlerFuncT func)
 	return true;
 }
 
-bool Win32Window::unregisterEventHandler(void* caller, EventHandlerFuncT func)
+bool Win32Window::unregisterEventHandler(void* caller, scl::class_function_ptr func)
 {
-	EventHandler eventHandler(caller, func);
+	EventHandlerFuncT eventHandler(caller, func);
 
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
@@ -193,12 +193,13 @@ bool Win32Window::unregisterEventHandler(void* caller, EventHandlerFuncT func)
 	return true;
 }
 
-bool Win32Window::postEvent(void* hWnd, uint32 message, uint32 wParam, uint32 lParam)
+bool Win32Window::postEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lParam)
 {
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
-		EventHandler& eventHandler = m_eventHandlers[i];
-		if (eventHandler.func(eventHandler.caller, hWnd, message, wParam, lParam))
+		EventHandlerFuncT& eventHandler = m_eventHandlers[i];
+		int handled = eventHandler(hWnd, message, wParam, lParam);
+		if (handled)
 		{
 			//事件已被处理
 			return true;
