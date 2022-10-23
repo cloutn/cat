@@ -61,8 +61,8 @@ void Client::init(const int width, const int height)
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle());
-	m_render.setOnSurfaceResize(this, reinterpret_cast<scl::class_function_ptr>(&Client::OnSurfaceResize));
-	m_window.registerEventHandler(this, reinterpret_cast<scl::class_function_ptr>(&Client::onEvent));
+	m_render.setOnSurfaceResize(this, scl::to_func(&Client::OnSurfaceResize));
+	m_window.registerEventHandler(this, scl::to_func(&Client::onEvent));
 #endif
 
 	m_env = new Env();
@@ -73,7 +73,7 @@ void Client::init(const int width, const int height)
 	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
 
 	m_gui.init(this);
-	m_gui.setDebugButton1ClickEvent(this, OnButtonClick_DebugTest1);
+	m_gui.setDebugButton1ClickEvent(this, scl::to_func(&Client::OnButtonClick_DebugTest1));
 
 	loadGltf("art/SimpleSkin/SimpleSkin.gltf");
 	loadGltf("art/chibi_idle/scene.gltf");
@@ -174,15 +174,6 @@ void Client::_renderScene()
 	}
 }
 
-
-void Client::OnButtonClick_DebugTest1(void* caller)
-{
-	Client* client = static_cast<Client*>(caller);
-	if (NULL == client)
-		return;
-	client->OnButtonClick_DebugTest1();
-}
-
 void Client::OnButtonClick_DebugTest1()
 {
 	m_render.beginPickPass(scl::vector4{0, 0, 0, 0});
@@ -190,7 +181,6 @@ void Client::OnButtonClick_DebugTest1()
 	m_render.endPickPass();
 	m_render.savePickPass();
 }
-
 
 void Client::OnSurfaceResize(int width, int height)
 {
@@ -280,14 +270,14 @@ void Client::run()
 bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lParam)
 {
 	m_gui.onEvent(hWnd, message, wParam, lParam);
-	bool WantCaptureMouse = m_gui.wantCaptureMouse();
-	bool WantCaptureKeyboard = m_gui.wantCaptureKeyboard();
+	bool wantCaptureMouse		= m_gui.wantCaptureMouse();
+	bool wantCaptureKeyboard	= m_gui.wantCaptureKeyboard();
 
 	switch (message)
 	{
 	case WM_LBUTTONDOWN:
 		{
-			if (WantCaptureMouse)
+			if (wantCaptureMouse)
 				break;
 
 			int x = LOWORD(lParam);
@@ -299,7 +289,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_LBUTTONUP:
 		{
-			if (WantCaptureMouse)
+			if (wantCaptureMouse)
 				break;
 
 			m_dragging = false;
@@ -309,7 +299,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_RBUTTONDOWN:
 		{
-			if (WantCaptureMouse)
+			if (wantCaptureMouse)
 				break;
 
 			int x = LOWORD(lParam);
@@ -321,7 +311,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_RBUTTONUP:
 		{
-			if (WantCaptureMouse)
+			if (wantCaptureMouse)
 				break;
 
 			m_rightDragging = false;
@@ -331,7 +321,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_MOUSEMOVE:
 		{
-			if (WantCaptureMouse)
+			if (wantCaptureMouse)
 				break;
 
 			int x = LOWORD(lParam);
@@ -358,7 +348,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_CHAR:
 		{
-			if (WantCaptureKeyboard)
+			if (wantCaptureKeyboard)
 				break;
 
 			wchar c = wParam;
@@ -366,7 +356,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_KEYDOWN:
 		{
-			if (WantCaptureKeyboard)
+			if (wantCaptureKeyboard)
 				break;
 
 			//uint32 keyCode = wParam;
@@ -407,7 +397,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 
 
 	// imgui need DefWindowProc, so we must return false to call DefWindowProc in win32Window.cpp
-	if (WantCaptureMouse || WantCaptureKeyboard)
+	if (wantCaptureMouse || wantCaptureKeyboard)
 		return false;
 
 	return true;

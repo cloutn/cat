@@ -68,7 +68,7 @@ public:
 
 private:
 	void					_renderScene		();
-	static void				OnButtonClick_DebugTest1(void* caller);
+
 	void					OnButtonClick_DebugTest1();
 	void					OnSurfaceResize		(int width, int height);
 

@@ -70,7 +70,7 @@ void myCheckbox(const char* const label, bool& v)
 	//ImGui::Checkbox("##", &v);
 }
 
-MainGUI::MainGUI() : m_client(NULL), m_selectObject(NULL), m_debugButton1ClickCaller(NULL), m_debugButton1ClickFunc(NULL)
+MainGUI::MainGUI() : m_client(NULL), m_selectObject(NULL) 
 {
 
 }
@@ -177,10 +177,9 @@ bool MainGUI::wantCaptureMouse()
 	return io.WantCaptureMouse;
 }
 
-void MainGUI::setDebugButton1ClickEvent(void* caller, ButtonClickFunc func)
+void MainGUI::setDebugButton1ClickEvent(void* caller, scl::class_function_ptr func)
 {
-	m_debugButton1ClickCaller = caller;
-	m_debugButton1ClickFunc = func;
+	m_debugButton1ClickFunc.set(caller, func);
 }
 
 void MainGUI::_windowScene()
@@ -343,8 +342,8 @@ void MainGUI::_windowDebug()
 	if (ImGui::Button("Do pick pass"))
 	{
 		//printf("context menu pressed.");
-		if (NULL != m_debugButton1ClickFunc)
-			m_debugButton1ClickFunc(m_debugButton1ClickCaller);
+		//if (NULL != m_debugButton1ClickFunc)
+		m_debugButton1ClickFunc();
 	}
 
 	//if (ImGui::Button("Show device info"))

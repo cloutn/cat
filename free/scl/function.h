@@ -18,6 +18,8 @@ public:
     void set            (class_t* _class, func_t _func) { m_class = _class; m_func = _func; }
     return_t operator   ()(args_t... args)
     {
+        if (nullptr == m_class || nullptr == m_func)
+            return return_t();
         return (m_class->*m_func)(args...);
     }
 
@@ -44,6 +46,8 @@ public:
     }
     return_t operator   ()(args_t... args)
     {
+        if (nullptr == m_class || nullptr == m_func)
+            return return_t();
         __any_class*    typed_class = reinterpret_cast<__any_class*>(m_class);
         func_t           typed_func  = reinterpret_cast<func_t>(m_func);
         return (typed_class->*typed_func)(args...);
@@ -66,6 +70,8 @@ public:
     void set            (void* _caller, func_t _func) { m_caller = _class; m_func = _func; }
     return_t operator   ()(args_t... args)
     {
+        if (nullptr == m_class || nullptr == m_func)
+            return return_t();
         return (m_func)(m_caller, args...);
     }
 
@@ -75,6 +81,11 @@ private:
 
 }; // class caller_function
 
+template <typename T>
+inline scl::class_function_ptr to_func(T func)
+{
+    return reinterpret_cast<class_function_ptr>(func);
+}
 
 } // namespace scl
 

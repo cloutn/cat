@@ -1,13 +1,13 @@
+
 #pragma once
 
 #include "scl/type.h"
+#include "scl/function.h"
 
 namespace cat {
 
 class Client;
 class Object;
-
-typedef void (*ButtonClickFunc)(void* caller);
 
 class MainGUI
 {
@@ -23,7 +23,7 @@ public:
 	bool	wantCaptureKeyboard	();
 	bool	wantCaptureMouse	();
 
-	void	setDebugButton1ClickEvent	(void* caller, ButtonClickFunc func);
+	void	setDebugButton1ClickEvent(void* caller, scl::class_function_ptr func);
 
 private:
 	void	_windowScene		();
@@ -40,8 +40,7 @@ private:
 	Client*						m_client;	
 	Object*						m_selectObject;
 
-	void*						m_debugButton1ClickCaller;
-	ButtonClickFunc				m_debugButton1ClickFunc;
+	scl::any_class_function<void>	m_debugButton1ClickFunc;
 
 }; // class MainGUI
 

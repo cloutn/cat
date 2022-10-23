@@ -218,8 +218,6 @@ Win32Window::~Win32Window()
 	::DestroyWindow(static_cast<HWND>(m_windowHandle));
 }
 
-
-
 }	//namespace cat
 
 
