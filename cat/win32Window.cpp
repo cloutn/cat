@@ -132,7 +132,7 @@ intptr_t __stdcall Win32Window::WndProc(void* hWnd, uint32_t message, intptr_t w
 		PostQuitMessage(0);
 		return 0;
 	}
-	//TODO 第一条WM_GETMINMAXINFO消息无法发送给Win32Window，
+	//TODO 第一条 WM_GETMINMAXINFO 消息无法发送给 Win32Window，
 	//因为在CreateWindow函数中，WM_GETMINMAXINFO消息先于WM_NCCREATE到达
 	if (message == WM_NCCREATE)
 	{
@@ -142,9 +142,7 @@ intptr_t __stdcall Win32Window::WndProc(void* hWnd, uint32_t message, intptr_t w
 			GWLP_USERDATA, 
 			reinterpret_cast<LONG_PTR>(reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams));
 	}
-	//从HWND中获取Win32Window的指针
-	Win32Window* pWindow = reinterpret_cast<Win32Window*>(
-		::GetWindowLongPtr(static_cast<HWND>(hWnd), GWLP_USERDATA));
+	Win32Window* pWindow = reinterpret_cast<Win32Window*>(::GetWindowLongPtr(static_cast<HWND>(hWnd), GWLP_USERDATA));
 	if (NULL == pWindow)
 	{
 		if (message != WM_GETMINMAXINFO)
