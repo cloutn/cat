@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="gb2312"?>
+<Table IdFieldIndex="0" NameFieldIndex="1">
+	<Field Type="INT" Name="ID" CodeVarName="ID" LinkTableName="" IsMulti="false" />
+	<Field Type="STRING" Name="名称" CodeVarName="名称" LinkTableName="" IsMulti="false" />
+	<Field Type="FLOAT" Name="X坐标" CodeVarName="X坐标" LinkTableName="" IsMulti="false" />
+	<Field Type="FLOAT" Name="Y坐标" CodeVarName="Y坐标" LinkTableName="" IsMulti="false" />
+	<Field Type="INT" Name="脚本ID" CodeVarName="脚本ID" LinkTableName="" IsMulti="false" />
+	<Field Type="INT" Name="需求等级" CodeVarName="需求等级" LinkTableName="" IsMulti="false" />
+	<Field Type="STRING_INT" Name="需求非绑定金钱数量" CodeVarName="需求非绑定金钱数量" LinkTableName="" IsMulti="false" />
+</Table>

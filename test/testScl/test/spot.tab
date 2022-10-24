@@ -1,0 +1,4 @@
+#ID	名称	X坐标	Y坐标	脚本ID	需求等级	需求非绑定金钱数量
+#INT	STRING	FLOAT	FLOAT	INT	INT	STRING_INT
+1	洞庭	236	362	-1	1	0|0|0|1
+2	龙宫	236	362	-1	1	0|0|0|1
