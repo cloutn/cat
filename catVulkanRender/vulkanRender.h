@@ -148,21 +148,20 @@ private:
 		svkDescriptorData*		uniformDatas,
 		const int				uniformDataCapacity);
 
-	void					_prepareDescriptorSet(
+	DescriptorSet			_prepareDescriptorSet(
 		void*					shader, 
-		svkDescriptorData*		uniformDatas,
-		const int				uniformDataCount,
-		DescriptorSet&			descriptorSet,
-		DescriptorAllocator*&	descriptorAllocator,
+		svkDescriptorData*		descriptorDatas,
+		const int				descriptorDataCount,
+		VkDescriptorSetLayout&	descriptorSetLayout,
 		uint32_t*				dynamicOffsets,
-		uint32_t				dynamicOffsetCount);
+		uint32					dynamicOffsetCount);
 
 	void					_preparePipeline(
 		const int				primitiveType,
 		const VertexAttr*		attrs,
 		const int				attrCount,
 		void**					vertexBuffers,
-		DescriptorAllocator*	descriptorAllocator,
+		VkDescriptorSetLayout	descriptorSetLayout,
 		void*					shader,
 		VkRenderPass			renderPass,
 		svkPipeline*&			pipeline);
@@ -173,6 +172,18 @@ private:
 		const scl::matrix&		mvp,
 		const scl::matrix*		jointMatrices,
 		const int				jointMatrixCount);
+
+	void					_prepareDescriptorSetAndFillData(
+		void*					shader, 
+		const scl::matrix&		mvp,
+		void*					texture,
+		const scl::matrix*		jointMatrices,
+		const int				jointMatrixCount,
+		DescriptorSet&			outputDescriptorSet,
+		VkDescriptorSetLayout&	outputDescriptorSetLayout,
+		uint32_t*				outputDynamicOffsets,
+		uint32_t				outputDynamicOffsetCapacity,
+		uint32_t&				outputDynamicOffsetCount);
 
 	static RenderTarget		_createRenderTarget		(svkDevice& device, VkFormat colorFormat, VkFormat depthFormat, VkRenderPass renderPass, const int width, const int height);
 	static void				_destroyRenderTarget	(svkDevice& device, RenderTarget& renderTarget);

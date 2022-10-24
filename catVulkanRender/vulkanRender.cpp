@@ -725,62 +725,56 @@ int VulkanRender::_fillUniformData(
 		uniformDatas[idx].binding					= 1;
 		++idx;
 	}
-
-	//if (dynamicOffsets != NULL && dynamicOffsetCount > 0)
-	//{
-	//	for (int i = 0; i < idx; ++i)
-	//	{
-	//		for (int j = 0; j < uniformDatas[i].dataCount; ++j)
-	//		{
-	//			uniformDatas[i].data[j].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1 - dynamicOffsets[i];
-	//		}
-	//	}
-	//}
 	return idx;
 }
 
-void VulkanRender::_prepareDescriptorSet(
+DescriptorSet VulkanRender::_prepareDescriptorSet(
 	void*					shader, 
 	svkDescriptorData*		descriptorDatas,
 	const int				descriptorDataCount,
-	DescriptorSet&			descriptorSet,
-	DescriptorAllocator*&	descriptorAllocator,
+	VkDescriptorSetLayout&	descriptorSetLayout,
 	uint32_t*				dynamicOffsets,
 	uint32					dynamicOffsetCount)
 {
 	svkShaderProgram* shaderProgram = static_cast<svkShaderProgram*>(shader);
+	DescriptorAllocator*	descriptorAllocator = NULL;
+	DescriptorSet			descriptorSet = { 0 };
 
 	VkDescriptorSetLayoutBinding*	layoutBinds		= shaderProgram->descriptorSetLayoutBinds;
 	int								layoutBindCount	= shaderProgram->descriptorSetLayoutBindCount;
-	if (NULL != shaderProgram->descriptorSetLayoutBinds && shaderProgram->descriptorSetLayoutBindCount > 0)
-	{
-		int			descriptorSetLayoutHash = XXH32(layoutBinds, sizeof(VkDescriptorSetLayoutBinding) * layoutBindCount, 0);	
-		const int	findIndex				= m_descriptorAllocators.find_index(descriptorSetLayoutHash);
-		if (findIndex != -1)
-		{
-			descriptorAllocator	= m_descriptorAllocators.get_value(findIndex);
-		}
-		else
-		{
-			descriptorAllocator = new DescriptorAllocator();
-			descriptorAllocator->init(m_device, layoutBinds, layoutBindCount);
-			m_descriptorAllocators.add(descriptorSetLayoutHash, descriptorAllocator);
-		}
+	if (NULL == shaderProgram->descriptorSetLayoutBinds || shaderProgram->descriptorSetLayoutBindCount <= 0)
+		return descriptorSet;
 
-		DescriptorDataKey dataKey;
-		dataKey.init(layoutBinds, layoutBindCount, descriptorDatas, m_drawContext.uniform, dynamicOffsets, dynamicOffsetCount);
-		int cacheIndex = m_descriptorSetCache.find_index(dataKey);
-		if (cacheIndex != -1)
-		{
-			descriptorSet = m_descriptorSetCache.get_value(cacheIndex);
-		}
-		else
-		{
-			descriptorSet = descriptorAllocator->alloc();
-			svkUpdateDescriptorSet(m_device, descriptorSet.set, layoutBinds, layoutBindCount, descriptorDatas, descriptorDataCount);
-			m_descriptorSetCache.add(dataKey, descriptorSet);
-		}
+	int			descriptorSetLayoutHash = XXH32(layoutBinds, sizeof(VkDescriptorSetLayoutBinding) * layoutBindCount, 0);	
+	const int	findIndex				= m_descriptorAllocators.find_index(descriptorSetLayoutHash);
+	if (findIndex != -1)
+	{
+		descriptorAllocator	= m_descriptorAllocators.get_value(findIndex);
 	}
+	else
+	{
+		descriptorAllocator = new DescriptorAllocator();
+		descriptorAllocator->init(m_device, layoutBinds, layoutBindCount);
+		m_descriptorAllocators.add(descriptorSetLayoutHash, descriptorAllocator);
+	}
+
+	DescriptorDataKey dataKey;
+	dataKey.init(layoutBinds, layoutBindCount, descriptorDatas, m_drawContext.uniform, dynamicOffsets, dynamicOffsetCount);
+	int cacheIndex = m_descriptorSetCache.find_index(dataKey);
+	if (cacheIndex != -1)
+	{
+		descriptorSet = m_descriptorSetCache.get_value(cacheIndex);
+	}
+	else
+	{
+		descriptorSet = descriptorAllocator->alloc();
+		svkUpdateDescriptorSet(m_device, descriptorSet.set, layoutBinds, layoutBindCount, descriptorDatas, descriptorDataCount);
+		m_descriptorSetCache.add(dataKey, descriptorSet);
+	}
+	if (NULL != descriptorAllocator)
+		descriptorSetLayout = descriptorAllocator->getLayout();
+
+	return descriptorSet;
 }
 
 
@@ -789,7 +783,7 @@ void VulkanRender::_preparePipeline(
 	const VertexAttr*		attrs,
 	const int				attrCount,
 	void**					vertexBuffers,
-	DescriptorAllocator*	descriptorAllocator,
+	VkDescriptorSetLayout	descriptorSetLayout,
 	void*					shader,
 	VkRenderPass			renderPass,
 	svkPipeline*&			pipeline)
@@ -813,7 +807,7 @@ void VulkanRender::_preparePipeline(
 		svkShaderProgram*						shaderProgram	= static_cast<svkShaderProgram*>(shader);
 
 		pipeline	= new svkPipeline;
-		*pipeline	= svkCreatePipelineEx(m_device, descriptorAllocator->getLayout(), m_drawContext.renderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
+		*pipeline	= svkCreatePipelineEx(m_device, descriptorSetLayout, m_drawContext.renderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
 		m_pipelines.add(pipelineKey, pipeline);
 	}
 }
@@ -846,6 +840,37 @@ uint32_t VulkanRender::_fillDynamicOffsets(
 	}
 	return dynamicOffsetCount;
 }
+
+
+void VulkanRender::_prepareDescriptorSetAndFillData(
+	void*					shader, 
+	const scl::matrix&		mvp,
+	void*					texture,
+	const scl::matrix*		jointMatrices,
+	const int				jointMatrixCount,
+	DescriptorSet&			outputDescriptorSet,
+	VkDescriptorSetLayout&	outputDescriptorSetLayout,
+	uint32_t*				outputDynamicOffsets,
+	uint32_t				outputDynamicOffsetCapacity,
+	uint32_t&				outputDynamicOffsetCount)
+{
+	// uniform 数据分为两个部分，
+	//		一个是声明信息，就是uniform bind
+	//		一个是具体数据信息，就是 uniform data
+	//		具体数据要和前面声明的类型对应上。
+	svkDescriptorData uniformDatas[3];
+	int uniformDataCount		= _fillUniformData		(mvp, texture, jointMatrixCount, uniformDatas, countof(uniformDatas));
+
+	// 这里使用 dynamic offset 进行优化
+	// 具体优化思路可以参考 arm 的文章 ：https://community.arm.com/developer/tools-software/graphics/b/blog/posts/vulkan-descriptor-and-buffer-management
+	// 思路概要：
+	//	1. 缓存 DescriptorSet，而不是每帧都反复创建销毁。
+	//	2. 每一帧使用一个 buffer，记录所有 object 的 uniform matrix (mvp, jointMatrices), 然后在 vkCmdBindDescriptorSets 中使用 dynamicOffsets 区分每个物体。
+	//
+	outputDynamicOffsetCount	= _fillDynamicOffsets	(outputDynamicOffsets, outputDynamicOffsetCapacity, mvp, jointMatrices, jointMatrixCount);
+	outputDescriptorSet			= _prepareDescriptorSet	(shader, uniformDatas, uniformDataCount, outputDescriptorSetLayout, outputDynamicOffsets, outputDynamicOffsetCount);
+}
+
 
 RenderTarget VulkanRender::_createRenderTarget(svkDevice& device, VkFormat colorFormat, VkFormat depthFormat, VkRenderPass renderPass, const int width, const int height)
 {
@@ -1070,29 +1095,15 @@ void VulkanRender::draw2(
 	if (!useBindCommandBuffer)
 		svkBeginSecondaryCommandBuffer(cmd_buf, m_drawContext.renderPass, m_drawContext.framebuffer);
 
-	// uniform 数据分为两个部分，
-	//		一个是声明信息，就是uniform bind
-	//		一个是具体数据信息，就是 uniform data
-	//		具体数据要和前面声明的类型对应上。
-	svkDescriptorData uniformDatas[3];
-	int uniformDataCount = _fillUniformData(mvp, texture, jointMatrixCount, uniformDatas, countof(uniformDatas));
-
-	// 这里使用 dynamic offset 进行优化
-	// 具体优化思路可以参考 arm 的文章 ：https://community.arm.com/developer/tools-software/graphics/b/blog/posts/vulkan-descriptor-and-buffer-management
-	// 思路概要：
-	//	1. 缓存 DescriptorSet，而不是每帧都反复创建销毁。
-	//	2. 每一帧使用一个 buffer，记录所有 object 的 uniform matrix (mvp, jointMatrices), 然后在 vkCmdBindDescriptorSets 中使用 dynamicOffsets 区分每个物体。
-	//
-	const int	MAX_DYNAMIC_OFFSET_COUNT					= 2;
-	uint32_t	dynamicOffsets[MAX_DYNAMIC_OFFSET_COUNT]	= { 0 };
-	uint32_t	dynamicOffsetCount							= _fillDynamicOffsets(dynamicOffsets, countof(dynamicOffsets), mvp, jointMatrices, jointMatrixCount);
-
-	DescriptorSet			descriptorSet;
-	DescriptorAllocator*	desAllocator = NULL;
-	_prepareDescriptorSet(shader, uniformDatas, uniformDataCount, descriptorSet, desAllocator, dynamicOffsets, dynamicOffsetCount);
+	DescriptorSet			descriptorSet								= { 0 };
+	VkDescriptorSetLayout	descriptorSetLayout							= NULL;
+	const int				MAX_DYNAMIC_OFFSET_COUNT					= 2;
+	uint32_t				dynamicOffsets[MAX_DYNAMIC_OFFSET_COUNT]	= { 0 };
+	uint32_t				dynamicOffsetCount							= 0;
+	_prepareDescriptorSetAndFillData(shader, mvp, texture, jointMatrices, jointMatrixCount, descriptorSet, descriptorSetLayout, dynamicOffsets, countof(dynamicOffsets), dynamicOffsetCount);
 
 	svkPipeline* pipeline = NULL;
-	_preparePipeline(primitiveType, attrs, attrCount, vertexBuffers, desAllocator, shader, m_drawContext.renderPass, pipeline);
+	_preparePipeline(primitiveType, attrs, attrCount, vertexBuffers, descriptorSetLayout, shader, m_drawContext.renderPass, pipeline);
 
 	vkCmdBindPipeline(cmd_buf, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);	
 	
