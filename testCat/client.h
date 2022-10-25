@@ -69,7 +69,7 @@ public:
 private:
 	void					_renderScene		();
 
-	void					OnButtonClick_DebugTest1();
+	bool					OnButtonClick_DebugTest1(GUIEvent& e);
 	void					OnSurfaceResize		(int width, int height);
 
 private:

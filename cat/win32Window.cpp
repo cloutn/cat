@@ -156,9 +156,8 @@ intptr_t __stdcall Win32Window::WndProc(void* hWnd, uint32_t message, intptr_t w
 	return ::DefWindowProc(static_cast<HWND>(hWnd), message, wParam, lParam);
 }
 
-bool Win32Window::registerEventHandler(void* caller, scl::class_function_ptr func)
+bool Win32Window::registerEventHandler(EventHandlerFuncT eventHandler)
 {
-	EventHandlerFuncT eventHandler(caller, func);
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
 		if (m_eventHandlers[i] == eventHandler)
@@ -172,10 +171,8 @@ bool Win32Window::registerEventHandler(void* caller, scl::class_function_ptr fun
 	return true;
 }
 
-bool Win32Window::unregisterEventHandler(void* caller, scl::class_function_ptr func)
+bool Win32Window::unregisterEventHandler(EventHandlerFuncT eventHandler)
 {
-	EventHandlerFuncT eventHandler(caller, func);
-
 	for (int i = 0; i < m_eventHandlerCount; ++i)
 	{
 		if (m_eventHandlers[i] == eventHandler)

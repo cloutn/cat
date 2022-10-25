@@ -1,13 +1,29 @@
 
 #pragma once
 
-#include "scl/type.h"
+#include "scl/array.h"
 #include "scl/function.h"
+#include "scl/type.h"
 
 namespace cat {
 
 class Client;
 class Object;
+
+class GUIEvent
+{
+public:
+
+};
+
+enum GUI_EVENT
+{
+	GUI_EVENT_DEBUG_BUTTON_CLICK,
+
+	GUI_EVENT_COUNT,
+};
+
+typedef scl::any_class_function<bool, GUIEvent&> GUIEventFuncT;
 
 class MainGUI
 {
@@ -22,8 +38,8 @@ public:
 	void	onEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
 	bool	wantCaptureKeyboard	();
 	bool	wantCaptureMouse	();
+	void	registEvent			(GUI_EVENT event, GUIEventFuncT pfunc);
 
-	void	setDebugButton1ClickEvent(void* caller, scl::class_function_ptr func);
 
 private:
 	void	_windowScene		();
@@ -36,11 +52,13 @@ private:
 	void	_beginFrame			();
 	void	_endFrame			();
 
+	void	_fireEvent			(GUI_EVENT event, GUIEvent& eventArg);
+
 private:
 	Client*						m_client;	
 	Object*						m_selectObject;
 
-	scl::any_class_function<void>	m_debugButton1ClickFunc;
+	scl::array<GUIEventFuncT, GUI_EVENT_COUNT> m_events;
 
 }; // class MainGUI
 

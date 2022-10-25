@@ -17,11 +17,13 @@ public:
 	Win32Window();
 	~Win32Window();
 
+	typedef				scl::any_class_function<bool, void*, uint32_t, intptr_t, intptr_t> EventHandlerFuncT;
+
 	bool	init					(const int width, const int height, const wchar_t* const titleName = L"main", const wchar_t* const szIconName = L"", bool enableDpiAwareness = false);
 	bool	hasInit					() { return m_windowHandle != NULL; }
 	bool	run						();
-	bool	registerEventHandler	(void* caller, scl::class_function_ptr func);
-	bool	unregisterEventHandler	(void* caller, scl::class_function_ptr func);
+	bool	registerEventHandler	(EventHandlerFuncT func);
+	bool	unregisterEventHandler	(EventHandlerFuncT func);
 	bool	postEvent				(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lParam);
 	bool	IsForegroundWindow		();
 	int		getWidth				() { return m_width; };
@@ -41,7 +43,6 @@ private:
 	
 	//事件处理器列表
 	static const int	MAX_EVENT_HANDLER = 128;
-	typedef				scl::any_class_function<bool, void*, uint32_t, intptr_t, intptr_t> EventHandlerFuncT;
 
 	EventHandlerFuncT	m_eventHandlers[MAX_EVENT_HANDLER];
 	int					m_eventHandlerCount;

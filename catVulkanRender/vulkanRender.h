@@ -46,7 +46,7 @@ public:
 	bool					is_init					()const { return m_isInit; };
 	void					swap					();
 	void					clear					();
-	void					setOnSurfaceResize		(void* caller, scl::class_function_ptr func) { m_onSurfaceResize.set(caller, func); }
+	void					setOnSurfaceResize		(scl::any_class_function<void, int, int> func) { m_onSurfaceResize = func; }
 
 	void					updateMVP				(const scl::matrix& mvp);
 //	void					onResize				(const int width, const int height, bool forceSet = false);

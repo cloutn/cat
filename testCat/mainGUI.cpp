@@ -177,10 +177,11 @@ bool MainGUI::wantCaptureMouse()
 	return io.WantCaptureMouse;
 }
 
-void MainGUI::setDebugButton1ClickEvent(void* caller, scl::class_function_ptr func)
+void MainGUI::registEvent(GUI_EVENT event, GUIEventFuncT func)
 {
-	m_debugButton1ClickFunc.set(caller, func);
+	m_events[event] = func;	
 }
+
 
 void MainGUI::_windowScene()
 {
@@ -297,6 +298,11 @@ void MainGUI::_endFrame()
 
 }
 
+void MainGUI::_fireEvent(GUI_EVENT event, GUIEvent& eventArg)
+{
+	m_events[event](eventArg);
+}
+
 void MainGUI::_windowProperty(Object* const object)
 {
 	if (NULL == object)
@@ -343,7 +349,8 @@ void MainGUI::_windowDebug()
 	{
 		//printf("context menu pressed.");
 		//if (NULL != m_debugButton1ClickFunc)
-		m_debugButton1ClickFunc();
+		//m_debugButton1ClickFunc();
+		_fireEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, GUIEvent());
 	}
 
 	//if (ImGui::Button("Show device info"))
@@ -468,6 +475,8 @@ void MainGUI::_windowDeviceInfo()
 		myLabelText("limits.maxSamplerLodBias",									"%f", info.limits.maxSamplerLodBias);
 		myLabelText("limits.maxSamplerAnisotropy",									"%f", info.limits.maxSamplerAnisotropy);
 		myLabelText("limits.maxViewports",											"%u", info.limits.maxViewports);
+#include "scl/array.h"
+#include "scl/function.h"
 		myLabelText("limits.maxViewportDimensions",								"%u, %u", info.limits.maxViewportDimensions[0], info.limits.maxViewportDimensions[1]);
 		myLabelText("limits.viewportBoundsRange",									"%f, %f", info.limits.viewportBoundsRange[0], info.limits.maxViewportDimensions[1]);
 		myLabelText("limits.viewportSubPixelBits",									"%u", info.limits.viewportSubPixelBits);
