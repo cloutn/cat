@@ -29,7 +29,7 @@ public:
 	const scl::varray<Object*>	objects		() const { return m_objects; }
 	int							objectCount	() const { return m_objects.size(); }
 	Object*						object		(const int index) { return m_objects[index]; }
-	void						draw		(const scl::matrix& mvp, IRender* render);
+	void						draw		(const scl::matrix& mvp, bool isPick, IRender* render);
 	Object*						findObject	(const char* const objectName);
 
 private:

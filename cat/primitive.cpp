@@ -15,12 +15,15 @@
 
 #include <string.h>
 
+#include "gltf_raw_render.h"
+
 namespace cat {
 	
 int _attrNameToIndex(const char* const name);
 
 Primitive::Primitive() : 
 	m_render					(NULL),
+	m_env						(NULL),
 	m_deviceIndexBuffer			(NULL),
 	m_indexCount				(0),
 	m_indexComponentType		(ELEM_TYPE_INVALID),
@@ -324,7 +327,7 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 
 }
 
-void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render)
+void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
 {
 	//Material* material = m_material;
 	////if (NULL == material || NULL == material->texture())
@@ -338,25 +341,31 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 	else
 		texture = m_material->texture();
 
-	scl::vector4 v = { 0, 0, 1, 0};
+	void**				_vertexBuffers	= vertexBuffers();
+	void*				_indexBuffer	= indexBuffer();
+	int					_attrCount		= attrCount();
+	const VertexAttr*	_attrs			= attrs();
+	void*				_shader			= isPick ? m_pickShader->shader(render) : m_shader->shader(m_render);
+	scl::vector4		pickColor		= isPick ? m_env->registerPickPrimitive(this) : scl::vector4();
+	void*				_pushConst		= isPick ? &pickColor : NULL;
+	int					_pushConstSize	= isPick ? sizeof(scl::vector4) : 0;
 
 	render->draw2(
 		texture,
-		vertexBuffers(),
+		_vertexBuffers,
 		m_primitiveType,
-		indexBuffer(),
+		_indexBuffer,
 		m_indexCount,
 		m_indexComponentType,
 		m_indexOffset,
-		attrCount(),
-		attrs(),
-		m_shader->shader(render),
-		//m_pickShader->shader(render),
+		_attrCount,
+		_attrs,
+		_shader,
 		mvp,
 		jointMatrices,
 		jointMatrixCount,
-		NULL, 0);
-		//&v, sizeof(v));
+		_pushConst, 
+		_pushConstSize);
 }
 
 template <typename T>

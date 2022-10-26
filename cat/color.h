@@ -128,7 +128,8 @@ inline int pixel_to_byte(PIXEL p)
 	return PixelByte[p];
 }
 
-void argb_to_float(uint color, float& a, float& r, float& g, float& b);
+void	argb_to_float(uint color, float& a, float& r, float& g, float& b);
+uint32	float_to_argb(float& a, float& r, float& g, float& b);
 
 
 uint32 color_lerp(const uint32 color1, const uint32 color2, const float t);

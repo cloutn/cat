@@ -90,10 +90,10 @@ void Scene::save(const char* const filename)
 	doc.save(filename);
 }
 
-void Scene::draw(const scl::matrix& mvp, IRender* render)
+void Scene::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 {
 	for (int i = 0; i < m_objects.size(); ++i)
-		m_objects[i]->draw(mvp, render);
+		m_objects[i]->draw(mvp, isPick, render);
 }
 
 Object* Scene::findObject(const char* const objectName)

@@ -67,7 +67,7 @@ public:
 #endif
 
 private:
-	void					_renderScene		();
+	void					_renderScene		(bool isPick);
 
 	bool					OnButtonClick_DebugTest1(GUIEvent& e);
 	void					OnSurfaceResize		(int width, int height);

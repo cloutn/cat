@@ -155,15 +155,15 @@ Client& Client::inst()
 	return g_client;
 }
 
-void Client::_renderScene()
+void Client::_renderScene(bool isPick)
 {
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
-		m_scenes[i]->draw(m_camera->matrix(), &m_render);
+		m_scenes[i]->draw(m_camera->matrix(), isPick, &m_render);
 	}
 
 	if (NULL != m_gridPrimitive)
-		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);
+		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
 
 	if (NULL != m_bonePrimitive)
 	{
@@ -171,16 +171,21 @@ void Client::_renderScene()
 		scl::varray<uint16> indices;
 		CollectBoneVertices(m_object, vertices, indices);
 		m_bonePrimitive->updateVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
-		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);
+		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
 	}
 }
 
 bool Client::OnButtonClick_DebugTest1(GUIEvent&)
 {
+	m_env->clearPickPrimtives();
+
 	m_render.beginPickPass(scl::vector4{0, 0, 0, 0});
-	_renderScene();
+
+	_renderScene(true);
+
 	m_render.endPickPass();
 	m_render.savePickPass();
+
 	return true;
 }
 
@@ -235,7 +240,7 @@ void Client::run()
 		m_render.beginDraw();
 
 		m_render.beginScenePass(m_config.clearColorf());
-		_renderScene();
+		_renderScene(false);
 		m_gui.Render();
 		m_render.endScenePass();
 

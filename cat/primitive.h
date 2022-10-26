@@ -1,7 +1,10 @@
 #pragma once
 
-#include "gltf_raw_render.h"
+
+
 #include "cat/IRender.h"
+
+#include "scl/vector.h"
 
 struct cgltf_primitive;
 struct cgltf_buffer_view;
@@ -12,6 +15,7 @@ class IRender;
 class VertexAttr;
 class Material;
 class Shader;
+class Mesh;
 class Env;
 class ShaderMacro;
 class ShaderMacroArray;
@@ -23,7 +27,7 @@ public:
 	virtual ~Primitive();
 
 	void				load			(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env);
-	void				draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render);
+	void				draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
 	void				release			();
 	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int shaderMacroCount);
 	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacroArray& macros);
@@ -82,6 +86,7 @@ private:
 	Material*			m_material;
 	Shader*				m_shader;
 	Shader*				m_pickShader;
+
 	//TODO parent is for debug
 	Mesh*				m_parent;
 };

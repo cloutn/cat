@@ -3,6 +3,7 @@
 #include "cat/string.h"
 
 #include "scl/tree.h"
+#include "scl/vector.h"
 
 struct cgltf_node;
 struct cgltf_buffer_view;
@@ -14,6 +15,7 @@ class ShaderCache;
 class ShaderMacro;
 class Material;
 class Object;
+class Primitive;
 class IRender;
 
 class Env
@@ -37,15 +39,25 @@ public:
 	Object*				getObjectByGltfNode		(cgltf_node* node);
 	void				clearGltfNodeMap		();
 
-private:
-	ShaderCache*				m_shaderCache;
-	Shader*						m_defaultShader;
-	IRender*					m_render;
-	String						m_defaultMaterialTextureName;
-	scl::tree<cgltf_node*, int> m_gltfNodeMap;
+	// pick primitive
+	void				clearPickPrimtives		();
+	scl::vector4		registerPickPrimitive	(Primitive* primitive);
+	Primitive*			getPickPrimitive		(scl::vector4& color);
 
-	typedef scl::tree<string256, TextureFile> TextureFileMap;
-	TextureFileMap m_textureFiles;
+private:
+
+	ShaderCache*								m_shaderCache;
+	Shader*										m_defaultShader;
+	IRender*									m_render;
+	String										m_defaultMaterialTextureName;
+	scl::tree<cgltf_node*, int>					m_gltfNodeMap;
+
+	typedef scl::tree<string256, TextureFile>	TextureFileMap;
+	TextureFileMap								m_textureFiles;
+
+	//typedef scl::tree<uint32, Primitive*>		PickMap;
+	typedef scl::array<Primitive*, 1024>		PickPrimitiveArray;
+	PickPrimitiveArray							m_pickPrimitives;
 
 }; // class Env
 

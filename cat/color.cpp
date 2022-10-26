@@ -16,6 +16,16 @@ void argb_to_float(uint color, float& a, float& r, float& g, float& b)
 	b = ib / 255.f;
 }
 
+scl::uint32 float_to_argb(float& a, float& r, float& g, float& b)
+{
+	uint ia = a * 255;
+	uint ir = r * 255;
+	uint ig = g * 255;
+	uint ib = b * 255;
+	uint32 color = COLOR_ARGB(ia, ir, ig, ib);
+	return color;
+}
+
 uint32 color_lerp(uint32 color1, uint32 color2, const float t)
 {
 	int a1 = COLOR_GET_A(color1);

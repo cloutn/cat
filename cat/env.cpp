@@ -128,6 +128,28 @@ void Env::clearGltfNodeMap()
 }
 
 
+void Env::clearPickPrimtives()
+{
+	m_pickPrimitives.clear();
+}
+
+scl::vector4 Env::registerPickPrimitive(Primitive* primitive)
+{
+	m_pickPrimitives.push_back(primitive);
+	uint32			id = m_pickPrimitives.size();
+	scl::vector4	color;
+	argb_to_float(id, color.a, color.r, color.g, color.b);
+	return color;
+}
+
+cat::Primitive* Env::getPickPrimitive(scl::vector4& color)
+{
+	uint32			id = float_to_argb(color.a, color.r, color.g, color.b);
+	if (id >= m_pickPrimitives.size())
+		return NULL;
+	return m_pickPrimitives[id];
+}
+
 //void Env::addToBufferMap(cgltf_buffer_view* bufferView, void* buffer)
 //{
 //	if (m_bufferMap.count(bufferView))

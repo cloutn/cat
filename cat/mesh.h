@@ -5,6 +5,8 @@
 
 #include "scl/varray.h"
 
+struct cgltf_mesh;
+
 namespace cat {
 
 class Material;
@@ -19,7 +21,7 @@ public:
 	~Mesh();
 
 	void			load			(cgltf_mesh* mesh, const char* const path, int skinJointCount, Object* parent, IRender* render, Env* env);
-	void			draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render);
+	void			draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
 	void			addPrimitive	(Primitive*);
 	Object*			parent			() { return m_parent; }
 	const String&	name			() const { return m_name; }

@@ -39,7 +39,7 @@ void Mesh::load(cgltf_mesh* mesh, const char* const path, int skinJointCount, Ob
 	}
 }
 
-void Mesh::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, IRender* render)
+void Mesh::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
 {
 	for (int i = 0; i < m_primitives.size(); ++i)
 	{
@@ -47,7 +47,7 @@ void Mesh::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const 
 		if (NULL == primitive)
 			continue;
 
-		primitive->draw(mvp, jointMatrices, jointMatrixCount, render);
+		primitive->draw(mvp, jointMatrices, jointMatrixCount, isPick, render);
 	}
 }
 

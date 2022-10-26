@@ -18,7 +18,6 @@ namespace cat {
 	
 class IRender;
 class Material;
-//class Primitive;
 class Mesh;
 class Skin;
 class Shader;
@@ -34,7 +33,7 @@ public:
 	void						loadNode				(cgltf_node* node, const char* const path, IRender* render, Env* env);
 	void						loadSkin				(cgltf_node* node, Env* env);
 	void						save					(yaml::node& parent);
-	void						draw					(const scl::matrix& mvp, IRender* render);
+	void						draw					(const scl::matrix& mvp, bool isPick, IRender* render);
 	scl::matrix					globalMatrix			();
 	const String&				name					() const { return m_name; }
 	void						setName					(const char* const name) { m_name = name; }
