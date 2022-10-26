@@ -23,7 +23,7 @@ enum GUI_EVENT
 	GUI_EVENT_COUNT,
 };
 
-typedef scl::any_class_function<bool, GUIEvent&> GUIEventFuncT;
+typedef scl::class_function<bool (GUIEvent&)> GUIEventFuncT;
 
 class MainGUI
 {
@@ -38,7 +38,7 @@ public:
 	void	onEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
 	bool	wantCaptureKeyboard	();
 	bool	wantCaptureMouse	();
-	void	registEvent			(GUI_EVENT event, GUIEventFuncT pfunc);
+	void	registerEvent		(GUI_EVENT event, GUIEventFuncT pfunc);
 
 
 private:

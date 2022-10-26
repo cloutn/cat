@@ -17,7 +17,7 @@ public:
 	Win32Window();
 	~Win32Window();
 
-	typedef				scl::any_class_function<bool, void*, uint32_t, intptr_t, intptr_t> EventHandlerFuncT;
+	typedef scl::class_function<bool (void*, uint32_t, intptr_t, intptr_t)> EventHandlerFuncT;
 
 	bool	init					(const int width, const int height, const wchar_t* const titleName = L"main", const wchar_t* const szIconName = L"", bool enableDpiAwareness = false);
 	bool	hasInit					() { return m_windowHandle != NULL; }

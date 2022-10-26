@@ -177,7 +177,7 @@ bool MainGUI::wantCaptureMouse()
 	return io.WantCaptureMouse;
 }
 
-void MainGUI::registEvent(GUI_EVENT event, GUIEventFuncT func)
+void MainGUI::registerEvent(GUI_EVENT event, GUIEventFuncT func)
 {
 	m_events[event] = func;	
 }

@@ -61,8 +61,8 @@ void Client::init(const int width, const int height)
 #ifdef SCL_WIN
 	m_window.init(width, height, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle());
-	m_render.setOnSurfaceResize(scl::make_func(this, &Client::OnSurfaceResize));
-	m_window.registerEventHandler(scl::make_func(this, &Client::onEvent));
+	m_render.setOnSurfaceResize(scl::bind(this, &Client::OnSurfaceResize));
+	m_window.registerEventHandler(scl::bind(this, &Client::onEvent));
 #endif
 
 	m_env = new Env();
@@ -73,7 +73,7 @@ void Client::init(const int width, const int height)
 	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
 
 	m_gui.init(this);
-	m_gui.registEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, scl::make_func(this, &Client::OnButtonClick_DebugTest1));
+	m_gui.registerEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, scl::bind(this, &Client::OnButtonClick_DebugTest1));
 	//scl::any_class_function<bool, GUIEvent&> aa = scl::make_func(this, &Client::OnButtonClick_DebugTest1);
 
 	loadGltf("art/SimpleSkin/SimpleSkin.gltf");

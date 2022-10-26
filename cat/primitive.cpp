@@ -334,7 +334,7 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 
 	void* texture = NULL;
 	if (NULL == m_material || NULL == m_material->texture())
-		texture = NULL;//m_env->getDefaultMaterial()->texture();
+		texture = NULL;		//m_env->getDefaultMaterial()->texture();
 	else
 		texture = m_material->texture();
 

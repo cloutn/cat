@@ -20,17 +20,10 @@ public:
 	void*		texture			();
 	void		release			();
 
-	//static void			setDefault(IRender* render, const char* const textureFilename);
-	//static Material*	_default();
-	//static void			releaseDefault();
-
 private:
-	IRender*				m_render;
-	Env*					m_env;
-	//void*					m_texture;
-	const TextureFile*		m_textureFile;
-
-	//static Material*	s_default;
+	IRender*					m_render;
+	Env*						m_env;
+	const TextureFile*			m_textureFile;
 };
 
 } // namespace cat 
