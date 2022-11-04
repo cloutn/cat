@@ -71,8 +71,8 @@ VulkanRender::VulkanRender()  :
 	memclr(m_drawContext);
 	memclr(m_pickRenderTarget);
 	memclr(m_deviceInfo);
-	m_pickImageSize.clear();
-	m_pickImageOffset.clear();
+	//m_pickImageSize.clear();
+	//m_pickImageOffset.clear();
 }
 
 
@@ -108,9 +108,9 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 	m_pickFence					= svkCreateFence(m_device, true);
 	m_pickSemaphore				= svkCreateSemaphore(m_device);
 	//m_pickImageSize.set(10, 10);
-	m_pickImageSize.set(m_surface.width, m_surface.height);
-	m_pickImageOffset.set(m_surface.width / 2 - m_pickImageSize.x / 2, m_surface.height / 2 - m_pickImageSize.y / 2);
-	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_pickImageSize.x * m_pickImageSize.y * 4);
+	//m_pickImageSize.set(m_surface.width, m_surface.height);
+	//m_pickImageOffset.set(m_surface.width / 2 - m_pickImageSize.x / 2, m_surface.height / 2 - m_pickImageSize.y / 2);
+	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
 
 	scl::matrix mvp = scl::matrix::identity();
 
@@ -140,6 +140,34 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 	return true;
 }
 
+//static int ImGui_CreateVkSurface(ImGuiViewport* viewport, ImU64 vk_instance, const void* vk_allocator, ImU64* out_vk_surface)
+//{
+//    //ImGui_ImplGlfw_Data* bd = ImGui_ImplGlfw_GetBackendData();
+//    //ImGui_ImplGlfw_ViewportData* vd = (ImGui_ImplGlfw_ViewportData*)viewport->PlatformUserData;
+//    //IM_UNUSED(bd);
+//    //IM_ASSERT(bd->ClientApi == GlfwClientApi_Vulkan);
+//
+//	ImGuiIO& io = ImGui::GetIO();
+//	VulkanRender* render = reinterpret_cast<VulkanRender*>(io.BackendRendererUserData);
+//
+//
+//#if defined(VK_USE_PLATFORM_WIN32_KHR)
+//	HINSTANCE hInstance		= ::GetModuleHandle(0);
+//
+//	VkWin32SurfaceCreateInfoKHR createInfo;
+//	memclr(createInfo);
+//	createInfo.sType		= VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+//	createInfo.pNext		= NULL;
+//	createInfo.flags		= 0;
+//	createInfo.hinstance	= ::GetModuleHandle(0);
+//	createInfo.hwnd			= (HWND)viewport->PlatformHandleRaw;
+//
+//	VkSurfaceKHR deviceSurfaceHandle;
+//	VkResult err = vkCreateWin32SurfaceKHR((VkInstance)vk_instance, &createInfo, NULL, &deviceSurfaceHandle);
+//	assert(err = VK_SUCCESS);
+//    return (int)err;
+//#endif
+//}
 
 void VulkanRender::initIMGUI()
 {
@@ -163,6 +191,11 @@ void VulkanRender::initIMGUI()
 	init_info.MSAASamples		= VK_SAMPLE_COUNT_1_BIT;
 	init_info.Allocator			= NULL;
 	init_info.CheckVkResultFn	= NULL;
+
+	//ImGuiIO&			io				= ImGui::GetIO();
+	//io.BackendRendererUserData			= this;
+	//ImGuiPlatformIO&	platformIO		= ImGui::GetPlatformIO();
+	//platformIO.Platform_CreateVkSurface	= ImGui_CreateVkSurface;
 
 	ImGui_ImplVulkan_Init		(&init_info, m_mainRenderPass);
 
@@ -503,27 +536,12 @@ void VulkanRender::beginPickPass(scl::vector4& clearColorRGBA)
 	m_drawContext.commandAllocator->reset(m_device);
 }
 
-void VulkanRender::endPickPass()
+void VulkanRender::endPickPass(int x, int y)
 {
 	if (NULL == m_drawContext.renderPass)
 		return;
 
 	VkResult err;
-
-	//VkCommandBuffer tmpCB = m_pickCommandAllocator->alloc();
-	//svkBeginSecondaryCommandBuffer(tmpCB, m_drawContext.renderPass, m_drawContext.framebuffer);
-
-	//VkBufferImageCopy region;
-	//memclr(region);
-	//region.bufferOffset			= 0;
-	//region.bufferRowLength		= m_surface.width;
-	//region.bufferImageHeight	= 0;
-	//region.imageSubresource		= { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-	//region.imageOffset			= { 0, 0, 0 };
-	//region.imageExtent			= { (unsigned int)m_surface.width, (unsigned int)m_surface.height, 1 };
-	//vkCmdCopyImageToBuffer(tmpCB, m_pickRenderTarget.colorImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_pickPassImageCPUBuffer.buffer, 1, &region);
-	//vkEndCommandBuffer(tmpCB);
-
 
 	// scene command buffer
 	VkCommandBuffer& primaryCb = m_pickCommandBuffer;
@@ -548,6 +566,9 @@ void VulkanRender::endPickPass()
 		&m_pickSemaphore,
 		NULL);
 
+	scl::vector2i pickSize { 100, 100 };
+	scl::vector2i pickOffset { x - 50, y - 50 };
+
 
 	// copy image to buffer
 	VkCommandBuffer tmpCB = m_pickCopyCommandBuffer;
@@ -557,14 +578,11 @@ void VulkanRender::endPickPass()
 	VkBufferImageCopy region;
 	memclr(region);
 	region.bufferOffset			= 0;
-	//region.bufferRowLength		= m_surface.width;
-	region.bufferRowLength		= m_pickImageSize.x;
+	region.bufferRowLength		= pickSize.x;
 	region.bufferImageHeight	= 0;
 	region.imageSubresource		= { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-	//region.imageOffset			= { 0, 0, 0 };
-	//region.imageExtent			= { (unsigned int)m_surface.width, (unsigned int)m_surface.height, 1 };
-	region.imageOffset			= { m_pickImageOffset.x, m_pickImageOffset.y, 0 };
-	region.imageExtent			= { (unsigned int)m_pickImageSize.x, (unsigned int)m_pickImageSize.y, 1 };
+	region.imageOffset			= { pickOffset.x, pickOffset.y, 0 };
+	region.imageExtent			= { (unsigned int)pickSize.x, (unsigned int)pickSize.y, 1 };
 	vkCmdCopyImageToBuffer(tmpCB, m_pickRenderTarget.colorImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_pickPassImageCPUBuffer.buffer, 1, &region);
 
 	svkEndCommandBuffer(tmpCB);
@@ -578,9 +596,11 @@ void VulkanRender::endPickPass()
 		m_pickFence);
 
 	memclr(m_drawContext);
+
+	savePickPass(pickSize.x, pickSize.y);
 }
 
-void VulkanRender::savePickPass()
+uint32 VulkanRender::savePickPass(int width, int height)
 {
 	svkWaitFence(m_device, &m_pickFence, 1);
 
@@ -588,15 +608,26 @@ void VulkanRender::savePickPass()
 	//const int	BYTES	= m_surface.width * m_surface.height * 4;
 	uint8*		data	= (uint8*)svkMapBuffer(m_device, m_pickPassImageCPUBuffer, -1);
 
+	int			x		= width / 2;
+	int			y		= height / 2;
+	uint8*		point = &data[(y * width + x) * 4];
+	scl::vector4 r{};
+	r.r = point[0] / 255.0;
+	r.g = point[1] / 255.0;
+	r.b = point[2] / 255.0;
+	r.a = point[3] / 255.0;
+
 	static int i = 0;
 	string32 fname;
 	fname.format("d:/testCat_%d.bmp", i++);
 	FILE* f = fopen(fname.c_str(), "wb");
-	img::save_bmp(f, m_pickImageSize.x, m_pickImageSize.y, 0, data);
+	//img::save_bmp(f, m_pickImageSize.x, m_pickImageSize.y, 0, data);
+	//img::save_bmp(f, width, height, 0, data);
 
 	svkUnmapBuffer(m_device, m_pickPassImageCPUBuffer);
 
 	fclose(f);
+	return 0;
 }
 
 void VulkanRender::beginScenePass(scl::vector4& clearColorRGBA)

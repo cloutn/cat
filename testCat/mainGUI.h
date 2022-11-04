@@ -3,6 +3,7 @@
 
 #include "scl/array.h"
 #include "scl/function.h"
+#include "scl/vector.h"
 #include "scl/type.h"
 
 namespace cat {
@@ -40,7 +41,6 @@ public:
 	bool	wantCaptureMouse	();
 	void	registerEvent		(GUI_EVENT event, GUIEventFuncT pfunc);
 
-
 private:
 	void	_windowScene		();
 	void	_windowProperty		(Object* const object);
@@ -54,9 +54,11 @@ private:
 
 	void	_fireEvent			(GUI_EVENT event, GUIEvent& eventArg);
 
+
 private:
 	Client*						m_client;	
 	Object*						m_selectObject;
+
 
 	scl::array<GUIEventFuncT, GUI_EVENT_COUNT> m_events;
 

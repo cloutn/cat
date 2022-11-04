@@ -54,6 +54,8 @@ Client::Client()
 	m_camera					= new Camera();
 	m_totalFrame				= 0;
 	m_totalTime					= 1;
+
+	m_mousePosition.clear();
 }
 
 void Client::init(const int width, const int height)
@@ -179,12 +181,12 @@ bool Client::OnButtonClick_DebugTest1(GUIEvent&)
 {
 	m_env->clearPickPrimtives();
 
-	m_render.beginPickPass(scl::vector4{0, 0, 0, 0});
+	m_render.beginPickPass(scl::vector4{1, 1, 1, 1});
 
 	_renderScene(true);
 
-	m_render.endPickPass();
-	m_render.savePickPass();
+	m_render.endPickPass(640, 360);
+	//m_render.savePickPass();
 
 	return true;
 }
@@ -333,6 +335,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
+			m_mousePosition.set(x, y);
 			
 			if (m_dragging)
 			{

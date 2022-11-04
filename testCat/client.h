@@ -48,6 +48,7 @@ public:
 	VulkanRender&			render				() { return m_render; }
 	void*					windowHandle		() { return m_window.getHandle(); }
 	const DeviceInfo&		getDeviceInfo		() const { return m_render.getDeviceInfo(); }
+	const scl::vector2i&	mousePosition		() const { return m_mousePosition; }
 
 #ifdef SCL_APPLE
 	void					tick				();
@@ -89,6 +90,8 @@ private:
 	bool					m_rightDragging;
 	scl::vector2i			m_rightDragPrev;
 #endif
+
+	scl::vector2i			m_mousePosition;
 
 	Env*					m_env;
 	Camera*					m_camera;

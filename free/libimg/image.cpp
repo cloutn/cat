@@ -818,6 +818,7 @@ void save_bmp(_iobuf* fp, int width, int height, int pitch, const unsigned char*
 	fwrite(&infoHeader, sizeof(infoHeader), 1, fp);
 
 	//NOTE: Each row must be 4-byte aligned in a BMP.
+	// use 24 bit bmp = 3 bytes per pixel, so (width * 3)
 	int lineWidth				= Align(width * 3, 4);
 	int paddingCount			= lineWidth - width * 3;
 

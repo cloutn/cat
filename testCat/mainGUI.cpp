@@ -83,6 +83,10 @@ void MainGUI::init(Client* client)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); 
+
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Multi-Viewport / Platform Windows
+
 	ImGui::StyleColorsDark();
 
 	ImGui_ImplWin32_Init(m_client->windowHandle());
@@ -122,6 +126,8 @@ void MainGUI::init(Client* client)
 	io.FontDefault = myshFont;
 
 	m_client->render().initIMGUI();
+
+
 }
 
 
@@ -138,6 +144,8 @@ void MainGUI::onGUI()
 		return;
 
 	_beginFrame();
+
+	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
 	_windowScene();
 
@@ -291,6 +299,7 @@ void MainGUI::_beginFrame()
 {
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
 }
 
 void MainGUI::_endFrame()
@@ -334,6 +343,10 @@ void MainGUI::_windowDebug()
 	fpsStr.format("fps = %.2f", fps);
 
 	ImGui::Text(fpsStr.c_str());               // Display some text (you can use a format strings too)
+
+	string128 mousePositionStr;
+	mousePositionStr.format("mouse {%d, %d}", m_client->mousePosition().x, m_client->mousePosition().y);
+	ImGui::Text(mousePositionStr.c_str());               // Display some text (you can use a format strings too)
 
 	ImGui::Checkbox("Demo window", &config.showDemoWindow);      // Edit bools storing our window open/close state
 

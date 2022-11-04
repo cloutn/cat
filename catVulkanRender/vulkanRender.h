@@ -118,8 +118,8 @@ public:
 	virtual void			endDraw				();
 	
 	void					beginPickPass		(scl::vector4& clearColorRGBA);
-	void					endPickPass			();
-	void					savePickPass		();
+	void					endPickPass			(int x, int y);
+	uint32					savePickPass		(int width, int height);
 
 	void					beginScenePass		(scl::vector4& clearColorRGBA);
 	void					endScenePass		();
@@ -128,6 +128,8 @@ public:
 	virtual int				getDeviceWidth		();
 	virtual int				getDeviceHeight		();
 	const DeviceInfo&		getDeviceInfo		() const { return m_deviceInfo; }
+	void*					getWindowHandle		() const { return m_windowHandle; }
+	void*					getWindowInstance	() const { return m_windowInstance; }
 
 	void					recreateSwapchain	();
 	void					recreateSurface		();
@@ -238,8 +240,8 @@ private:
 	VkSemaphore			m_pickSemaphore;
 	VkCommandBuffer		m_pickCopyCommandBuffer;
 	svkBuffer			m_pickPassImageCPUBuffer;
-	scl::vector2i		m_pickImageOffset;
-	scl::vector2i		m_pickImageSize;
+	//scl::vector2i		m_pickImageOffset;
+	//scl::vector2i		m_pickImageSize;
 
 	// for draw context
 	DrawContext			m_drawContext;
