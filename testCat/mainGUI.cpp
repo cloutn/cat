@@ -145,6 +145,8 @@ void MainGUI::onGUI()
 
 	_beginFrame();
 
+	ShowExampleAppMainMenuBar();
+
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
 	_windowScene();
@@ -391,7 +393,28 @@ const char* const _deviceTypeToString(DeviceInfo::DEVICE_TYPE t)
 	return "";
 }
 
-
+void MainGUI::ShowExampleAppMainMenuBar()
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            //ShowExampleMenuFile();
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+            ImGui::Separator();
+            if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+            if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+            if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+}
 
 void MainGUI::_windowDeviceInfo()
 {

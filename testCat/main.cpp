@@ -13,7 +13,7 @@
 void test()
 {
 	cat::Client* c = new cat::Client();
-	c->init(1280, 768);
+	c->init();
 	c->run();
 	delete c;
 }

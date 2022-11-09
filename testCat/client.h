@@ -35,7 +35,7 @@ public:
 	virtual ~Client();
 
 	static Client&			inst				();
-	void					init				(const int width, const int height);
+	void					init				();
 
 	void					loadGltf			(const char* const filename);
 	void					updateAnimation		(const double diff);

@@ -34,8 +34,13 @@
 //
 
 namespace scl {
+
 inline size_t	to_chars	(ryml::substr	buf, scl::vector3	v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
 inline bool		from_chars	(ryml::csubstr	buf, scl::vector3*	v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
+
+inline size_t	to_chars	(ryml::substr	buf, scl::vector2i	v) { return ryml::format(buf, "{x : {}, y : {}}", v.x, v.y); }
+inline bool		from_chars	(ryml::csubstr	buf, scl::vector2i*	v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}}", v->x, v->y); return ret != ryml::yml::npos; }
+
 }
 
 namespace yaml {
@@ -99,6 +104,8 @@ public:
 	uint64			to_uint64		(uint64	_default = 0) const { return to_value(_default); }
 	bool			to_bool			(bool	_default = false) const { return to_value(_default); }
 	scl::vector3	to_vector3		(scl::vector3 _default = { 0, 0, 0}) const { return to_value(_default); }
+	scl::vector2i	to_vector2i		(scl::vector2i _default = { 0, 0}) const { return to_value(_default); }
+
 
 	template <typename T>
 	T				to_value(T _default) const

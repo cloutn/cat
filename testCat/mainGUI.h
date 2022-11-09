@@ -55,6 +55,8 @@ private:
 	void	_fireEvent			(GUI_EVENT event, GUIEvent& eventArg);
 
 
+	void ShowExampleAppMainMenuBar();
+
 private:
 	Client*						m_client;	
 	Object*						m_selectObject;

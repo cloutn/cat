@@ -58,10 +58,12 @@ Client::Client()
 	m_mousePosition.clear();
 }
 
-void Client::init(const int width, const int height)
+void Client::init()
 {
+	m_config.load("config.yaml");
+
 #ifdef SCL_WIN
-	m_window.init(width, height, L"main", L"", true);
+	m_window.init(m_config.screenPos.x, m_config.screenPos.y, m_config.screenSize.x, m_config.screenSize.y, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle());
 	m_render.setOnSurfaceResize(scl::bind(this, &Client::OnSurfaceResize));
 	m_window.registerEventHandler(scl::bind(this, &Client::onEvent));
@@ -92,6 +94,7 @@ void Client::init(const int width, const int height)
 		fn.format("scene_%d.yaml", i);
 		m_scenes[i]->save(fn.c_str());
 	}
+	//m_config.save("config.yaml");
 }
 
 void Client::loadGltf(const char* const filename)
@@ -134,6 +137,8 @@ void Client::loadGltf(const char* const filename)
 
 Client::~Client()
 {
+	m_config.save("config.yaml");
+
 	m_gui.release();
 
 	for (int i = 0; i < m_animations.size(); ++i)
@@ -193,7 +198,13 @@ bool Client::OnButtonClick_DebugTest1(GUIEvent&)
 
 void Client::OnSurfaceResize(int width, int height)
 {
-	m_camera->setAspect(static_cast<float>(width) / height);
+	if (width > 0 && height > 0)
+	{
+		m_camera->setAspect(static_cast<float>(width) / height);
+
+		//m_config.screenSize.x = width;
+		//m_config.screenSize.y = height;
+	}
 }
 
 #ifdef SCL_WIN
@@ -241,7 +252,7 @@ void Client::run()
 
 		m_render.beginDraw();
 
-		m_render.beginScenePass(m_config.clearColorf());
+		m_render.beginScenePass(m_config.getClearColorf());
 		_renderScene(false);
 		m_gui.Render();
 		m_render.endScenePass();
@@ -261,6 +272,11 @@ void Client::run()
 		{
 			m_totalFrame = 1;
 			m_totalTime = diff;
+		}
+
+		if (m_totalFrame % 100 == 0)
+		{
+			printf("pos = %d, %d, size = %d, %d\n", m_window.getPositionX(), m_window.getPositionY(), m_window.getWidth(), m_window.getHeight());
 		}
 
 		scl::usleep(10);
@@ -395,6 +411,16 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		{
 			int width	= LOWORD(lParam);
 			int height	= HIWORD(lParam);
+			m_config.screenSize.set(width, height);
+			//printf("WM_SIZE : width = %d, height = %d\n", width, height);
+		}
+		break;
+	case WM_MOVE:
+		{
+			int x = LOWORD(lParam);
+			int y = HIWORD(lParam);
+			m_config.screenPos.set(x, y);
+			//printf("WM_MOVE : x = %d, y = %d\n", x, y);
 		}
 		break;
 	default:

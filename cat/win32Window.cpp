@@ -31,8 +31,8 @@ void EnableDpiAwareness()
 Win32Window::Win32Window() :
 	m_windowHandle		(NULL),
 	m_hInstance			(NULL),
-	m_width				(0),
-	m_height			(0),
+	//m_width				(0),
+	//m_height			(0),
 	m_eventHandlerCount	(0)
 {
 	//for (int i = 0; i < MAX_EVENT_HANDLER; ++i)
@@ -41,7 +41,7 @@ Win32Window::Win32Window() :
 	//}
 }
 
-bool Win32Window::init(const int width, const int height, const wchar_t* const titleName, const wchar_t* const szIconName, bool enableDpiAwareness) //  titleName = "main"
+bool Win32Window::init(const int posx, const int posy, const int width, const int height, const wchar_t* const titleName, const wchar_t* const szIconName, bool enableDpiAwareness) //  titleName = "main"
 {
 	//不允许反复初始化
 	if (hasInit())
@@ -56,18 +56,16 @@ bool Win32Window::init(const int width, const int height, const wchar_t* const t
 	HINSTANCE hInstance = ::GetModuleHandle(0);
 	m_hInstance = hInstance;
 
-	//初始化屏幕尺寸相关变量
-	m_width		= width;
-	m_height	= height;
-
 	// 计算获得最终的窗口尺寸
-	::RECT window_rect;
-	::SetRect(&window_rect, 
-		0,						//  int x,
-		0,						//  int y,
-		m_width,				//  int x + nWidth,
-		m_height);				//  int y + nHeight,
-	::AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, FALSE);
+	::RECT rect;
+	::SetRect(
+		&rect, 
+		posx,						//  int x,
+		posy,						//  int y,
+		posx + width,				//  int x + width,
+		posy + height);				//  int y + height,
+
+	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
 	//注册窗口类
 	const TCHAR szWindowClass[] = _T("MainWindowClass");			// 主窗口类名
@@ -89,18 +87,33 @@ bool Win32Window::init(const int width, const int height, const wchar_t* const t
 	//标题栏文本
 	//const TCHAR szTitle[]		= _T("main");
 	//创建窗口
-	m_windowHandle = ::CreateWindow(		
-		szWindowClass,			//  LPCTSTR lpClassName,
-		titleName,				//  LPCTSTR lpWindowName,
-		WS_OVERLAPPEDWINDOW,	//  DWORD dwStyle,
-		CW_USEDEFAULT,			//  int x,
-		window_rect.top,		//  int y,
-		window_rect.right - window_rect.left,	//  int nWidth,
-		window_rect.bottom - window_rect.top,	//  int nHeight,
-		NULL,					//  HWND hWndParent,
-		NULL,					//  HMENU hMenu,
+	//m_windowHandle = ::CreateWindow(		
+	//	szWindowClass,			//  LPCTSTR lpClassName,
+	//	titleName,				//  LPCTSTR lpWindowName,
+	//	WS_OVERLAPPEDWINDOW,	//  DWORD dwStyle,
+	//	rect.left,				//  int x, or CW_USEDEFAULT for auto position
+	//	rect.top,				//  int y,
+	//	rect.right - rect.left,	//  int nWidth,
+	//	rect.bottom - rect.top,	//  int nHeight,
+	//	NULL,					//  HWND hWndParent,
+	//	NULL,					//  HMENU hMenu,
+	//	hInstance,				//  HINSTANCE hInstance,
+	//	this);					//  LPVOID lpParam
+
+	//创建窗口
+	m_windowHandle = CreateWindowEx(
+		0,
+		szWindowClass,
+		titleName,
+		WS_OVERLAPPEDWINDOW,	//	(WS_POPUPWINDOW | WS_THICKFRAME | WS_VISIBLE | WS_CLIPCHILDREN),
+		rect.left,				//  int x, or CW_USEDEFAULT for auto position
+		rect.top,				//  int y,
+		rect.right - rect.left,	//  int nWidth,
+		rect.bottom - rect.top,	//  int nHeight,
+		NULL,
+		NULL,
 		hInstance,				//  HINSTANCE hInstance,
-		this);					//  LPVOID lpParam
+		this);
 
 	if (!m_windowHandle)
 		return false;
@@ -206,6 +219,47 @@ bool Win32Window::postEvent(void* hWnd, uint32_t message, intptr_t wParam, intpt
 bool Win32Window::IsForegroundWindow()
 {
 	return ::GetForegroundWindow() == m_windowHandle;
+}
+
+int Win32Window::getWidth() const
+{
+	return getRect().width();
+}
+
+int Win32Window::getHeight() const
+{
+	return getRect().height();
+}
+
+int Win32Window::getPositionX() const
+{
+	return getRect().left;
+}
+
+int Win32Window::getPositionY() const
+{
+	return getRect().top;
+}
+
+scl::rect Win32Window::getRect() const
+{
+	//RECT windowRect;
+	//::GetWindowRect((HWND)m_windowHandle, &windowRect);
+
+	BOOL result = 0;
+
+	POINT pos;
+	memset(&pos, 0, sizeof(pos));
+	result = ::ClientToScreen((HWND)m_windowHandle, &pos);
+	assert(result);
+
+	RECT rect;
+	memset(&rect, 0, sizeof(rect));
+	result = ::GetClientRect((HWND)m_windowHandle, &rect);
+	assert(result);
+
+	scl::rect rr(pos.x, pos.y, pos.x + rect.right, pos.y + rect.bottom);
+	return rr;
 }
 
 Win32Window::~Win32Window()
