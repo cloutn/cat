@@ -10,6 +10,10 @@
 //#include <C:\\Program Files (x86)\\Visual Leak Detector\\include\\vld.h>
 #endif
 
+#include "scl/matrix.h"
+#include "scl/vector.h"
+using namespace scl;
+
 void test()
 {
 	cat::Client* c = new cat::Client();
@@ -17,6 +21,48 @@ void test()
 	c->run();
 	delete c;
 }
+
+void print_matrix(const matrix& m)
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+			printf("%.2f\t", m.m[i][j]);
+		printf("\n");
+	}
+}
+
+
+matrix decompose(matrix m)
+{
+	vector3 t = { m.x4, m.y4, m.z4 };
+	printf("transform = %.2f, %.2f, %.2f\n", t.x, t.y, t.z);
+
+	vector3 svx = { m.x1, m.y1, m.z1 };
+	float sx = svx.length();
+
+	vector3 svy = { m.x2, m.y2, m.z2 };
+	float sy = svy.length();
+
+	vector3 svz = { m.x3, m.y3, m.z3 };
+	float sz = svz.length();
+
+	vector3 s = { sx, sy, sz };
+	printf("scale = %.2f, %.2f, %.2f\n", s.x, s.y, s.z);
+
+	matrix mat_rot = 
+	{
+		m.x1/s.x,		m.y1/s.x,		m.z1/s.x,		0,
+		m.x2/s.y,		m.y2/s.y,		m.z2/s.y,		0,
+		m.x3/s.z,		m.y3/s.z,		m.z3/s.z,		0,
+		0,				0,				0,				1,
+	};
+	printf("this is mat_rot:\n");
+	print_matrix(mat_rot);
+	return mat_rot;
+
+}
+
 
 int main()
 {
@@ -26,7 +72,34 @@ int main()
 	//_CrtSetBreakAlloc(1535);
 #endif
 
-	test();
+	matrix t = matrix::move(10, 20, 30);
+	matrix s = matrix::scale(1, 2, 3);
+	matrix r = matrix::rotate_x(30);
+	r.mul(matrix::rotate_y(60));
+	r.mul(matrix::rotate_z(90));
+
+	matrix all = s;
+	all.mul(r);
+	all.mul(t);
+
+	printf("this is original rotate:\n");
+	print_matrix(r);
+
+	const matrix& mat_rot = decompose(all);
+	if (mat_rot == r)
+	{
+		printf("OK! rotate matrix is equal\n");
+	}
+	else
+	{
+		printf("ERROR! rotate matrix is NOT equal\n");
+	}
+	
+	//printf("aa\n");
+
+	getchar();	
+
+	//test();
 
 	scl::log::release();
 

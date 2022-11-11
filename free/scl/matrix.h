@@ -67,7 +67,7 @@ public:
 	//static 函数
 	////////////////////////////////////////////////////////////
 	//旋转矩阵
-	static matrix& rotate_x(float a) { return rotate_x_radian(radian(a)); }	//角度制
+	static matrix& rotate_x(float a) { return rotate_x_radian(radian(a)); }		//角度制
 	static matrix& rotate_y(float a) { return rotate_y_radian(radian(a)); };	//角度制
 	static matrix& rotate_z(float a) { return rotate_z_radian(radian(a)); };	//角度制
 	static matrix& rotate_x_radian(float r);	//弧度制
@@ -80,6 +80,8 @@ public:
 	static matrix& move_x(float d) { return move(d, 0, 0); }
 	static matrix& move_y(float d) { return move(0, d, 0); }
 	static matrix& move_z(float d) { return move(0, 0, d); }
+
+	static matrix& translate(float dx, float dy, float dz) { return move(dx, dy, dz); }
 	
 	//缩放
 	static matrix& scale(float x, float y, float z);
