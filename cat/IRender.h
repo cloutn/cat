@@ -203,8 +203,8 @@ public:
 	virtual void endDraw() = 0;
 
 	//device info
-	virtual int				getDeviceWidth		()	= 0;
-	virtual int				getDeviceHeight		()	= 0;
+	virtual int				getDeviceWidth		()	const = 0;
+	virtual int				getDeviceHeight		()	const = 0;
 
 	//camera
 	//virtual void*			createCamera		(CAMERA type, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ, float posX, float posY, float posZ, float fovy, float aspect, float nearZ, float farZ)	= 0;

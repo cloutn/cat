@@ -115,8 +115,8 @@ public:
 	virtual void endDraw() {};
 
 	//device info
-	virtual int				getDeviceWidth		();
-	virtual int				getDeviceHeight		();
+	virtual int				getDeviceWidth		() const;
+	virtual int				getDeviceHeight		() const;
 
 	//virtual void*			createCamera		(ui::CAMERA type, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ, float posX, float posY, float posZ, float fovy, float aspect, float nearZ, float farZ);
 	//virtual void			releaseCamera		(void* camera);

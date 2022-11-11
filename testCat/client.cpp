@@ -78,7 +78,6 @@ void Client::init()
 
 	m_gui.init(this);
 	m_gui.registerEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, scl::bind(this, &Client::OnButtonClick_DebugTest1));
-	//scl::any_class_function<bool, GUIEvent&> aa = scl::make_func(this, &Client::OnButtonClick_DebugTest1);
 
 	loadGltf("art/SimpleSkin/SimpleSkin.gltf");
 	loadGltf("art/chibi_idle/scene.gltf");
@@ -191,7 +190,6 @@ bool Client::OnButtonClick_DebugTest1(GUIEvent&)
 	_renderScene(true);
 
 	m_render.endPickPass(640, 360);
-	//m_render.savePickPass();
 
 	return true;
 }
@@ -201,9 +199,6 @@ void Client::OnSurfaceResize(int width, int height)
 	if (width > 0 && height > 0)
 	{
 		m_camera->setAspect(static_cast<float>(width) / height);
-
-		//m_config.screenSize.x = width;
-		//m_config.screenSize.y = height;
 	}
 }
 
@@ -274,10 +269,10 @@ void Client::run()
 			m_totalTime = diff;
 		}
 
-		if (m_totalFrame % 100 == 0)
-		{
-			printf("pos = %d, %d, size = %d, %d\n", m_window.getPositionX(), m_window.getPositionY(), m_window.getWidth(), m_window.getHeight());
-		}
+		//if (m_totalFrame % 100 == 0)
+		//{
+		//	printf("pos = %d, %d, size = %d, %d\n", m_window.getPositionX(), m_window.getPositionY(), m_window.getWidth(), m_window.getHeight());
+		//}
 
 		scl::usleep(10);
 	}
@@ -477,6 +472,16 @@ Object* Client::getObject(int sceneIndex, int objectIndex)
 float Client::fps()
 {
 	return (m_totalTime == 0) ? 0 : m_totalFrame / (m_totalTime / 1000.f);
+}
+
+int Client::getScreenWidth() const
+{
+	return m_render.getDeviceWidth();
+}
+
+int Client::getScreenHeight() const
+{
+	return m_render.getDeviceHeight();
 }
 
 } //namespace cat

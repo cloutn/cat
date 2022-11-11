@@ -31,31 +31,29 @@ class MainGUI
 public:
 	MainGUI();
 
-	void	init				(Client* client);
-	void	release				();
+	void	init						(Client* client);
+	void	release						();
 
-	void	onGUI				();
-	void	Render				();
-	void	onEvent				(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
-	bool	wantCaptureKeyboard	();
-	bool	wantCaptureMouse	();
-	void	registerEvent		(GUI_EVENT event, GUIEventFuncT pfunc);
+	void	onGUI						();
+	void	Render						();
+	void	onEvent						(void* hWnd, uint32 message, uint32 wParam, uint32 lParam);
+	bool	wantCaptureKeyboard			();
+	bool	wantCaptureMouse			();
+	void	registerEvent				(GUI_EVENT event, GUIEventFuncT pfunc);
 
 private:
-	void	_windowScene		();
-	void	_windowProperty		(Object* const object);
-	void	_windowDebug		();
-	void	_windowDeviceInfo	();
+	void	_showWindowScene			();
+	void	_showWindowProperty			(Object* const object);
+	void	_showWindowDebug			();
+	void	_showWindowDeviceInfo		();
+	void	_showWindowConfig			();
+	void	_showMenu					();
 
-	void	_onGUIScene			(const int sceneIndex, bool& isContextMenuOpen);
-	void	_onGUIObject		(Object* const object, bool& isContextMenuOpen);
-	void	_beginFrame			();
-	void	_endFrame			();
-
-	void	_fireEvent			(GUI_EVENT event, GUIEvent& eventArg);
-
-
-	void ShowExampleAppMainMenuBar();
+	void	_onGUIScene					(const int sceneIndex, bool& isContextMenuOpen);
+	void	_onGUIObject				(Object* const object, bool& isContextMenuOpen);
+	void	_beginFrame					();
+	void	_endFrame					();
+	void	_fireEvent					(GUI_EVENT event, GUIEvent& eventArg);
 
 private:
 	Client*						m_client;	

@@ -16,6 +16,7 @@ public:
 
 	bool			showDemoWindow			= false;
 	bool			showDeviceInfoWindow	= false;
+	bool			showConfigWindow		= false;
 	uint32			clearColor				= 0xFF333333;
 	scl::vector2i	screenSize				= { 1280, 800 };
 	scl::vector2i	screenPos				= { 100, 100 };

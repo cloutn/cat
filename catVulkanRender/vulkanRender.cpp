@@ -378,12 +378,12 @@ void VulkanRender::releaseTexture(void* texture)
 	delete tex;
 }
 
-int VulkanRender::getDeviceWidth()
+int VulkanRender::getDeviceWidth() const
 {
 	return m_surface.width;
 }
 
-int VulkanRender::getDeviceHeight()
+int VulkanRender::getDeviceHeight() const
 {
 	return m_surface.height;
 }

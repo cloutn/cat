@@ -49,6 +49,9 @@ public:
 	void*					windowHandle		() { return m_window.getHandle(); }
 	const DeviceInfo&		getDeviceInfo		() const { return m_render.getDeviceInfo(); }
 	const scl::vector2i&	mousePosition		() const { return m_mousePosition; }
+	Camera*					getCamera			() { return m_camera; }
+	int						getScreenWidth		() const;
+	int						getScreenHeight		() const;
 
 #ifdef SCL_APPLE
 	void					tick				();

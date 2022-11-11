@@ -382,7 +382,7 @@ void UIRenderOpenGL::_set_uniform(void* _shader, const char* const name, const u
 	glcheck( glUniform4f(loc, r, g, b, a) );
 }
 
-int UIRenderOpenGL::getDeviceWidth()
+int UIRenderOpenGL::getDeviceWidth() const
 {
 #if defined(__APPLE__)
 	return m_width;
@@ -391,7 +391,7 @@ int UIRenderOpenGL::getDeviceWidth()
 #endif
 }
 
-int UIRenderOpenGL::getDeviceHeight()
+int UIRenderOpenGL::getDeviceHeight() const
 {
 #if defined(__APPLE__)
 	return m_height;

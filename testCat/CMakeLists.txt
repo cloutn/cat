@@ -38,6 +38,8 @@ set(header_files
 	config.h
 	mainGUI.h
 	testPrimitive.h
+	imguiex.h
+	ImGuizmo.h
 )
 
 set(src_files
@@ -47,6 +49,8 @@ set(src_files
 	mainGUI.cpp
 	testPrimitive.cpp
 	config.cpp
+	imguiex.cpp
+	ImGuizmo.cpp
 )
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${header_files})

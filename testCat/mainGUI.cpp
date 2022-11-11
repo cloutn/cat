@@ -5,10 +5,15 @@
 
 #include "cat/object.h"
 #include "cat/scene.h"
+#include "cat/camera.h"
 
 #include "scl/file.h"
 
 #include "imgui_impl_win32.h"
+
+#include "./imguiex.h"
+#include "./ImGuizmo.h"
+
 
 #ifdef SCL_WIN
 #include <Windows.h>
@@ -28,47 +33,9 @@ namespace cat {
 
 using scl::file;
 
-void myLabelText(const char* const name, const char* valueFormat, ...) 
-{ 
-	va_list arg;
-	va_start(arg, valueFormat);
-
-	float x = ImGui::GetCursorPosX();
-	ImGui::TextUnformatted(name);
-	ImGui::SameLine();
-	ImGui::SetCursorPosX(x + ImGui::CalcItemWidth() + ImGui::GetStyle().ItemInnerSpacing.x);
-	ImGui::TextV(valueFormat, arg);
-
-	va_end(arg);
-}
-
-void myInputDouble(const char* const label, double& v)
-{
-	float x = ImGui::GetCursorPosX();
-	ImGui::Text(label); 
-	ImGui::SameLine(); 
-	ImGui::SetCursorPosX(x + ImGui::CalcItemWidth() + ImGui::GetStyle().ItemInnerSpacing.x);
-	string512 labelID = "##";
-	labelID += label;
-	ImGui::InputDouble(labelID.c_str(), &v);
-}
-
-void myCheckbox(const char* const label, bool& v)
-{
-	float x = ImGui::GetCursorPosX();
-	ImGui::Text(label); 
-	ImGui::SameLine(); 
-	ImGui::SetCursorPosX(x + ImGui::CalcItemWidth() + ImGui::GetStyle().ItemInnerSpacing.x);
-	string512 labelID = "##";
-	labelID += label;
-	ImGui::Checkbox(labelID.c_str(), &v);
-
-	//int total_w = ImGui::GetContentRegionAvail().x; 
-	//ImGui::Text("lalala"); 
-	//ImGui::SameLine(total_w); 
-	//ImGui::SetNextItemWidth(total_w); 
-	//ImGui::Checkbox("##", &v);
-}
+namespace ui = imguiex;
+namespace imgui = ImGui;
+namespace gizmo = ImGuizmo;
 
 MainGUI::MainGUI() : m_client(NULL), m_selectObject(NULL) 
 {
@@ -138,6 +105,7 @@ void MainGUI::release()
 	ImGui::DestroyContext();
 }
 
+
 void MainGUI::onGUI()
 {
 	if (NULL == m_client)
@@ -145,15 +113,26 @@ void MainGUI::onGUI()
 
 	_beginFrame();
 
-	ShowExampleAppMainMenuBar();
+	gizmo::SetOrthographic(false);	
+	//gizmo::SetDrawlist();
+	//gizmo::SetRect(imgui::GetWindowPos().x, imgui::GetWindowPos().y, imgui::GetWindowWidth(), imgui::GetWindowHeight());
+	gizmo::SetRect(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
+	Camera* camera = m_client->getCamera();
+	const scl::matrix& viewMatrix = camera->viewMatrix();
+	const scl::matrix& projectionMatrix = camera->projectionMatrix();
+	scl::matrix transform = scl::matrix::identity();
+
+	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmo::OPERATION::TRANSLATE, gizmo::LOCAL, transform.ptr());
+
+	_showMenu();
 
 	ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-	_windowScene();
+	_showWindowScene();
 
-	_windowProperty(m_selectObject);
+	_showWindowProperty(m_selectObject);
 
-	_windowDebug();
+	_showWindowDebug();
 
 	_endFrame();
 }
@@ -193,7 +172,7 @@ void MainGUI::registerEvent(GUI_EVENT event, GUIEventFuncT func)
 }
 
 
-void MainGUI::_windowScene()
+void MainGUI::_showWindowScene()
 {
 	ImGui::Begin("Scene");
 	bool isContextMenuOpen = false;
@@ -301,7 +280,7 @@ void MainGUI::_beginFrame()
 {
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
+	ImGuizmo::BeginFrame();
 }
 
 void MainGUI::_endFrame()
@@ -314,12 +293,12 @@ void MainGUI::_fireEvent(GUI_EVENT event, GUIEvent& eventArg)
 	m_events[event](eventArg);
 }
 
-void MainGUI::_windowProperty(Object* const object)
+void MainGUI::_showWindowProperty(Object* const object)
 {
 	if (NULL == object)
 		return;
 
-	ImGui::Begin("Property");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+	ImGui::Begin("Property");   
 
 	string128 name = object->name().c_str();
 	ImGui::InputText("Name", name.c_str(), name.capacity());
@@ -328,55 +307,50 @@ void MainGUI::_windowProperty(Object* const object)
 	ImGui::End();
 }
 
-void MainGUI::_windowDebug()
+void MainGUI::_showWindowDebug()
 {
-	game::Config& config = m_client->config();
+	game::Config&	config = m_client->config();
 
-	if (config.showDemoWindow)
-		ImGui::ShowDemoWindow(&config.showDemoWindow);
+	ImGui::Begin("Debug main");                          
 
-	static float f = 0.0f;
-	static int counter = 0;
-
-	ImGui::Begin("Debug main");                          // Create a window called "Hello, world!" and append into it.
-
+	// show fps
 	string256 fpsStr;
 	float fps = m_client->fps();
 	fpsStr.format("fps = %.2f", fps);
+	ImGui::Text(fpsStr.c_str());               
 
-	ImGui::Text(fpsStr.c_str());               // Display some text (you can use a format strings too)
-
+	// show mouse position
 	string128 mousePositionStr;
 	mousePositionStr.format("mouse {%d, %d}", m_client->mousePosition().x, m_client->mousePosition().y);
-	ImGui::Text(mousePositionStr.c_str());               // Display some text (you can use a format strings too)
+	ImGui::Text(mousePositionStr.c_str());              
 
-	ImGui::Checkbox("Demo window", &config.showDemoWindow);      // Edit bools storing our window open/close state
-
-	bool bv = false;
-	myCheckbox("check 1", bv);
-	double dv = 0;
-	myInputDouble("double 2", dv);
-
+	// select object
+	string512 strSelect = "select : [";
 	if (NULL != m_selectObject)
-		ImGui::Text(m_selectObject->name().c_str());               // Display some text (you can use a format strings too)
+		strSelect += m_selectObject->name().c_str();
+	else
+		strSelect += "None";
+	strSelect += "]";
+	ImGui::Text(strSelect.c_str());
 
-	if (ImGui::Button("Do pick pass"))
-	{
-		//printf("context menu pressed.");
-		//if (NULL != m_debugButton1ClickFunc)
-		//m_debugButton1ClickFunc();
+	if (imgui::Button("show demo window", {imgui::CalcItemWidth(), 0}))
+		config.showDemoWindow = !config.showDemoWindow;
+	if (config.showDemoWindow)
+		ImGui::ShowDemoWindow(&config.showDemoWindow);
+
+	if (ImGui::Button("Do pick pass", {imgui::CalcItemWidth(), 0}))
 		_fireEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, GUIEvent());
-	}
 
-	//if (ImGui::Button("Show device info"))
-	//{
-	//	_windowDeviceInfo();
-	//}
-	ImGui::Checkbox("Show device window", &config.showDeviceInfoWindow);      // Edit bools storing our window open/close state
+	if (imgui::Button("show device window", {imgui::CalcItemWidth(), 0}))
+		config.showDeviceInfoWindow = !config.showDeviceInfoWindow;
 	if (config.showDeviceInfoWindow)
-		_windowDeviceInfo();
+		_showWindowDeviceInfo();
 
-	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	if (imgui::Button("show config window", {imgui::CalcItemWidth(), 0}))
+		config.showConfigWindow = !config.showConfigWindow;
+	if (config.showConfigWindow)
+		_showWindowConfig();
+
 	ImGui::End();
 }
 
@@ -393,7 +367,7 @@ const char* const _deviceTypeToString(DeviceInfo::DEVICE_TYPE t)
 	return "";
 }
 
-void MainGUI::ShowExampleAppMainMenuBar()
+void MainGUI::_showMenu()
 {
     if (ImGui::BeginMainMenuBar())
     {
@@ -416,151 +390,160 @@ void MainGUI::ShowExampleAppMainMenuBar()
     }
 }
 
-void MainGUI::_windowDeviceInfo()
+
+void MainGUI::_showWindowConfig()
 {
-	ImGui::Begin("Device info");
+	game::Config& config = m_client->config();
+
+	ImGui::Begin("Config", &m_client->config().showConfigWindow);
+
+	ui::checkbox		("showDemoWindow",			config.showDemoWindow);
+	ui::checkbox		("showDeviceInfoWindow",	config.showDeviceInfoWindow);
+	ui::checkbox		("showConfigWindow",		config.showConfigWindow);
+	ui::inputInt2		("screenSize",				config.screenSize);
+	ui::inputInt2		("screenPos",				config.screenPos);
+	ui::inputColorInt	("clearColor",				config.clearColor);
+
+	ImGui::End();
+}
+
+
+void MainGUI::_showWindowDeviceInfo()
+{
+	ImGui::Begin("Device info", &m_client->config().showDeviceInfoWindow);
 
 	// info
 	const DeviceInfo& info = m_client->getDeviceInfo();
-	myLabelText("deviceType", _deviceTypeToString(info.deviceType));
-	myLabelText("deviceName", info.deviceName);
-	myLabelText("Vulkan API version", "%u.%u.%u", info.apiVersionMajor, info.apiVersionMinor, info.apiVersionPatch);
+	ui::labelText("deviceType", _deviceTypeToString(info.deviceType));
+	ui::labelText("deviceName", info.deviceName);
+	ui::labelText("Vulkan API version", "%u.%u.%u", info.apiVersionMajor, info.apiVersionMinor, info.apiVersionPatch);
 
 	// limits
-	myLabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
-	myLabelText("limits.maxStorageBufferRange",								"%u", info.limits.maxStorageBufferRange);
-	myLabelText("limits.minUniformBufferOffsetAlignment",						"%llu", info.limits.minUniformBufferOffsetAlignment);
-	myLabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
-	myLabelText("limits.maxBoundDescriptorSets",								"%u", info.limits.maxBoundDescriptorSets);
-
-
+	ui::labelText("limits.maxUniformBufferRange",				"%u", info.limits.maxUniformBufferRange);
+	ui::labelText("limits.maxStorageBufferRange",				"%u", info.limits.maxStorageBufferRange);
+	ui::labelText("limits.minUniformBufferOffsetAlignment",		"%llu", info.limits.minUniformBufferOffsetAlignment);
+	ui::labelText("limits.maxPushConstantsSize",				"%u", info.limits.maxPushConstantsSize);
+	ui::labelText("limits.maxBoundDescriptorSets",				"%u", info.limits.maxBoundDescriptorSets);
 
 	// others info and limits
 	if (ImGui::CollapsingHeader("Other info"))
     {
-		myLabelText("driverVersion", "%u", info.driverVersion);
-		myLabelText("vendorID", "%u", info.vendorID);
-		myLabelText("deviceID", "%u", info.deviceID);
+		ui::labelText("driverVersion", "%u", info.driverVersion);
+		ui::labelText("vendorID", "%u", info.vendorID);
+		ui::labelText("deviceID", "%u", info.deviceID);
 		string128 guid;
 		for (int i = 0; i < countof(info.pipelineCacheUUID); ++i)
 			guid.format_append("%x:", info.pipelineCacheUUID[i]);
-		myLabelText("pipelineCacheUUID", guid.c_str());
+		ui::labelText("pipelineCacheUUID", guid.c_str());
 
 		// limits
-		myLabelText("limits.maxImageDimension1D",									"%u", info.limits.maxImageDimension1D);
-		myLabelText("limits.maxImageDimension2D",									"%u", info.limits.maxImageDimension2D);
-		myLabelText("limits.maxImageDimension3D",									"%u", info.limits.maxImageDimension3D);
-		myLabelText("limits.maxImageDimensionCube",								"%u", info.limits.maxImageDimensionCube);
-		myLabelText("limits.maxImageArrayLayers",									"%u", info.limits.maxImageArrayLayers);
-		myLabelText("limits.maxTexelBufferElements",								"%u", info.limits.maxTexelBufferElements);
-		//myLabelText("limits.maxUniformBufferRange",								"%u", info.limits.maxUniformBufferRange);
-		//myLabelText("limits.maxStorageBufferRange",								"%u", info.limits.maxStorageBufferRange);
-		//myLabelText("limits.maxPushConstantsSize",									"%u", info.limits.maxPushConstantsSize);
-		myLabelText("limits.maxMemoryAllocationCount",								"%u", info.limits.maxMemoryAllocationCount);
-		myLabelText("limits.maxSamplerAllocationCount",							"%u", info.limits.maxSamplerAllocationCount);
-		myLabelText("limits.bufferImageGranularity",								"%llu", info.limits.bufferImageGranularity);
-		myLabelText("limits.sparseAddressSpaceSize",								"%llu", info.limits.sparseAddressSpaceSize);
-		//myLabelText("limits.maxBoundDescriptorSets",								"%u", info.limits.maxBoundDescriptorSets);
-		myLabelText("limits.maxPerStageDescriptorSamplers",						"%u", info.limits.maxPerStageDescriptorSamplers);
-		myLabelText("limits.maxPerStageDescriptorUniformBuffers",					"%u", info.limits.maxPerStageDescriptorUniformBuffers);
-		myLabelText("limits.maxPerStageDescriptorStorageBuffers",					"%u", info.limits.maxPerStageDescriptorStorageBuffers);
-		myLabelText("limits.maxPerStageDescriptorSampledImages",					"%u", info.limits.maxPerStageDescriptorSampledImages);
-		myLabelText("limits.maxPerStageDescriptorStorageImages",					"%u", info.limits.maxPerStageDescriptorStorageImages);
-		myLabelText("limits.maxPerStageDescriptorInputAttachments",				"%u", info.limits.maxPerStageDescriptorInputAttachments);
-		myLabelText("limits.maxPerStageResources",									"%u", info.limits.maxPerStageResources);
-		myLabelText("limits.maxDescriptorSetSamplers",								"%u", info.limits.maxDescriptorSetSamplers);
-		myLabelText("limits.maxDescriptorSetUniformBuffers",						"%u", info.limits.maxDescriptorSetUniformBuffers);
-		myLabelText("limits.maxDescriptorSetUniformBuffersDynamic",				"%u", info.limits.maxDescriptorSetUniformBuffersDynamic);
-		myLabelText("limits.maxDescriptorSetStorageBuffers",						"%u", info.limits.maxDescriptorSetStorageBuffers);
-		myLabelText("limits.maxDescriptorSetStorageBuffersDynamic",				"%u", info.limits.maxDescriptorSetStorageBuffersDynamic);
-		myLabelText("limits.maxDescriptorSetSampledImages",						"%u", info.limits.maxDescriptorSetSampledImages);
-	
-		myLabelText("limits.maxDescriptorSetStorageImages",						"%u", info.limits.maxDescriptorSetStorageImages);
-		myLabelText("limits.maxDescriptorSetInputAttachments",						"%u", info.limits.maxDescriptorSetInputAttachments);
-		myLabelText("limits.maxVertexInputAttributes",								"%u", info.limits.maxVertexInputAttributes);
-		myLabelText("limits.maxVertexInputBindings",								"%u", info.limits.maxVertexInputBindings);
-		myLabelText("limits.maxVertexInputAttributeOffset",						"%u", info.limits.maxVertexInputAttributeOffset);
-		myLabelText("limits.maxVertexInputBindingStride",							"%u", info.limits.maxVertexInputBindingStride);
-		myLabelText("limits.maxVertexOutputComponents",							"%u", info.limits.maxVertexOutputComponents);
-		myLabelText("limits.maxTessellationGenerationLevel",						"%u", info.limits.maxTessellationGenerationLevel);
-		myLabelText("limits.maxTessellationPatchSize",								"%u", info.limits.maxTessellationPatchSize);
-		myLabelText("limits.maxTessellationControlPerVertexInputComponents",		"%u", info.limits.maxTessellationControlPerVertexInputComponents);
-		myLabelText("limits.maxTessellationControlPerVertexOutputComponents",		"%u", info.limits.maxTessellationControlPerVertexOutputComponents);
-		myLabelText("limits.maxTessellationControlPerPatchOutputComponents",		"%u", info.limits.maxTessellationControlPerPatchOutputComponents);
-		myLabelText("limits.maxTessellationControlTotalOutputComponents",			"%u", info.limits.maxTessellationControlTotalOutputComponents);
-		myLabelText("limits.maxTessellationEvaluationInputComponents",				"%u", info.limits.maxTessellationEvaluationInputComponents);
-		myLabelText("limits.maxTessellationEvaluationOutputComponents",			"%u", info.limits.maxTessellationEvaluationOutputComponents);
-		myLabelText("limits.maxGeometryShaderInvocations",							"%u", info.limits.maxGeometryShaderInvocations);
-		myLabelText("limits.maxGeometryInputComponents",							"%u", info.limits.maxGeometryInputComponents);
-		myLabelText("limits.maxGeometryOutputComponents",							"%u", info.limits.maxGeometryOutputComponents);
-		myLabelText("limits.maxGeometryOutputVertices",							"%u", info.limits.maxGeometryOutputVertices);
-		myLabelText("limits.maxGeometryTotalOutputComponents",						"%u", info.limits.maxGeometryTotalOutputComponents);
-		myLabelText("limits.maxFragmentInputComponents",							"%u", info.limits.maxFragmentInputComponents);
-		myLabelText("limits.maxFragmentOutputAttachments",							"%u", info.limits.maxFragmentOutputAttachments);
-		myLabelText("limits.maxFragmentDualSrcAttachments",						"%u", info.limits.maxFragmentDualSrcAttachments);
-		myLabelText("limits.maxFragmentCombinedOutputResources",					"%u", info.limits.maxFragmentCombinedOutputResources);
-		myLabelText("limits.maxComputeSharedMemorySize",							"%u", info.limits.maxComputeSharedMemorySize);
-		myLabelText("limits.maxComputeWorkGroupCount",								"%u, %u, %u", info.limits.maxComputeWorkGroupCount[0], info.limits.maxComputeWorkGroupCount[1], info.limits.maxComputeWorkGroupCount[2]);
-		myLabelText("limits.maxComputeWorkGroupInvocations",						"%u", info.limits.maxComputeWorkGroupInvocations);
-		myLabelText("limits.maxComputeWorkGroupSize",								"%u, %u, %u", info.limits.maxComputeWorkGroupSize[0], info.limits.maxComputeWorkGroupSize[1], info.limits.maxComputeWorkGroupSize[2]);
-		myLabelText("limits.subPixelPrecisionBits",								"%u", info.limits.subPixelPrecisionBits);
-		myLabelText("limits.subTexelPrecisionBits",								"%u", info.limits.subTexelPrecisionBits);
-		myLabelText("limits.mipmapPrecisionBits",									"%u", info.limits.mipmapPrecisionBits);
-		myLabelText("limits.maxDrawIndexedIndexValue",								"%u", info.limits.maxDrawIndexedIndexValue);
-		myLabelText("limits.maxDrawIndirectCount",									"%u", info.limits.maxDrawIndirectCount);
-		myLabelText("limits.maxSamplerLodBias",									"%f", info.limits.maxSamplerLodBias);
-		myLabelText("limits.maxSamplerAnisotropy",									"%f", info.limits.maxSamplerAnisotropy);
-		myLabelText("limits.maxViewports",											"%u", info.limits.maxViewports);
-#include "scl/array.h"
-#include "scl/function.h"
-		myLabelText("limits.maxViewportDimensions",								"%u, %u", info.limits.maxViewportDimensions[0], info.limits.maxViewportDimensions[1]);
-		myLabelText("limits.viewportBoundsRange",									"%f, %f", info.limits.viewportBoundsRange[0], info.limits.maxViewportDimensions[1]);
-		myLabelText("limits.viewportSubPixelBits",									"%u", info.limits.viewportSubPixelBits);
-		myLabelText("limits.minMemoryMapAlignment",								"%llu", info.limits.minMemoryMapAlignment);
-		myLabelText("limits.minTexelBufferOffsetAlignment",						"%llu", info.limits.minTexelBufferOffsetAlignment);
-		//myLabelText("limits.minUniformBufferOffsetAlignment",						"%llu", info.limits.minUniformBufferOffsetAlignment);
-		myLabelText("limits.minStorageBufferOffsetAlignment",						"%llu", info.limits.minStorageBufferOffsetAlignment);
-		myLabelText("limits.minTexelOffset",										"%d", info.limits.minTexelOffset);
-		myLabelText("limits.maxTexelOffset",										"%u", info.limits.maxTexelOffset);
-		myLabelText("limits.minTexelGatherOffset",									"%d", info.limits.minTexelGatherOffset);
-		myLabelText("limits.maxTexelGatherOffset",									"%u", info.limits.maxTexelGatherOffset);
-		myLabelText("limits.minInterpolationOffset",								"%f", info.limits.minInterpolationOffset);
-		myLabelText("limits.maxInterpolationOffset",								"%f", info.limits.maxInterpolationOffset);
-		myLabelText("limits.subPixelInterpolationOffsetBits",						"%u", info.limits.subPixelInterpolationOffsetBits);
-		myLabelText("limits.maxFramebufferWidth",									"%u", info.limits.maxFramebufferWidth);
-		myLabelText("limits.maxFramebufferHeight",									"%u", info.limits.maxFramebufferHeight);
-		myLabelText("limits.maxFramebufferLayers",									"%u", info.limits.maxFramebufferLayers);
-		myLabelText("limits.framebufferColorSampleCounts",							"%u", info.limits.framebufferColorSampleCounts);
-		myLabelText("limits.framebufferDepthSampleCounts",							"%u", info.limits.framebufferDepthSampleCounts);
-		myLabelText("limits.framebufferStencilSampleCounts",						"%u", info.limits.framebufferStencilSampleCounts);
-		myLabelText("limits.framebufferNoAttachmentsSampleCounts",					"%u", info.limits.framebufferNoAttachmentsSampleCounts);
-		myLabelText("limits.maxColorAttachments",									"%u", info.limits.maxColorAttachments);
-		myLabelText("limits.sampledImageColorSampleCounts",						"%u", info.limits.sampledImageColorSampleCounts);
-		myLabelText("limits.sampledImageIntegerSampleCounts",						"%u", info.limits.sampledImageIntegerSampleCounts);
-		myLabelText("limits.sampledImageDepthSampleCounts",						"%u", info.limits.sampledImageDepthSampleCounts);
-		myLabelText("limits.sampledImageStencilSampleCounts",						"%u", info.limits.sampledImageStencilSampleCounts);
-		myLabelText("limits.storageImageSampleCounts",								"%u", info.limits.storageImageSampleCounts);
-		myLabelText("limits.maxSampleMaskWords",									"%u", info.limits.maxSampleMaskWords);
-		myLabelText("limits.timestampComputeAndGraphics",							"%u", info.limits.timestampComputeAndGraphics);
-		myLabelText("limits.timestampPeriod",										"%f", info.limits.timestampPeriod);
-		myLabelText("limits.maxClipDistances",										"%u", info.limits.maxClipDistances);
-		myLabelText("limits.maxCullDistances",										"%u", info.limits.maxCullDistances);
-		myLabelText("limits.maxCombinedClipAndCullDistances",						"%u", info.limits.maxCombinedClipAndCullDistances);
-		myLabelText("limits.discreteQueuePriorities",								"%u", info.limits.discreteQueuePriorities);
-		myLabelText("limits.pointSizeRange",										"%f, %f", info.limits.pointSizeRange[0], info.limits.pointSizeRange[1]);
-		myLabelText("limits.lineWidthRange",										"%f, %f", info.limits.lineWidthRange[0], info.limits.lineWidthRange[1]);
-		myLabelText("limits.pointSizeGranularity",									"%f", info.limits.pointSizeGranularity);
-		myLabelText("limits.lineWidthGranularity",									"%f", info.limits.lineWidthGranularity);
-		myLabelText("limits.strictLines",											"%u", info.limits.strictLines);
-		myLabelText("limits.standardSampleLocations",								"%u", info.limits.standardSampleLocations);
-		myLabelText("limits.optimalBufferCopyOffsetAlignment",						"%llu", info.limits.optimalBufferCopyOffsetAlignment);
-		myLabelText("limits.optimalBufferCopyRowPitchAlignment",					"%llu", info.limits.optimalBufferCopyRowPitchAlignment);
-		myLabelText("limits.nonCoherentAtomSize",									"%llu", info.limits.nonCoherentAtomSize);
+		ui::labelText("limits.maxImageDimension1D",									"%u", info.limits.maxImageDimension1D);
+		ui::labelText("limits.maxImageDimension2D",									"%u", info.limits.maxImageDimension2D);
+		ui::labelText("limits.maxImageDimension3D",									"%u", info.limits.maxImageDimension3D);
+		ui::labelText("limits.maxImageDimensionCube",								"%u", info.limits.maxImageDimensionCube);
+		ui::labelText("limits.maxImageArrayLayers",									"%u", info.limits.maxImageArrayLayers);
+		ui::labelText("limits.maxTexelBufferElements",								"%u", info.limits.maxTexelBufferElements);
+		ui::labelText("limits.maxMemoryAllocationCount",							"%u", info.limits.maxMemoryAllocationCount);
+		ui::labelText("limits.maxSamplerAllocationCount",							"%u", info.limits.maxSamplerAllocationCount);
+		ui::labelText("limits.bufferImageGranularity",								"%llu", info.limits.bufferImageGranularity);
+		ui::labelText("limits.sparseAddressSpaceSize",								"%llu", info.limits.sparseAddressSpaceSize);
+		ui::labelText("limits.maxPerStageDescriptorSamplers",						"%u", info.limits.maxPerStageDescriptorSamplers);
+		ui::labelText("limits.maxPerStageDescriptorUniformBuffers",					"%u", info.limits.maxPerStageDescriptorUniformBuffers);
+		ui::labelText("limits.maxPerStageDescriptorStorageBuffers",					"%u", info.limits.maxPerStageDescriptorStorageBuffers);
+		ui::labelText("limits.maxPerStageDescriptorSampledImages",					"%u", info.limits.maxPerStageDescriptorSampledImages);
+		ui::labelText("limits.maxPerStageDescriptorStorageImages",					"%u", info.limits.maxPerStageDescriptorStorageImages);
+		ui::labelText("limits.maxPerStageDescriptorInputAttachments",				"%u", info.limits.maxPerStageDescriptorInputAttachments);
+		ui::labelText("limits.maxPerStageResources",								"%u", info.limits.maxPerStageResources);
+		ui::labelText("limits.maxDescriptorSetSamplers",							"%u", info.limits.maxDescriptorSetSamplers);
+		ui::labelText("limits.maxDescriptorSetUniformBuffers",						"%u", info.limits.maxDescriptorSetUniformBuffers);
+		ui::labelText("limits.maxDescriptorSetUniformBuffersDynamic",				"%u", info.limits.maxDescriptorSetUniformBuffersDynamic);
+		ui::labelText("limits.maxDescriptorSetStorageBuffers",						"%u", info.limits.maxDescriptorSetStorageBuffers);
+		ui::labelText("limits.maxDescriptorSetStorageBuffersDynamic",				"%u", info.limits.maxDescriptorSetStorageBuffersDynamic);
+		ui::labelText("limits.maxDescriptorSetSampledImages",						"%u", info.limits.maxDescriptorSetSampledImages);
+		ui::labelText("limits.maxDescriptorSetStorageImages",						"%u", info.limits.maxDescriptorSetStorageImages);
+		ui::labelText("limits.maxDescriptorSetInputAttachments",					"%u", info.limits.maxDescriptorSetInputAttachments);
+		ui::labelText("limits.maxVertexInputAttributes",							"%u", info.limits.maxVertexInputAttributes);
+		ui::labelText("limits.maxVertexInputBindings",								"%u", info.limits.maxVertexInputBindings);
+		ui::labelText("limits.maxVertexInputAttributeOffset",						"%u", info.limits.maxVertexInputAttributeOffset);
+		ui::labelText("limits.maxVertexInputBindingStride",							"%u", info.limits.maxVertexInputBindingStride);
+		ui::labelText("limits.maxVertexOutputComponents",							"%u", info.limits.maxVertexOutputComponents);
+		ui::labelText("limits.maxTessellationGenerationLevel",						"%u", info.limits.maxTessellationGenerationLevel);
+		ui::labelText("limits.maxTessellationPatchSize",							"%u", info.limits.maxTessellationPatchSize);
+		ui::labelText("limits.maxTessellationControlPerVertexInputComponents",		"%u", info.limits.maxTessellationControlPerVertexInputComponents);
+		ui::labelText("limits.maxTessellationControlPerVertexOutputComponents",		"%u", info.limits.maxTessellationControlPerVertexOutputComponents);
+		ui::labelText("limits.maxTessellationControlPerPatchOutputComponents",		"%u", info.limits.maxTessellationControlPerPatchOutputComponents);
+		ui::labelText("limits.maxTessellationControlTotalOutputComponents",			"%u", info.limits.maxTessellationControlTotalOutputComponents);
+		ui::labelText("limits.maxTessellationEvaluationInputComponents",			"%u", info.limits.maxTessellationEvaluationInputComponents);
+		ui::labelText("limits.maxTessellationEvaluationOutputComponents",			"%u", info.limits.maxTessellationEvaluationOutputComponents);
+		ui::labelText("limits.maxGeometryShaderInvocations",						"%u", info.limits.maxGeometryShaderInvocations);
+		ui::labelText("limits.maxGeometryInputComponents",							"%u", info.limits.maxGeometryInputComponents);
+		ui::labelText("limits.maxGeometryOutputComponents",							"%u", info.limits.maxGeometryOutputComponents);
+		ui::labelText("limits.maxGeometryOutputVertices",							"%u", info.limits.maxGeometryOutputVertices);
+		ui::labelText("limits.maxGeometryTotalOutputComponents",					"%u", info.limits.maxGeometryTotalOutputComponents);
+		ui::labelText("limits.maxFragmentInputComponents",							"%u", info.limits.maxFragmentInputComponents);
+		ui::labelText("limits.maxFragmentOutputAttachments",						"%u", info.limits.maxFragmentOutputAttachments);
+		ui::labelText("limits.maxFragmentDualSrcAttachments",						"%u", info.limits.maxFragmentDualSrcAttachments);
+		ui::labelText("limits.maxFragmentCombinedOutputResources",					"%u", info.limits.maxFragmentCombinedOutputResources);
+		ui::labelText("limits.maxComputeSharedMemorySize",							"%u", info.limits.maxComputeSharedMemorySize);
+		ui::labelText("limits.maxComputeWorkGroupCount",							"%u, %u, %u", info.limits.maxComputeWorkGroupCount[0], info.limits.maxComputeWorkGroupCount[1], info.limits.maxComputeWorkGroupCount[2]);
+		ui::labelText("limits.maxComputeWorkGroupInvocations",						"%u", info.limits.maxComputeWorkGroupInvocations);
+		ui::labelText("limits.maxComputeWorkGroupSize",								"%u, %u, %u", info.limits.maxComputeWorkGroupSize[0], info.limits.maxComputeWorkGroupSize[1], info.limits.maxComputeWorkGroupSize[2]);
+		ui::labelText("limits.subPixelPrecisionBits",								"%u", info.limits.subPixelPrecisionBits);
+		ui::labelText("limits.subTexelPrecisionBits",								"%u", info.limits.subTexelPrecisionBits);
+		ui::labelText("limits.mipmapPrecisionBits",									"%u", info.limits.mipmapPrecisionBits);
+		ui::labelText("limits.maxDrawIndexedIndexValue",							"%u", info.limits.maxDrawIndexedIndexValue);
+		ui::labelText("limits.maxDrawIndirectCount",								"%u", info.limits.maxDrawIndirectCount);
+		ui::labelText("limits.maxSamplerLodBias",									"%f", info.limits.maxSamplerLodBias);
+		ui::labelText("limits.maxSamplerAnisotropy",								"%f", info.limits.maxSamplerAnisotropy);
+		ui::labelText("limits.maxViewports",										"%u", info.limits.maxViewports);
+		ui::labelText("limits.maxViewportDimensions",								"%u, %u", info.limits.maxViewportDimensions[0], info.limits.maxViewportDimensions[1]);
+		ui::labelText("limits.viewportBoundsRange",									"%f, %f", info.limits.viewportBoundsRange[0], info.limits.maxViewportDimensions[1]);
+		ui::labelText("limits.viewportSubPixelBits",								"%u", info.limits.viewportSubPixelBits);
+		ui::labelText("limits.minMemoryMapAlignment",								"%llu", info.limits.minMemoryMapAlignment);
+		ui::labelText("limits.minTexelBufferOffsetAlignment",						"%llu", info.limits.minTexelBufferOffsetAlignment);
+		ui::labelText("limits.minStorageBufferOffsetAlignment",						"%llu", info.limits.minStorageBufferOffsetAlignment);
+		ui::labelText("limits.minTexelOffset",										"%d", info.limits.minTexelOffset);
+		ui::labelText("limits.maxTexelOffset",										"%u", info.limits.maxTexelOffset);
+		ui::labelText("limits.minTexelGatherOffset",								"%d", info.limits.minTexelGatherOffset);
+		ui::labelText("limits.maxTexelGatherOffset",								"%u", info.limits.maxTexelGatherOffset);
+		ui::labelText("limits.minInterpolationOffset",								"%f", info.limits.minInterpolationOffset);
+		ui::labelText("limits.maxInterpolationOffset",								"%f", info.limits.maxInterpolationOffset);
+		ui::labelText("limits.subPixelInterpolationOffsetBits",						"%u", info.limits.subPixelInterpolationOffsetBits);
+		ui::labelText("limits.maxFramebufferWidth",									"%u", info.limits.maxFramebufferWidth);
+		ui::labelText("limits.maxFramebufferHeight",								"%u", info.limits.maxFramebufferHeight);
+		ui::labelText("limits.maxFramebufferLayers",								"%u", info.limits.maxFramebufferLayers);
+		ui::labelText("limits.framebufferColorSampleCounts",						"%u", info.limits.framebufferColorSampleCounts);
+		ui::labelText("limits.framebufferDepthSampleCounts",						"%u", info.limits.framebufferDepthSampleCounts);
+		ui::labelText("limits.framebufferStencilSampleCounts",						"%u", info.limits.framebufferStencilSampleCounts);
+		ui::labelText("limits.framebufferNoAttachmentsSampleCounts",				"%u", info.limits.framebufferNoAttachmentsSampleCounts);
+		ui::labelText("limits.maxColorAttachments",									"%u", info.limits.maxColorAttachments);
+		ui::labelText("limits.sampledImageColorSampleCounts",						"%u", info.limits.sampledImageColorSampleCounts);
+		ui::labelText("limits.sampledImageIntegerSampleCounts",						"%u", info.limits.sampledImageIntegerSampleCounts);
+		ui::labelText("limits.sampledImageDepthSampleCounts",						"%u", info.limits.sampledImageDepthSampleCounts);
+		ui::labelText("limits.sampledImageStencilSampleCounts",						"%u", info.limits.sampledImageStencilSampleCounts);
+		ui::labelText("limits.storageImageSampleCounts",							"%u", info.limits.storageImageSampleCounts);
+		ui::labelText("limits.maxSampleMaskWords",									"%u", info.limits.maxSampleMaskWords);
+		ui::labelText("limits.timestampComputeAndGraphics",							"%u", info.limits.timestampComputeAndGraphics);
+		ui::labelText("limits.timestampPeriod",										"%f", info.limits.timestampPeriod);
+		ui::labelText("limits.maxClipDistances",									"%u", info.limits.maxClipDistances);
+		ui::labelText("limits.maxCullDistances",									"%u", info.limits.maxCullDistances);
+		ui::labelText("limits.maxCombinedClipAndCullDistances",						"%u", info.limits.maxCombinedClipAndCullDistances);
+		ui::labelText("limits.discreteQueuePriorities",								"%u", info.limits.discreteQueuePriorities);
+		ui::labelText("limits.pointSizeRange",										"%f, %f", info.limits.pointSizeRange[0], info.limits.pointSizeRange[1]);
+		ui::labelText("limits.lineWidthRange",										"%f, %f", info.limits.lineWidthRange[0], info.limits.lineWidthRange[1]);
+		ui::labelText("limits.pointSizeGranularity",								"%f", info.limits.pointSizeGranularity);
+		ui::labelText("limits.lineWidthGranularity",								"%f", info.limits.lineWidthGranularity);
+		ui::labelText("limits.strictLines",											"%u", info.limits.strictLines);
+		ui::labelText("limits.standardSampleLocations",								"%u", info.limits.standardSampleLocations);
+		ui::labelText("limits.optimalBufferCopyOffsetAlignment",					"%llu", info.limits.optimalBufferCopyOffsetAlignment);
+		ui::labelText("limits.optimalBufferCopyRowPitchAlignment",					"%llu", info.limits.optimalBufferCopyRowPitchAlignment);
+		ui::labelText("limits.nonCoherentAtomSize",									"%llu", info.limits.nonCoherentAtomSize);
 	}
 
 
 	ImGui::End();
 }
+
 
 } // namespace cat
 

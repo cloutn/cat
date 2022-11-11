@@ -125,8 +125,8 @@ public:
 	void					endScenePass		();
 
 	//device info
-	virtual int				getDeviceWidth		();
-	virtual int				getDeviceHeight		();
+	virtual int				getDeviceWidth		() const;
+	virtual int				getDeviceHeight		() const;
 	const DeviceInfo&		getDeviceInfo		() const { return m_deviceInfo; }
 	void*					getWindowHandle		() const { return m_windowHandle; }
 	void*					getWindowInstance	() const { return m_windowInstance; }

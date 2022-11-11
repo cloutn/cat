@@ -48,6 +48,8 @@ public:
 		float _x4, float _y4, float _z4, float _d4 );
 
 	//inline void set(const float** new_m);
+	const float* ptr() const { return &m[0][0]; }
+	float* ptr() { return &m[0][0]; }
 
 
 	//矩阵加法
