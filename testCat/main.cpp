@@ -12,6 +12,7 @@
 
 #include "scl/matrix.h"
 #include "scl/vector.h"
+#include "scl/quaternion.h"
 using namespace scl;
 
 void test()
@@ -63,6 +64,27 @@ matrix decompose(matrix m)
 
 }
 
+void test_quaternion()
+{
+	matrix rx = matrix::rotate_x(30);
+	matrix ry = matrix::rotate_y(30);
+	matrix rz = matrix::rotate_z(30);
+
+	matrix mm = rz;
+	mm.mul(ry);
+	mm.mul(rx);
+	printf("matrix rotate matrix : \n");
+	print_matrix(mm);
+
+	quaternion q; 
+	q.from_euler_angle(30, 60, 90);
+	matrix qmat;
+
+	printf("quaternion rot matrix : \n");
+	q.to_matrix(qmat);
+	print_matrix(qmat);
+}
+
 
 int main()
 {
@@ -77,6 +99,8 @@ int main()
 	matrix r = matrix::rotate_x(30);
 	r.mul(matrix::rotate_y(60));
 	r.mul(matrix::rotate_z(90));
+
+	test_quaternion();
 
 	matrix all = s;
 	all.mul(r);

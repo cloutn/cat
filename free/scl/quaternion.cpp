@@ -177,6 +177,18 @@ void quaternion::from_euler_radian(const float _x, const float _y, const float _
 	x = cosz * sinx * cosy + sinz * cosx * siny;
 	y = cosz * cosx * siny - sinz * sinx * cosy;
 	z = sinz * cosx * cosy - cosz * sinx * siny;
+
+	// xyz order
+    //	c1 * c2 * c3 + s1 * s2 * s3,
+    //	s1 * c2 * c3 - c1 * s2 * s3,
+    //	c1 * s2 * c3 + s1 * c2 * s3,
+    //	c1 * c2 * s3 - s1 * s2 * c3
+
+	// zyx order
+    //	c1 * c2 * c3 - s1 * s2 * s3,
+    //	s1 * c2 * c3 + c1 * s2 * s3,
+    //	c1 * s2 * c3 - s1 * c2 * s3,
+    //	c1 * c2 * s3 + s1 * s2 * c3,
 }
 
 
