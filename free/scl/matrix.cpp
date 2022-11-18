@@ -199,18 +199,11 @@ matrix& matrix::rotate_y_radian(float a)
 	static matrix m;
 	float cosa = cosf(a);
 	float sina = sinf(a);
-	//m.set
-	//	(
-	//	cosa,	0,	-sina,	0,
-	//	0,		1,	0,		0,
-	//	sina,	0,	cosa,	0,
-	//	0,		0,	0,		1
-	//	);								
 	m.set
 		(
-		cosa,	0,	sina,	0,
+		cosa,	0,	-sina,	0,
 		0,		1,	0,		0,
-		-sina,	0,	cosa,	0,
+		sina,	0,	cosa,	0,
 		0,		0,	0,		1
 		);								
 	return m;
@@ -230,6 +223,125 @@ matrix& matrix::rotate_z_radian(float a)
 		);
 	return m;
 }
+
+scl::matrix& matrix::rotate_xyz_radian(float x, float y, float z)
+{
+	static matrix m;
+
+	float cosx = cosf(x);
+	float sinx = sinf(x);
+	float cosy = cosf(y);
+	float siny = sinf(y);
+	float cosz = cosf(z);
+	float sinz = sinf(z);
+
+	m.set(
+		cosy*cosz,						cosy*sinz,						-siny,			0,
+		sinx*siny*cosz - cosx*sinz,		sinx*siny*sinz + cosx*cosz,		sinx*cosy,		0,
+		cosx*siny*cosz + sinx*sinz,		cosx*siny*sinz - sinx*cosz, 	cosx*cosy,		0,
+		0,								0,								0,				1);
+	return m;
+}
+
+scl::matrix& matrix::rotate_xzy_radian(float x, float y, float z)
+{
+	static matrix m;
+
+	float cosx = cosf(x);
+	float sinx = sinf(x);
+	float cosy = cosf(y);
+	float siny = sinf(y);
+	float cosz = cosf(z);
+	float sinz = sinf(z);
+
+	m.set(
+		cosz*cosy,						sinz,							-cosz*siny,						0,
+		-sinz*cosx*cosy + sinx*siny,	cosx*cosz,						sinz*cosx*siny + sinx*cosy,		0,
+		sinx*sinz*cosy + cosx*siny,		-sinx*cosz,						-sinx*siny*sinz + cosx*cosy,	0,
+		0,								0,								0,								1);
+	return m;
+}
+
+scl::matrix& matrix::rotate_yxz_radian(float x, float y, float z)
+{
+	static matrix m;
+
+	float cosx = cosf(x);
+	float sinx = sinf(x);
+	float cosy = cosf(y);
+	float siny = sinf(y);
+	float cosz = cosf(z);
+	float sinz = sinf(z);
+
+	m.set(
+		cosy*cosz - sinx*siny*sinz,		cosy*sinz + sinx*siny*cosz,		-siny*cosx,			0,
+		-cosx*sinz,						cosx*cosz,						sinx,				0,
+		siny*cosz + sinx*cosy*sinz,		siny*sinz - sinx*cosy*cosz,		cosx*cosy,			0,
+		0,								0,								0,					1);
+
+	return m;
+}
+
+scl::matrix& matrix::rotate_yzx_radian(float x, float y, float z)
+{
+	static matrix m;
+
+	float cosx = cosf(x);
+	float sinx = sinf(x);
+	float cosy = cosf(y);
+	float siny = sinf(y);
+	float cosz = cosf(z);
+	float sinz = sinf(z);
+
+	m.set(
+		cosy*cosz,		cosy*sinz*cosx + sinx*siny,		cosy*sinz*sinx - siny*cosx,			0,
+		-sinz,			cosz*cosx,						cosz*sinx,							0,
+		siny*cosz,		siny*sinz*cosx - cosy*sinx,		sinx*siny*sinz + cosx*cosy,			0,
+		0,				0,								0,									1);
+
+	return m;
+}
+
+scl::matrix& matrix::rotate_zxy_radian(float x, float y, float z)
+{
+	static matrix m;
+
+	float cosx = cosf(x);
+	float sinx = sinf(x);
+	float cosy = cosf(y);
+	float siny = sinf(y);
+	float cosz = cosf(z);
+	float sinz = sinf(z);
+
+	m.set(
+		cosy*cosz+sinx*siny*sinz,		cosx*sinz,		-siny*cosz + sinx*cosy*sinz,		0,
+		-sinz*cosy + sinx*siny*cosz,	cosx*cosz,		siny*sinz + sinx*cosy*cosz,			0,
+		cosx*siny,						-sinx,			cosx*cosy,							0,
+		0,								0,				0,									1);
+
+	return m;
+}
+
+scl::matrix& matrix::rotate_zyx_radian(float x, float y, float z)
+{
+	static matrix m;
+
+	float cosx = cosf(x);
+	float sinx = sinf(x);
+	float cosy = cosf(y);
+	float siny = sinf(y);
+	float cosz = cosf(z);
+	float sinz = sinf(z);
+
+	m.set(
+		cosy*cosz,		sinx*siny*cosz + cosx*sinz,		-cosx*siny*cosz + sinx*sinz,		0,
+		-cosy*sinz,		-sinx*siny*sinz + cosx*cosz,	cosx*siny*sinz + sinx*cosz,			0,
+		siny,			-sinx*cosy,						cosx*cosy,							0,
+		0,				0,								0,									1);
+
+	return m;
+}
+
 
 void matrix::ortho(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
 {

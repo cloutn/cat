@@ -18,6 +18,9 @@ class quaternion;
 //		x2 y2 z2 d2
 //		x3 y3 z3 d3
 //		x4 y4 z4 d4
+//
+//	use row major storage. (like directX math lib)
+//
 ////////////////////////////////////
 class matrix
 {
@@ -70,9 +73,21 @@ public:
 	static matrix& rotate_x(float a) { return rotate_x_radian(radian(a)); }		//角度制
 	static matrix& rotate_y(float a) { return rotate_y_radian(radian(a)); };	//角度制
 	static matrix& rotate_z(float a) { return rotate_z_radian(radian(a)); };	//角度制
+	static matrix& rotate_xyz(float x, float y, float z) { return rotate_xyz_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix& rotate_xzy(float x, float y, float z) { return rotate_xzy_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix& rotate_yxz(float x, float y, float z) { return rotate_yxz_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix& rotate_yzx(float x, float y, float z) { return rotate_yzx_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix& rotate_zxy(float x, float y, float z) { return rotate_zxy_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix& rotate_zyx(float x, float y, float z) { return rotate_zyx_radian(radian(x), radian(y), radian(z)); }	//角度制
 	static matrix& rotate_x_radian(float r);	//弧度制
 	static matrix& rotate_y_radian(float r);	//弧度制
 	static matrix& rotate_z_radian(float r);	//弧度制
+	static matrix& rotate_xyz_radian(float x, float y, float z);	//弧度制
+	static matrix& rotate_xzy_radian(float x, float y, float z);	//弧度制
+	static matrix& rotate_yxz_radian(float x, float y, float z);	//弧度制
+	static matrix& rotate_yzx_radian(float x, float y, float z);	//弧度制
+	static matrix& rotate_zxy_radian(float x, float y, float z);	//弧度制
+	static matrix& rotate_zyx_radian(float x, float y, float z);	//弧度制
 	
 	//平移，正方向为各坐标系的正半轴
 	//例如x轴，当d > 0，表示右移d个单位(x轴右侧为正方向)

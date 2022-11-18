@@ -173,22 +173,27 @@ void quaternion::from_euler_radian(const float _x, const float _y, const float _
 	const float cosz = cosf(_z/2);
 	const float sinz = sinf(_z/2);
 
-	w = cosz * cosx * cosy + sinz * sinx * siny;
-	x = cosz * sinx * cosy + sinz * cosx * siny;
-	y = cosz * cosx * siny - sinz * sinx * cosy;
-	z = sinz * cosx * cosy - cosz * sinx * siny;
+	//x = sinx*cosy*cosz + cosx*siny*sinz;
+	//y = cosx*siny*cosz - sinx*cosy*sinz;
+	//z = cosx*cosy*sinz - sinx*siny*cosz;
+	//w = cosx*cosy*cosz + sinx*siny*sinz;
+
+	x = sinx*cosy*cosz - cosx*siny*sinz;
+	y = cosx*siny*cosz + sinx*cosy*sinz;
+	z = cosx*cosy*sinz - sinx*siny*cosz;
+	w = cosx*cosy*cosz + sinx*siny*sinz;
 
 	// xyz order
-    //	c1 * c2 * c3 + s1 * s2 * s3,
-    //	s1 * c2 * c3 - c1 * s2 * s3,
-    //	c1 * s2 * c3 + s1 * c2 * s3,
-    //	c1 * c2 * s3 - s1 * s2 * c3
+    // x = s1 * c2 * c3 - c1 * s2 * s3,
+    // y = c1 * s2 * c3 + s1 * c2 * s3,
+    // z = c1 * c2 * s3 - s1 * s2 * c3
+    // w = c1 * c2 * c3 + s1 * s2 * s3,
 
 	// zyx order
-    //	c1 * c2 * c3 - s1 * s2 * s3,
-    //	s1 * c2 * c3 + c1 * s2 * s3,
-    //	c1 * s2 * c3 - s1 * c2 * s3,
-    //	c1 * c2 * s3 + s1 * s2 * c3,
+    // x = s1 * c2 * c3 + c1 * s2 * s3,
+    // y = c1 * s2 * c3 - s1 * c2 * s3,
+    // z = c1 * c2 * s3 + s1 * s2 * c3,
+    // w = c1 * c2 * c3 - s1 * s2 * s3,
 }
 
 
