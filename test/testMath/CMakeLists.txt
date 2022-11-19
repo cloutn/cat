@@ -16,11 +16,13 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../../free/glm ${PROJECT_SOURCE_DIR}/../.
 
 set(header_files
 	util.h
+	test.h
 )
 
 set(src_files
 	main.cpp
 	util.cpp
+	test.cpp
 )
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${header_files})

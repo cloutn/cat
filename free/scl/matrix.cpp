@@ -600,4 +600,61 @@ bool matrix::inverse(scl::matrix& m, scl::matrix& result)
 	return true;
 }
 
+
+void matrix::decompose_rotation_xyz(const scl::matrix& m, scl::vector3& euler)
+{
+	euler.y		= atan2(-m.z1, sqrt(m.x1*m.x1 + m.y1*m.y1));
+	float cosy	= cosf(euler.y);
+	if (scl::float_equal(cosy, 0, 0.00001f))
+	{
+		// sinx*cosz - cosx*sinz,   sinx*sinz + cosx*cosz
+		// cosx*cosz + sinx*sinz,	cosx*sinz - sinx*cosz
+
+		//euler.x = atan2(m[2][1], m[1][1]);	// https://learnopencv.com/rotation-matrix-to-euler-angles/
+		euler.x = atan2f(-m[2][0], m[1][1]);	// glm code : matrix_decompose.inl:146
+		euler.z = 0; 
+	}
+	else
+	{
+		euler.x		= atan2f(m[1][2], m[2][2]);
+		euler.z		= atan2f(m[0][1], m[0][0]);
+	}
+}
+
+bool matrix::decompose(const scl::matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, scl::matrix* rotateMatrix)
+{
+	if (NULL != translate)
+		*translate = { m.x4, m.y4, m.z4 };
+
+	vector3 svx = { m.x1, m.y1, m.z1 };
+	float sx = svx.length();
+
+	vector3 svy = { m.x2, m.y2, m.z2 };
+	float sy = svy.length();
+
+	vector3 svz = { m.x3, m.y3, m.z3 };
+	float sz = svz.length();
+
+	vector3 s = { sx, sy, sz };
+	if (NULL != scale)
+		*scale = s;
+
+	matrix matRotate = 
+	{
+		m.x1/s.x,		m.y1/s.x,		m.z1/s.x,		0,
+		m.x2/s.y,		m.y2/s.y,		m.z2/s.y,		0,
+		m.x3/s.z,		m.y3/s.z,		m.z3/s.z,		0,
+		0,				0,				0,				1,
+	};
+
+	if (NULL != rotateMatrix)
+		*rotateMatrix = matRotate;
+
+	if (NULL != rotateEuler)
+		decompose_rotation_xyz(matRotate, *rotateEuler);
+
+	return true;
+
+}
+
 } //namespace scl

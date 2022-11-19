@@ -1,0 +1,58 @@
+
+
+//class smat
+//{
+//public:
+//	using str = scl::string64;
+//	using pstr = const char* const;
+//
+//	smat() {}
+//	union 
+//	{
+//		str m[3][3];
+//		struct 
+//		{
+//			str x1, y1, z1;
+//			str x2, y2, z2;
+//			str x3, y3, z3;
+//		};
+//	};
+//
+//	str get(int x, int y) const
+//	{
+//		str v = m[x][y];
+//		if (v == "0")
+//			return "[0]";
+//		else if (v == "1")
+//			return "";
+//		return v;
+//	}
+//
+//	void set(
+//		pstr _x1, pstr _y1, pstr _z1,
+//		pstr _x2, pstr _y2, pstr _z2,
+//		pstr _x3, pstr _y3, pstr _z3)
+//	{
+//		x1 = _x1; y1 = _y1; z1 = _z1;
+//		x2 = _x2; y2 = _y2; z2 = _z2;
+//		x3 = _x3; y3 = _y3; z3 = _z3;
+//	}
+//
+//	inline void mul(const smat& other)
+//	{
+//		smat result;
+//		for (int row = 0; row < 4; ++row)
+//		{
+//			for (int col = 0; col < 4; ++col)
+//			{
+//				result.m[row][col].format_append("*%s*%s + %s*%s + %s*%s + %s*%s",
+//					get(row, 0).c_str(), other.get(0, col).c_str(),
+//					get(row, 1).c_str(), other.get(1, col).c_str(),
+//					get(row, 2).c_str(), other.get(2, col).c_str(),
+//					get(row, 3).c_str(), other.get(3, col).c_str());
+//			}
+//		}
+//		*this = result;
+//	}
+//};
+
