@@ -4,7 +4,9 @@
 
 int main()
 {
-	test::test_rotate();
+	test::test_rotate(false);
+	test::test_matrix_mul(false);
+
 
 	printf("finished.\n");
 	getchar();

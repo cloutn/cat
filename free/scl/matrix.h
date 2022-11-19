@@ -55,64 +55,70 @@ public:
 	//矩阵加法
 	static void		add						(const matrix& m1, const matrix& m2, matrix& result);
 	static void		dec						(const matrix& m1, const matrix& m2, matrix& result);
-	matrix			operator+				(const matrix& o);
-	matrix			operator-				(const matrix& o);
+	matrix			operator+				(const matrix& o) const;
+	matrix			operator-				(const matrix& o) const;
 
 	//矩阵乘法
-	inline void		mul						(const matrix& other);
+	inline matrix&	mul						(const matrix& other);
+	inline matrix&	mul						(const matrix& m1, const matrix& m2);
+	inline matrix&	mul						(const matrix& m1, const matrix& m2, const matrix& m3);
+	static matrix	mul_all					(const matrix& m1, const matrix& m2);
+	static matrix	mul_all					(const matrix& m1, const matrix& m2, const matrix& m3);
+	static matrix	mul_all					(const matrix& m1, const matrix& m2, const matrix& m3, const matrix& m4);
 
 	inline bool		operator==				(const matrix& other) const;
+	matrix			operator*				(const matrix& other) const;
 
 	////////////////////////////////////////////////////////////
 	//static 函数
 	////////////////////////////////////////////////////////////
 	//旋转矩阵
-	static matrix&	rotate_x				(float a) { return rotate_x_radian(radian(a)); }		//角度制
-	static matrix&	rotate_y				(float a) { return rotate_y_radian(radian(a)); };	//角度制
-	static matrix&	rotate_z				(float a) { return rotate_z_radian(radian(a)); };	//角度制
-	static matrix&	rotate_xyz				(float x, float y, float z) { return rotate_xyz_radian(radian(x), radian(y), radian(z)); }	//角度制
-	static matrix&	rotate_xzy				(float x, float y, float z) { return rotate_xzy_radian(radian(x), radian(y), radian(z)); }	//角度制
-	static matrix&	rotate_yxz				(float x, float y, float z) { return rotate_yxz_radian(radian(x), radian(y), radian(z)); }	//角度制
-	static matrix&	rotate_yzx				(float x, float y, float z) { return rotate_yzx_radian(radian(x), radian(y), radian(z)); }	//角度制
-	static matrix&	rotate_zxy				(float x, float y, float z) { return rotate_zxy_radian(radian(x), radian(y), radian(z)); }	//角度制
-	static matrix&	rotate_zyx				(float x, float y, float z) { return rotate_zyx_radian(radian(x), radian(y), radian(z)); }	//角度制
-	static matrix&	rotate_x_radian			(float r);	//弧度制
-	static matrix&	rotate_y_radian			(float r);	//弧度制
-	static matrix&	rotate_z_radian			(float r);	//弧度制
-	static matrix&	rotate_xyz_radian		(float x, float y, float z);	//弧度制
-	static matrix&	rotate_xzy_radian		(float x, float y, float z);	//弧度制
-	static matrix&	rotate_yxz_radian		(float x, float y, float z);	//弧度制
-	static matrix&	rotate_yzx_radian		(float x, float y, float z);	//弧度制
-	static matrix&	rotate_zxy_radian		(float x, float y, float z);	//弧度制
-	static matrix&	rotate_zyx_radian		(float x, float y, float z);	//弧度制
+	static matrix	rotate_x				(float a) { return rotate_x_radian(radian(a)); }		//角度制
+	static matrix	rotate_y				(float a) { return rotate_y_radian(radian(a)); };	//角度制
+	static matrix	rotate_z				(float a) { return rotate_z_radian(radian(a)); };	//角度制
+	static matrix	rotate_xyz				(float x, float y, float z) { return rotate_xyz_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix	rotate_xzy				(float x, float y, float z) { return rotate_xzy_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix	rotate_yxz				(float x, float y, float z) { return rotate_yxz_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix	rotate_yzx				(float x, float y, float z) { return rotate_yzx_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix	rotate_zxy				(float x, float y, float z) { return rotate_zxy_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix	rotate_zyx				(float x, float y, float z) { return rotate_zyx_radian(radian(x), radian(y), radian(z)); }	//角度制
+	static matrix	rotate_x_radian			(float r);	//弧度制
+	static matrix	rotate_y_radian			(float r);	//弧度制
+	static matrix	rotate_z_radian			(float r);	//弧度制
+	static matrix	rotate_xyz_radian		(float x, float y, float z);	//弧度制
+	static matrix	rotate_xzy_radian		(float x, float y, float z);	//弧度制
+	static matrix	rotate_yxz_radian		(float x, float y, float z);	//弧度制
+	static matrix	rotate_yzx_radian		(float x, float y, float z);	//弧度制
+	static matrix	rotate_zxy_radian		(float x, float y, float z);	//弧度制
+	static matrix	rotate_zyx_radian		(float x, float y, float z);	//弧度制
 	
 	//平移，正方向为各坐标系的正半轴
 	//例如x轴，当d > 0，表示右移d个单位(x轴右侧为正方向)
-	static matrix&	move					(float dx, float dy, float dz);
-	static matrix&	move_x					(float d) { return move(d, 0, 0); }
-	static matrix&	move_y					(float d) { return move(0, d, 0); }
-	static matrix&	move_z					(float d) { return move(0, 0, d); }
+	static matrix	move					(float dx, float dy, float dz);
+	static matrix	move_x					(float d) { return move(d, 0, 0); }
+	static matrix	move_y					(float d) { return move(0, d, 0); }
+	static matrix	move_z					(float d) { return move(0, 0, d); }
 
-	static matrix&	translate				(float dx, float dy, float dz) { return move(dx, dy, dz); }
+	static matrix	translate				(float dx, float dy, float dz) { return move(dx, dy, dz); }
 	
 	//缩放
-	static matrix&	scale					(float x, float y, float z);
+	static matrix	scale					(float x, float y, float z);
 
 	//单位矩阵
-	static matrix&	identity				();
+	static matrix	identity				();
 
 	//绕向量v旋转angle角度的矩阵
-	static matrix&	rotate_axis				(const vector3& v, float angle);
+	static matrix	rotate_axis				(const vector3& v, float angle);
 
 	//绕向量v = v2 - v1 旋转angle角度的矩阵
 	//v1是起始点，v2是结束点
-	static matrix&	rotate_any_axis			(const vector3& v1, const vector3& v2, float angle);
+	static matrix	rotate_any_axis			(const vector3& v1, const vector3& v2, float angle);
 
 	//求从v1向量旋转到v2向量的矩阵
-	static matrix&	rotate_between			(const vector3& v1, const vector3& v2);
+	static matrix	rotate_between			(const vector3& v1, const vector3& v2);
 
 	//以某个点为基准点，四元数做旋转参数
-	static matrix&	rotate_pivot_quaternion	(const vector3& pivot, const quaternion& q);
+	static matrix	rotate_pivot_quaternion	(const vector3& pivot, const quaternion& q);
 
 	//投影矩阵
 	static void		ortho					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
@@ -152,7 +158,7 @@ inline void matrix::set(
 }
 
 
-inline void matrix::mul(const matrix& other)
+inline matrix& matrix::mul(const matrix& other)
 {
     matrix result;
     for (int row = 0; row < 4; ++row)
@@ -167,8 +173,24 @@ inline void matrix::mul(const matrix& other)
         }
     }
     *this = result;
+	return *this;
 }
 
+inline matrix& matrix::mul(const matrix& m1, const matrix& m2)
+{
+	mul(m1);
+	mul(m2);
+	return *this;
+}
+
+
+inline matrix& matrix::mul(const matrix& m1, const matrix& m2, const matrix& m3)
+{
+	mul(m1);
+	mul(m2);
+	mul(m3);
+	return *this;
+}
 
 inline bool matrix::operator==(const matrix& other) const
 {

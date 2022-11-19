@@ -5,6 +5,7 @@
 #include "scl/matrix.h"
 #include "scl/quaternion.h"
 #include "scl/vector.h"
+#include "scl/assert.h"
 
 #include <glm/vec3.hpp> 
 #include <glm/vec4.hpp>
@@ -24,7 +25,7 @@ using scl::matrix;
 using scl::quaternion;
 using scl::vector3;
 
-void test_rotate()
+void test_rotate(bool print)
 {
 	float a[3] = { 33.f, 66.f, 88.f};
 
@@ -37,22 +38,30 @@ void test_rotate()
 	matrix		sRotateX	= matrix::rotate_x(a[0]);
 	matrix		sRotateY	= matrix::rotate_y(a[1]);
 	matrix		sRotateZ	= matrix::rotate_z(a[2]);
-	matrix		sRotate = sRotateX;
-	sRotate.mul(sRotateY);
-	sRotate.mul(sRotateZ);
+	matrix		sRotate		= sRotateX * sRotateY * sRotateZ;
 
-	assert(compare_mat(sRotate, gRotate));
+	assert(compare_mat(sRotate, gRotate, print));
 
 	quaternion q; 
 	q.from_euler_angle(a[0], a[1], a[2]);
 	matrix qmat;
 	q.to_matrix(qmat);
 
-	assert(compare_mat(qmat, sRotate));
+	assert(compare_mat(qmat, sRotate ,print));
 }
 
+void test_matrix_mul(bool print)
+{
+	vector3 angle = { 22, 55, 77};
+	matrix m1 = matrix::rotate_x(angle.x);
+	matrix m2 = matrix::rotate_x(angle.y);
+	matrix m3 = matrix::rotate_x(angle.z);
 
+	matrix all1 = m1 * m2 * m3;
+	matrix all2 = matrix::mul_all(m1, m2, m3);
 
+	assert(compare_mat(all1, all2));
+}
 
 void test_old()
 {

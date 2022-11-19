@@ -19,9 +19,9 @@
 namespace scl {
 
 //绕向量v旋转angle角度的矩阵
-matrix& matrix::rotate_axis(const vector3& v, float angle)
+matrix matrix::rotate_axis(const vector3& v, float angle)
 {
-	static matrix result;
+	matrix result;
 	quaternion q;
 	q.from_pivot_radian(v, angle);
 	q.to_matrix(result);
@@ -30,9 +30,9 @@ matrix& matrix::rotate_axis(const vector3& v, float angle)
 
 //绕向量v = v2 - v1 旋转angle角度的矩阵
 //v1是起始点，v2是结束点
-matrix& matrix::rotate_any_axis(const vector3& v1, const vector3& v2, float angle)
+matrix matrix::rotate_any_axis(const vector3& v1, const vector3& v2, float angle)
 {
-	static matrix result;
+	matrix result;
 
 	//先平移到以v1.x v1,y v1.z为原点的坐标系
 	result = matrix::move(-v1.x, -v1.y, -v1.z);
@@ -53,9 +53,9 @@ matrix& matrix::rotate_any_axis(const vector3& v1, const vector3& v2, float angl
 }
 
 //求从v1向量旋转到v2向量的矩阵
-matrix& matrix::rotate_between(const vector3& from_v1, const vector3& to_v2)
+matrix matrix::rotate_between(const vector3& from_v1, const vector3& to_v2)
 {
-	static matrix result;
+	matrix result;
 	vector3 v1 = from_v1;
 	vector3 v2 = to_v2;
 	v1.normalize();
@@ -83,9 +83,9 @@ matrix& matrix::rotate_between(const vector3& from_v1, const vector3& to_v2)
 	return result;
 }
 
-matrix& matrix::rotate_pivot_quaternion(const vector3& pivot, const quaternion& q)
+matrix matrix::rotate_pivot_quaternion(const vector3& pivot, const quaternion& q)
 {
-	static matrix transform;
+	matrix transform;
 	transform = matrix::move(-pivot.x, -pivot.y, -pivot.z);
 	matrix rotateMatrix;
 	q.to_matrix(rotateMatrix);
@@ -129,41 +129,73 @@ void matrix::dec(const matrix& m1, const matrix& m2, matrix& result)
 			result.m[i][j] = m1.m[i][j] - m2.m[i][j];
 }
 
-scl::matrix matrix::operator+(const matrix& o)
+matrix matrix::operator+(const matrix& o) const
 {
-	scl::matrix r;
-	scl::matrix::add(*this, o, r);
+	matrix r;
+	matrix::add(*this, o, r);
 	return r;
 }
 
-scl::matrix matrix::operator-(const matrix& o)
+matrix matrix::operator-(const matrix& o) const
 {
-	scl::matrix r;
-	scl::matrix::dec(*this, o, r);
+	matrix r;
+	matrix::dec(*this, o, r);
 	return r;
 }
 
-matrix& matrix::identity()
+
+matrix matrix::mul_all(const matrix& m1, const matrix& m2)
+{
+	matrix m = m1;
+	m.mul(m2);
+	return m;
+}
+
+matrix matrix::mul_all(const matrix& m1, const matrix& m2, const matrix& m3)
+{
+	matrix m = m1;
+	m.mul(m2, m3);
+	return m;
+}
+
+matrix matrix::mul_all(const matrix& m1, const matrix& m2, const matrix& m3, const matrix& m4)
+{
+	matrix m = m1;
+	m.mul(m2, m3, m4);
+	return m;
+}
+
+matrix matrix::operator*(const matrix& o) const
+{
+	matrix r = *this;
+	r.mul(o);
+	return r;
+}
+
+matrix matrix::identity()
 {
 	//这里三层外三层的括号是为了消除linux的警告！
-	static matrix m = { { {
-
+	matrix m = { { {
 		{ 1,	0,	0,	0 },
 		{ 0,	1,	0,	0 },
 		{ 0,	0,	1,	0 },
 		{ 0,	0,	0,	1 }
-
 	} } };
 
+	//matrix m;
+	//m.set(
+	//	1,	0,	0,	0,
+	//	0,	1,	0,	0,
+	//	0,	0,	1,	0,
+	//	0,	0,	0,	1);
 	return m;
 }
 
 
-matrix& matrix::move(float dx, float dy, float dz)
+matrix matrix::move(float dx, float dy, float dz)
 {
-	static matrix m;
-	m.set
-		(
+	matrix m;
+	m.set(
 		1,	0,	0,	0,
 		0,	1,	0,	0,
 		0,	0,	1,	0,
@@ -172,9 +204,9 @@ matrix& matrix::move(float dx, float dy, float dz)
 	return m;
 }
 
-matrix& matrix::scale(float x, float y, float z)
+matrix matrix::scale(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 	m.set
 		(
 		x,	0,	0,	0,
@@ -185,9 +217,9 @@ matrix& matrix::scale(float x, float y, float z)
 	return m;
 }
 
-matrix& matrix::rotate_x_radian(float a)
+matrix matrix::rotate_x_radian(float a)
 {
-	static matrix m;
+	matrix m;
 	float cosa = cosf(a);
 	float sina = sinf(a);
 	m.set
@@ -201,9 +233,9 @@ matrix& matrix::rotate_x_radian(float a)
 	return m;
 }
 
-matrix& matrix::rotate_y_radian(float a)
+matrix matrix::rotate_y_radian(float a)
 {
-	static matrix m;
+	matrix m;
 	float cosa = cosf(a);
 	float sina = sinf(a);
 	m.set
@@ -216,9 +248,9 @@ matrix& matrix::rotate_y_radian(float a)
 	return m;
 }
 
-matrix& matrix::rotate_z_radian(float a)
+matrix matrix::rotate_z_radian(float a)
 {
-	static matrix m;
+	matrix m;
 	float cosa = cosf(a);
 	float sina = sinf(a);
 	m.set
@@ -231,9 +263,9 @@ matrix& matrix::rotate_z_radian(float a)
 	return m;
 }
 
-scl::matrix& matrix::rotate_xyz_radian(float x, float y, float z)
+matrix matrix::rotate_xyz_radian(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -250,9 +282,9 @@ scl::matrix& matrix::rotate_xyz_radian(float x, float y, float z)
 	return m;
 }
 
-scl::matrix& matrix::rotate_xzy_radian(float x, float y, float z)
+matrix matrix::rotate_xzy_radian(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -269,9 +301,9 @@ scl::matrix& matrix::rotate_xzy_radian(float x, float y, float z)
 	return m;
 }
 
-scl::matrix& matrix::rotate_yxz_radian(float x, float y, float z)
+matrix matrix::rotate_yxz_radian(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -289,9 +321,9 @@ scl::matrix& matrix::rotate_yxz_radian(float x, float y, float z)
 	return m;
 }
 
-scl::matrix& matrix::rotate_yzx_radian(float x, float y, float z)
+matrix matrix::rotate_yzx_radian(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -309,9 +341,9 @@ scl::matrix& matrix::rotate_yzx_radian(float x, float y, float z)
 	return m;
 }
 
-scl::matrix& matrix::rotate_zxy_radian(float x, float y, float z)
+matrix matrix::rotate_zxy_radian(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -329,9 +361,9 @@ scl::matrix& matrix::rotate_zxy_radian(float x, float y, float z)
 	return m;
 }
 
-scl::matrix& matrix::rotate_zyx_radian(float x, float y, float z)
+matrix matrix::rotate_zyx_radian(float x, float y, float z)
 {
-	static matrix m;
+	matrix m;
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -366,14 +398,14 @@ void matrix::ortho(matrix& m, float left, float right, float bottom, float top, 
 		-(right + left) / dx,	-(top + bottom) / dy,	-(nearZ + farZ) / dz,	1);
 }
 
-void matrix::perspective(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ)
+void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float farZ)
 {
    float frustumH = tanf ( fovy / 360.0f * PI ) * nearZ;
    float frustumW = frustumH * aspect;
-   scl::matrix::frustum(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ );
+   matrix::frustum(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ );
 }
 
-//void matrix::frustum(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+//void matrix::frustum(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
 //{
 //   float dx = right - left;
 //   float dy = top - bottom;
@@ -389,7 +421,7 @@ void matrix::perspective(scl::matrix& m, float fovy, float aspect, float nearZ, 
 //		0,						0,						2.0f * nearZ * farZ / dz,	0);
 //}
 
-void matrix::frustum(scl::matrix& m, float l, float r, float b, float t, float n, float f)
+void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f)
 {
    if (r <= l || t <= b || f <= n)
       return;
@@ -402,7 +434,7 @@ void matrix::frustum(scl::matrix& m, float l, float r, float b, float t, float n
 }
 
 
-void matrix::lookat(scl::matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ)
+void matrix::lookat(matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ)
 {
    float axisX[3], axisY[3], axisZ[3];
    float length;
@@ -494,7 +526,7 @@ matrix matrix::lookat2(scl::vector3 eye, scl::vector3 target, scl::vector3 upDir
     float transZ = -forward.x * eye.x - forward.y * eye.y - forward.z * eye.z;
 
     // init 4x4 matrix
-	scl::matrix matrix = 
+	matrix matrix = 
 	{
 		left.x,		up.x,		forward.x,	0,
 		left.y,		up.y,		forward.y,	0,
@@ -547,10 +579,10 @@ matrix matrix::lookat2(scl::vector3 eye, scl::vector3 target, scl::vector3 upDir
 //    return matrix;
 //}
 
-bool matrix::inverse(scl::matrix& m, scl::matrix& result)
+bool matrix::inverse(matrix& m, matrix& result)
 {
-	scl::matrix leftM = m;
-	scl::matrix rightM = scl::matrix::identity();
+	matrix leftM = m;
+	matrix rightM = matrix::identity();
 	int i, j;
 	for (i = 0; i < 4; ++i)
 	{
@@ -601,7 +633,7 @@ bool matrix::inverse(scl::matrix& m, scl::matrix& result)
 }
 
 
-void matrix::decompose_rotation_xyz(const scl::matrix& m, scl::vector3& euler)
+void matrix::decompose_rotation_xyz(const matrix& m, scl::vector3& euler)
 {
 	euler.y		= atan2(-m.z1, sqrt(m.x1*m.x1 + m.y1*m.y1));
 	float cosy	= cosf(euler.y);
@@ -621,7 +653,7 @@ void matrix::decompose_rotation_xyz(const scl::matrix& m, scl::vector3& euler)
 	}
 }
 
-bool matrix::decompose(const scl::matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, scl::matrix* rotateMatrix)
+bool matrix::decompose(const matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, matrix* rotateMatrix)
 {
 	if (NULL != translate)
 		*translate = { m.x4, m.y4, m.z4 };
