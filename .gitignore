@@ -53,3 +53,6 @@
 /free/libimg/build64
 /testCat/config.yaml
 /free/glm/build
+/free/glm/build64
+/test/testMath/build
+/test/testMath/bin
