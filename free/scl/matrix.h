@@ -39,7 +39,9 @@ public:
 		};
 	};
 
-	float& operator[] (int index);
+	//float& operator[] (int index);
+	const float* operator[] (int index) const;
+	float* operator[] (int index);
 
 	//matrix() { memset(this, 0, sizeof(matrix)); }
 	void clear();

@@ -94,11 +94,18 @@ matrix& matrix::rotate_pivot_quaternion(const vector3& pivot, const quaternion& 
 	return transform;
 }
 
-float& matrix::operator[](int i)
+const float* matrix::operator[](int i) const
 {
-	assert(i < sizeof(m) / sizeof(m[0][0]));
-	float* _a = &(m[0][0]);
-	return _a[i];
+	assert(i < 4);
+	const float* _a = m[i];
+	return _a;
+}
+
+float* matrix::operator[](int i)
+{
+	assert(i < 4);
+	float* _a = m[i];
+	return _a;
 }
 
 void matrix::clear()
