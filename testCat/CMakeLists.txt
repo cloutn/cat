@@ -30,6 +30,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../free/spirv_cross ${PROJECT_SOURCE_DIR}
 add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/../catVulkanRender/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/rapidyaml ${PROJECT_SOURCE_DIR}/../free/rapidyaml/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../free/glm ${PROJECT_SOURCE_DIR}/../free/glm/build${ARCH})
 
 
 set(header_files
@@ -60,7 +61,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
 add_executable(${target} ${src_files} ${header_files})
 
-add_dependencies(${target} scl libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender rapidyaml)
+add_dependencies(${target} scl libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender rapidyaml glm)
 
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
@@ -94,6 +95,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libtga_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/rapidyaml_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/glm_d.lib
 )
 
 set(release_links 	
@@ -114,6 +116,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libtga.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/rapidyaml.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/glm.lib
 )
 
 

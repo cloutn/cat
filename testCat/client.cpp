@@ -274,7 +274,7 @@ void Client::run()
 		//	printf("pos = %d, %d, size = %d, %d\n", m_window.getPositionX(), m_window.getPositionY(), m_window.getWidth(), m_window.getHeight());
 		//}
 
-		scl::usleep(10);
+		//scl::usleep(1);
 	}
 
 #ifdef TEST_VULKAN
