@@ -381,6 +381,12 @@ matrix matrix::rotate_zyx_radian(float x, float y, float z)
 	return m;
 }
 
+matrix matrix::ortho(float left, float right, float bottom, float top, float nearZ, float farZ)
+{
+	matrix m;
+	ortho(m, left, right, bottom, top, nearZ, farZ);
+	return m;
+}
 
 void matrix::ortho(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
 {
@@ -396,6 +402,13 @@ void matrix::ortho(matrix& m, float left, float right, float bottom, float top, 
 		0,						2.0f / dy,				0, 						0,
 		0,						0,						-2.0f / dz,				0,		
 		-(right + left) / dx,	-(top + bottom) / dy,	-(nearZ + farZ) / dz,	1);
+}
+
+matrix matrix::perspective(float fovy, float aspect, float nearZ, float farZ)
+{
+	matrix m;
+	perspective(m, fovy, aspect, nearZ, farZ);
+	return m;
 }
 
 void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float farZ)
@@ -421,6 +434,13 @@ void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float
 //		0,						0,						2.0f * nearZ * farZ / dz,	0);
 //}
 
+matrix matrix::frustum(float l, float r, float b, float t, float n, float f)
+{
+	matrix m;
+	frustum(m, l, r, b, t, n, f);
+	return m;
+}
+
 void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f)
 {
    if (r <= l || t <= b || f <= n)
@@ -433,6 +453,13 @@ void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, flo
 		0,						0,						-2 * n * f / (f - n),		0);
 }
 
+
+matrix matrix::lookat(float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ)
+{
+	matrix result;
+	lookat(result, posX, posY, posZ, lookAtX, lookAtY, lookAtZ, upX, upY, upZ);
+	return result;
+}
 
 void matrix::lookat(matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ)
 {
@@ -633,7 +660,7 @@ bool matrix::inverse(matrix& m, matrix& result)
 }
 
 
-void matrix::decompose_rotation_xyz(const matrix& m, scl::vector3& euler)
+void matrix::decompose_rotation_xyz_radian(const matrix& m, scl::vector3& euler)
 {
 	euler.y		= atan2(-m.z1, sqrt(m.x1*m.x1 + m.y1*m.y1));
 	float cosy	= cosf(euler.y);
@@ -652,6 +679,14 @@ void matrix::decompose_rotation_xyz(const matrix& m, scl::vector3& euler)
 		euler.z		= atan2f(m[0][1], m[0][0]);
 	}
 }
+
+void matrix::decompose_rotation_xyz(const matrix& m, scl::vector3& eulerAngle)
+{
+	vector3 radian;
+	decompose_rotation_xyz_radian(m, radian);
+	eulerAngle = scl::angle(radian);
+}
+
 
 bool matrix::decompose(const matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, matrix* rotateMatrix)
 {

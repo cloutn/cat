@@ -184,5 +184,18 @@ public:
 #define vector2_dec(v1, v2) v1.x - v2.x, v1.y - v2.y
 #define vector2_add(v1, v2) v1.x + v2.x, v1.y + v2.y
 
+
+//角度转为弧度
+inline vector3 radian(const vector3& v)
+{
+	return { radian(v.x), radian(v.y), radian(v.z) };
+}
+
+//弧度转为角度
+inline vector3 angle(const vector3& v)
+{
+	return { angle(v.x), angle(v.y), angle(v.z) };
+}
+
 }	//namespace scl
 

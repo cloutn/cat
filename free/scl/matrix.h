@@ -122,12 +122,16 @@ public:
 
 	//投影矩阵
 	static void		ortho					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
+	static matrix	ortho					(float left, float right, float bottom, float top, float nearZ, float farZ);
 	static void		perspective				(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ);
+	static matrix	perspective				(float fovy, float aspect, float nearZ, float farZ);
 	static void		frustum					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
+	static matrix	frustum					(float left, float right, float bottom, float top, float nearZ, float farZ);
 	//static void frustum2	(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
 
 	//摄像机矩阵
 	static void		lookat					(scl::matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ);
+	static matrix	lookat					(float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ);
 	static matrix	lookat2					(scl::vector3 pos, scl::vector3 lookAt, scl::vector3 up);
 
 	//求逆矩阵
@@ -137,6 +141,7 @@ public:
 	static bool		decompose				(const scl::matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, scl::matrix* rotateMatrix);
 
 	// 求解一个旋转矩阵的欧拉角表示，注意，当 y = 90 的时候，decompose 可能无法正常工作，参见 glm 和 directX math 都没有处理该问题
+	static void		decompose_rotation_xyz_radian(const scl::matrix& m, scl::vector3& euler);
 	static void		decompose_rotation_xyz	(const scl::matrix& m, scl::vector3& euler);
 };
 
