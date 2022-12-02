@@ -40,7 +40,10 @@ const scl::matrix& Transform::matrix() const
 	return m_matrix;
 }
 
-
+void Transform::setByMatrix(const scl::matrix& m)
+{
+	scl::matrix::decompose(m, &m_move, &m_scale, NULL, NULL, &m_rotate);
+}
 
 } // namespace cat
 

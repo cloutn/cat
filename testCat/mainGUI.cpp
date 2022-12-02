@@ -120,9 +120,16 @@ void MainGUI::onGUI()
 	Camera* camera = m_client->getCamera();
 	const scl::matrix& viewMatrix = camera->viewMatrix();
 	const scl::matrix& projectionMatrix = camera->projectionMatrix();
-	scl::matrix transform = scl::matrix::identity();
+
+	//scl::matrix transform = scl::matrix::identity();
+	scl::matrix transform = m_client->getSelectObject()->matrix();
 
 	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmo::OPERATION::TRANSLATE, gizmo::LOCAL, transform.ptr());
+
+	if (gizmo::IsUsing())
+	{
+		
+	}
 
 	_showMenu();
 

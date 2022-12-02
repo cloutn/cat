@@ -52,6 +52,7 @@ public:
 	Camera*					getCamera			() { return m_camera; }
 	int						getScreenWidth		() const;
 	int						getScreenHeight		() const;
+	Object*					getSelectObject		();
 
 #ifdef SCL_APPLE
 	void					tick				();

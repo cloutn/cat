@@ -484,6 +484,11 @@ int Client::getScreenHeight() const
 	return m_render.getDeviceHeight();
 }
 
+cat::Object* Client::getSelectObject()
+{
+	return getObject(0, 0);
+}
+
 } //namespace cat
 
 

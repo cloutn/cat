@@ -192,7 +192,6 @@ void _test_quaternion_by_angle(float* a, bool print)
 	glm::quat	gQuat		= glm::quat(gEuler);		
 	glm::quat	gQuatFromMatrix = glm::quat_cast(gRotate);
 
-
 	assert(compare_mat(mat_r, gRotate, print));
 
 	scl::matrix tm1;

@@ -11,7 +11,6 @@ void test_rotate_order	(bool print = false);
 void test_decompose		(bool print = false);
 void test_quaternion	(bool print = false);
 
-
 } // namespace test
 
 

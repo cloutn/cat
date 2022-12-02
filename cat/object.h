@@ -34,6 +34,7 @@ public:
 	void						loadSkin				(cgltf_node* node, Env* env);
 	void						save					(yaml::node& parent);
 	void						draw					(const scl::matrix& mvp, bool isPick, IRender* render);
+	const scl::matrix&			matrix					();
 	scl::matrix					globalMatrix			();
 	const String&				name					() const { return m_name; }
 	void						setName					(const char* const name) { m_name = name; }
@@ -53,7 +54,8 @@ public:
 	void						setAnimationMove		(scl::vector3 v);
 
 private:
-	Transform*					_animationTransform();
+	Transform*					_transform				();
+	Transform*					_animationTransform		();
 
 private:
 	static ObjectIDMap<Object>*	s_objectIDMap;		//a map from object id to pointer. 
@@ -65,17 +67,9 @@ private:
 	Mesh*						m_mesh;
 	Skin*						m_skin;
 	scl::varray<Object*>		m_childs;
-
-	scl::vector3*				m_move;
-	scl::vector3*				m_scale;
-	scl::quaternion*			m_rotate;
-	scl::matrix*				m_loadMatrix;
-
 	scl::matrix*				m_matrix;
-
+	Transform*					m_transform;
 	Transform*					m_animationTransform;
-
-	//scl::matrix*				m_globalMatrix;
 	String						m_name;
 
 };  // class Object 
