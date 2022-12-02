@@ -46,103 +46,6 @@ Primitive::~Primitive()
 	release();
 }
 
-
-
-//void Primitive::initFromBuffer(
-//		const void*		vertexBuffer, 
-//		const int		vertexBufferSize, 
-//		const int		vertexCount, 
-//		const void*		indexBuffer,
-//		const int		indexBufferSize, 
-//		const int		indexCount,
-//		const int		attrCount,
-//		const VertexAttr* attrs,
-//		IRender*		render)
-//{
-//	if (NULL == render || NULL == vertexBuffer || NULL == indexBuffer)
-//		return;
-//	if (0 == vertexBufferSize || 0 == indexBufferSize || 0 == vertexCount || 0 == indexCount)
-//		return;
-//	if (0 == attrCount || NULL == attrs)
-//		return;
-//
-//	release();
-//
-//	m_render = render;
-//
-//	m_deviceVertexBuffer	= render->createVertexBuffer(vertexCount);
-//	m_deviceIndexBuffer		= render->createIndexBuffer	(indexCount);
-//	render->copyVertexBuffer(vertexBuffer,	m_deviceVertexBuffer,	vertexBufferSize);
-//	render->copyIndexBuffer	(indexBuffer,	m_deviceIndexBuffer,	indexBufferSize);
-//	m_vertexCount = vertexCount;
-//	m_indexCount = indexCount;
-//
-//	assert(m_attrCount == 0);
-//	assert(m_attrs == NULL);
-//
-//	m_attrCount = attrCount;
-//
-//	m_attrs = new VertexAttr[m_attrCount];
-//	memcpy(m_attrs, attrs, m_attrCount * sizeof(attrs[0]));
-//}
-
-//void* createBuffer(const cgltf_accessor* accessor, scl::tree<cgltf_buffer_view*, void*>& bufferMap, IRender* render)
-//{
-//	cgltf_buffer_view*	view		= accessor->buffer_view;
-//	auto				it			= bufferMap.find(view);
-//	if (it != bufferMap.end())
-//	{
-//		//G.refCounter.AddRef(it->second);
-//		return (*it).second;
-//	}
-//
-//	//elementCount = view->size / cgltf_calc_size(accessor->type, accessor->component_type);
-//	const byte*	pBuffer			= (byte*)view->buffer->data + view->offset;
-//	void*		deviceBuffer	= render->createIndexBuffer(-1);
-//	if (view->type == cgltf_buffer_view_type_indices)
-//		render->copyIndexBuffer(pBuffer, deviceBuffer, view->size);
-//	//else if (view->type == cgltf_buffer_view_type_vertices)
-//	else 
-//		render->copyVertexBuffer(pBuffer, deviceBuffer, view->size);
-//	//bufferMap.insert(std::make_pair(view, deviceBuffer));
-//	bufferMap.add(view, deviceBuffer);
-//	//G.refCounter.AddRef(deviceBuffer);
-//	return deviceBuffer;
-//}
-
-//void Primitive::_loadVertexOriginal(const cgltf_primitive&	primitive, Env* env, IRender* render)
-//{
-//	// vertex
-//	if (primitive.attributes_count <= 0)
-//		return;
-//	m_attrCount					= primitive.attributes_count;
-//	m_deviceVertexBuffers		= new void*[m_attrCount];
-//	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
-//	m_attrs						= new VertexAttr[m_attrCount];
-//	memset(m_attrs, 0, sizeof(m_attrs[0]) * m_attrCount);
-//
-//	for (size_t i = 0; i < primitive.attributes_count; ++i)
-//	{
-//		cgltf_attribute&	attr			= primitive.attributes[i];
-//		cgltf_accessor*		accessor		= attr.data;
-//
-//		m_attrs[i].index		= _attrNameToIndex(attr.name);
-//		if (m_attrs[i].index < 0)
-//		{
-//			printf("attr index = %s\n", attr.name);
-//			continue;
-//		}
-//
-//		m_deviceVertexBuffers[i] = createBuffer(attr.data, env->bufferMap(), render);
-//
-//		m_attrs[i].size			= cgltf_num_components(accessor->type);
-//		m_attrs[i].dataType		= static_cast<ELEM_TYPE>(gltf_type_to_attr_type(accessor->component_type));
-//		m_attrs[i].normalize	= accessor->normalized;
-//		m_attrs[i].stride		= (accessor->buffer_view->stride == 0) ?  accessor->stride : accessor->buffer_view->stride;
-//		m_attrs[i].offset		= (void*)accessor->offset;
-//	}
-//}
-
 int _attrNameToIndex(const char* const name)
 {
 	int attrIndex = -1;
@@ -407,7 +310,6 @@ void Primitive::release()
 		delete[] m_deviceVertexBuffers;
 	}
 	safe_delete(m_material);
-	//safe_delete(m_shader); // shader is deleted in ShaderCache
 	m_attrCount = 0;
 }
 

@@ -56,37 +56,22 @@ void Skin::load(cgltf_skin* skinData, Env* env)
 	for (int i = 0; i < static_cast<int>(skinData->joints_count); ++i)
 	{
 		cgltf_node* node = skinData->joints[i];
-		//int objectID = env->getObjectIDByGltfNode(node);
-		//ObjectMap::iterator it = om.find(node);
-		//if (it == om.end())
-		//	assert(false);
 		Object* obj = env->getObjectByGltfNode(node);
 		assert(NULL != obj);
-		//obj->setInverseBindMatrix(m_inverseBindMatrices[i]);
 		m_joints.push_back(obj);
 	}
-
-	//safe_delete_array(m_inverseBindMatrices);
 }
 
 scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform)
 {
-	//if (matrixCount != m_inverseBindMatrixCount)
-	//{
-	//	assert(false);
-	//	return;
-	//}
 	if (NULL == m_jointMatrices)
-	{
 		m_jointMatrices = new matrix[m_inverseBindMatrixCount];
-	}
+
 	for (int i = 0; i < m_inverseBindMatrixCount; ++i)
 	{
 		m_jointMatrices[i] = m_inverseBindMatrices[i];
 		m_jointMatrices[i].mul(m_joints[i]->globalAnimationMatrix());
-		//m_jointMatrices[i].mul(m_joints[i]->globalMatrixWithAnimation());
 		m_jointMatrices[i].mul(inverseMeshGlobalTransform);
-		//m_jointMatrices[i] = matrix::identity();
 	}
 	matrixCount = m_inverseBindMatrixCount;
 	return m_jointMatrices;

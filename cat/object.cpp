@@ -69,15 +69,7 @@ void Object::loadNode(cgltf_node* node, const char* const path, IRender* render,
 	if (NULL != node->name)
 	{
 		m_name = node->name;
-		//printf("loading object: %s, parent = %s\n", node->name, NULL == m_parent ? "NULL" : m_parent->name().c_str());
 	}
-
-	//if (!om.count(node))
-	//{
-	//	om.add(node, this);
-	//}
-	//else
-	//	assert(false);
 
 	if (node->has_translation)
 	{
@@ -114,52 +106,6 @@ void Object::loadNode(cgltf_node* node, const char* const path, IRender* render,
 	}
 }
 
-//void Object::init(const char* const filename, IRender* render, Env* env)
-//{
-//	m_env = env;
-//
-//	string256 path = filename;
-//	scl::extract_path(path.pstring());
-//
-//	cgltf_data* data = gltf_load_from_file(filename);
-//	if (NULL == data)
-//		return;
-//	if (NULL == data->scene && data->scenes_count == 0)
-//		return;
-//
-//	//if (NULL == m_material)
-//	//{
-//	//	m_material = material; 
-//	//}
-//
-//	//BufferMap bm;
-//	//ObjectMap om;
-//	for (int sceneIndex = 0; sceneIndex < (int)data->scenes_count; ++sceneIndex)
-//	{
-//		cgltf_scene& scene = data->scenes[sceneIndex];
-//		for (size_t i = 0; i < scene.nodes_count; ++i)
-//		{
-//			assert(NULL != scene.nodes);
-//			loadNode(scene.nodes[i], path.c_str(), render, m_env);
-//		}
-//		for (size_t i = 0; i < scene.nodes_count; ++i)
-//		{
-//			loadSkin(scene.nodes[i], env);
-//		}
-//	}
-//
-//	//m_animations.reserve(data->animations_count);
-//	//for (cgltf_size i = 0; i < data->animations_count; ++i)
-//	//{
-//	//	cgltf_animation&	animationNode	= data->animations[i];
-//	//	Animation*			animation		= new Animation();
-//	//	animation->load(animationNode, env);
-//	//	m_animations.push_back(animation);
-//	//}
-//
-//	cgltf_free(data);
-//}
-
 void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 {
 	scl::matrix*	jointMatrices		= NULL;
@@ -172,12 +118,6 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 		assert(r);
 		jointMatrices = m_skin->generateJointMatrix(jointMatrixCount, inverse);
 	}
-
-	//////
-	// TODO , whether if multiply root's inverse transform matrix.
-	// in OpenGL, jointMatrix[i] = inverse(globalTransform) * globalJointTransform[i] * inverseBindMatrix[i];
-	//
-	//////
 
 	if (NULL != m_mesh)
 	{
@@ -214,13 +154,10 @@ const scl::matrix& Object::matrixWithAnimation()
 	if (NULL == m_matrixWithAnimation)
 		m_matrixWithAnimation = new scl::matrix();
 
-	//if (_transform()->changed() || _animationTransform()->changed())
-	{
-		*m_matrixWithAnimation = _animationTransform()->matrix();
-		//*m_matrixWithAnimation = scl::matrix::identity();
-		const scl::matrix& animationMatrix = _transform()->matrix();
-		m_matrixWithAnimation->mul(animationMatrix);
-	}
+	*m_matrixWithAnimation = _animationTransform()->matrix();
+	const scl::matrix& animationMatrix = _transform()->matrix();
+	m_matrixWithAnimation->mul(animationMatrix);
+
 	return *m_matrixWithAnimation;
 }
 
@@ -359,23 +296,6 @@ Object* Object::child(const char* const objectName)
 	return NULL;
 }
 
-//void Object::setInverseBindMatrix(const scl::matrix& m)
-//{
-//	if (NULL != m_inverseBindMatrix)
-//	{
-//		assert(false);
-//		return;
-//	}
-//	m_inverseBindMatrix = new matrix();	
-//	*m_inverseBindMatrix = m;
-//}
-
-//const scl::matrix& Object::getInverseBindMatrix()
-//{
-//	if (NULL == m_inverseBindMatrix)
-//		return scl::matrix::identity();
-//	return *m_inverseBindMatrix;
-//}
 
 } // namespace cat {
 

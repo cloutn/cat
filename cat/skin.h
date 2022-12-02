@@ -16,10 +16,10 @@ public:
 	Skin();
 	virtual ~Skin();
 
-	void					load(cgltf_skin* skinData, Env* env);
+	void					load				(cgltf_skin* skinData, Env* env);
 
 	// TODO use cache, dont't generate every frame
-	scl::matrix*			generateJointMatrix(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform);
+	scl::matrix*			generateJointMatrix	(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform);
 
 private:
 	scl::matrix*			m_inverseBindMatrices;
