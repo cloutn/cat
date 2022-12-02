@@ -21,8 +21,10 @@ public:
 	void						setScale	(const scl::vector3& v)		{ m_scale = v; invalidate(); }
 	void						setRotate	(const scl::quaternion& v)	{ m_rotate = v; invalidate(); }
 
-	bool						changed		() const { return m_changed; }
 	void						invalidate	() { m_changed = true; }
+
+private:
+	bool						changed		() const { return m_changed; }
 
 private:
 	scl::vector3				m_move;	

@@ -8,6 +8,9 @@
 #include "cat/camera.h"
 
 #include "scl/file.h"
+#include "scl/vector.h"
+#include "scl/matrix.h"
+#include "scl/quaternion.h"
 
 #include "imgui_impl_win32.h"
 
@@ -32,6 +35,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 namespace cat {
 
 using scl::file;
+using scl::matrix;
+using scl::vector3;
+using scl::quaternion;
 
 namespace ui = imguiex;
 namespace imgui = ImGui;
@@ -122,13 +128,20 @@ void MainGUI::onGUI()
 	const scl::matrix& projectionMatrix = camera->projectionMatrix();
 
 	//scl::matrix transform = scl::matrix::identity();
-	scl::matrix transform = m_client->getSelectObject()->matrix();
+	Object* object = m_client->getSelectObject();
+	scl::matrix transform = object->matrix();
 
 	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmo::OPERATION::TRANSLATE, gizmo::LOCAL, transform.ptr());
 
 	if (gizmo::IsUsing())
 	{
+		vector3		translate	= { 0 };
+		vector3		scale		= { 0 };
+		quaternion	rotate		= { 0 };
+
+		matrix::decompose(transform, &translate, &scale, NULL, NULL, &rotate);
 		
+		object->setMove(translate);
 	}
 
 	_showMenu();

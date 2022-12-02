@@ -25,13 +25,13 @@ namespace cat {
 ObjectIDMap<Object>* Object::s_objectIDMap = NULL;
 
 Object::Object(Object* parent) :
-	m_id				(_objectIDMap().alloc_id()),
-	m_parent			(parent),
-	m_mesh				(NULL),
-	m_skin				(NULL),
-	m_matrix			(NULL),
-	m_transform			(NULL),
-	m_animationTransform(NULL)
+	m_id					(_objectIDMap().alloc_id()),
+	m_parent				(parent),
+	m_mesh					(NULL),
+	m_skin					(NULL),
+	m_matrixWithAnimation	(NULL),
+	m_transform				(NULL),
+	m_animationTransform	(NULL)
 {
 	_objectIDMap().add(this);
 }
@@ -42,7 +42,7 @@ Object::~Object()
 	safe_delete(m_mesh);
 	safe_delete(m_animationTransform);
 	safe_delete(m_transform);
-	safe_delete(m_matrix);
+	safe_delete(m_matrixWithAnimation);
 
 	for (int i = 0; i < m_childs.size(); ++i)
 		delete m_childs[i];
@@ -166,7 +166,7 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 	int				jointMatrixCount	= 0;
 	if (NULL != m_skin)
 	{
-		scl::matrix mat = globalMatrix();
+		scl::matrix mat = globalAnimationMatrix();
 		scl::matrix inverse;
 		bool r = scl::matrix::inverse(mat, inverse);
 		assert(r);
@@ -181,7 +181,7 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 
 	if (NULL != m_mesh)
 	{
-		scl::matrix mat = globalMatrix();
+		scl::matrix mat = globalMatrixWithAnimation();
 		scl::matrix selfMvp = mat;
 		selfMvp.mul(mvp);
 		m_mesh->draw(selfMvp, jointMatrices, jointMatrixCount, isPick, render);
@@ -197,23 +197,51 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 
 const scl::matrix& Object::matrix()
 {
-	if (NULL == m_matrix)
-		m_matrix = new scl::matrix();
-
-	if (_transform()->changed() || _animationTransform()->changed())
-	{
-		//*m_matrix = _transform()->matrix();
-		*m_matrix = matrix::identity();
-		const scl::matrix& animationMatrix = _animationTransform()->matrix();
-		m_matrix->mul(animationMatrix);
-	}
-	return *m_matrix;
+	const scl::matrix& mat = _transform()->matrix();
+	return mat;
 }
 
 scl::matrix Object::globalMatrix()
 {
 	scl::matrix result = matrix();
-	scl::matrix parentMatrix = (NULL == m_parent) ? matrix::identity() : m_parent->globalMatrix();
+	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalMatrix();
+	result.mul(parentMatrix);
+	return result;
+}
+
+const scl::matrix& Object::matrixWithAnimation()
+{
+	if (NULL == m_matrixWithAnimation)
+		m_matrixWithAnimation = new scl::matrix();
+
+	//if (_transform()->changed() || _animationTransform()->changed())
+	{
+		*m_matrixWithAnimation = _animationTransform()->matrix();
+		//*m_matrixWithAnimation = scl::matrix::identity();
+		const scl::matrix& animationMatrix = _transform()->matrix();
+		m_matrixWithAnimation->mul(animationMatrix);
+	}
+	return *m_matrixWithAnimation;
+}
+
+scl::matrix Object::globalMatrixWithAnimation()
+{
+	scl::matrix result = matrixWithAnimation();
+	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalMatrixWithAnimation();
+	result.mul(parentMatrix);
+	return result;
+}
+
+const scl::matrix& Object::animationMatrix()
+{
+	const scl::matrix& mat = _animationTransform()->matrix();
+	return mat;
+}
+
+scl::matrix Object::globalAnimationMatrix()
+{
+	scl::matrix result = animationMatrix();
+	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalAnimationMatrix();
 	result.mul(parentMatrix);
 	return result;
 }
@@ -265,17 +293,33 @@ ObjectIDMap<Object>& Object::_objectIDMap()
 	return *s_objectIDMap;
 }
 
-void Object::setAnimationRotate(scl::quaternion& v)
+
+void Object::setRotate(const scl::quaternion& v)
+{
+	_transform()->setRotate(v);
+}
+
+void Object::setScale(const scl::vector3& v)
+{
+	_transform()->setScale(v);
+}
+
+void Object::setMove(const scl::vector3& v)
+{
+	_transform()->setMove(v);
+}
+
+void Object::setAnimationRotate(const scl::quaternion& v)
 {
 	_animationTransform()->setRotate(v);
 }
 
-void Object::setAnimationScale(scl::vector3 v)
+void Object::setAnimationScale(const scl::vector3& v)
 {
 	_animationTransform()->setScale(v);
 }
 
-void Object::setAnimationMove(scl::vector3 v)
+void Object::setAnimationMove(const scl::vector3& v)
 {
 	_animationTransform()->setMove(v);
 }

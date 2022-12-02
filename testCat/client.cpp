@@ -486,7 +486,7 @@ int Client::getScreenHeight() const
 
 cat::Object* Client::getSelectObject()
 {
-	return getObject(0, 0);
+	return getObject(1, 0);
 }
 
 } //namespace cat
