@@ -1,4 +1,4 @@
-#include "./test.h"
+﻿#include "./test.h"
 
 #include "./util.h"
 
@@ -48,7 +48,7 @@ void test_rotate(bool print)
 
 	assert(compare_mat(sRotate, gRotate, print));
 
-	quaternion q; 
+	quaternion q = { 0 }; 
 	q.from_euler_angle(a[0], a[1], a[2]);
 	matrix qmat;
 	q.to_matrix(qmat);
@@ -145,15 +145,19 @@ void test_decompose(bool print)
 	matrix::decompose_rotation_xyz(sRotate, sEulerDecompose2);
 	assert(sEuler == sEulerDecompose2);
 
-	vector3	sTranslateDecompose;
-	vector3 sScaleDecompose;
-	vector3 sEulerDecompose;
-	matrix	sMatRotateDecompose;
-	matrix::decompose(sAll, &sTranslateDecompose, &sScaleDecompose, &sEulerDecompose, &sMatRotateDecompose); 
+	vector3		sTranslateDecompose;
+	vector3		sScaleDecompose;
+	vector3		sEulerDecompose;
+	matrix		sMatRotateDecompose;
+	quaternion	sQuaternionDecompose;
+	matrix::decompose(sAll, &sTranslateDecompose, &sScaleDecompose, &sEulerDecompose, &sMatRotateDecompose, &sQuaternionDecompose); 
 	assert(sEuler == sEulerDecompose);
 	assert(sTranslateDecompose == vector3({t[0], t[1], t[2]}));
 	assert(sScaleDecompose == vector3({s[0], s[1], s[2]}));
 	assert(compare_mat(sMatRotateDecompose, sRotate, print));
+	matrix		sDecomposeQuaternionToMatrix;
+	sQuaternionDecompose.to_matrix(sDecomposeQuaternionToMatrix);
+	assert(compare_mat(sDecomposeQuaternionToMatrix, sMatRotateDecompose, print));
 
 	glm::vec3 gScaleDecompose;
 	glm::quat gRotateDecompose;
@@ -165,6 +169,69 @@ void test_decompose(bool print)
 	assert(compare_mat(sMatRotateDecompose, gMatRotateDecompose, print));
 }
 
+void _test_quaternion_by_angle(float* a, bool print)
+{
+	//printf("xyz = {%f, %f, %f}\n", a[0], a[1], a[2]);
+
+	matrix		mat_rx	= matrix::rotate_x(a[0]);
+	matrix		mat_ry	= matrix::rotate_y(a[1]);
+	matrix		mat_rz	= matrix::rotate_z(a[2]);
+	matrix		mat_r	= mat_rx * mat_ry * mat_rz;
+
+	quaternion	quat = { 0 };
+	matrix		mat_from_quat;
+	quat.from_euler_angle(a[0], a[1], a[2]);	
+	quat.to_matrix(mat_from_quat);
+				
+	quaternion quat_from_mat = { 0 };
+	quat_from_mat.from_matrix(mat_r);
+
+	glm::vec3	gEuler		= glm::radians(glm::vec3{a[0], a[1], a[2] });
+	glm::mat4	gRotate		= glm::eulerAngleZYX(gEuler.z, gEuler.y, gEuler.x);
+
+	glm::quat	gQuat		= glm::quat(gEuler);		
+	glm::quat	gQuatFromMatrix = glm::quat_cast(gRotate);
+
+
+	assert(compare_mat(mat_r, gRotate, print));
+
+	scl::matrix tm1;
+	quat_from_mat.to_matrix(tm1);
+
+	scl::matrix tm2;
+	quat.to_matrix(tm2);
+
+	assert(compare_mat(tm1, tm2, print));
+
+	// quaterion 不一定相等，比如xyz=(0,0,270)的时候，但是只要quat转为matrix是相等的，就可以认为quaterion表示的旋转是一致的
+	//assert(quat_from_mat == quat);
+
+	assert(compare_mat(mat_r, mat_from_quat, print));
+}
+
+void test_quaternion(bool print)
+{
+	//float a[3] = { 0, 0, -90 };
+	//_test_quaternion_by_angle(a, print);
+
+	//int start	= 0;
+	//int end	= 360;
+	int start	= 66;
+	int end		= 67;
+
+	for (int angle_x = start; angle_x < end; ++angle_x)
+	{
+		//printf("x = {%d}\n", angle_x);
+		for (int angle_y = start; angle_y < end; ++angle_y)
+		{
+			for (int angle_z = start; angle_z < end; ++angle_z)
+			{
+				float a[3] = { static_cast<float>(angle_x), static_cast<float>(angle_y), static_cast<float>(angle_z)};
+				_test_quaternion_by_angle(a, print);
+			}
+		}
+	}
+}
 
 } // namespace test
 

@@ -138,7 +138,7 @@ public:
 	static bool		inverse					(scl::matrix& m, scl::matrix& result);
 
 	//求一个矩阵对应的缩放、旋转、平移
-	static bool		decompose				(const scl::matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, scl::matrix* rotateMatrix);
+	static bool		decompose				(const scl::matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, scl::matrix* rotateMatrix, scl::quaternion* rotateQuaternion);
 
 	// 求解一个旋转矩阵的欧拉角表示，注意，当 y = 90 的时候，decompose 可能无法正常工作，参见 glm 和 directX math 都没有处理该问题
 	static void		decompose_rotation_xyz_radian(const scl::matrix& m, scl::vector3& euler);
@@ -165,7 +165,7 @@ inline void matrix::set(
 
 inline matrix& matrix::mul(const matrix& other)
 {
-    matrix result;
+	matrix result = { 0 };
     for (int row = 0; row < 4; ++row)
     {
         for (int col = 0; col < 4; ++col)

@@ -26,6 +26,8 @@ public:
 	void	from_vector4		(const vector4& v);
 	void	from_euler_radian	(const float x, const float y, const float z);		//单位是弧度制
 	void	from_euler_angle	(const float x, const float y, const float z);		//单位是角度制
+	void	from_matrix			(const scl::matrix& m);
+	void	from_matrix2		(const scl::matrix& m);
 	void	to_euler_radian		(float& _x, float& y, float& z) const;
 	void	to_euler_radian		(scl::vector3& v) const;
 	void	to_euler_angle		(float& _x, float& y, float& z) const;

@@ -22,7 +22,7 @@ namespace scl {
 matrix matrix::rotate_axis(const vector3& v, float angle)
 {
 	matrix result;
-	quaternion q;
+	quaternion q = { 0 };
 	q.from_pivot_radian(v, angle);
 	q.to_matrix(result);
 	return result;
@@ -40,7 +40,7 @@ matrix matrix::rotate_any_axis(const vector3& v1, const vector3& v2, float angle
 	//绕v2 - v1旋转angle角度
 	vector3 temp = { vector3_dec(v2, v1) };
 	vector3 vq = { temp.x, temp.y, temp.z };
-	quaternion q;
+	quaternion q = { 0 };
 	q.from_pivot_radian(vq, angle);
 	matrix rotateAxis;
 	q.to_matrix(rotateAxis);
@@ -74,7 +74,7 @@ matrix matrix::rotate_between(const vector3& from_v1, const vector3& to_v2)
 	float a = vector3::angle(v1, v2);
 
 	//利用旋转轴pivot和旋转角度acos(cosa)计算旋转四元数
-	quaternion q;
+	quaternion q = { 0 };
 	q.from_pivot_radian(axis, a);
 
 	//利用四元数生成旋转矩阵
@@ -194,7 +194,7 @@ matrix matrix::identity()
 
 matrix matrix::move(float dx, float dy, float dz)
 {
-	matrix m;
+	matrix m = { 0 };
 	m.set(
 		1,	0,	0,	0,
 		0,	1,	0,	0,
@@ -206,7 +206,7 @@ matrix matrix::move(float dx, float dy, float dz)
 
 matrix matrix::scale(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 	m.set
 		(
 		x,	0,	0,	0,
@@ -219,7 +219,7 @@ matrix matrix::scale(float x, float y, float z)
 
 matrix matrix::rotate_x_radian(float a)
 {
-	matrix m;
+	matrix m = { 0 };
 	float cosa = cosf(a);
 	float sina = sinf(a);
 	m.set
@@ -235,7 +235,7 @@ matrix matrix::rotate_x_radian(float a)
 
 matrix matrix::rotate_y_radian(float a)
 {
-	matrix m;
+	matrix m = { 0 };
 	float cosa = cosf(a);
 	float sina = sinf(a);
 	m.set
@@ -250,7 +250,7 @@ matrix matrix::rotate_y_radian(float a)
 
 matrix matrix::rotate_z_radian(float a)
 {
-	matrix m;
+	matrix m = { 0 };
 	float cosa = cosf(a);
 	float sina = sinf(a);
 	m.set
@@ -265,7 +265,7 @@ matrix matrix::rotate_z_radian(float a)
 
 matrix matrix::rotate_xyz_radian(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -284,7 +284,7 @@ matrix matrix::rotate_xyz_radian(float x, float y, float z)
 
 matrix matrix::rotate_xzy_radian(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -303,7 +303,7 @@ matrix matrix::rotate_xzy_radian(float x, float y, float z)
 
 matrix matrix::rotate_yxz_radian(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -323,7 +323,7 @@ matrix matrix::rotate_yxz_radian(float x, float y, float z)
 
 matrix matrix::rotate_yzx_radian(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -343,7 +343,7 @@ matrix matrix::rotate_yzx_radian(float x, float y, float z)
 
 matrix matrix::rotate_zxy_radian(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -363,7 +363,7 @@ matrix matrix::rotate_zxy_radian(float x, float y, float z)
 
 matrix matrix::rotate_zyx_radian(float x, float y, float z)
 {
-	matrix m;
+	matrix m = { 0 };
 
 	float cosx = cosf(x);
 	float sinx = sinf(x);
@@ -463,73 +463,75 @@ matrix matrix::lookat(float posX, float posY, float posZ, float lookAtX, float l
 
 void matrix::lookat(matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ)
 {
-   float axisX[3], axisY[3], axisZ[3];
-   float length;
+	float axisX[3] = { 0 };
+	float axisY[3] = { 0 };
+	float axisZ[3] = { 0 };
+	float length = 0;
 
-   // axisZ = lookAt - pos
-   axisZ[0] = lookAtX - posX;
-   axisZ[1] = lookAtY - posY;
-   axisZ[2] = lookAtZ - posZ;
+	// axisZ = lookAt - pos
+	axisZ[0] = lookAtX - posX;
+	axisZ[1] = lookAtY - posY;
+	axisZ[2] = lookAtZ - posZ;
 
-   // normalize axisZ
-   length = sqrtf ( axisZ[0] * axisZ[0] + axisZ[1] * axisZ[1] + axisZ[2] * axisZ[2] );
+	// normalize axisZ
+	length = sqrtf(axisZ[0] * axisZ[0] + axisZ[1] * axisZ[1] + axisZ[2] * axisZ[2]);
 
-   if ( length != 0.0f )
-   {
-      axisZ[0] /= length;
-      axisZ[1] /= length;
-      axisZ[2] /= length;
-   }
+	if (length != 0.0f)
+	{
+		axisZ[0] /= length;
+		axisZ[1] /= length;
+		axisZ[2] /= length;
+	}
 
-   // axisX = up X axisZ
-   axisX[0] = upY * axisZ[2] - upZ * axisZ[1];
-   axisX[1] = upZ * axisZ[0] - upX * axisZ[2];
-   axisX[2] = upX * axisZ[1] - upY * axisZ[0];
+	// axisX = up X axisZ
+	axisX[0] = upY * axisZ[2] - upZ * axisZ[1];
+	axisX[1] = upZ * axisZ[0] - upX * axisZ[2];
+	axisX[2] = upX * axisZ[1] - upY * axisZ[0];
 
-   // normalize axisX
-   length = sqrtf ( axisX[0] * axisX[0] + axisX[1] * axisX[1] + axisX[2] * axisX[2] );
+	// normalize axisX
+	length = sqrtf(axisX[0] * axisX[0] + axisX[1] * axisX[1] + axisX[2] * axisX[2]);
 
-   if ( length != 0.0f )
-   {
-      axisX[0] /= length;
-      axisX[1] /= length;
-      axisX[2] /= length;
-   }
+	if (length != 0.0f)
+	{
+		axisX[0] /= length;
+		axisX[1] /= length;
+		axisX[2] /= length;
+	}
 
-   // axisY = axisZ x axisX
-   axisY[0] = axisZ[1] * axisX[2] - axisZ[2] * axisX[1];
-   axisY[1] = axisZ[2] * axisX[0] - axisZ[0] * axisX[2];
-   axisY[2] = axisZ[0] * axisX[1] - axisZ[1] * axisX[0];
+	// axisY = axisZ x axisX
+	axisY[0] = axisZ[1] * axisX[2] - axisZ[2] * axisX[1];
+	axisY[1] = axisZ[2] * axisX[0] - axisZ[0] * axisX[2];
+	axisY[2] = axisZ[0] * axisX[1] - axisZ[1] * axisX[0];
 
-   // normalize axisY
-   length = sqrtf ( axisY[0] * axisY[0] + axisY[1] * axisY[1] + axisY[2] * axisY[2] );
+	// normalize axisY
+	length = sqrtf(axisY[0] * axisY[0] + axisY[1] * axisY[1] + axisY[2] * axisY[2]);
 
-   if ( length != 0.0f )
-   {
-      axisY[0] /= length;
-      axisY[1] /= length;
-      axisY[2] /= length;
-   }
+	if (length != 0.0f)
+	{
+		axisY[0] /= length;
+		axisY[1] /= length;
+		axisY[2] /= length;
+	}
 
-   result.clear();
+	result.clear();
 
-   result.m[0][0] = -axisX[0];
-   result.m[0][1] =  axisY[0];
-   result.m[0][2] = -axisZ[0];
+	result.m[0][0] = -axisX[0];
+	result.m[0][1] = axisY[0];
+	result.m[0][2] = -axisZ[0];
 
-   result.m[1][0] = -axisX[1];
-   result.m[1][1] =  axisY[1];
-   result.m[1][2] = -axisZ[1];
+	result.m[1][0] = -axisX[1];
+	result.m[1][1] = axisY[1];
+	result.m[1][2] = -axisZ[1];
 
-   result.m[2][0] = -axisX[2];
-   result.m[2][1] =  axisY[2];
-   result.m[2][2] = -axisZ[2];
+	result.m[2][0] = -axisX[2];
+	result.m[2][1] = axisY[2];
+	result.m[2][2] = -axisZ[2];
 
-   // translate (-posX, -posY, -posZ)
-   result.m[3][0] =  axisX[0] * posX + axisX[1] * posY + axisX[2] * posZ;
-   result.m[3][1] = -axisY[0] * posX - axisY[1] * posY - axisY[2] * posZ;
-   result.m[3][2] =  axisZ[0] * posX + axisZ[1] * posY + axisZ[2] * posZ;
-   result.m[3][3] = 1.0f;
+	// translate (-posX, -posY, -posZ)
+	result.m[3][0] = axisX[0] * posX + axisX[1] * posY + axisX[2] * posZ;
+	result.m[3][1] = -axisY[0] * posX - axisY[1] * posY - axisY[2] * posZ;
+	result.m[3][2] = axisZ[0] * posX + axisZ[1] * posY + axisZ[2] * posZ;
+	result.m[3][3] = 1.0f;
 }
 
 matrix matrix::lookat2(scl::vector3 eye, scl::vector3 target, scl::vector3 upDir)
@@ -688,7 +690,7 @@ void matrix::decompose_rotation_xyz(const matrix& m, scl::vector3& eulerAngle)
 }
 
 
-bool matrix::decompose(const matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, matrix* rotateMatrix)
+bool matrix::decompose(const matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, matrix* rotateMatrix, scl::quaternion* rotateQuaternion)
 {
 	if (NULL != translate)
 		*translate = { m.x4, m.y4, m.z4 };
@@ -716,6 +718,9 @@ bool matrix::decompose(const matrix& m, scl::vector3* translate, scl::vector3* s
 
 	if (NULL != rotateMatrix)
 		*rotateMatrix = matRotate;
+
+	if (NULL != rotateQuaternion)
+		rotateQuaternion->from_matrix(matRotate);
 
 	if (NULL != rotateEuler)
 		decompose_rotation_xyz(matRotate, *rotateEuler);

@@ -8,6 +8,7 @@
 #include "scl/quaternion.h"
 #include "scl/matrix.h"
 #include "scl/vector.h"
+#include "scl/assert.h"
 
 #include <math.h>
 
@@ -218,6 +219,120 @@ void quaternion::to_euler_radian(scl::vector3& v) const
 void quaternion::from_euler_angle(const float x, const float y, const float z)
 {
 	from_euler_radian(radian(x), radian(y), radian(z));
+}
+
+void quaternion::from_matrix(const scl::matrix& m)
+{
+	quaternion& q = *this;
+
+	using T = float;
+	T fourXSquaredMinus1 = m[0][0] - m[1][1] - m[2][2];
+	T fourYSquaredMinus1 = m[1][1] - m[0][0] - m[2][2];
+	T fourZSquaredMinus1 = m[2][2] - m[0][0] - m[1][1];
+	T fourWSquaredMinus1 = m[0][0] + m[1][1] + m[2][2];
+
+	int biggestIndex = 0;
+	T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+	if(fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+	{
+		fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+		biggestIndex = 1;
+	}
+	if(fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+	{
+		fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+		biggestIndex = 2;
+	}
+	if(fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+	{
+		fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+		biggestIndex = 3;
+	}
+
+	T biggestVal = sqrt(fourBiggestSquaredMinus1 + static_cast<T>(1)) * static_cast<T>(0.5);
+	T mult = static_cast<T>(0.25) / biggestVal;
+
+	switch(biggestIndex)
+	{
+	case 0:
+		{
+			q.x = (m[1][2] - m[2][1]) * mult; 
+			q.y = (m[2][0] - m[0][2]) * mult;
+			q.z = (m[0][1] - m[1][0]) * mult;
+			q.w = biggestVal;
+		}
+		break;
+	case 1:
+		{
+			q.x = biggestVal; 
+			q.y = (m[0][1] + m[1][0]) * mult; 
+			q.z = (m[2][0] + m[0][2]) * mult;
+			q.w = (m[1][2] - m[2][1]) * mult; 
+		}
+		break;
+	case 2:
+		{
+			q.x = (m[0][1] + m[1][0]) * mult;
+			q.y = biggestVal;
+			q.z = (m[1][2] + m[2][1]) * mult;
+			q.w = (m[2][0] - m[0][2]) * mult;
+		}
+		break;
+	case 3:
+		{
+			q.w = (m[0][1] - m[1][0]) * mult;
+			q.x = (m[2][0] + m[0][2]) * mult;
+			q.y = (m[1][2] + m[2][1]) * mult;
+			q.z = biggestVal;
+		}
+		break;
+	default: // Silence a -Wswitch-default warning in GCC. Should never actually get here. Assert is just for sanity.
+		assert(false);
+		q = {  0, 0, 0, 1 };
+		break;
+	}
+}
+
+void quaternion::from_matrix2(const scl::matrix& a)
+{
+	// https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+	quaternion& q = *this;
+	float trace = a[0][0] + a[1][1] + a[2][2]; // I removed + 1.0f; see discussion with Ethan https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/ethan.htm
+	if (trace > 0) // I changed M_EPSILON to 0
+	{
+		float s = 0.5f / sqrtf(trace + 1.0f);
+		q.w = 0.25f / s;
+		q.x = (a[1][2] - a[2][1]) * s;
+		q.y = (a[2][0] - a[0][2]) * s;
+		q.z = (a[0][1] - a[1][0]) * s;
+	}
+	else 
+	{
+		if (a[0][0] > a[1][1] && a[0][0] > a[2][2]) 
+		{
+			float s = 2.0f * sqrtf(1.0f + a[0][0] - a[1][1] - a[2][2]);
+			q.w = (a[1][2] - a[2][1]) / s;
+			q.x = 0.25f * s;
+			q.y = (a[1][0] + a[0][1]) / s;
+			q.z = (a[2][0] + a[0][2]) / s;
+		}
+		else if (a[1][1] > a[2][2]) 
+		{
+			float s = 2.0f * sqrtf(1.0f + a[1][1] - a[0][0] - a[2][2]);
+			q.w = (a[2][0] - a[0][2]) / s;
+			q.x = (a[1][0] + a[0][1]) / s;
+			q.y = 0.25f * s;
+			q.z = (a[2][1] + a[1][2]) / s;
+		}
+		else 
+		{
+			float s = 2.0f * sqrtf(1.0f + a[2][2] - a[0][0] - a[1][1]);
+			q.w = (a[0][1] - a[1][0]) / s;
+			q.x = (a[2][0] + a[0][2]) / s;
+			q.y = (a[2][1] + a[1][2]) / s;
+			q.z = 0.25f * s;
+		}
+	}
 }
 
 void quaternion::to_euler_angle(float& _x, float& _y, float& _z) const
