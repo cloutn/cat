@@ -41,6 +41,8 @@ VulkanRender::VulkanRender()  :
 	m_inst						(NULL), 
 	m_mainRenderPass			(NULL),
 	m_frameCount				(0),
+	m_colorFormat				(VK_FORMAT_UNDEFINED),
+	m_depthFormat				(VK_FORMAT_UNDEFINED),
 	m_pickRenderPass			(NULL),
 	m_pickCommandBuffer			(NULL),
 	m_pickCommandAllocator		(NULL),
@@ -92,17 +94,17 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 	m_inst						= svkCreateInstance	(ENABLE_VALIDATION_LAYER);
 	m_device					= svkCreateDevice	(m_inst);
 	m_surface					= svkCreateSurface	(m_inst, m_device, hInstance, hwnd);
-	//argb_to_float(clearColor, m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
+
+	VkFormat colorFormats[]		= { VK_FORMAT_R8G8B8A8_UNORM };
+	m_colorFormat				= svkChooseColorFormat(m_device, colorFormats, countof(colorFormats));
+	VkFormat depthFormats[]		= { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D16_UNORM }; 
+	m_depthFormat				= svkChooseDepthFormat(m_device, depthFormats, countof(depthFormats));
 
 	_createMainRenderTarget();
 
 	// 3D picking
-	VkFormat colorFormats[]		= { VK_FORMAT_R8G8B8A8_UNORM };
-	VkFormat colorFormat		= svkChooseColorFormat(m_device, colorFormats, countof(colorFormats));
-	VkFormat depthFormats[]		= { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D16_UNORM }; 
-	VkFormat depthFormat		= svkChooseDepthFormat(m_device, depthFormats, countof(depthFormats));
-	m_pickRenderPass			= svkCreateRenderPass(m_device, colorFormat, depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-	m_pickRenderTarget			= _createRenderTarget(m_device, colorFormat, depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
+	m_pickRenderPass			= svkCreateRenderPass(m_device, m_colorFormat, m_depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+	m_pickRenderTarget			= _createRenderTarget(m_device, m_colorFormat, m_depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
 	m_pickCommandBuffer			= svkAllocCommandBuffer(m_device);
 	m_pickCopyCommandBuffer		= svkAllocCommandBuffer(m_device);
 	m_pickCommandAllocator		= new CommandAllocator();
@@ -952,7 +954,7 @@ void VulkanRender::_fillPushConst(VkCommandBuffer commandBuffer, svkPipeline& pi
 void VulkanRender::_createMainRenderTarget()
 {
 	m_swapchain			= svkCreateSwapchain			(m_device, m_surface, { NULL }, 3, false);
-	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, VK_FORMAT_D16_UNORM, m_surface.width, m_surface.height);
+	m_mainDepthImage	= svkCreateAttachmentDepthImage	(m_device, m_depthFormat, m_surface.width, m_surface.height);
 	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
 	m_frameIndex		= 0;
@@ -1203,13 +1205,13 @@ void VulkanRender::recreateSwapchain()
 
 	//_destroyPickRenderTarget();
 	//vkDestroyRenderPass(m_device.device, m_pickRenderPass, NULL);
-	//m_pickRenderPass = svkCreateRenderPass(m_device, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_D16_UNORM, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+	//m_pickRenderPass = svkCreateRenderPass(m_device, m_colorFormat, m_depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
 	//svkDestroyBuffer(m_device, m_pickPassImageCPUBuffer);
 	//m_pickPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
 
 	_destroyRenderTarget(m_device, m_pickRenderTarget);
-	m_pickRenderTarget = _createRenderTarget(m_device, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_D16_UNORM, m_pickRenderPass, m_surface.width, m_surface.height);
+	m_pickRenderTarget = _createRenderTarget(m_device, m_colorFormat, m_depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
 }
 
 void VulkanRender::recreateSurface()

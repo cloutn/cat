@@ -230,6 +230,8 @@ private:
 	svkFrame			m_frames[svkSwapchain::MAX_IMAGE_COUNT];
 	int					m_frameCount;
 	DeviceInfo			m_deviceInfo;
+	VkFormat			m_colorFormat;
+	VkFormat			m_depthFormat;
 
 	// for 3D picking
 	VkRenderPass		m_pickRenderPass;
