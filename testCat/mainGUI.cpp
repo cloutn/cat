@@ -112,6 +112,17 @@ void MainGUI::init(Client* client)
 	io.FontDefault = myshFont;
 
 	m_client->render().initIMGUI();
+
+	gizmo::Style& style = gizmo::GetStyle();
+	float scale = 1.5;
+	style.TranslationLineThickness		*= scale;
+	style.TranslationLineArrowSize		*= scale;
+	style.RotationLineThickness			*= scale;
+	style.RotationOuterLineThickness	*= scale;
+	style.ScaleLineThickness			*= scale;
+	style.ScaleLineCircleSize			*= scale;
+	style.CenterCircleSize				*= scale;
+	style.HatchedAxisLineThickness		= 0;
 }
 
 
