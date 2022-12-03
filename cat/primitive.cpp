@@ -82,8 +82,7 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 	memset(m_attrs, 0, sizeof(m_attrs[0]) * m_attrCount);
 	int		attrOffsets[1024]	= { 0 };
 
-	// calculate sizeof(attr)
-	// calculate offset
+	// calculate sizeof(attr), calculate offset
 	int		sizeofVertex		= 0;
 	int		vertexCount			= primitive.attributes[0].data->count;
 	for (int i = 0; i < m_attrCount; ++i)
@@ -214,20 +213,12 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 		macros.add("COLOR");
 	}
 
-	//macros.remove("TEXTURE");
 	m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
-
-
-	//macros.remove("TEXTURE");
-	//macros.remove("COLOR");
-	//macros.remove("TANGENT");
-	//macros.remove("NORMAL");
 
 	macros.remove("COLOR");
 	macros.remove("TEXTURE");
 	macros.add("PICK");
 	m_pickShader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag",  macros.data(), macros.size());
-
 }
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)

@@ -53,6 +53,7 @@ public:
 	int						getScreenWidth		() const;
 	int						getScreenHeight		() const;
 	Object*					getSelectObject		();
+	OPERATE_TYPE			getOperateType		() const { return m_operateType; }
 
 #ifdef SCL_APPLE
 	void					tick				();
@@ -73,6 +74,7 @@ public:
 
 private:
 	void					_renderScene		(bool isPick);
+	void					_processKeydown		();
 
 	bool					OnButtonClick_DebugTest1(GUIEvent& e);
 	void					OnSurfaceResize		(int width, int height);
@@ -115,6 +117,7 @@ private:
 	game::Config			m_config;
 	MainGUI					m_gui;
 
+	OPERATE_TYPE			m_operateType;
 	//Object*					m_selectObject;
 };
 

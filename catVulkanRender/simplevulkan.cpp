@@ -670,6 +670,26 @@ static void _getLayoutBindsFromShader(
 	spvc_context_destroy(context);
 }
 
+VkFormat _findSupportedFormat(VkPhysicalDevice physicalDevice, VkFormat* candidates, const int candidateCount, VkImageTiling tiling, VkFormatFeatureFlags features) 
+{
+	for (int i = 0; i < candidateCount; ++i)
+	{
+		VkFormat			format	= candidates[i];
+		VkFormatProperties	props	= { 0 };
+        vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
+
+        if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features) 
+		{
+            return format;
+        } 
+		else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) 
+		{
+            return format;
+        }
+    }
+	assert(false);
+	return VK_FORMAT_R16_UNORM;
+}
 
 static VkShaderModule _createShaderFromCode(
 	svkDevice&						device, 
@@ -860,6 +880,14 @@ void svkDestroyFrameBuffer(svkDevice& device, VkFramebuffer framebuffer)
 	vkDestroyFramebuffer(device.device, framebuffer, NULL);
 }
 
+
+
+VkFormat svkChooseDepthFormat(svkDevice& device, VkFormat* formats, const int formatCount)
+{
+	VkFormat format = _findSupportedFormat(device.gpu, formats, formatCount, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+	return format;
+}
+
 svkImage svkCreateAttachmentDepthImage(svkDevice& device, VkFormat format, const int width, const int height)
 {
 	svkImage image;
@@ -898,6 +926,12 @@ svkImage svkCreateAttachmentDepthImage(svkDevice& device, VkFormat format, const
 }
 
 
+VkFormat svkChooseColorFormat(svkDevice& device, VkFormat* formats, const int formatCount)
+{
+	VkFormat format = _findSupportedFormat(device.gpu, formats, formatCount, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_TRANSFER_SRC_BIT);
+	return format;
+}
+
 svkImage svkCreateAttachmentColorImage(svkDevice& device, VkFormat format, const int width, const int height)
 {
 	svkImage image = _createImage(
@@ -906,7 +940,7 @@ svkImage svkCreateAttachmentColorImage(svkDevice& device, VkFormat format, const
 		height, 
 		format, 
 		VK_IMAGE_TILING_OPTIMAL, 
-		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT ,
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		VK_IMAGE_LAYOUT_UNDEFINED, 
 		NULL);	
@@ -923,6 +957,8 @@ void svkDestroyImage(svkDevice& device, svkImage& image)
 	vkDestroyImage		(device.device, image.image, NULL);
 	vkFreeMemory		(device.device, image.memory, NULL);
 }
+
+
 
 int svkCreateFrames(
 	svkDevice&		device, 
@@ -1232,7 +1268,7 @@ svkDevice svkCreateDevice(VkInstance inst)
 
 	vkGetPhysicalDeviceMemoryProperties(gpu, &_svkDevice.memoryProperties);
 
-	vkGetPhysicalDeviceFormatProperties(gpu, VK_FORMAT_R8G8B8A8_UNORM, &_svkDevice.formatProperties);
+	//vkGetPhysicalDeviceFormatProperties(gpu, VK_FORMAT_R8G8B8A8_UNORM, &_svkDevice.formatProperties);
 
 	delete[] allExtensions;
 	delete[] extensions;

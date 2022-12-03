@@ -97,8 +97,10 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 	_createMainRenderTarget();
 
 	// 3D picking
-	VkFormat colorFormat		= VK_FORMAT_R8G8B8A8_UNORM;
-	VkFormat depthFormat		= VK_FORMAT_D16_UNORM;
+	VkFormat colorFormats[]		= { VK_FORMAT_R8G8B8A8_UNORM };
+	VkFormat colorFormat		= svkChooseColorFormat(m_device, colorFormats, countof(colorFormats));
+	VkFormat depthFormats[]		= { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D16_UNORM }; 
+	VkFormat depthFormat		= svkChooseDepthFormat(m_device, depthFormats, countof(depthFormats));
 	m_pickRenderPass			= svkCreateRenderPass(m_device, colorFormat, depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 	m_pickRenderTarget			= _createRenderTarget(m_device, colorFormat, depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
 	m_pickCommandBuffer			= svkAllocCommandBuffer(m_device);

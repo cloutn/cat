@@ -47,6 +47,13 @@ enum ELEM_TYPE
 	//DATA_TYPE_DOUBLE,	
 };
 
+enum OPERATE_TYPE
+{
+	OPERATE_TYPE_TRANSLATE,
+	OPERATE_TYPE_ROTATE,
+	OPERATE_TYPE_SCALE,
+};
+
 inline int elem_type_byte(const ELEM_TYPE& type) 
 {
 	switch (type)

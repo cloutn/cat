@@ -54,7 +54,7 @@ private:
 	void	_beginFrame					();
 	void	_endFrame					();
 	void	_fireEvent					(GUI_EVENT event, GUIEvent& eventArg);
-
+	
 private:
 	Client*						m_client;	
 	Object*						m_selectObject;

@@ -54,6 +54,7 @@ Client::Client()
 	m_camera					= new Camera();
 	m_totalFrame				= 0;
 	m_totalTime					= 1;
+	m_operateType				= OPERATE_TYPE_TRANSLATE;
 
 	m_mousePosition.clear();
 }
@@ -181,6 +182,36 @@ void Client::_renderScene(bool isPick)
 	}
 }
 
+void Client::_processKeydown()
+{
+	if (m_gui.wantCaptureKeyboard())
+		return;
+	if (!m_window.IsForegroundWindow())
+		return;
+
+	if (Keydown(VK_RBUTTON))
+	{
+		float speed = 0.25f;
+		if (Keydown('W'))
+			m_camera->move_front(speed);
+		if (Keydown('S'))
+			m_camera->move_front(-speed);
+		if (Keydown('A'))
+			m_camera->move_side(-speed);
+		if (Keydown('D'))
+			m_camera->move_side(speed);
+	}
+	else
+	{
+		if (Keydown('W'))
+			m_operateType = OPERATE_TYPE_TRANSLATE;
+		if (Keydown('E'))
+			m_operateType = OPERATE_TYPE_ROTATE;
+		if (Keydown('R'))
+			m_operateType = OPERATE_TYPE_SCALE;
+	}
+}
+
 bool Client::OnButtonClick_DebugTest1(GUIEvent&)
 {
 	m_env->clearPickPrimtives();
@@ -213,29 +244,7 @@ void Client::run()
 		uint64 diff = now - lastTick;
 		lastTick = now;
 
-		if (!m_gui.wantCaptureKeyboard() && m_window.IsForegroundWindow())
-		{
-			float speed = 0.25f;
-			if (Keydown('W'))
-			{
-				//m_camera->move(0, 0, -speed);
-				m_camera->move_front(speed);
-			}
-			if (Keydown('S'))
-			{
-				m_camera->move_front(-speed);
-				//m_camera->move(0, 0, speed);
-			}
-			if (Keydown('A'))
-			{
-				m_camera->move_side(-speed);
-			}
-			if (Keydown('D'))
-			{
-				m_camera->move_side(speed);
-			}
-		}
-
+		_processKeydown();
 
 		m_gui.onGUI();
 

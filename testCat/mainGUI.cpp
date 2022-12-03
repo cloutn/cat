@@ -43,6 +43,19 @@ namespace ui = imguiex;
 namespace imgui = ImGui;
 namespace gizmo = ImGuizmo;
 
+gizmo::OPERATION _operateTypeToGizmo(OPERATE_TYPE type)
+{
+	switch (type)
+	{
+	case OPERATE_TYPE_TRANSLATE : return gizmo::OPERATION::TRANSLATE;
+	case OPERATE_TYPE_ROTATE	: return gizmo::OPERATION::ROTATE;
+	case OPERATE_TYPE_SCALE		: return gizmo::OPERATION::SCALE;
+	default						: assert(false); break;
+	};
+
+	return gizmo::OPERATION::TRANSLATE;
+}
+
 MainGUI::MainGUI() : m_client(NULL), m_selectObject(NULL) 
 {
 
@@ -99,8 +112,6 @@ void MainGUI::init(Client* client)
 	io.FontDefault = myshFont;
 
 	m_client->render().initIMGUI();
-
-
 }
 
 
@@ -120,18 +131,16 @@ void MainGUI::onGUI()
 	_beginFrame();
 
 	gizmo::SetOrthographic(false);	
-	//gizmo::SetDrawlist();
-	//gizmo::SetRect(imgui::GetWindowPos().x, imgui::GetWindowPos().y, imgui::GetWindowWidth(), imgui::GetWindowHeight());
 	gizmo::SetRect(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
 	Camera* camera = m_client->getCamera();
 	const scl::matrix& viewMatrix = camera->viewMatrix();
 	const scl::matrix& projectionMatrix = camera->projectionMatrix();
 
-	//scl::matrix transform = scl::matrix::identity();
 	Object* object = m_client->getSelectObject();
 	scl::matrix transform = object->matrix();
 
-	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmo::OPERATION::TRANSLATE, gizmo::LOCAL, transform.ptr());
+	gizmo::OPERATION operation = _operateTypeToGizmo(m_client->getOperateType());
+	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::LOCAL, transform.ptr());
 
 	if (gizmo::IsUsing())
 	{
@@ -142,6 +151,8 @@ void MainGUI::onGUI()
 		matrix::decompose(transform, &translate, &scale, NULL, NULL, &rotate);
 		
 		object->setMove(translate);
+		object->setScale(scale);
+		object->setRotate(rotate);
 	}
 
 	_showMenu();

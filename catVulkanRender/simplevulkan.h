@@ -18,7 +18,7 @@ struct svkDevice
 	unsigned int						queueFamilyCount;
 	unsigned int						queueFamilyIndex;
 	VkCommandPool						commandPool;		//! obsolete, manager command pool by yourself, for example, class CommandAllocator
-	VkFormatProperties					formatProperties;	// VK_FORMAT_R8G8B8A8_UNORM  properties
+	//VkFormatProperties					formatProperties;	// VK_FORMAT_R8G8B8A8_UNORM  properties
 	shaderc_compiler_t					shaderCompiler;
 };
 
@@ -246,6 +246,8 @@ void					svkDestroyFrameBuffer			(svkDevice& device, VkFramebuffer framebuffer);
 svkImage				svkCreateAttachmentDepthImage	(svkDevice& device, VkFormat format, const int width, const int height);
 svkImage				svkCreateAttachmentColorImage	(svkDevice& device, VkFormat format, const int width, const int height);
 void					svkDestroyImage					(svkDevice& device, svkImage& image);
+VkFormat				svkChooseColorFormat			(svkDevice& device, VkFormat* formats, const int formatCount);
+VkFormat				svkChooseDepthFormat			(svkDevice& device, VkFormat* formats, const int formatCount);
 
 // svk frame
 int						svkCreateFrames					(svkDevice& device, svkSwapchain& swapchain, VkImageView depthImageView, VkRenderPass renderPass, const int width, const int height, svkFrame* outputFrames, const int outputFrameCapacity);
