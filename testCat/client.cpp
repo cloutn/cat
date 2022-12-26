@@ -52,6 +52,7 @@ Client::Client()
 	m_env						= NULL;
 	m_object					= NULL;
 	m_camera					= new Camera();
+	m_selectObject				= NULL;
 	m_totalFrame				= 0;
 	m_totalTime					= 1;
 	m_operateType				= OPERATE_TYPE_TRANSLATE;
@@ -78,7 +79,7 @@ void Client::init()
 	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
 
 	m_gui.init(this);
-	m_gui.registerEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, scl::bind(this, &Client::OnButtonClick_DebugTest1));
+	m_gui.registerEvent(GUI_EVENT_PICK_PASS_CLICK, scl::bind(this, &Client::OnButtonClick_PickPass));
 
 	loadGltf("art/SimpleSkin/SimpleSkin.gltf");
 	loadGltf("art/chibi_idle/scene.gltf");
@@ -212,7 +213,7 @@ void Client::_processKeydown()
 	}
 }
 
-bool Client::OnButtonClick_DebugTest1(GUIEvent&)
+void Client::_clickSelectObject(int x, int y)
 {
 	m_env->clearPickPrimtives();
 
@@ -220,8 +221,18 @@ bool Client::OnButtonClick_DebugTest1(GUIEvent&)
 
 	_renderScene(true);
 
-	m_render.endPickPass(640, 360);
+	scl::vector4 pickColor = m_render.endPickPass(x, y);
+	Primitive* primitive = m_env->getPickPrimitive(pickColor);
+	if (NULL != primitive)
+	{
+		m_selectObject = primitive->parentObject();
+		printf("picked object = %x\n", (unsigned int)primitive);	
+	}
+}
 
+bool Client::OnButtonClick_PickPass(GUIEvent&)
+{
+	_clickSelectObject(640, 480);
 	return true;
 }
 
@@ -314,6 +325,7 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 			
 			m_dragging = true;
 			m_dragPrev.set(x, y);
+
 		}
 		break;
 	case WM_LBUTTONUP:
@@ -324,6 +336,8 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 			m_dragging = false;
 			int x = LOWORD(lParam);
 			int y = HIWORD(lParam);
+
+			_clickSelectObject(x, y);
 		}
 		break;
 	case WM_RBUTTONDOWN:
@@ -495,7 +509,7 @@ int Client::getScreenHeight() const
 
 cat::Object* Client::getSelectObject()
 {
-	return getObject(1, 0);
+	return m_selectObject;
 }
 
 } //namespace cat

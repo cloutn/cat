@@ -474,6 +474,13 @@ void Primitive::updateVertices(void* vertices, int vertexCount, int sizeOfVertex
 	m_render->copyVertexBuffer(vertices, m_deviceVertexBuffers[0], sizeOfVertex * vertexCount);
 }
 
+cat::Object* Primitive::parentObject()
+{
+	if (NULL == parent())
+		return NULL;
+	return parent()->parent();
+}
+
 } // namespace cat
 
 

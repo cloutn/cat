@@ -540,10 +540,10 @@ void VulkanRender::beginPickPass(scl::vector4& clearColorRGBA)
 	m_drawContext.commandAllocator->reset(m_device);
 }
 
-void VulkanRender::endPickPass(int x, int y)
+scl::vector4 VulkanRender::endPickPass(int x, int y)
 {
 	if (NULL == m_drawContext.renderPass)
-		return;
+		return scl::vector4{0};
 
 	VkResult err;
 
@@ -570,9 +570,8 @@ void VulkanRender::endPickPass(int x, int y)
 		&m_pickSemaphore,
 		NULL);
 
-	scl::vector2i pickSize { 100, 100 };
-	scl::vector2i pickOffset { x - 50, y - 50 };
-
+	const scl::vector2i pickSize { 1, 1 };
+	const scl::vector2i pickOffset { x - pickSize.x / 2, y - pickSize.y /  2 };
 
 	// copy image to buffer
 	VkCommandBuffer tmpCB = m_pickCopyCommandBuffer;
@@ -601,10 +600,10 @@ void VulkanRender::endPickPass(int x, int y)
 
 	memclr(m_drawContext);
 
-	savePickPass(pickSize.x, pickSize.y);
+	return savePickPass(pickSize.x, pickSize.y);
 }
 
-uint32 VulkanRender::savePickPass(int width, int height)
+scl::vector4 VulkanRender::savePickPass(int width, int height)
 {
 	svkWaitFence(m_device, &m_pickFence, 1);
 
@@ -621,17 +620,17 @@ uint32 VulkanRender::savePickPass(int width, int height)
 	r.b = point[2] / 255.0;
 	r.a = point[3] / 255.0;
 
-	static int i = 0;
-	string32 fname;
-	fname.format("d:/testCat_%d.bmp", i++);
-	FILE* f = fopen(fname.c_str(), "wb");
+	//static int i = 0;
+	//string32 fname;
+	//fname.format("d:/testCat_%d.bmp", i++);
+	//FILE* f = fopen(fname.c_str(), "wb");
 	//img::save_bmp(f, m_pickImageSize.x, m_pickImageSize.y, 0, data);
 	//img::save_bmp(f, width, height, 0, data);
 
 	svkUnmapBuffer(m_device, m_pickPassImageCPUBuffer);
 
-	fclose(f);
-	return 0;
+	//fclose(f);
+	return r;
 }
 
 void VulkanRender::beginScenePass(scl::vector4& clearColorRGBA)

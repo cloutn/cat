@@ -75,8 +75,9 @@ public:
 private:
 	void					_renderScene		(bool isPick);
 	void					_processKeydown		();
+	void					_clickSelectObject	(int x, int y);	
 
-	bool					OnButtonClick_DebugTest1(GUIEvent& e);
+	bool					OnButtonClick_PickPass(GUIEvent& e);
 	void					OnSurfaceResize		(int width, int height);
 
 private:
@@ -101,6 +102,8 @@ private:
 
 	Env*					m_env;
 	Camera*					m_camera;
+
+	Object*					m_selectObject;
 
 	// for object test 	(读取gltf file data解析到自己的内存中，然后渲染)
 	Object*					m_object;

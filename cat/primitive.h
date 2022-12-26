@@ -19,6 +19,7 @@ class Mesh;
 class Env;
 class ShaderMacro;
 class ShaderMacroArray;
+class Object;
 
 class Primitive
 {
@@ -60,6 +61,8 @@ public:
 	void				setVertices			(void* vertices, int vertexCount, int sizeOfVertex);
 	void				setPrimitiveType	(PRIMITIVE_TYPE t) { m_primitiveType = t; }
 	void				updateVertices		(void* vertices, int vertexCount, int sizeOfVertex);
+	Mesh*				parent				() { return m_parent; }
+	Object*				parentObject		();
 
 private:
 	//void				_loadVertexOriginal	(const cgltf_primitive&	primitive, Env* env, IRender* render);

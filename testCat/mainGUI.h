@@ -19,7 +19,7 @@ public:
 
 enum GUI_EVENT
 {
-	GUI_EVENT_DEBUG_BUTTON_CLICK,
+	GUI_EVENT_PICK_PASS_CLICK,
 
 	GUI_EVENT_COUNT,
 };
@@ -54,6 +54,7 @@ private:
 	void	_beginFrame					();
 	void	_endFrame					();
 	void	_fireEvent					(GUI_EVENT event, GUIEvent& eventArg);
+	void	_processGizmo				();
 	
 private:
 	Client*						m_client;	

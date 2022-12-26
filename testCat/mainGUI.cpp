@@ -115,11 +115,11 @@ void MainGUI::init(Client* client)
 
 	gizmo::Style& style = gizmo::GetStyle();
 	float scale = 1.5;
-	style.TranslationLineThickness		*= scale;
+	style.TranslationLineThickness		*= 0.5f;
 	style.TranslationLineArrowSize		*= scale;
-	style.RotationLineThickness			*= scale;
-	style.RotationOuterLineThickness	*= scale;
-	style.ScaleLineThickness			*= scale;
+	style.RotationLineThickness			*= 0.5f;
+	style.RotationOuterLineThickness	*= 0.5f;
+	style.ScaleLineThickness			*= 0.5f;
 	style.ScaleLineCircleSize			*= scale;
 	style.CenterCircleSize				*= scale;
 	style.HatchedAxisLineThickness		= 0;
@@ -141,30 +141,7 @@ void MainGUI::onGUI()
 
 	_beginFrame();
 
-	gizmo::SetOrthographic(false);	
-	gizmo::SetRect(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
-	Camera* camera = m_client->getCamera();
-	const scl::matrix& viewMatrix = camera->viewMatrix();
-	const scl::matrix& projectionMatrix = camera->projectionMatrix();
-
-	Object* object = m_client->getSelectObject();
-	scl::matrix transform = object->matrix();
-
-	gizmo::OPERATION operation = _operateTypeToGizmo(m_client->getOperateType());
-	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::LOCAL, transform.ptr());
-
-	if (gizmo::IsUsing())
-	{
-		vector3		translate	= { 0 };
-		vector3		scale		= { 0 };
-		quaternion	rotate		= { 0 };
-
-		matrix::decompose(transform, &translate, &scale, NULL, NULL, &rotate);
-		
-		object->setMove(translate);
-		object->setScale(scale);
-		object->setRotate(rotate);
-	}
+	_processGizmo();
 
 	_showMenu();
 
@@ -335,6 +312,36 @@ void MainGUI::_fireEvent(GUI_EVENT event, GUIEvent& eventArg)
 	m_events[event](eventArg);
 }
 
+void MainGUI::_processGizmo()
+{
+	Object* object = m_client->getSelectObject();
+	if (NULL == object)
+		return;
+
+	gizmo::SetOrthographic	(false);	
+	gizmo::SetRect			(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
+
+	Camera*				camera				= m_client->getCamera();
+	const scl::matrix&	viewMatrix			= camera->viewMatrix();
+	const scl::matrix&	projectionMatrix	= camera->projectionMatrix();
+	scl::matrix			transform			= object->matrix();
+
+	gizmo::OPERATION operation = _operateTypeToGizmo(m_client->getOperateType());
+	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::LOCAL, transform.ptr());
+	if (!gizmo::IsUsing())
+		return;
+
+	vector3				translate			= { 0 };
+	vector3				scale				= { 0 };
+	quaternion			rotate				= { 0 };
+
+	matrix::decompose(transform, &translate, &scale, NULL, NULL, &rotate);
+	
+	object->setMove(translate);
+	object->setScale(scale);
+	object->setRotate(rotate);
+}
+
 void MainGUI::_showWindowProperty(Object* const object)
 {
 	if (NULL == object)
@@ -381,7 +388,7 @@ void MainGUI::_showWindowDebug()
 		ImGui::ShowDemoWindow(&config.showDemoWindow);
 
 	if (ImGui::Button("Do pick pass", {imgui::CalcItemWidth(), 0}))
-		_fireEvent(GUI_EVENT_DEBUG_BUTTON_CLICK, GUIEvent());
+		_fireEvent(GUI_EVENT_PICK_PASS_CLICK, GUIEvent());
 
 	if (imgui::Button("show device window", {imgui::CalcItemWidth(), 0}))
 		config.showDeviceInfoWindow = !config.showDeviceInfoWindow;

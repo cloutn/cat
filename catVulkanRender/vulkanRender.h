@@ -118,8 +118,8 @@ public:
 	virtual void			endDraw				();
 	
 	void					beginPickPass		(scl::vector4& clearColorRGBA);
-	void					endPickPass			(int x, int y);
-	uint32					savePickPass		(int width, int height);
+	scl::vector4			endPickPass			(int x, int y);
+	scl::vector4			savePickPass		(int width, int height);
 
 	void					beginScenePass		(scl::vector4& clearColorRGBA);
 	void					endScenePass		();

@@ -135,8 +135,8 @@ void Env::clearPickPrimtives()
 
 scl::vector4 Env::registerPickPrimitive(Primitive* primitive)
 {
-	m_pickPrimitives.push_back(primitive);
 	uint32			id = m_pickPrimitives.size();
+	m_pickPrimitives.push_back(primitive);
 	scl::vector4	color;
 	argb_to_float(id, color.a, color.r, color.g, color.b);
 	return color;
