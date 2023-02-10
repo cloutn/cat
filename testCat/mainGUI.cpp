@@ -56,7 +56,7 @@ gizmo::OPERATION _operateTypeToGizmo(OPERATE_TYPE type)
 	return gizmo::OPERATION::TRANSLATE;
 }
 
-MainGUI::MainGUI() : m_client(NULL), m_selectObject(NULL) 
+MainGUI::MainGUI() : m_client(NULL)//, m_selectObject(NULL) 
 {
 
 }
@@ -149,7 +149,7 @@ void MainGUI::onGUI()
 
 	_showWindowScene();
 
-	_showWindowProperty(m_selectObject);
+	_showWindowProperty();
 
 	_showWindowDebug();
 
@@ -261,7 +261,7 @@ void MainGUI::_onGUIObject(Object* const object, bool& isContextMenuOpen)
 		}
 		if (ImGui::IsItemClicked())
 		{
-			m_selectObject = object;
+			m_client->setSelectObject(object);
 		}
 	}
 	else
@@ -281,7 +281,7 @@ void MainGUI::_onGUIObject(Object* const object, bool& isContextMenuOpen)
 		}
 		if (ImGui::IsItemClicked())
 		{
-			m_selectObject = object;
+			m_client->setSelectObject(object);
 		}
 		if (nodeOpen)
 		{
@@ -342,16 +342,25 @@ void MainGUI::_processGizmo()
 	object->setRotate(rotate);
 }
 
-void MainGUI::_showWindowProperty(Object* const object)
+void MainGUI::_showWindowProperty()
 {
+	Object* object = m_client->getSelectObject();
 	if (NULL == object)
 		return;
 
 	ImGui::Begin("Property");   
 
-	string128 name = object->name().c_str();
-	ImGui::InputText("Name", name.c_str(), name.capacity());
+	string512 name = object->name().c_str();
+	//ImGui::InputText("Name", name.c_str(), name.capacity());
+	ui::inputText("Name", name.c_str(), name.capacity());
 	object->setName(name.c_str());
+
+	// TODO 现在还无法直接修改 matrix，可以直接使用 decompose 修改
+	scl::matrix transform = object->matrix();
+	ui::inputMatrix4("transform", transform);
+
+	scl::vector3 pos = object->
+
 
 	ImGui::End();
 }
@@ -375,8 +384,9 @@ void MainGUI::_showWindowDebug()
 
 	// select object
 	string512 strSelect = "select : [";
-	if (NULL != m_selectObject)
-		strSelect += m_selectObject->name().c_str();
+	Object* selectObject = m_client->getSelectObject();
+	if (NULL != selectObject)
+		strSelect += selectObject->name().c_str();
 	else
 		strSelect += "None";
 	strSelect += "]";

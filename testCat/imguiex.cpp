@@ -10,7 +10,7 @@
 
 namespace imguiex {
 
-static string256 _label(const char* const label)
+static string256 _label(const char* const label, const char* const id = NULL)
 {
 	float width = ImGui::CalcItemWidth();
 
@@ -22,6 +22,9 @@ static string256 _label(const char* const label)
 
 	string256 labelID = "##";
 	labelID += label;
+	if (NULL != id)
+		labelID += id;
+	//labelID.format_append("%d", id);
 
 	return labelID;
 }
@@ -34,6 +37,42 @@ void labelText(const char* const name, const char* valueFormat, ...)
 	va_start(arg, valueFormat);
 	ImGui::TextV(valueFormat, arg);
 	va_end(arg);
+}
+
+void inputText(const char* const label, char* text, const int textCapacity)
+{
+	ImGui::InputText(_label(label).c_str(), text, textCapacity);
+}
+
+void inputFloat(const char* const label, float& v)
+{
+	ImGui::InputFloat(_label(label).c_str(), &v);
+}
+
+void inputFloat2(const char* const label, scl::vector2& v)
+{
+	ImGui::InputFloat2(_label(label).c_str(), &v.x);
+}
+
+void inputFloat3(const char* const label, scl::vector3& v)
+{
+	ImGui::InputFloat3(_label(label).c_str(), &v.x);
+}
+
+void inputFloat4(const char* const label, scl::vector4& v)
+{
+	ImGui::InputFloat4(_label(label).c_str(), &v.x);
+}
+
+void inputMatrix4(const char* const label, scl::matrix& v)
+{
+	ImGui::InputFloat4(_label(label, "0").c_str(), v.m[0]);
+	for (int i = 1; i < 4; ++i)
+	{
+		string128 labelRow;
+		labelRow.format("%s%d", label, i);
+		ImGui::InputFloat4(_label("", labelRow.c_str()).c_str(), v.m[i]);
+	}
 }
 
 void inputDouble(const char* const label, double& v)

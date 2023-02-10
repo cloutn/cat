@@ -507,6 +507,11 @@ int Client::getScreenHeight() const
 	return m_render.getDeviceHeight();
 }
 
+void Client::setSelectObject(Object* object)
+{
+	m_selectObject = object;
+}
+
 cat::Object* Client::getSelectObject()
 {
 	return m_selectObject;

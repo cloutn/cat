@@ -52,6 +52,7 @@ public:
 	Camera*					getCamera			() { return m_camera; }
 	int						getScreenWidth		() const;
 	int						getScreenHeight		() const;
+	void					setSelectObject		(Object* object);
 	Object*					getSelectObject		();
 	OPERATE_TYPE			getOperateType		() const { return m_operateType; }
 

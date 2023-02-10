@@ -43,7 +43,7 @@ public:
 
 private:
 	void	_showWindowScene			();
-	void	_showWindowProperty			(Object* const object);
+	void	_showWindowProperty			();
 	void	_showWindowDebug			();
 	void	_showWindowDeviceInfo		();
 	void	_showWindowConfig			();
@@ -58,7 +58,7 @@ private:
 	
 private:
 	Client*						m_client;	
-	Object*						m_selectObject;
+	//Object*						m_selectObject;
 
 
 	scl::array<GUIEventFuncT, GUI_EVENT_COUNT> m_events;

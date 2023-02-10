@@ -61,6 +61,8 @@ public:
 	void						setScale					(const scl::vector3& v);
 	void						setMove						(const scl::vector3& v);
 
+	void						move
+
 private:
 	//Transform*					_baseTransform				();
 	Transform*					_transform					();
