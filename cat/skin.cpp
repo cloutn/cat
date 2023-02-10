@@ -70,7 +70,7 @@ scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inve
 	for (int i = 0; i < m_inverseBindMatrixCount; ++i)
 	{
 		m_jointMatrices[i] = m_inverseBindMatrices[i];
-		m_jointMatrices[i].mul(m_joints[i]->globalAnimationMatrix());
+		m_jointMatrices[i].mul(m_joints[i]->globalMatrix());
 		m_jointMatrices[i].mul(inverseMeshGlobalTransform);
 	}
 	matrixCount = m_inverseBindMatrixCount;

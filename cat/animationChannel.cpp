@@ -193,9 +193,9 @@ void AnimationChannel::apply()
 		return;
 	switch (m_type)
 	{
-	case KEY_FRAME_TYPE_ROTATE				: target->setAnimationRotate(m_rotate); break;
-	case KEY_FRAME_TYPE_MOVE				: target->setAnimationMove(m_move); break;
-	case KEY_FRAME_TYPE_SCALE				: target->setAnimationScale(m_scale); break;
+	case KEY_FRAME_TYPE_ROTATE				: target->setRotate(m_rotate); break;
+	case KEY_FRAME_TYPE_MOVE				: target->setMove(m_move); break;
+	case KEY_FRAME_TYPE_SCALE				: target->setScale(m_scale); break;
 	default:break;
 	};
 }

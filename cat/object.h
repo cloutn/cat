@@ -36,10 +36,10 @@ public:
 	void						draw						(const scl::matrix& mvp, bool isPick, IRender* render);
 	const scl::matrix&			matrix						();
 	scl::matrix					globalMatrix				();
-	const scl::matrix&			matrixWithAnimation			();
-	scl::matrix					globalMatrixWithAnimation	();
-	const scl::matrix&			animationMatrix				();
-	scl::matrix					globalAnimationMatrix		();
+	//const scl::matrix&			matrixWithAnimation			();
+	//scl::matrix					globalMatrixWithAnimation	();
+	//const scl::matrix&			animationMatrix				();
+	//scl::matrix					globalAnimationMatrix		();
 	const String&				name						() const { return m_name; }
 	void						setName						(const char* const name) { m_name = name; }
 	int							id							() const { return m_id; }
@@ -53,17 +53,17 @@ public:
 	static Object*				objectByID					(const int id) { return _objectIDMap().get(id); }
 	static void					releaseObjectIDMap			();
 
+	//void						setRotate					(const scl::quaternion& v);
+	//void						setScale					(const scl::vector3& v);
+	//void						setMove						(const scl::vector3& v);
+
 	void						setRotate					(const scl::quaternion& v);
 	void						setScale					(const scl::vector3& v);
 	void						setMove						(const scl::vector3& v);
 
-	void						setAnimationRotate			(const scl::quaternion& v);
-	void						setAnimationScale			(const scl::vector3& v);
-	void						setAnimationMove			(const scl::vector3& v);
-
 private:
+	//Transform*					_baseTransform				();
 	Transform*					_transform					();
-	Transform*					_animationTransform			();
 
 private:
 	static ObjectIDMap<Object>*	s_objectIDMap;		//a map from object id to pointer. 
@@ -76,8 +76,8 @@ private:
 	Skin*						m_skin;
 	scl::varray<Object*>		m_childs;
 	scl::matrix*				m_matrixWithAnimation;
+	//Transform*					m_baseTransform;
 	Transform*					m_transform;
-	Transform*					m_animationTransform;
 	String						m_name;
 
 };  // class Object 

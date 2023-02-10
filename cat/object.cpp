@@ -30,8 +30,8 @@ Object::Object(Object* parent) :
 	m_mesh					(NULL),
 	m_skin					(NULL),
 	m_matrixWithAnimation	(NULL),
-	m_transform				(NULL),
-	m_animationTransform	(NULL)
+	//m_baseTransform				(NULL),
+	m_transform	(NULL)
 {
 	_objectIDMap().add(this);
 }
@@ -40,8 +40,8 @@ Object::~Object()
 {
 	safe_delete(m_skin);
 	safe_delete(m_mesh);
-	safe_delete(m_animationTransform);
 	safe_delete(m_transform);
+	//safe_delete(m_baseTransform);
 	safe_delete(m_matrixWithAnimation);
 
 	for (int i = 0; i < m_childs.size(); ++i)
@@ -73,19 +73,23 @@ void Object::loadNode(cgltf_node* node, const char* const path, IRender* render,
 
 	if (node->has_translation)
 	{
-		_animationTransform()->setMove({ node->translation[0], node->translation[1], node->translation[2] });
+		_transform()->setMove({ node->translation[0], node->translation[1], node->translation[2] });
+		//_transform()->setMove({ node->translation[0], node->translation[1], node->translation[2] });
 	}
 	if (node->has_scale)
 	{
-		_animationTransform()->setScale({ node->scale[0], node->scale[1], node->scale[2] });
+		_transform()->setScale({ node->scale[0], node->scale[1], node->scale[2] });
+		//_transform()->setScale({ node->scale[0], node->scale[1], node->scale[2] });
 	}
 	if (node->has_rotation)
 	{
-		_animationTransform()->setRotate({ node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] });
+		_transform()->setRotate({ node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] });
+		//_transform()->setRotate({ node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] });
 	}
 	if (node->has_matrix)
 	{
-		_animationTransform()->setByMatrix(
+		_transform()->setByMatrix(
+		//_transform()->setByMatrix(
 			{
 				node->matrix[0],	node->matrix[1],	node->matrix[2],	node->matrix[3],
 				node->matrix[4],	node->matrix[5],	node->matrix[6],	node->matrix[7],
@@ -112,7 +116,7 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 	int				jointMatrixCount	= 0;
 	if (NULL != m_skin)
 	{
-		scl::matrix mat = globalAnimationMatrix();
+		scl::matrix mat = globalMatrix();
 		scl::matrix inverse;
 		bool r = scl::matrix::inverse(mat, inverse);
 		assert(r);
@@ -121,7 +125,7 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 
 	if (NULL != m_mesh)
 	{
-		scl::matrix mat = globalMatrixWithAnimation();
+		scl::matrix mat = globalMatrix();
 		scl::matrix selfMvp = mat;
 		selfMvp.mul(mvp);
 		m_mesh->draw(selfMvp, jointMatrices, jointMatrixCount, isPick, render);
@@ -149,39 +153,40 @@ scl::matrix Object::globalMatrix()
 	return result;
 }
 
-const scl::matrix& Object::matrixWithAnimation()
-{
-	if (NULL == m_matrixWithAnimation)
-		m_matrixWithAnimation = new scl::matrix();
+//const scl::matrix& Object::matrixWithAnimation()
+//{
+//	if (NULL == m_matrixWithAnimation)
+//		m_matrixWithAnimation = new scl::matrix();
+//
+//	*m_matrixWithAnimation = _transform()->matrix();
+//	//*m_matrixWithAnimation = matrix::identity();
+//	const scl::matrix& _matrix = _baseTransform()->matrix();
+//	m_matrixWithAnimation->mul(_matrix);
+//
+//	return *m_matrixWithAnimation;
+//}
 
-	*m_matrixWithAnimation = _animationTransform()->matrix();
-	const scl::matrix& animationMatrix = _transform()->matrix();
-	m_matrixWithAnimation->mul(animationMatrix);
+//scl::matrix Object::globalMatrixWithAnimation()
+//{
+//	scl::matrix result = matrixWithAnimation();
+//	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalMatrixWithAnimation();
+//	result.mul(parentMatrix);
+//	return result;
+//}
 
-	return *m_matrixWithAnimation;
-}
+//const scl::matrix& Object::animationMatrix()
+//{
+//	const scl::matrix& mat = _transform()->matrix();
+//	return mat;
+//}
 
-scl::matrix Object::globalMatrixWithAnimation()
-{
-	scl::matrix result = matrixWithAnimation();
-	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalMatrixWithAnimation();
-	result.mul(parentMatrix);
-	return result;
-}
-
-const scl::matrix& Object::animationMatrix()
-{
-	const scl::matrix& mat = _animationTransform()->matrix();
-	return mat;
-}
-
-scl::matrix Object::globalAnimationMatrix()
-{
-	scl::matrix result = animationMatrix();
-	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalAnimationMatrix();
-	result.mul(parentMatrix);
-	return result;
-}
+//scl::matrix Object::globalAnimationMatrix()
+//{
+//	scl::matrix result = animationMatrix();
+//	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalAnimationMatrix();
+//	result.mul(parentMatrix);
+//	return result;
+//}
 
 void Object::loadSkin(cgltf_node* node, Env* env)
 {
@@ -231,6 +236,21 @@ ObjectIDMap<Object>& Object::_objectIDMap()
 }
 
 
+//void Object::setRotate(const scl::quaternion& v)
+//{
+//	_baseTransform()->setRotate(v);
+//}
+//
+//void Object::setScale(const scl::vector3& v)
+//{
+//	_baseTransform()->setScale(v);
+//}
+//
+//void Object::setMove(const scl::vector3& v)
+//{
+//	_baseTransform()->setMove(v);
+//}
+
 void Object::setRotate(const scl::quaternion& v)
 {
 	_transform()->setRotate(v);
@@ -246,33 +266,18 @@ void Object::setMove(const scl::vector3& v)
 	_transform()->setMove(v);
 }
 
-void Object::setAnimationRotate(const scl::quaternion& v)
-{
-	_animationTransform()->setRotate(v);
-}
-
-void Object::setAnimationScale(const scl::vector3& v)
-{
-	_animationTransform()->setScale(v);
-}
-
-void Object::setAnimationMove(const scl::vector3& v)
-{
-	_animationTransform()->setMove(v);
-}
+//Transform* Object::_baseTransform()
+//{
+//	if (NULL == m_baseTransform)	
+//		m_baseTransform = new Transform;
+//	return m_baseTransform;
+//}
 
 Transform* Object::_transform()
 {
 	if (NULL == m_transform)	
 		m_transform = new Transform;
 	return m_transform;
-}
-
-Transform* Object::_animationTransform()
-{
-	if (NULL == m_animationTransform)	
-		m_animationTransform = new Transform;
-	return m_animationTransform;
 }
 
 void Object::releaseObjectIDMap()

@@ -105,7 +105,7 @@ void CollectBoneVertices(Object* root, scl::varray<vertex_color>& vertices, scl:
 	if (root->childCount() <= 0)
 		return;
 
-	matrix	matRoot		= root->globalMatrixWithAnimation();
+	matrix	matRoot		= root->globalMatrix();
 	vector3	posRoot		{ 0, 0, 0};
 	posRoot.mul_matrix(matRoot);
 	uint	fromColor	= 0xFFFFFFFF;
@@ -115,7 +115,7 @@ void CollectBoneVertices(Object* root, scl::varray<vertex_color>& vertices, scl:
 	for (int i = 0; i < root->childCount(); ++i)
 	{
 		Object* obj = root->child(i);
-		scl::matrix m = obj->globalMatrixWithAnimation();
+		scl::matrix m = obj->globalMatrix();
 		vector3 pos = { 0, 0, 0 };
 		pos.mul_matrix(m);
 		vertices.push_back({ pos, toColor });
