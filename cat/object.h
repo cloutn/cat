@@ -58,10 +58,16 @@ public:
 	//void						setMove						(const scl::vector3& v);
 
 	void						setRotate					(const scl::quaternion& v);
+	void						setRotateAngle				(const scl::vector3& v);
 	void						setScale					(const scl::vector3& v);
 	void						setMove						(const scl::vector3& v);
+	void						setPosition					(const scl::vector3& v) { setMove(v); }
 
-	void						move
+	scl::vector3				position					();	
+	scl::vector3				scale						();
+	scl::quaternion				rotate						();
+	scl::vector3				rotateAngle					();
+	scl::vector3				rotateRadian				();
 
 private:
 	//Transform*					_baseTransform				();

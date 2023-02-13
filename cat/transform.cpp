@@ -45,6 +45,13 @@ void Transform::setByMatrix(const scl::matrix& m)
 	scl::matrix::decompose(m, &m_move, &m_scale, NULL, NULL, &m_rotate);
 }
 
+void Transform::setRotateAngle(const scl::vector3& v)
+{
+	scl::quaternion q;
+	q.from_euler_angle(v.x, v.y, v.z);
+	setRotate(q);
+}
+
 } // namespace cat
 
 

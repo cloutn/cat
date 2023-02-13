@@ -256,6 +256,11 @@ void Object::setRotate(const scl::quaternion& v)
 	_transform()->setRotate(v);
 }
 
+void Object::setRotateAngle(const scl::vector3& v)
+{
+	_transform()->setRotateAngle(v);
+}
+
 void Object::setScale(const scl::vector3& v)
 {
 	_transform()->setScale(v);
@@ -264,6 +269,37 @@ void Object::setScale(const scl::vector3& v)
 void Object::setMove(const scl::vector3& v)
 {
 	_transform()->setMove(v);
+}
+
+scl::vector3 Object::position()
+{
+	return _transform()->move();
+}
+
+scl::vector3 Object::scale()
+{
+	return _transform()->scale();
+}
+
+scl::quaternion Object::rotate()
+{
+	return _transform()->rotate();
+}
+
+scl::vector3 Object::rotateRadian()
+{
+	scl::quaternion q = rotate();
+	scl::vector3	radian;
+	q.to_euler_radian(radian);
+	return radian;
+}
+
+scl::vector3 Object::rotateAngle()
+{
+	scl::quaternion q = rotate();
+	scl::vector3	angle;
+	q.to_euler_angle(angle);
+	return angle;
 }
 
 //Transform* Object::_baseTransform()

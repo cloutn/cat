@@ -355,12 +355,24 @@ void MainGUI::_showWindowProperty()
 	ui::inputText("Name", name.c_str(), name.capacity());
 	object->setName(name.c_str());
 
-	// TODO ÏÖÔÚ»¹ÎÞ·¨Ö±½ÓÐÞ¸Ä matrix£¬¿ÉÒÔÖ±½ÓÊ¹ÓÃ decompose ÐÞ¸Ä
+	// TODO çŽ°åœ¨è¿˜æ— æ³•ç›´æŽ¥ä¿®æ”¹ matrixï¼Œå¯ä»¥ç›´æŽ¥ä½¿ç”¨ decompose ä¿®æ”¹
 	scl::matrix transform = object->matrix();
 	ui::inputMatrix4("transform", transform);
 
-	scl::vector3 pos = object->
+	// position
+	scl::vector3 pos = object->position();
+	ui::inputFloat3("position", pos);
+	object->setPosition(pos);
 
+	// scale
+	scl::vector3 scale = object->scale();
+	ui::inputFloat3("scale", scale);
+	object->setScale(scale);
+
+	// rotate
+	scl::vector3 rotate = object->rotateAngle();
+	ui::inputFloat3("rotate", rotate);
+	object->setRotateAngle(rotate);
 
 	ImGui::End();
 }

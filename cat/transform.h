@@ -10,21 +10,22 @@ class Transform
 public:
 	Transform();
 
-	const scl::vector3&			move		() const { return m_move;	} 
-	const scl::vector3&			scale		() const { return m_scale;	}
-	const scl::quaternion&		rotate		() const { return m_rotate;	}
+	const scl::vector3&			move			() const { return m_move;	} 
+	const scl::vector3&			scale			() const { return m_scale;	}
+	const scl::quaternion&		rotate			() const { return m_rotate;	}
 
-	const scl::matrix&			matrix		() const;
+	const scl::matrix&			matrix			() const;
 
-	void						setByMatrix	(const scl::matrix& m);
-	void						setMove		(const scl::vector3& v)		{ m_move = v; invalidate(); }
-	void						setScale	(const scl::vector3& v)		{ m_scale = v; invalidate(); }
-	void						setRotate	(const scl::quaternion& v)	{ m_rotate = v; invalidate(); }
+	void						setByMatrix		(const scl::matrix& m);
+	void						setMove			(const scl::vector3& v)		{ m_move = v; invalidate(); }
+	void						setScale		(const scl::vector3& v)		{ m_scale = v; invalidate(); }
+	void						setRotate		(const scl::quaternion& v)	{ m_rotate = v; invalidate(); }
+	void						setRotateAngle	(const scl::vector3& v);
 
-	void						invalidate	() { m_changed = true; }
+	void						invalidate		() { m_changed = true; }
 
 private:
-	bool						changed		() const { return m_changed; }
+	bool						changed			() const { return m_changed; }
 
 private:
 	scl::vector3				m_move;	
