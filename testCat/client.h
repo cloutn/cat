@@ -54,7 +54,10 @@ public:
 	int						getScreenHeight		() const;
 	void					setSelectObject		(Object* object);
 	Object*					getSelectObject		();
+	int						getSelectObjectID	() const;
 	OPERATE_TYPE			getOperateType		() const { return m_operateType; }
+	TRANSFORM_TYPE			transformType		() const { return m_transformType; }	
+	void					setTransformType	(TRANSFORM_TYPE type) { m_transformType = type; }	
 
 #ifdef SCL_APPLE
 	void					tick				();
@@ -122,6 +125,7 @@ private:
 	MainGUI					m_gui;
 
 	OPERATE_TYPE			m_operateType;
+	TRANSFORM_TYPE			m_transformType;
 	//Object*					m_selectObject;
 };
 

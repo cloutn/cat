@@ -13,7 +13,7 @@ void Shader::load(const char* const vs_filename, const char* const ps_filename)
 	invalidate();
 }
 
-void Shader::addMacro(ShaderMacro& macro)
+void Shader::addMacro(const ShaderMacro& macro)
 {
 	if (macro.name.empty())
 		return;

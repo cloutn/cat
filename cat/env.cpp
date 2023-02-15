@@ -23,7 +23,7 @@ Env::~Env()
 		delete m_shaderCache;
 }
 
-Shader* Env::getShader(const char* const vsFilename, const char* const fsFilename, ShaderMacro* macros, const int macroCount)
+Shader* Env::getShader(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, const int macroCount)
 {
 	return m_shaderCache->getShader(vsFilename, fsFilename, macros, macroCount);
 }

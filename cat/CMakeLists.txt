@@ -64,6 +64,7 @@ set(src_files
 	shader.cpp
 	shader_gles.cpp
 	shaderCache.cpp
+	shaderMacro.cpp
 	skin.cpp
 	string.cpp
 	transform.cpp

@@ -25,6 +25,7 @@ public:
 	void			addPrimitive	(Primitive*);
 	Object*			parent			() { return m_parent; }
 	const String&	name			() const { return m_name; }
+	void			setEnableSkin	(bool enable);
 
 private:
 	scl::varray<Primitive*>			m_primitives;

@@ -17,7 +17,7 @@ namespace cat {
 //	return (hash & 0x7FFFFFFF);
 //}
 
-Shader* ShaderCache::getShader(const char* const vsFilename, const char* const psFilename, ShaderMacro* macros, int macroCount)
+Shader* ShaderCache::getShader(const char* const vsFilename, const char* const psFilename, const ShaderMacro* macros, int macroCount)
 {
 	String key;
 
@@ -33,11 +33,15 @@ Shader* ShaderCache::getShader(const char* const vsFilename, const char* const p
 
 	for (int i = 0; i < macroCount; ++i)
 	{
-		macros[i].name.trim();
-		macros[i].value.trim();
-		key += macros[i].name.c_str();
+		String name = macros[i].name;
+		name.trim();
+		String value = macros[i].value;
+		value.trim();
+		//macros[i].name.trim();
+		//macros[i].value.trim();
+		key += name.c_str();
 		key += ":";
-		key += macros[i].value.c_str();
+		key += value.c_str();
 		key += ":";
 	}
 

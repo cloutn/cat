@@ -191,6 +191,10 @@ void AnimationChannel::apply()
 	Object* target = Object::objectByID(m_target);
 	if (NULL == target)
 		return;
+
+	if (!target->isEnableAnimation())
+		return;
+
 	switch (m_type)
 	{
 	case KEY_FRAME_TYPE_ROTATE				: target->setRotate(m_rotate); break;

@@ -1,8 +1,8 @@
 #pragma once
 
 
-
 #include "cat/IRender.h"
+#include "cat/string.h"
 
 #include "scl/vector.h"
 
@@ -30,8 +30,15 @@ public:
 	void				load			(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env);
 	void				draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
 	void				release			();
-	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int shaderMacroCount);
-	void				loadShader		(const char* const vs_filename, const char* const ps_filename, ShaderMacroArray& macros);
+	//void				setShader		(const char* const vsFilename, const char* const psFilename, const ShaderMacro* macros, const int shaderMacroCount);
+	//void				loadShader		(const char* const vsFilename, const char* const psFilename, const ShaderMacro* macros, const int shaderMacroCount, bool updatePickShader = true);
+	void				loadShader		(const char* const vsFilename, const char* const psFilename, const ShaderMacroArray& macros, bool updatePickShader = true);
+	void				loadShader		(const ShaderMacroArray& macros, bool updatePickShader = true);
+	//void				loadShader		();
+	const ShaderMacroArray&	shaderMacros() { return *m_shaderMacros; }
+	const char* const	vsFilename		() { return m_vsShaderFilename.c_str(); }
+	const char* const	psFilename		() { return m_psShaderFilename.c_str(); }
+
 	void				setTexture		(const char* const filename);
 	void				loadMemory		(
 		void*			indices, 
@@ -67,6 +74,7 @@ public:
 private:
 	//void				_loadVertexOriginal	(const cgltf_primitive&	primitive, Env* env, IRender* render);
 	void				_loadVertex			(const cgltf_primitive&	primitive, IRender* render);
+	void				_loadShader			(bool updatePickShader = true);
 
 private:
 	IRender*			m_render;
@@ -88,7 +96,10 @@ private:
 	PRIMITIVE_TYPE		m_primitiveType;
 	Material*			m_material;
 	Shader*				m_shader;
+	ShaderMacroArray*	m_shaderMacros;
 	Shader*				m_pickShader;
+	String				m_vsShaderFilename;
+	String				m_psShaderFilename;
 
 	//TODO parent is for debug
 	Mesh*				m_parent;

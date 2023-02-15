@@ -56,6 +56,7 @@ Client::Client()
 	m_totalFrame				= 0;
 	m_totalTime					= 1;
 	m_operateType				= OPERATE_TYPE_TRANSLATE;
+	m_transformType				= TRANSFORM_TYPE_LOCAL;
 
 	m_mousePosition.clear();
 }
@@ -122,6 +123,18 @@ void Client::loadGltf(const char* const filename)
 		Scene* scene = new Scene();
 		scene->load(sceneNode, path.c_str(), m_env);
 		m_scenes.push_back(scene);
+	}
+
+	for (int nodeIndex = 0; nodeIndex < data->nodes_count; ++nodeIndex)
+	{
+		cgltf_node&	node	= data->nodes[nodeIndex];
+		Object*		object	= m_env->getObjectByGltfNode(&node);
+		if (NULL == object)
+		{
+			assert(false);
+			continue;
+		}
+		object->setGltfIndex(nodeIndex);
 	}
 
 	m_animations.reserve(data->animations_count);
@@ -515,6 +528,13 @@ void Client::setSelectObject(Object* object)
 cat::Object* Client::getSelectObject()
 {
 	return m_selectObject;
+}
+
+int Client::getSelectObjectID() const
+{
+	if (NULL == m_selectObject)
+		return -1;
+	return m_selectObject->id();
 }
 
 } //namespace cat

@@ -54,6 +54,12 @@ enum OPERATE_TYPE
 	OPERATE_TYPE_SCALE,
 };
 
+enum TRANSFORM_TYPE
+{
+	TRANSFORM_TYPE_LOCAL,
+	TRANSFORM_TYPE_GLOBAL,
+};
+
 inline int elem_type_byte(const ELEM_TYPE& type) 
 {
 	switch (type)

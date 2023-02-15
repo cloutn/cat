@@ -30,7 +30,9 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 		{ 1, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
-	ShaderMacro macros[1] = { {"COLOR", ""} };
+	ShaderMacroArray macros;
+	macros.add("COLOR");
+	//ShaderMacro macros[1] = { {"COLOR", ""} };
 	// vertex 
 	uint32 color = 0xCCCCCCFF;
 	vertex_color vertices[] = {
@@ -47,7 +49,7 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	p->setAttrs			(attrs, countof(attrs), attrBuffers);
 	p->setVertices		(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture		(NULL);
-	p->loadShader		(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, 1);
+	p->loadShader		(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
 }
 
 
@@ -60,8 +62,8 @@ Primitive* _createGridPrimitive(IRender* render, Env* env)
 		{ 5, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
-	ShaderMacro macros[1];
-	macros[0].name = "COLOR";
+	ShaderMacroArray macros;
+	macros.add("COLOR");
 
 	// vertex 
 	const int ROW		= 3;
@@ -96,7 +98,7 @@ Primitive* _createGridPrimitive(IRender* render, Env* env)
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, 1);
+	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
 	return p;
 }
 
@@ -141,8 +143,8 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 		{ 5, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
-	ShaderMacro macros[1];
-	macros[0].name = "COLOR";
+	ShaderMacroArray macros;
+	macros.add("COLOR");
 
 	scl::varray<vertex_color> vertices;
 	scl::varray<uint16> indices;
@@ -160,7 +162,7 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, 1);
+	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
 	return p;
 }
 
@@ -174,7 +176,9 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 		{ 2, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_coord), OFFSET(vertex_coord, texcoord) }
 	};
 	int attrBuffers[] = { 0, 0, 0 };
-	ShaderMacro macros[1] = { {"USE_COLOR", ""} };
+	//ShaderMacro macros[1] = { {"USE_COLOR", ""} };
+	ShaderMacroArray macros; 
+	macros.add("USE_COLOR");
 
 	// vertex 
 	vertex_coord vertices[3] = 
@@ -208,7 +212,8 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 		{ 1, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
 	};
 	int attrBuffers[] = { 0, 0 };
-	ShaderMacro macros[1] = { {"COLOR", ""} };
+	ShaderMacroArray macros;
+	macros.add("COLOR");
 
 	// vertex 
 	vertex_color vertices[3] = 
@@ -228,7 +233,7 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, 1);
+	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
 	return p;
 }
 

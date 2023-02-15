@@ -11,6 +11,7 @@
 #include "scl/vector.h"
 #include "scl/matrix.h"
 #include "scl/quaternion.h"
+#include "scl/log.h"
 
 #include "imgui_impl_win32.h"
 
@@ -153,6 +154,8 @@ void MainGUI::onGUI()
 
 	_showWindowDebug();
 
+	_showToolbar();
+
 	_endFrame();
 }
 
@@ -224,6 +227,10 @@ void MainGUI::_onGUIScene(const int sceneIndex, bool& isContextMenuOpen)
 
 	string64 sceneName;
 	sceneName.format("Scene_%d", sceneIndex);
+
+	bool hasSelectedChild = (NULL != scene->objectByID(m_client->getSelectObjectID(), true));
+	ImGui::SetNextItemOpen(hasSelectedChild);
+
 	if (ImGui::TreeNode(sceneName.c_str()))
 	{
 		for (int i = 0; i < scene->objectCount(); ++i)
@@ -246,6 +253,10 @@ void MainGUI::_onGUIObject(Object* const object, bool& isContextMenuOpen)
 	{
 		//ui::Text(objectName.c_str());
 		int node_flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+		if (m_client->getSelectObject() == object)
+		{
+			node_flags |= ImGuiTreeNodeFlags_Selected;
+		}
 		ImGui::TreeNodeEx(objectName.c_str(), node_flags);
 		if (!isContextMenuOpen && ImGui::BeginPopupContextItem())
 		{
@@ -266,7 +277,12 @@ void MainGUI::_onGUIObject(Object* const object, bool& isContextMenuOpen)
 	}
 	else
 	{
-		bool nodeOpen = ImGui::TreeNodeEx(objectName.c_str(), 2240);
+		int flag = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		bool hasSelectedChild = object->childByID(m_client->getSelectObjectID(), true);
+		if (hasSelectedChild)
+			flag |= ImGuiTreeNodeFlags_DefaultOpen;
+		bool nodeOpen = ImGui::TreeNodeEx(objectName.c_str(), flag);
+		//ImGuiTreeNodeFlags_Selected
 		if (!isContextMenuOpen && ImGui::BeginPopupContextItem())
 		{
 		   // your popup code
@@ -283,14 +299,19 @@ void MainGUI::_onGUIObject(Object* const object, bool& isContextMenuOpen)
 		{
 			m_client->setSelectObject(object);
 		}
-		if (nodeOpen)
+
+
+		if (nodeOpen || hasSelectedChild)
 		{
 			for (int i = 0; i < object->childCount(); ++i)
 			{
 				_onGUIObject(object->child(i), isContextMenuOpen);
 			}
-			ImGui::TreePop();
+			//ImGui::TreePop();
 		}
+
+		if (nodeOpen)
+			ImGui::TreePop();
 	}
 
 }
@@ -324,18 +345,28 @@ void MainGUI::_processGizmo()
 	Camera*				camera				= m_client->getCamera();
 	const scl::matrix&	viewMatrix			= camera->viewMatrix();
 	const scl::matrix&	projectionMatrix	= camera->projectionMatrix();
-	scl::matrix			transform			= object->matrix();
+	scl::matrix			transform			= object->globalMatrix();
 
-	gizmo::OPERATION operation = _operateTypeToGizmo(m_client->getOperateType());
+	gizmo::OPERATION	operation			= _operateTypeToGizmo(m_client->getOperateType());
 	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::LOCAL, transform.ptr());
 	if (!gizmo::IsUsing())
 		return;
+
+	scl::matrix			parentMatrix		= object->parentGlobalMatrix();
+	scl::matrix			inverseParentMatrix;
+	if (!scl::matrix::inverse(parentMatrix, inverseParentMatrix))
+	{
+		log_error << "object's parent has no inverse matrix. id = " << object->id() << ", name = " << object->name().c_str();
+		return;
+	}
+
+	scl::matrix			localTransform		= inverseParentMatrix * transform;
 
 	vector3				translate			= { 0 };
 	vector3				scale				= { 0 };
 	quaternion			rotate				= { 0 };
 
-	matrix::decompose(transform, &translate, &scale, NULL, NULL, &rotate);
+	matrix::decompose(localTransform, &translate, &scale, NULL, NULL, &rotate);
 	
 	object->setMove(translate);
 	object->setScale(scale);
@@ -357,22 +388,36 @@ void MainGUI::_showWindowProperty()
 
 	// TODO 现在还无法直接修改 matrix，可以直接使用 decompose 修改
 	scl::matrix transform = object->matrix();
-	ui::inputMatrix4("transform", transform);
+	ui::inputMatrix4("Transform", transform);
 
 	// position
 	scl::vector3 pos = object->position();
-	ui::inputFloat3("position", pos);
+	ui::inputFloat3("Position", pos);
 	object->setPosition(pos);
 
 	// scale
 	scl::vector3 scale = object->scale();
-	ui::inputFloat3("scale", scale);
+	ui::inputFloat3("Scale", scale);
 	object->setScale(scale);
 
 	// rotate
 	scl::vector3 rotate = object->rotateAngle();
-	ui::inputFloat3("rotate", rotate);
+	ui::inputFloat3("Rotate", rotate);
 	object->setRotateAngle(rotate);
+
+	// enable skin
+	bool enableSkin = object->isEnableSkin();
+	ui::checkbox("Enable Skin", enableSkin);
+	object->setEnableSkin(enableSkin);
+
+	// gltf index
+	string16 gltfIndex;
+	gltfIndex.from_int(object->gltfIndex());
+	ui::labelText("Gltf Index", gltfIndex.c_str());
+
+	bool enableAnimation = object->isEnableAnimation();
+	ui::checkbox("Enable Animation", enableAnimation);
+	object->setEnableAnimation(enableAnimation);
 
 	ImGui::End();
 }
@@ -461,6 +506,54 @@ void MainGUI::_showMenu()
     }
 }
 
+
+void MainGUI::_showToolbar()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    //ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+	//const float PAD = 10.0f;
+	//const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	//ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+	//ImVec2 work_size = viewport->WorkSize;
+	//ImVec2 window_pos, window_pos_pivot;
+	//window_pos.x = work_pos.x + work_size.x - PAD;
+	//window_pos.y = work_pos.y + work_size.y - PAD;
+	//window_pos_pivot.x = 1.0f;
+	//window_pos_pivot.y = 1.0f;
+	//ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+	//ImGui::SetNextWindowViewport(viewport->ID);
+	//window_flags |= ImGuiWindowFlags_NoMove;
+    //else if (location == -2)
+    //{
+    //    // Center window
+    //    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    //    window_flags |= ImGuiWindowFlags_NoMove;
+    //}
+    ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+    if (ImGui::Begin("Example: Simple overlay", NULL, window_flags))
+    {
+		//ui::checkbox("showDemoWindow",			config.showDemoWindow);
+        //ImGui::Text("Simple overlay\n" "(right-click to change position)");
+        //ImGui::Separator();
+        //if (ImGui::IsMousePosValid())
+        //    ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
+        //else
+        //    ImGui::Text("Mouse Position: <invalid>");
+        //if (ImGui::BeginPopupContextWindow())
+        //{
+        //    if (ImGui::MenuItem("Custom",       NULL, location == -1)) location = -1;
+        //    if (ImGui::MenuItem("Center",       NULL, location == -2)) location = -2;
+        //    if (ImGui::MenuItem("Top-left",     NULL, location == 0)) location = 0;
+        //    if (ImGui::MenuItem("Top-right",    NULL, location == 1)) location = 1;
+        //    if (ImGui::MenuItem("Bottom-left",  NULL, location == 2)) location = 2;
+        //    if (ImGui::MenuItem("Bottom-right", NULL, location == 3)) location = 3;
+        //    //if (p_open && ImGui::MenuItem("Close")) *p_open = false;
+        //    ImGui::EndPopup();
+        //}
+    }
+    ImGui::End();
+}
 
 void MainGUI::_showWindowConfig()
 {

@@ -15,7 +15,7 @@ class ShaderCache
 public:
 	~ShaderCache();
 
-	Shader* getShader(const char* const vsFilename, const char* const fsFilename, ShaderMacro* macros, int macroCount);
+	Shader* getShader(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, int macroCount);
 
 private:
 	//scl::tree<unsigned int, void*> m_deviceShaderMap;

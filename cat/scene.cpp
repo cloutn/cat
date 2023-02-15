@@ -29,6 +29,8 @@ void Scene::load(cgltf_scene& scene, const char* const path, Env* env)
 {
 	m_env = env;
 
+	m_env->clearGltfNodeMap();
+
 	for (size_t i = 0; i < scene.nodes_count; ++i)
 	{
 		assert(NULL != scene.nodes);
@@ -106,6 +108,26 @@ Object* Scene::findObject(const char* const objectName)
 		Object* child = object->child(objectName);
 		if (NULL != child)
 			return child;
+	}
+	return NULL;
+}
+
+cat::Object* Scene::objectByID(const int id, bool recursive)
+{
+	if (id < 0)
+		return NULL;
+
+	for (int i = 0; i < m_objects.size(); ++i)
+	{
+		Object* object = m_objects[i];
+		if (object->id() == id)
+			return object;
+		if (recursive)
+		{
+			Object* child = object->childByID(id, true);
+			if (NULL != child)
+				return child;
+		}
 	}
 	return NULL;
 }

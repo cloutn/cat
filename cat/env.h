@@ -26,7 +26,7 @@ public:
 
 	IRender*			render					() { return m_render; }
 	void				setRender				(IRender* v) { m_render = v; }
-	Shader*				getShader				(const char* const vsFilename, const char* const fsFilename, ShaderMacro* macros, const int macroCount);
+	Shader*				getShader				(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, const int macroCount);
 	void				setDefaultShader		(const char* const vsFilename, const char* const fsFilename);
 	Shader*				getDefaultShader		();
 	void				setDefaultMaterial		(const char* const textureFilename);

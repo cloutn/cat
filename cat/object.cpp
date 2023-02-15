@@ -30,8 +30,10 @@ Object::Object(Object* parent) :
 	m_mesh					(NULL),
 	m_skin					(NULL),
 	m_matrixWithAnimation	(NULL),
-	//m_baseTransform				(NULL),
-	m_transform	(NULL)
+	m_transform				(NULL),
+	m_enableSkin			(false),
+	m_gltfIndex				(-1),
+	m_enableAnimation		(true)
 {
 	_objectIDMap().add(this);
 }
@@ -41,7 +43,6 @@ Object::~Object()
 	safe_delete(m_skin);
 	safe_delete(m_mesh);
 	safe_delete(m_transform);
-	//safe_delete(m_baseTransform);
 	safe_delete(m_matrixWithAnimation);
 
 	for (int i = 0; i < m_childs.size(); ++i)
@@ -74,22 +75,18 @@ void Object::loadNode(cgltf_node* node, const char* const path, IRender* render,
 	if (node->has_translation)
 	{
 		_transform()->setMove({ node->translation[0], node->translation[1], node->translation[2] });
-		//_transform()->setMove({ node->translation[0], node->translation[1], node->translation[2] });
 	}
 	if (node->has_scale)
 	{
 		_transform()->setScale({ node->scale[0], node->scale[1], node->scale[2] });
-		//_transform()->setScale({ node->scale[0], node->scale[1], node->scale[2] });
 	}
 	if (node->has_rotation)
 	{
 		_transform()->setRotate({ node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] });
-		//_transform()->setRotate({ node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] });
 	}
 	if (node->has_matrix)
 	{
 		_transform()->setByMatrix(
-		//_transform()->setByMatrix(
 			{
 				node->matrix[0],	node->matrix[1],	node->matrix[2],	node->matrix[3],
 				node->matrix[4],	node->matrix[5],	node->matrix[6],	node->matrix[7],
@@ -114,7 +111,7 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 {
 	scl::matrix*	jointMatrices		= NULL;
 	int				jointMatrixCount	= 0;
-	if (NULL != m_skin)
+	if (NULL != m_skin && isEnableSkin())
 	{
 		scl::matrix mat = globalMatrix();
 		scl::matrix inverse;
@@ -153,40 +150,13 @@ scl::matrix Object::globalMatrix()
 	return result;
 }
 
-//const scl::matrix& Object::matrixWithAnimation()
-//{
-//	if (NULL == m_matrixWithAnimation)
-//		m_matrixWithAnimation = new scl::matrix();
-//
-//	*m_matrixWithAnimation = _transform()->matrix();
-//	//*m_matrixWithAnimation = matrix::identity();
-//	const scl::matrix& _matrix = _baseTransform()->matrix();
-//	m_matrixWithAnimation->mul(_matrix);
-//
-//	return *m_matrixWithAnimation;
-//}
+scl::matrix Object::parentGlobalMatrix()
+{
+	if (NULL == m_parent)
+		return scl::matrix::identity();
 
-//scl::matrix Object::globalMatrixWithAnimation()
-//{
-//	scl::matrix result = matrixWithAnimation();
-//	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalMatrixWithAnimation();
-//	result.mul(parentMatrix);
-//	return result;
-//}
-
-//const scl::matrix& Object::animationMatrix()
-//{
-//	const scl::matrix& mat = _transform()->matrix();
-//	return mat;
-//}
-
-//scl::matrix Object::globalAnimationMatrix()
-//{
-//	scl::matrix result = animationMatrix();
-//	scl::matrix parentMatrix = (NULL == m_parent) ? scl::matrix::identity() : m_parent->globalAnimationMatrix();
-//	result.mul(parentMatrix);
-//	return result;
-//}
+	return m_parent->globalMatrix();
+}
 
 void Object::loadSkin(cgltf_node* node, Env* env)
 {
@@ -195,6 +165,7 @@ void Object::loadSkin(cgltf_node* node, Env* env)
 		assert(NULL == m_skin);
 		m_skin = new Skin;
 		m_skin->load(node->skin, env);
+		m_enableSkin = true;
 	}
 	for (int i = 0; i < m_childs.size(); ++i)
 	{
@@ -234,22 +205,6 @@ ObjectIDMap<Object>& Object::_objectIDMap()
 	}
 	return *s_objectIDMap;
 }
-
-
-//void Object::setRotate(const scl::quaternion& v)
-//{
-//	_baseTransform()->setRotate(v);
-//}
-//
-//void Object::setScale(const scl::vector3& v)
-//{
-//	_baseTransform()->setScale(v);
-//}
-//
-//void Object::setMove(const scl::vector3& v)
-//{
-//	_baseTransform()->setMove(v);
-//}
 
 void Object::setRotate(const scl::quaternion& v)
 {
@@ -294,6 +249,22 @@ scl::vector3 Object::rotateRadian()
 	return radian;
 }
 
+void Object::setEnableSkin(const bool enable)
+{
+	if (enable == m_enableSkin)
+		return;
+
+	if (NULL == m_mesh)
+		return;
+
+	if (NULL == m_skin)
+		return;
+
+	m_enableSkin = enable;
+
+	m_mesh->setEnableSkin(enable);
+}
+
 scl::vector3 Object::rotateAngle()
 {
 	scl::quaternion q = rotate();
@@ -301,13 +272,6 @@ scl::vector3 Object::rotateAngle()
 	q.to_euler_angle(angle);
 	return angle;
 }
-
-//Transform* Object::_baseTransform()
-//{
-//	if (NULL == m_baseTransform)	
-//		m_baseTransform = new Transform;
-//	return m_baseTransform;
-//}
 
 Transform* Object::_transform()
 {
@@ -338,5 +302,27 @@ Object* Object::child(const char* const objectName)
 }
 
 
+Object* Object::childByID(const int id, bool recursive)
+{
+	if (id < 0)
+		return NULL;
+
+	for (int i = 0; i < m_childs.size(); ++i)
+	{
+		Object* object = m_childs[i];
+		if (object->id() == id)
+			return object;
+		if (recursive)
+		{
+			Object* child = object->childByID(id, true);
+			if (NULL != child)
+				return child;
+		}
+	}
+	return NULL;
+}
+
+
 } // namespace cat {
+
 

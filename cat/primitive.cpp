@@ -35,10 +35,10 @@ Primitive::Primitive() :
 	m_primitiveType				(cat::PRIMITIVE_TYPE_POINTS),
 	m_material					(NULL),
 	m_shader					(NULL),
+	m_shaderMacros				(NULL),
 	m_pickShader				(NULL),
 	m_parent					(NULL)
 {
-
 }
 
 Primitive::~Primitive()
@@ -139,6 +139,7 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 	delete[] buffer;
 }
 
+
 void Primitive::load(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env)
 {
 	if (NULL == data)
@@ -176,7 +177,11 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 
 	//ShaderMacro macros[128];
 	//int			macroCount = 0;
+	m_shaderMacros = new ShaderMacroArray();
+
+	//ShaderMacroArray& macros = *m_shaderMacros;
 	ShaderMacroArray macros;
+	macros.clear();
 
 	assert(NULL == m_shader);
 
@@ -213,12 +218,18 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 		macros.add("COLOR");
 	}
 
-	m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
+	loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, true);
+	//m_vsShaderFilename = "object.vert";
+	//m_psShaderFilename = "object.frag";
 
-	macros.remove("COLOR");
-	macros.remove("TEXTURE");
-	macros.add("PICK");
-	m_pickShader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag",  macros.data(), macros.size());
+	//m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
+
+	//ShaderMacroArray pickMacros;
+	//pickMacros.assign(macros);
+	//pickMacros.remove("COLOR");
+	//pickMacros.remove("TEXTURE");
+	//pickMacros.add("PICK");
+	//m_pickShader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag",  pickMacros.data(), pickMacros.size());
 }
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
@@ -275,6 +286,8 @@ bool _isInArray(T* array, int lastIndex, T buf)
 
 void Primitive::release()
 {
+	safe_delete(m_shaderMacros);
+
 	if (NULL != m_deviceIndexBuffer)
 	{
 		//if (0 == G.refCounter.DecRef(m_deviceIndexBuffer))
@@ -303,6 +316,7 @@ void Primitive::release()
 	safe_delete(m_material);
 	m_attrCount = 0;
 }
+
 
 void Primitive::loadMemory(
 	void*				indices,
@@ -363,25 +377,68 @@ void Primitive::loadMemory(
 	m_shader = shader;
 }
 
-void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, ShaderMacroArray& macros)
-{
-	if (NULL != m_shader)
-	{
-		assert(false);
-		return;
-	}
-	m_shader = m_env->getShader(vs_filename, ps_filename, macros.data(), macros.size());
+//void Primitive::setShader(const char* const vsFilename, const char* const psFilename, const ShaderMacro* macros, const int shaderMacroCount)
+//{
+//
+//}
 
-	macros.add("PICK");
-	m_pickShader = m_env->getShader(vs_filename, ps_filename, macros.data(), macros.size());
+
+void Primitive::_loadShader(bool updatePickShader)
+{
+	m_shader = m_env->getShader(m_vsShaderFilename.c_str(), m_psShaderFilename.c_str(), m_shaderMacros->data(), m_shaderMacros->size());
+
+	if (updatePickShader)
+	{
+		ShaderMacroArray pickMacros;
+		pickMacros.assign(*m_shaderMacros);
+		pickMacros.remove("COLOR");
+		pickMacros.remove("TEXTURE");
+		pickMacros.add("PICK");
+		m_pickShader = m_env->getShader(m_vsShaderFilename.c_str(), m_psShaderFilename.c_str(), pickMacros.data(), pickMacros.size());
+	}
 }
 
-void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, ShaderMacro* macros, const int macroCount)
+void Primitive::loadShader(const char* const vsFilename, const char* const psFilename, const ShaderMacroArray& macros, bool updatePickShader)
 {
-	ShaderMacroArray macroArray;
-	for (int i = 0; i < macroCount; ++i)
-		macroArray.add(macros[i]);
-	loadShader(vs_filename, ps_filename, macroArray);
+	//if (NULL != m_shader)
+	//{
+	//	assert(false);
+	//	return;
+	//}
+	m_vsShaderFilename = vsFilename;
+	m_psShaderFilename = psFilename;
+	if (NULL == m_shaderMacros)
+		m_shaderMacros = new ShaderMacroArray();
+
+	m_shaderMacros->assign(macros);
+
+	_loadShader(updatePickShader);
+}
+
+//void Primitive::loadShader()
+//{
+//	string512 vsPath = SHADER_PATH;
+//	vsPath += m_vsShaderFilename.c_str();
+//
+//	string512 psPath = SHADER_PATH;
+//	psPath += m_psShaderFilename.c_str();
+//
+//	loadShader(vsPath.c_str(), psPath.c_str(), *m_shaderMacros);
+//}
+
+//void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, const ShaderMacro* macros, const int macroCount, bool updatePickShader)
+//{
+//	ShaderMacroArray macroArray;
+//	for (int i = 0; i < macroCount; ++i)
+//		macroArray.add(macros[i]);
+//	loadShader(vs_filename, ps_filename, macroArray, updatePickShader);
+//}
+
+void Primitive::loadShader(const ShaderMacroArray& macros, bool updatePickShader)
+{
+	m_shaderMacros->assign(macros);
+
+	_loadShader(updatePickShader);
 }
 
 void Primitive::setTexture(const char* const filename)

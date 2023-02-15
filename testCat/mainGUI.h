@@ -48,6 +48,7 @@ private:
 	void	_showWindowDeviceInfo		();
 	void	_showWindowConfig			();
 	void	_showMenu					();
+	void	_showToolbar				();
 
 	void	_onGUIScene					(const int sceneIndex, bool& isContextMenuOpen);
 	void	_onGUIObject				(Object* const object, bool& isContextMenuOpen);

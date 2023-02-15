@@ -3,6 +3,7 @@
 
 #include "cat/IRender.h"
 #include "cat/material.h"
+#include "cat/shaderMacro.h"
 
 //#include "scl/assert.h"
 
@@ -66,5 +67,26 @@ void Mesh::addPrimitive(Primitive* p)
 }
 
 
+void Mesh::setEnableSkin(bool enable)
+{
+	for (int i = 0; i < m_primitives.size(); ++i)
+	{
+		Primitive* primitive = m_primitives[i];
+		if (NULL == primitive)
+			continue;
+
+		ShaderMacroArray macros;
+		macros.assign(primitive->shaderMacros());
+
+		if (enable)
+			macros.add("SKIN");
+		else
+			macros.remove("SKIN");
+		primitive->loadShader(macros);
+	}
+}
+
+
 } // namespace cat
+
 

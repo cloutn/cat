@@ -36,41 +36,38 @@ public:
 	void						draw						(const scl::matrix& mvp, bool isPick, IRender* render);
 	const scl::matrix&			matrix						();
 	scl::matrix					globalMatrix				();
-	//const scl::matrix&			matrixWithAnimation			();
-	//scl::matrix					globalMatrixWithAnimation	();
-	//const scl::matrix&			animationMatrix				();
-	//scl::matrix					globalAnimationMatrix		();
+	scl::matrix					parentGlobalMatrix			();
 	const String&				name						() const { return m_name; }
 	void						setName						(const char* const name) { m_name = name; }
 	int							id							() const { return m_id; }
 	const scl::varray<Object*>	childs						() const { return m_childs; }
 	int							childCount					() const { return m_childs.size(); }
 	Object*						child						(int index) { return m_childs[index]; }
-	const Object*				child_const					(int index) const { return m_childs[index]; }
+	const Object*				childConst					(int index) const { return m_childs[index]; }
 	Object*						child						(const char* const objectName);
-
-	// static 
-	static Object*				objectByID					(const int id) { return _objectIDMap().get(id); }
-	static void					releaseObjectIDMap			();
-
-	//void						setRotate					(const scl::quaternion& v);
-	//void						setScale					(const scl::vector3& v);
-	//void						setMove						(const scl::vector3& v);
-
+	Object*						childByID					(const int id, bool recursive = false);
 	void						setRotate					(const scl::quaternion& v);
 	void						setRotateAngle				(const scl::vector3& v);
 	void						setScale					(const scl::vector3& v);
 	void						setMove						(const scl::vector3& v);
 	void						setPosition					(const scl::vector3& v) { setMove(v); }
-
 	scl::vector3				position					();	
 	scl::vector3				scale						();
 	scl::quaternion				rotate						();
 	scl::vector3				rotateAngle					();
 	scl::vector3				rotateRadian				();
+	bool						isEnableSkin				() const { return m_enableSkin; }
+	void						setEnableSkin				(const bool enable);
+	int							gltfIndex					() const { return m_gltfIndex; }
+	void						setGltfIndex				(const int v) { m_gltfIndex = v; }
+	bool						isEnableAnimation			() const { return m_enableAnimation; }
+	void						setEnableAnimation			(const bool v) { m_enableAnimation = v; }
+
+	// static 
+	static Object*				objectByID					(const int id) { return _objectIDMap().get(id); }
+	static void					releaseObjectIDMap			();
 
 private:
-	//Transform*					_baseTransform				();
 	Transform*					_transform					();
 
 private:
@@ -84,12 +81,16 @@ private:
 	Skin*						m_skin;
 	scl::varray<Object*>		m_childs;
 	scl::matrix*				m_matrixWithAnimation;
-	//Transform*					m_baseTransform;
 	Transform*					m_transform;
 	String						m_name;
+	bool						m_enableSkin;
+	int							m_gltfIndex;
+	bool						m_enableAnimation;
 
 };  // class Object 
 
-} // namespace cat {
+
+} // namespace cat
+
 
 

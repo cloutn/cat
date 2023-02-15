@@ -23,14 +23,15 @@ public:
 	Scene();
 	~Scene();
 	
-	void						load		(cgltf_scene& scene, const char* const path, Env* env);
-	void						save		(const char* const filename);
+	void						load			(cgltf_scene& scene, const char* const path, Env* env);
+	void						save			(const char* const filename);
 
-	const scl::varray<Object*>	objects		() const { return m_objects; }
-	int							objectCount	() const { return m_objects.size(); }
-	Object*						object		(const int index) { return m_objects[index]; }
-	void						draw		(const scl::matrix& mvp, bool isPick, IRender* render);
-	Object*						findObject	(const char* const objectName);
+	const scl::varray<Object*>	objects			() const { return m_objects; }
+	int							objectCount		() const { return m_objects.size(); }
+	Object*						object			(const int index) { return m_objects[index]; }
+	void						draw			(const scl::matrix& mvp, bool isPick, IRender* render);
+	Object*						findObject		(const char* const objectName);
+	Object*						objectByID		(const int id, bool recursive = false);
 
 private:
 	Env*						m_env;
