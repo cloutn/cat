@@ -342,35 +342,57 @@ void MainGUI::_processGizmo()
 	gizmo::SetOrthographic	(false);	
 	gizmo::SetRect			(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
 
-	Camera*				camera				= m_client->getCamera();
-	const scl::matrix&	viewMatrix			= camera->viewMatrix();
-	const scl::matrix&	projectionMatrix	= camera->projectionMatrix();
-	scl::matrix			transform			= object->globalMatrix();
-
-	gizmo::OPERATION	operation			= _operateTypeToGizmo(m_client->getOperateType());
-	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::LOCAL, transform.ptr());
-	if (!gizmo::IsUsing())
-		return;
-
-	scl::matrix			parentMatrix		= object->parentGlobalMatrix();
-	scl::matrix			inverseParentMatrix;
+	Camera*					camera				= m_client->getCamera();
+	const scl::matrix&		viewMatrix			= camera->viewMatrix();
+	const scl::matrix&		projectionMatrix	= camera->projectionMatrix();
+	const TRANSFORM_TYPE	transformType		= m_client->transformType();
+	scl::matrix				transform			= object->globalMatrix();
+	gizmo::OPERATION		operation			= _operateTypeToGizmo(m_client->getOperateType());
+	scl::matrix				parentMatrix		= object->parentGlobalMatrix();
+	scl::matrix				inverseParentMatrix;
 	if (!scl::matrix::inverse(parentMatrix, inverseParentMatrix))
 	{
 		log_error << "object's parent has no inverse matrix. id = " << object->id() << ", name = " << object->name().c_str();
 		return;
 	}
 
-	scl::matrix			localTransform		= inverseParentMatrix * transform;
+	if (TRANSFORM_TYPE_LOCAL == transformType)
+	{
+		log_info << "moving local";
+		scl::matrix				_localPrevTransform = object->matrix();
+		scl::vector3			_localPrevPosition	= object->position();
 
-	vector3				translate			= { 0 };
-	vector3				scale				= { 0 };
-	quaternion			rotate				= { 0 };
+		gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::LOCAL, transform.ptr());
+		if (!gizmo::IsUsing())
+			return;
 
-	matrix::decompose(localTransform, &translate, &scale, NULL, NULL, &rotate);
-	
-	object->setMove(translate);
-	object->setScale(scale);
-	object->setRotate(rotate);
+		scl::matrix			localTransform		= transform * inverseParentMatrix;
+
+		vector3				translate			= { 0 };
+		vector3				scale				= { 0 };
+		quaternion			rotate				= { 0 };
+
+		matrix::decompose(localTransform, &translate, &scale, NULL, NULL, &rotate);
+		//printf("before local transform : = %.3f, %.3f, %.3f\n", _localPrevPosition.x, _localPrevPosition.y, _localPrevPosition.z);
+		//printf("after local transform : = %.3f, %.3f, %.3f\n----------\n", translate.x, translate.y, translate.z);
+		
+		object->setMove(translate);
+		object->setScale(scale);
+		object->setRotate(rotate);
+	}
+	else if (TRANSFORM_TYPE_GLOBAL == transformType)
+	{
+		log_info << "moving global";
+		scl::vector3		globalPos			= scl::matrix::extract_move(transform);
+		scl::matrix			transformMove		= scl::matrix::move(globalPos.x, globalPos.y, globalPos.z);
+		gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), operation, gizmo::WORLD, transformMove.ptr());
+		if (!gizmo::IsUsing())
+			return;
+
+		scl::matrix			localTransform		= transformMove * inverseParentMatrix;
+		vector3				localMove			= localTransform.extract_move();
+		object->setMove(localMove);
+	}
 }
 
 void MainGUI::_showWindowProperty()
@@ -510,47 +532,17 @@ void MainGUI::_showMenu()
 void MainGUI::_showToolbar()
 {
     ImGuiIO& io = ImGui::GetIO();
-    //ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-	//const float PAD = 10.0f;
-	//const ImGuiViewport* viewport = ImGui::GetMainViewport();
-	//ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-	//ImVec2 work_size = viewport->WorkSize;
-	//ImVec2 window_pos, window_pos_pivot;
-	//window_pos.x = work_pos.x + work_size.x - PAD;
-	//window_pos.y = work_pos.y + work_size.y - PAD;
-	//window_pos_pivot.x = 1.0f;
-	//window_pos_pivot.y = 1.0f;
-	//ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-	//ImGui::SetNextWindowViewport(viewport->ID);
-	//window_flags |= ImGuiWindowFlags_NoMove;
-    //else if (location == -2)
-    //{
-    //    // Center window
-    //    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    //    window_flags |= ImGuiWindowFlags_NoMove;
-    //}
-    ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+    ImGui::SetNextWindowBgAlpha(0.35f); 
     if (ImGui::Begin("Example: Simple overlay", NULL, window_flags))
     {
-		//ui::checkbox("showDemoWindow",			config.showDemoWindow);
-        //ImGui::Text("Simple overlay\n" "(right-click to change position)");
-        //ImGui::Separator();
-        //if (ImGui::IsMousePosValid())
-        //    ImGui::Text("Mouse Position: (%.1f,%.1f)", io.MousePos.x, io.MousePos.y);
-        //else
-        //    ImGui::Text("Mouse Position: <invalid>");
-        //if (ImGui::BeginPopupContextWindow())
-        //{
-        //    if (ImGui::MenuItem("Custom",       NULL, location == -1)) location = -1;
-        //    if (ImGui::MenuItem("Center",       NULL, location == -2)) location = -2;
-        //    if (ImGui::MenuItem("Top-left",     NULL, location == 0)) location = 0;
-        //    if (ImGui::MenuItem("Top-right",    NULL, location == 1)) location = 1;
-        //    if (ImGui::MenuItem("Bottom-left",  NULL, location == 2)) location = 2;
-        //    if (ImGui::MenuItem("Bottom-right", NULL, location == 3)) location = 3;
-        //    //if (p_open && ImGui::MenuItem("Close")) *p_open = false;
-        //    ImGui::EndPopup();
-        //}
+		bool isLocalTransform = m_client->transformType() == TRANSFORM_TYPE_LOCAL;
+		ImGui::Checkbox("local", &isLocalTransform);
+		m_client->setTransformType(isLocalTransform ? TRANSFORM_TYPE_LOCAL : TRANSFORM_TYPE_GLOBAL);
+
+		ImGui::SameLine();
+		bool test2 = true;
+		ImGui::Checkbox("test2", &test2);
     }
     ImGui::End();
 }

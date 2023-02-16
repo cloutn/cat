@@ -137,6 +137,10 @@ public:
 	//求逆矩阵
 	static bool		inverse					(scl::matrix& m, scl::matrix& result);
 
+	//
+	static vector3	extract_move			(scl::matrix& m);
+	vector3			extract_move			();
+
 	//求一个矩阵对应的缩放、旋转、平移
 	static bool		decompose				(const scl::matrix& m, scl::vector3* translate, scl::vector3* scale, scl::vector3* rotateEuler, scl::matrix* rotateMatrix, scl::quaternion* rotateQuaternion);
 

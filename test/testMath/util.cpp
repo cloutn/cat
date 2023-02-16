@@ -3,19 +3,11 @@
 
 #include "scl/math.h"
 #include "scl/matrix.h"
+#include "scl/quaternion.h"
+#include "scl/vector.h"
 
-
-//#include <glm/vec3.hpp> // glm::vec3
-//#include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
-//#include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
-//#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
-//#include <glm/ext/scalar_constants.hpp> // glm::pi
-//#include <glm/gtx/euler_angles.hpp>
-//#include <glm/trigonometric.hpp>
 #include <glm/gtc/type_ptr.hpp>
-//#include <glm/gtx/matrix_decompose.hpp>
-//#include <glm/gtx/quaternion.hpp>
 
 #include <stdio.h>
 
@@ -31,6 +23,15 @@ void _print(const float* m)
 	}
 }
 
+//void _print_float4(const float* m)
+//{
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		printf("%.2\t", m[i]);
+//	}
+//	printf("\n");
+//}
+
 void print(const scl::matrix& m)
 {
 	_print(m.ptr());
@@ -39,6 +40,26 @@ void print(const scl::matrix& m)
 void print(const glm::mat4& m)
 {
 	_print(glm::value_ptr(m));
+}
+
+void print(const glm::quat& q)
+{
+	printf("xyzw = %.3f\t%.3f\t%.3f\t%.3f\n", q.x, q.y, q.z, q.w);
+}
+
+void print(const scl::quaternion& q)
+{
+	printf("xyzw = %.3f\t%.3f\t%.3f\t%.3f\n", q.x, q.y, q.z, q.w);
+}
+
+void print(const glm::vec3& v)
+{
+	printf("xyz = %.3f\t%.3f\t%.3f\n", v.x, v.y, v.z);
+}
+
+void print(const scl::vector3& v)
+{
+	printf("xyz = %.3f\t%.3f\t%.3f\n", v.x, v.y, v.z);
 }
 
 bool mat_equal(const float* m1, const float* m2)
@@ -50,6 +71,40 @@ bool mat_equal(const float* m1, const float* m2)
 	}
 	return true;
 }
+
+bool quat_equal(const glm::quat& q1, const scl::quaternion& q2)
+{
+	if (!scl::float_equal(q1.x, q2.x))
+		return false;
+	if (!scl::float_equal(q1.y, q2.y))
+		return false;
+	if (!scl::float_equal(q1.z, q2.z))
+		return false;
+	if (!scl::float_equal(q1.w, q2.w))
+		return false;
+	return true;
+}
+
+bool vector3_equal(const glm::vec3& q1, const scl::vector3& q2)
+{
+	if (!scl::float_equal(q1.x, q2.x))
+		return false;
+	if (!scl::float_equal(q1.y, q2.y))
+		return false;
+	if (!scl::float_equal(q1.z, q2.z))
+		return false;
+	return true;
+}
+
+//bool float_equal4(const float* f1, const float* f2)
+//{
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		if (!scl::float_equal(f1[i], f2[i]))
+//			return false;
+//	}
+//	return true;
+//}
 
 bool compare_mat(const scl::matrix& mat1, const glm::mat4& mat2, bool needPrint)
 {
@@ -81,6 +136,46 @@ bool compare_mat(const scl::matrix& mat1, const scl::matrix& mat2, bool needPrin
 		printf("%s\n", equal ? "Equal." : "NOT equal.");
 	}
 	return equal;
+}
+
+bool compare_quat(const glm::quat& quat1, const scl::quaternion& quat2, bool needPrint)
+{
+	bool equal = quat_equal(quat1, quat2);
+	if (needPrint)
+	{
+		printf("glm quat: \n");
+		print(quat1);
+		printf("------------------\n");
+		printf("scl quat: \n");
+		print(quat2);
+		printf("------------------\n");
+		printf("%s\n", equal ? "Equal." : "NOT equal.");
+	}
+	return equal;
+}
+
+bool compare_vector3(const glm::vec3& vec1, const scl::vector3& vec2, bool needPrint)
+{
+	bool equal = vector3_equal(vec1, vec2);
+	if (needPrint)
+	{
+		printf("glm vec3: \n");
+		print(vec1);
+		printf("------------------\n");
+		printf("scl vec3: \n");
+		print(vec2);
+		printf("------------------\n");
+		printf("%s\n", equal ? "Equal." : "NOT equal.");
+	}
+	return equal;
+}
+
+bool float3_euqal(const float* v1, const float* v2)
+{
+	for (int i = 0; i < 3; ++i)
+		if (!scl::float_equal(v1[i], v2[i]))
+			return false;
+	return true;
 }
 
 } // namespace test 

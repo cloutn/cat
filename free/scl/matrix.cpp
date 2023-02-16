@@ -662,6 +662,16 @@ bool matrix::inverse(matrix& m, matrix& result)
 }
 
 
+vector3 matrix::extract_move(scl::matrix& m)
+{
+	return { m.x4, m.y4, m.z4 };
+}
+
+vector3 matrix::extract_move()
+{
+	return extract_move(*this);
+}
+
 void matrix::decompose_rotation_xyz_radian(const matrix& m, scl::vector3& euler)
 {
 	euler.y		= atan2(-m.z1, sqrt(m.x1*m.x1 + m.y1*m.y1));

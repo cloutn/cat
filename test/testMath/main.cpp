@@ -5,6 +5,7 @@
 int main()
 {
 	test::test_rotate		(false);
+	test::test_rotate2		(false);
 	test::test_rotate_order	(false);
 	test::test_matrix_mul	(false);
 	test::test_camera		(false);

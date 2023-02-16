@@ -200,15 +200,42 @@ void quaternion::from_euler_radian(const float _x, const float _y, const float _
 
 void quaternion::to_euler_radian(float& _x, float& _y, float& _z) const
 {
-	float ay	= 2 * (w*z + x*y);
-	float ax	= 1 - 2 * (z*z + x*x);
-	float b		= 2 * (w*x - y*z);
-	float cy	= 2 * (w*y + z*x);
-	float cx	= 1 - 2 * (x*x+y*y);
-	
-	_z = atan2f(ay, ax);
-	_x = asinf(b);
-	_y = atan2f(cy, cx);
+	// 算法：
+	// 从 quaternion::to_matrix		能得到矩阵和四元数的 xyzw 的关系
+	// 从 matrix::rotate_xyz_radian 能得到矩阵和欧拉角 xyz 关系
+	// 对比两个矩阵，能得到如下关系:
+	// z1 = -siny =  2*(x*z - w*y);
+	// z2 / z3 = sinx/cosx = 2*(y*z + w*x) / (1 - 2*(x*x + y*y)) //注意 cosy 不能为0
+	// y1 / x1 = sinz/cosz = 2*(x*y + w*z) / (1 - 2*(y*y + z*z)) //注意 cosy 不能为0
+
+	const float epsilon = 0.000001f;
+
+	float mat_z1 = -2*(x*z - w*y);
+	_y = asin(mat_z1);
+
+	float mat_z2 = 2*(y*z + w*x); 
+	float mat_z3 = 1 - 2*(x*x + y*y);
+	if (scl::float_equal(mat_z2, 0, epsilon) && scl::float_equal(mat_z3, 0, epsilon)) // glm code : quaternion.inl:34
+		_x =  2 * atan2(x, w);
+	else
+		_x = atan2(mat_z2, mat_z3);
+
+	float mat_y1 = 2*(x*y + w*z);
+	float mat_x1 = 1 - 2*(y*y + z*z);
+	if (scl::float_equal(mat_y1, 0, epsilon) && scl::float_equal(mat_x1, 0, epsilon)) // glm code : quaternion.inl:21
+		_z =  0;
+	else
+		_z = atan2(mat_y1, mat_x1);
+
+	//float ay	= 2 * (w*z + x*y);
+	//float ax	= 1 - 2 * (z*z + x*x);
+	//float b		= 2 * (w*x - y*z);
+	//float cy	= 2 * (w*y + z*x);
+	//float cx	= 1 - 2 * (x*x+y*y);
+	//
+	//_z = atan2f(ay, ax);
+	//_x = asinf(b);
+	//_y = atan2f(cy, cx);
 }
 
 void quaternion::to_euler_radian(scl::vector3& v) const

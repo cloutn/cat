@@ -32,8 +32,8 @@ public:
 	void	to_euler_radian		(scl::vector3& v) const;
 	void	to_euler_angle		(float& _x, float& y, float& z) const;
 	void	to_euler_angle		(scl::vector3&) const;
-	void	to_euler_radian2	(float& _rx, float& _ry, float& _rz) const;
-	void	to_euler_radian2	(scl::vector3& v) const;
+	//void	to_euler_radian2	(float& _rx, float& _ry, float& _rz) const;
+	//void	to_euler_radian2	(scl::vector3& v) const;
 	void	to_matrix			(matrix& matrix) const;
 	void	to_vector4			(vector4& v) const; //!!!the quaternion must have been normalized
 	void	reverse				() { x = -x; y = -y; z = -z; w = -w; }

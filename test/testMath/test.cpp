@@ -1,4 +1,4 @@
-﻿#include "./test.h"
+#include "./test.h"
 
 #include "./util.h"
 
@@ -54,6 +54,37 @@ void test_rotate(bool print)
 	q.to_matrix(qmat);
 
 	assert(compare_mat(qmat, sRotate ,print));
+}
+
+void test_rotate2(bool print)
+{
+	float		a[3]		= { -55.741806, 15.2314901, 24.8266335};
+
+	glm::vec3	gRadian		= glm::radians(glm::vec3{a[0], a[1], a[2]});
+	glm::mat4	gXYZ		= glm::eulerAngleZYX(gRadian.z, gRadian.y, gRadian.x);
+
+	matrix		sXYZ		= matrix::rotate_xyz(a[0], a[1], a[2]);
+	assert(compare_mat(sXYZ, gXYZ, print));
+
+	//float v1 = std::numeric_limits<float>::epsilon();
+
+	glm::quat	gQuat(gRadian);
+	quaternion	sQuat;
+	sQuat.from_euler_angle(a[0], a[1], a[2]);
+	assert(compare_quat(gQuat, sQuat, print));
+
+	scl::vector3 sEuler;
+	sQuat.normalize();
+
+	sQuat.to_euler_angle(sEuler);
+	glm::vec3 gEulerRadian = glm::eulerAngles(gQuat);
+	glm::vec3 gEuler { glm::degrees(gEulerRadian) };
+	assert(float3_euqal(glm::value_ptr(gEulerRadian), glm::value_ptr(gRadian)));
+	assert(float3_euqal(glm::value_ptr(gEuler), a));
+	assert(float3_euqal(&sEuler.x, a));
+
+	//glm::vec3 gEuler{ glm::degrees(glm::eulerAngles(gQuat)) };
+	assert(compare_vector3(gEuler, sEuler, print));
 }
 
 void test_matrix_mul(bool print)
