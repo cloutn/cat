@@ -362,19 +362,19 @@ void MainGUI::_operateLocal(Object* object, Camera* camera, OPERATE_TYPE operate
 	const scl::matrix&		projectionMatrix	= camera->projectionMatrix();
 	gizmo::OPERATION		gizmoOperation		= _operateTypeToGizmo(operateType);
 
-	scl::matrix				transform			= object->globalMatrix();
+	scl::matrix				matrix				= object->globalMatrix();
 	scl::matrix				inverseParentMatrix = object->parentGlobalMatrixInverse();
 
-	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::LOCAL, transform.ptr());
+	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::LOCAL, matrix.ptr());
 	if (!gizmo::IsUsing())
 		return;
 
-	scl::matrix				localTransform		= transform * inverseParentMatrix;
+	scl::matrix				localMatrix		= matrix * inverseParentMatrix;
 	vector3					translate			= { 0 };
 	vector3					scale				= { 0 };
 	quaternion				rotate				= { 0 };
 
-	matrix::decompose(localTransform, &translate, &scale, NULL, NULL, &rotate);
+	matrix::decompose(localMatrix, &translate, &scale, NULL, NULL, &rotate);
 
 	//printf("before local transform : = %.3f, %.3f, %.3f\n", _localPrevPosition.x, _localPrevPosition.y, _localPrevPosition.z);
 	//printf("after local transform : = %.3f, %.3f, %.3f\n----------\n", translate.x, translate.y, translate.z);
@@ -391,39 +391,42 @@ void MainGUI::_operateGlobal(Object* object, Camera* camera, OPERATE_TYPE operat
 	const scl::matrix&		projectionMatrix	= camera->projectionMatrix();
 	gizmo::OPERATION		gizmoOperation		= _operateTypeToGizmo(operateType);
 
-	scl::matrix				transform			= object->globalMatrix();
+	scl::matrix				matrix				= object->globalMatrix();
 	scl::matrix				parentMatrix		= object->parentGlobalMatrix();
 	scl::matrix				inverseParentMatrix = object->parentGlobalMatrixInverse();
-	scl::vector3			globalPos			= scl::matrix::extract_move(transform);
-	scl::matrix				afterTransform		= scl::matrix::move(globalPos.x, globalPos.y, globalPos.z);
+	scl::vector3			globalPos			= scl::matrix::extract_move(matrix);
+	scl::matrix				afterMatrix			= scl::matrix::move(globalPos.x, globalPos.y, globalPos.z);
 
-	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, afterTransform.ptr());
+	gizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, afterMatrix.ptr());
 	if (!gizmo::IsUsing())
 		return;
 
 	if (OPERATE_TYPE_TRANSLATE == m_client->operateType())
 	{
-		_operateGlobalTranslate(object, afterTransform, inverseParentMatrix);
+		_operateGlobalTranslate(object, afterMatrix, inverseParentMatrix);
 	}
 	else if (OPERATE_TYPE_ROTATE == m_client->operateType())
 	{
-		_operateGlobalRotate2(object, afterTransform, parentMatrix, inverseParentMatrix);	
+		_operateGlobalRotate2(object, afterMatrix, parentMatrix, inverseParentMatrix);	
 	}
 }
 
 
-void MainGUI::_operateGlobalTranslate(Object* object, scl::matrix afterTransform, const scl::matrix& inverseParentMatrix)
+void MainGUI::_operateGlobalTranslate(Object* object, scl::matrix afterMatrix, const scl::matrix& inverseParentMatrix)
 {
-	scl::matrix			localTransform		= afterTransform * inverseParentMatrix;
-	vector3				localMove			= localTransform.extract_move();
+	if (afterMatrix == matrix::identity())
+		return;
+
+	scl::matrix			localMatrix			= afterMatrix * inverseParentMatrix;
+	vector3				localMove			= localMatrix.extract_move();
 	object->setMove(localMove);
 }
 
-void MainGUI::_operateGlobalRotate(Object* object, scl::matrix afterTransform, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix)
+void MainGUI::_operateGlobalRotate(Object* object, scl::matrix afterMatrix, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix)
 {
-	afterTransform.set_move(0, 0, 0);
+	afterMatrix.set_move(0, 0, 0);
 	vector3				euler;
-	matrix::decompose_rotation_xyz_radian(afterTransform, euler);
+	matrix::decompose_rotation_xyz_radian(afterMatrix, euler);
 	vector3				globalPivot;
 	float				rotateRadian = 0;
 	if (!scl::float_equal(euler.x, 0))
@@ -484,15 +487,15 @@ void MainGUI::_operateGlobalRotate(Object* object, scl::matrix afterTransform, c
 //	}
 //}
 
-void MainGUI::_operateGlobalRotate2(Object* object, scl::matrix afterTransform, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix)
+void MainGUI::_operateGlobalRotate2(Object* object, scl::matrix afterMatrix, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix)
 {
-	if (afterTransform == matrix::identity())
+	if (afterMatrix == matrix::identity())
 		return;
 
 	//_print_matrix(afterTransform.ptr());
 
 	quaternion afterRotate;
-	matrix::decompose(afterTransform, NULL, NULL, NULL, NULL, &afterRotate);
+	matrix::decompose(afterMatrix, NULL, NULL, NULL, NULL, &afterRotate);
 	//printf("after Rotate xyzw = %f, %f, %f, %.9f\n", afterRotate.x, afterRotate.y, afterRotate.z, afterRotate.w);
 
 	scl::vector3	globalPivot = { 0 };
@@ -538,8 +541,8 @@ void MainGUI::_showWindowProperty()
 	object->setName(name.c_str());
 
 	// TODO 现在还无法直接修改 matrix，可以直接使用 decompose 修改
-	scl::matrix transform = object->matrix();
-	ui::inputMatrix4("Transform", transform);
+	scl::matrix mat = object->matrix();
+	ui::inputMatrix4("Transform", mat);
 
 	// position
 	scl::vector3 pos = object->position();
