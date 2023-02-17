@@ -204,6 +204,13 @@ matrix matrix::move(float dx, float dy, float dz)
 	return m;
 }
 
+void matrix::set_move(float x, float y, float z)
+{
+	x4 = x;
+	y4 = y;
+	z4 = z;
+}
+
 matrix matrix::scale(float x, float y, float z)
 {
 	matrix m = { 0 };

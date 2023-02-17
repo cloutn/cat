@@ -37,6 +37,7 @@ public:
 	void	to_matrix			(matrix& matrix) const;
 	void	to_vector4			(vector4& v) const; //!!!the quaternion must have been normalized
 	void	reverse				() { x = -x; y = -y; z = -z; w = -w; }
+	void	inverse				() { x = -x; y = -y; z = -z; }
 	bool	operator==			(const quaternion& other) const;
 	bool	operator!=			(const quaternion& other) const;
 
@@ -44,7 +45,8 @@ public:
 	static float				dot			(const quaternion& q1, const quaternion& q2);
 	static void					slerp		(const quaternion& q1, const quaternion& q2, const float t, quaternion& result);
 	static void					lerp		(const quaternion& q1, const quaternion& q2, const float t, quaternion& result);
-	static void					mul			(const quaternion& q1, float v);
+	//static void					mul			(const quaternion& q1, float v);
+	static quaternion			inverse		(const quaternion& q);
 };
 
 //void QuaternionToAxisAngle(const quaternion q, vector4 &v);

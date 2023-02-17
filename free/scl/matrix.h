@@ -98,6 +98,7 @@ public:
 	static matrix	move_x					(float d) { return move(d, 0, 0); }
 	static matrix	move_y					(float d) { return move(0, d, 0); }
 	static matrix	move_z					(float d) { return move(0, 0, d); }
+	void			set_move				(float x, float y, float z);
 
 	static matrix	translate				(float dx, float dy, float dz) { return move(dx, dy, dz); }
 	

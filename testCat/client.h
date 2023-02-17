@@ -55,7 +55,7 @@ public:
 	void					setSelectObject		(Object* object);
 	Object*					getSelectObject		();
 	int						getSelectObjectID	() const;
-	OPERATE_TYPE			getOperateType		() const { return m_operateType; }
+	OPERATE_TYPE			operateType			() const { return m_operateType; }
 	TRANSFORM_TYPE			transformType		() const { return m_transformType; }	
 	void					setTransformType	(TRANSFORM_TYPE type) { m_transformType = type; }	
 

@@ -237,6 +237,15 @@ void _test_quaternion_by_angle(float* a, bool print)
 	//assert(quat_from_mat == quat);
 
 	assert(compare_mat(mat_r, mat_from_quat, print));
+
+	quaternion quatInverse = quaternion::inverse(quat);
+	matrix matInverse;
+	matrix::inverse(mat_from_quat, matInverse);
+
+	matrix	matrix_from_quatInverse;
+	quatInverse.to_matrix(matrix_from_quatInverse);
+	
+	assert(compare_mat(matInverse, matrix_from_quatInverse, print));
 }
 
 void test_quaternion(bool print)

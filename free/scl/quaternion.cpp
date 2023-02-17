@@ -127,6 +127,13 @@ void quaternion::lerp(const quaternion& q1, const quaternion& q2, const float t,
 	result.w = q1.w + t * (q2.w - q1.w);	
 }
 
+scl::quaternion quaternion::inverse(const quaternion& q)
+{
+	quaternion i = q;
+	i.inverse();
+	return i;
+}
+
 void quaternion::slerp(const quaternion& _q0, const quaternion& _q1, const float t, quaternion& result)
 {
 	quaternion q0 = _q0;

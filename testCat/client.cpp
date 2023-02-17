@@ -221,7 +221,7 @@ void Client::_processKeydown()
 			m_operateType = OPERATE_TYPE_TRANSLATE;
 		if (Keydown('E'))
 			m_operateType = OPERATE_TYPE_ROTATE;
-		if (Keydown('R'))
+		if (Keydown('R') && transformType() == TRANSFORM_TYPE_LOCAL)
 			m_operateType = OPERATE_TYPE_SCALE;
 	}
 }
