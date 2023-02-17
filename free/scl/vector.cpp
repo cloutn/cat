@@ -84,6 +84,13 @@ vector3 vector3::operator*(const float v)
 	return r;
 }
 
+scl::vector3 vector3::operator*(const matrix& m) const
+{
+	vector3 r = *this;
+	r.mul_matrix(m);
+	return r;
+}
+
 vector3 vector3::operator-() const
 {
 	vector3 v = {-x, -y, -z};

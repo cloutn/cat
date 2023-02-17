@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "cat/def.h"
+
 #include "scl/array.h"
 #include "scl/function.h"
 #include "scl/vector.h"
@@ -10,6 +12,7 @@ namespace cat {
 
 class Client;
 class Object;
+class Camera;
 
 class GUIEvent
 {
@@ -56,6 +59,11 @@ private:
 	void	_endFrame					();
 	void	_fireEvent					(GUI_EVENT event, GUIEvent& eventArg);
 	void	_processGizmo				();
+	void	_operateLocal				(Object* object, Camera* camera, OPERATE_TYPE operation);
+	void	_operateGlobal				(Object* object, Camera* camera, OPERATE_TYPE operation);
+	void	_operateGlobalTranslate		(Object* object, scl::matrix transformMove, const scl::matrix& inverseParentMatrix);
+	void	_operateGlobalRotate		(Object* object, scl::matrix transformMove, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix);
+	void	_operateGlobalRotate2		(Object* object, scl::matrix transformMove, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix);
 	
 private:
 	Client*						m_client;	

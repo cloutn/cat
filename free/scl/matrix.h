@@ -139,7 +139,7 @@ public:
 	static bool		inverse					(scl::matrix& m, scl::matrix& result);
 
 	//
-	static vector3	extract_move			(scl::matrix& m);
+	static vector3	extract_move			(const scl::matrix& m);
 	vector3			extract_move			();
 
 	//求一个矩阵对应的缩放、旋转、平移

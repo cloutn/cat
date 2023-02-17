@@ -37,6 +37,7 @@ public:
 	const scl::matrix&			matrix						();
 	scl::matrix					globalMatrix				();
 	scl::matrix					parentGlobalMatrix			();
+	scl::matrix					parentGlobalMatrixInverse	();
 	const String&				name						() const { return m_name; }
 	void						setName						(const char* const name) { m_name = name; }
 	int							id							() const { return m_id; }

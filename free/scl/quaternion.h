@@ -36,6 +36,7 @@ public:
 	//void	to_euler_radian2	(scl::vector3& v) const;
 	void	to_matrix			(matrix& matrix) const;
 	void	to_vector4			(vector4& v) const; //!!!the quaternion must have been normalized
+	void	to_pivot_radian		(vector3& pivot, float& radian);
 	void	reverse				() { x = -x; y = -y; z = -z; w = -w; }
 	void	inverse				() { x = -x; y = -y; z = -z; }
 	bool	operator==			(const quaternion& other) const;

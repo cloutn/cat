@@ -59,6 +59,7 @@ public:
 	vector3		operator+	(const vector3& other) const;
 	bool		operator==	(const vector3& other) const;
 	bool		operator!=	(const vector3& other) const;
+	vector3		operator*	(const matrix& m) const;
 
 	//切换正负
 	void		negative	() { x = -x; y = -y; z = -z; }

@@ -669,7 +669,7 @@ bool matrix::inverse(matrix& m, matrix& result)
 }
 
 
-vector3 matrix::extract_move(scl::matrix& m)
+vector3 matrix::extract_move(const scl::matrix& m)
 {
 	return { m.x4, m.y4, m.z4 };
 }

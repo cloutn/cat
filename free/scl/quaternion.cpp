@@ -89,6 +89,26 @@ void quaternion::to_vector4(vector4& v) const
 	}
 }
 
+void quaternion::to_pivot_radian(vector3& pivot, float& radian)
+{
+	//vector3 nv = v;
+	//nv.normalize();
+	//float sina = ::sinf(angle / 2);
+	//x = sina * nv.x;
+	//y = sina * nv.y;
+	//z = sina * nv.z;
+	//w = ::cosf(angle / 2);
+
+	radian		= acos(w) * 2.0f;
+	float sina	= sqrt(1 - w*w);
+	if (!scl::float_equal(sina, 0))
+	{
+		pivot.x		= x / sina;
+		pivot.y		= y / sina;
+		pivot.z		= z / sina;
+	}
+}
+
 void quaternion::normalize()
 {
 	float n = ::sqrtf(x*x + y*y + z*z + w*w);

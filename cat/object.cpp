@@ -158,6 +158,18 @@ scl::matrix Object::parentGlobalMatrix()
 	return m_parent->globalMatrix();
 }
 
+scl::matrix Object::parentGlobalMatrixInverse()
+{
+	scl::matrix inverse;
+	bool success = matrix::inverse(parentGlobalMatrix(), inverse);
+	if (!success)
+	{
+		assert(false);
+		return scl::matrix::identity();
+	}
+	return inverse;
+}
+
 void Object::loadSkin(cgltf_node* node, Env* env)
 {
 	if (NULL != node->skin)
