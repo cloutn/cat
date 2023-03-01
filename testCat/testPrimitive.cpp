@@ -9,6 +9,7 @@
 #include "cat/shaderMacro.h"
 #include "cat/shader.h"
 #include "cat/vertex.h"
+#include "cat/env.h"
 
 
 namespace cat {
@@ -49,58 +50,10 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	p->setAttrs			(attrs, countof(attrs), attrBuffers);
 	p->setVertices		(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture		(NULL);
-	p->loadShader		(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
+	p->setShaderWithPick(env->getDefaultShader(macros), env);
 }
 
 
-Primitive* _createGridPrimitive(IRender* render, Env* env)
-{
-	Primitive* p = new Primitive();
-	// attr
-	VertexAttr attrs[] = {
-		{ 0, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 },
-		{ 5, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
-	};
-	int attrBuffers[] = { 0, 0 };
-	ShaderMacroArray macros;
-	macros.add("COLOR");
-
-	// vertex 
-	const int ROW		= 3;
-	const int COLUMN	= 3;
-	const int VERTEX_COUNT = (ROW + COLUMN) * 2;
-	uint32 color = 0xFFFF0000;
-	vertex_color vertices[VERTEX_COUNT];
-	memset(vertices, 0, sizeof(vertices));
-	for (int i = 0; i < ROW; ++i)
-	{
-		float z = static_cast<float>(i - (ROW - 1) / 2);	
-		vertices[2 * i		] = { vector3{-10.0f,	0, z}, color };
-		vertices[2 * i + 1	] = { vector3{10.0f,	0, z}, color };
-	}
-	for (int i = 0; i < COLUMN; ++i)
-	{
-		float x = static_cast<float>(i - (COLUMN- 1) / 2);	
-		vertices[ROW * 2 + 2 * i		] = { vector3{x,	0, 10}, color };
-		vertices[ROW * 2 + 2 * i + 1	] = { vector3{x,	0, -10}, color };
-
-	}
-
-	// index
-	uint16 indices[VERTEX_COUNT];
-	for (int i = 0; i < VERTEX_COUNT; ++i)
-		indices[i] = i;
-
-	p->setRender(render);
-	p->setEnv(env);
-	p->setPrimitiveType(PRIMITIVE_TYPE_LINES);
-	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
-	p->setAttrs(attrs, countof(attrs), attrBuffers);
-	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
-	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
-	return p;
-}
 
 void CollectBoneVertices(Object* root, scl::varray<vertex_color>& vertices, scl::varray<uint16>& indices, int level)
 {
@@ -162,7 +115,7 @@ Primitive* _createBone(Object* root, IRender* render, Env* env)
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
+	p->setShaderWithPick(env->getDefaultShader(macros), env);
 	return p;
 }
 
@@ -171,9 +124,9 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	Primitive* p = new Primitive();
 	// attr
 	VertexAttr attrs[] = {
-		{ 0, 4, ELEM_TYPE_FLOAT,	0, sizeof(vertex_coord), 0 },
-		{ 1, 4, ELEM_TYPE_UINT8,	1, sizeof(vertex_coord), OFFSET(vertex_coord, color) },
-		{ 2, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_coord), OFFSET(vertex_coord, texcoord) }
+		{ 0, 4, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), 0 },
+		{ 1, 4, ELEM_TYPE_UINT8,	1, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, color) },
+		{ 2, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, u) }
 	};
 	int attrBuffers[] = { 0, 0, 0 };
 	//ShaderMacro macros[1] = { {"USE_COLOR", ""} };
@@ -181,11 +134,11 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	macros.add("USE_COLOR");
 
 	// vertex 
-	vertex_coord vertices[3] = 
+	vertex_color_uv vertices[3] = 
 	{
-		0,		0,		-1, 1,	0xFF0000FF, 0, 0,
-		0.5,	0,		-1, 1,	0x00FF00FF, 0, 1,
-		0,		0.5,	-1, 1,	0x0000FFFF, 1, 0,
+		0,		0,		-1, 0xFF0000FF, 0, 0,
+		0.5,	0,		-1, 0x00FF00FF, 0, 1,
+		0,		0.5,	-1, 0x0000FFFF, 1, 0,
 	};
 
 	// index
@@ -196,9 +149,9 @@ Primitive* _createTestVulkanPrimitive(IRender* render, Env* env)
 	p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
 	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
-	p->setVertices(vertices, countof(vertices), sizeof(vertex_coord));
+	p->setVertices(vertices, countof(vertices), sizeof(vertex_color_uv));
 	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, 1);
+	p->setShaderWithPick(env->getDefaultShader(macros), env);
 	return p;
 }
 
@@ -233,7 +186,7 @@ Primitive* _createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	p->setAttrs(attrs, countof(attrs), attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros);
+	p->setShaderWithPick(env->getDefaultShader(macros), env);
 	return p;
 }
 

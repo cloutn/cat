@@ -12,6 +12,7 @@ namespace cat {
 
 class Shader;
 class ShaderCache;
+class ShaderMacroArray;
 class ShaderMacro;
 class Material;
 class Object;
@@ -29,6 +30,8 @@ public:
 	Shader*				getShader				(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, const int macroCount);
 	void				setDefaultShader		(const char* const vsFilename, const char* const fsFilename);
 	Shader*				getDefaultShader		();
+	Shader*				getDefaultShader		(const ShaderMacroArray& macros);
+	ShaderCache*		shaderCache				() { return m_shaderCache; }
 	void				setDefaultMaterial		(const char* const textureFilename);
 	Material*			getDefaultMaterial		();
 	const TextureFile*	getTextureFile			(const char* const filename);

@@ -1,5 +1,9 @@
 #pragma once
 
+
+#define TEST_VULKAN
+
+
 #ifndef safe_delete
 #define safe_delete(ptr) if (NULL != ptr) { delete ptr; ptr = NULL; }
 #endif
@@ -12,12 +16,24 @@
 #define countof(arr) (sizeof(arr) / sizeof(arr[0]))
 #endif
 
-#define TEST_VULKAN
-
 #define ui_strcmp scl_strcasecmp
 
 #ifndef OFFSET
 #define OFFSET(type, member) ((unsigned char*)(&(((type*)0)->member)))
+#endif
+
+//
+// 计算可变参数宏的参数数量，例如：
+//	arg_count(1) = 1
+//	arg_count(11, 22, 33, 44) = 4 
+//
+#ifdef SCL_WIN
+#define _arg_expand(...) __VA_ARGS__
+#define _arg_n(_1,_2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+#define arg_count(...) _arg_expand(_arg_n(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
+#else
+#define _arg_n(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+#define arg_count(...) _arg_n(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
 #endif
 
 namespace cat {

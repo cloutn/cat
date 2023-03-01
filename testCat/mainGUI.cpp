@@ -493,6 +493,12 @@ void MainGUI::_operateGlobalRotate2(Object* object, scl::matrix afterMatrix, con
 		return;
 
 	//_print_matrix(afterTransform.ptr());
+	// 1. 计算 afterMatrix 中的旋转轴 pivot
+	// 2. 将 pivot 变换到当前物体的本地空间中
+	// 3. 在本地空间中计算绕 pivot 的旋转矩阵，
+	// 4. 计算当前物体变换到原点的矩阵 -pos.x, -pos.y, -pos.z
+	// 5. 用4中的矩阵程序3中的旋转矩阵
+	// 6. 让 localMatrix 乘以这个矩阵，获得最终结果
 
 	quaternion afterRotate;
 	matrix::decompose(afterMatrix, NULL, NULL, NULL, NULL, &afterRotate);
@@ -508,11 +514,18 @@ void MainGUI::_operateGlobalRotate2(Object* object, scl::matrix afterMatrix, con
 
 	vector3			localPivot = globalPivot * inverseParentMatrix;
 
+	//printf("local pivot = %.3f, %.3f, %.3f\n", localPivot.x, localPivot.y, localPivot.z);
+
 	quaternion		localAddRotate;
 	localAddRotate.from_pivot_radian(localPivot, radian);
 
-	matrix			localAddMatrix;
-	localAddRotate.to_matrix(localAddMatrix);
+	matrix			localAddRotateMatrix;
+	localAddRotate.to_matrix(localAddRotateMatrix);
+
+	vector3			pos				= object->position();
+	matrix			localAddMatrix = matrix::move(-pos.x, -pos.y, -pos.z);
+	localAddMatrix.mul(localAddRotateMatrix);
+	localAddMatrix.mul(matrix::move(pos.x, pos.y, pos.z));
 
 	matrix			localMatrix = object->matrix() * localAddMatrix;
 

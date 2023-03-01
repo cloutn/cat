@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //	顶点
 //	
 //	2010.12.02 caolei
@@ -8,29 +8,32 @@
 #include "scl/type.h"
 #include "scl/matrix.h"
 #include "scl/vector.h"
+#include "scl/bitset.h"
 
 namespace cat {
 
-class vertex
-{
-public:
-	float x, y, z;
-	float nx, ny, nz;
-	float u, v;
+class VertexAttr;
 
-	//TODO 干掉vertex的构造函数
-	//vertex(float ix, float iy, float iz, float inx = 0, float iny = 0, float inz = 0, float iu = 0, float iv = 0);
-
-	void set(
-		float ix, float iy, float iz, 
-		float inx = 0, float iny = 0, float inz = 0, float iu = 0, float iv = 0);
-
-	void clear();
-	void mulMatrix(const scl::matrix& m);
-
-	vertex& operator=(const scl::vector3& v);
-	vertex& operator+=(const scl::vector3& v);
-};
+//class vertex
+//{
+//public:
+//	float x, y, z;
+//	float nx, ny, nz;
+//	float u, v;
+//
+//	//TODO 干掉vertex的构造函数
+//	//vertex(float ix, float iy, float iz, float inx = 0, float iny = 0, float inz = 0, float iu = 0, float iv = 0);
+//
+//	void set(
+//		float ix, float iy, float iz, 
+//		float inx = 0, float iny = 0, float inz = 0, float iu = 0, float iv = 0);
+//
+//	void clear();
+//	void mulMatrix(const scl::matrix& m);
+//
+//	vertex& operator=(const scl::vector3& v);
+//	vertex& operator+=(const scl::vector3& v);
+//};
 
 class vertex_uv
 {
@@ -54,15 +57,17 @@ class vertex_color
 public:
 	scl::vector3 position;
 	uint32	color;
+
+	static int getAttr(VertexAttr* attrs, const int capacity);
 };
 
-class vertex_coord
-{
-public:
-	scl::vector4	position;
-	uint32			color;
-	scl::vector2	texcoord;
-};
+//class vertex_coord
+//{
+//public:
+//	scl::vector4	position;
+//	uint32			color;
+//	scl::vector2	texcoord;
+//};
 
 class vertex_color_uv
 {
@@ -109,6 +114,55 @@ public:
 	void clear		()								{ x = 0; y = 0; z = 0; color = 0; u = 0; v = 0; }
 };
 
+//enum VERTEX_SLOT
+//{
+//	VERTEX_SLOT_POSITION,
+//	VERTEX_SLOT_NORMAL,
+//	VERTEX_SLOT_TANGENT,
+//	VERTEX_SLOT_COLOR,
+//	VERTEX_SLOT_TEXCOORD_0,
+//	VERTEX_SLOT_TEXCOORD_1,
+//	VERTEX_SLOT_TEXCOORD_2,
+//	VERTEX_SLOT_TEXCOORD_3,
+//	VERTEX_SLOT_JOINTS,
+//	VERTEX_SLOT_WEIGHTS,
+//
+//	VERTEX_SLOT_COUNT,
+//};
+//
+////enum ShaderChannel
+////{
+////    kShaderChannelNone = -1,
+////    kShaderChannelVertex = 0,   // Vertex (vector3)
+////    kShaderChannelNormal,       // Normal (vector3)
+////    kShaderChannelTangent,      // Tangent (vector4)
+////    kShaderChannelColor,        // Vertex color
+////    kShaderChannelTexCoord0,    // Texcoord 0
+////    kShaderChannelTexCoord1,    // Texcoord 1
+////    kShaderChannelTexCoord2,    // Texcoord 2
+////    kShaderChannelTexCoord3,    // Texcoord 3
+////    kShaderChannelTexCoord4,    // Texcoord 4
+////    kShaderChannelTexCoord5,    // Texcoord 5
+////    kShaderChannelTexCoord6,    // Texcoord 6
+////    kShaderChannelTexCoord7,    // Texcoord 7
+////    kShaderChannelBlendWeights, // Blend weights
+////    kShaderChannelBlendIndices, // Blend indices
+////    kShaderChannelCount,        // Keep this last!
+////};
+//
+//template <int SIZE>
+//class base_vertex
+//{
+//public:
+//	void set_position(float x, float y, float z)
+//	{
+//		
+//	}
+//
+//private:
+//	//scl::bitset<VERTEX_SLOT_COUNT> m_bits;
+//	float m_data[SIZE];
+//};
 
 }  // namespace cat
 

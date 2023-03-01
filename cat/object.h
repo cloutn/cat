@@ -27,6 +27,7 @@ class Animation;
 class Object 
 {
 public:
+	Object();
 	Object(Object* parent);
 	virtual ~Object();
 
@@ -63,6 +64,7 @@ public:
 	void						setGltfIndex				(const int v) { m_gltfIndex = v; }
 	bool						isEnableAnimation			() const { return m_enableAnimation; }
 	void						setEnableAnimation			(const bool v) { m_enableAnimation = v; }
+	void						setMesh						(Mesh* mesh) { m_mesh = mesh; }
 
 	// static 
 	static Object*				objectByID					(const int id) { return _objectIDMap().get(id); }
@@ -76,7 +78,7 @@ private:
 	static ObjectIDMap<Object>&	_objectIDMap();
 
 	int							m_id;
-	Env*						m_env;
+	//Env*						m_env;
 	Object*						m_parent;
 	Mesh*						m_mesh;
 	Skin*						m_skin;

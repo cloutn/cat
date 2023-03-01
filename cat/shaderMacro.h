@@ -27,6 +27,7 @@ public:
 	void				clear		();
 	const ShaderMacro*	data		() const { return m_macros.begin(); }
 	int					size		() const { return m_macros.size(); }
+	ShaderMacro&		operator[]	(const int index) { return m_macros[index]; }
 
 private:
 	scl::varray<ShaderMacro>	m_macros;

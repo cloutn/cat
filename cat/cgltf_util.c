@@ -7,8 +7,6 @@ const unsigned char* cgltf_get_accessor_buffer(const cgltf_accessor* accessor)
 	return buf;
 }
 
-
-
 size_t cgltf_num_components(int type) 
 {
 	switch (type)
@@ -65,5 +63,15 @@ size_t cgltf_calc_size(int type, int component_type)
 	return component_size * cgltf_num_components(type);
 }
 
+bool cgltf_primitive_has_attr(const cgltf_primitive* primitive, const char* const attrName)
+{
+	int len = strlen(attrName);
+	for (unsigned int i = 0; i < primitive->attributes_count; ++i)
+	{
+		if (0 == _strnicmp(attrName, primitive->attributes[i].name, len))
+			return true;
+	}
+	return false;
+}
 
 

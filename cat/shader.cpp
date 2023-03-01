@@ -18,7 +18,7 @@ void Shader::addMacro(const ShaderMacro& macro)
 	if (macro.name.empty())
 		return;
 
-	m_macros.push_back(macro);
+	m_macros.add(macro);
 	invalidate();
 }
 

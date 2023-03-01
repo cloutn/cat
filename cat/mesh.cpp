@@ -4,6 +4,9 @@
 #include "cat/IRender.h"
 #include "cat/material.h"
 #include "cat/shaderMacro.h"
+#include "cat/shaderCache.h"
+#include "cat/shader.h"
+#include "cat/env.h"
 
 //#include "scl/assert.h"
 
@@ -33,9 +36,12 @@ void Mesh::load(cgltf_mesh* mesh, const char* const path, int skinJointCount, Ob
 
 	for (size_t i = 0; i < mesh->primitives_count; ++i)
 	{
-		Primitive* primitive = new Primitive();
-		//printf("\t\tloading primitive: %d, type = %d\n", i, mesh->primitives[i].type);
-		primitive->load(&mesh->primitives[i], path, skinJointCount, this, render, env);
+		Primitive*			primitive		= new Primitive();
+		cgltf_primitive*	primitiveNode	= &mesh->primitives[i];
+		Shader*				shader			= m_env->shaderCache()->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", primitiveNode, skinJointCount); 
+		primitive->setShaderWithPick(shader, env);
+		primitive->load(primitiveNode, path, skinJointCount, this, render, env);
+
 		m_primitives.push_back(primitive);
 	}
 }
@@ -75,14 +81,13 @@ void Mesh::setEnableSkin(bool enable)
 		if (NULL == primitive)
 			continue;
 
-		ShaderMacroArray macros;
-		macros.assign(primitive->shaderMacros());
-
+		Shader* newShader = NULL;
 		if (enable)
-			macros.add("SKIN");
+			newShader = m_env->shaderCache()->addMacro(primitive->shader(), "SKIN");
 		else
-			macros.remove("SKIN");
-		primitive->loadShader(macros);
+			newShader = m_env->shaderCache()->removeMacro(primitive->shader(), "SKIN");
+
+		primitive->setShader(newShader);
 	}
 }
 

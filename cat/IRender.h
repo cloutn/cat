@@ -8,30 +8,6 @@ namespace scl { class matrix; }
 
 namespace cat {
 
-// see the shader example at the bottom of this file.
-//enum SHADER
-//{
-//	SHADER_INVALID = -1,
-//
-//	SHADER_DEFAULT,
-//	SHADER_ADD_COLOR,
-//	SHADER_COLOR,
-//	SHADER_FONT,
-//	SHADER_FONT_OUTLINE,
-//	SHADER_GRAY,
-//	SHADER_VIDEO,
-//
-//	SHADER_COUNT,
-//};
-
-//enum CAMERA
-//{
-//	CAMERA_ORTHO,		//user defined camera with ortho projection. 
-//	CAMERA_PERSPECTIVE,	//user defined camera with perspective projection.
-//	CAMERA_WORLD,		//camera is auto selected by game world.
-//};
-
-
 // Same as opengl's glDrawPrimitive(mode) and cgltf_primitive_type
 // !!! Dont' change this !!!
 enum PRIMITIVE_TYPE
@@ -45,24 +21,6 @@ enum PRIMITIVE_TYPE
 	PRIMITIVE_TYPE_TRIANGLE_FAN,
 };
 
-//enum SHADER_STAGE
-//{
-//	SHADER_STAGE_VERT,
-//	SHADER_STAGE_TCS,
-//	SHADER_STAGE_TES,
-//	SHADER_STAGE_GEO,
-//	SHADER_STAGE_FRAG,
-//	SHADER_STAGE_COMP,
-//};
-//
-//class PushConstRange
-//{
-//public:
-//	SHADER_STAGE    shaderStage;
-//    uint32			offset;
-//    uint32			size;
-//};
-
 class VertexAttr
 {
 public:
@@ -73,60 +31,6 @@ public:
 	int			stride;
 	void*		offset;
 };
-
-//class UniformBind
-//{
-//public:
-//	enum TYPE
-//	{
-//		TYPE_BUFFER,
-//		TYPE_BUFFER_DYNAMIC,
-//		TYPE_SAMPLER,
-//	};
-//	enum STAGE
-//	{
-//		STAGE_VERT,
-//		STAGE_FRAG,
-//	};
-//	int		bind;
-//	TYPE	type;
-//	STAGE	stage;
-//	int		count;
-//};
-
-//class UniformData
-//{
-//public:
-//	//enum TYPE
-//	//{
-//	//	TYPE_BUFFER,
-//	//	TYPE_BUFFER_DYNAMIC,
-//	//	TYPE_SAMPLER,
-//	//};
-//	//enum STAGE
-//	//{
-//	//	STAGE_VERT,
-//	//	STAGE_FRAG,
-//	//};
-//
-//	struct BufferInfo
-//	{
-//		const void* buffer;
-//		int bufferSize;
-//	};
-//	struct TextureInfo
-//	{
-//		void* texture;
-//	};
-//	union Info 
-//	{
-//		BufferInfo	buffer;
-//		TextureInfo texture;
-//	};
-//
-//	Info data[64];
-//	int dataCount;
-//};
 
 class IRender
 {

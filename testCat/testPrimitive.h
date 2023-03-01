@@ -11,7 +11,6 @@ class Env;
 class Object;
 class vertex_color;
 
-Primitive* _createGridPrimitive				(IRender* render, Env* env);
 Primitive* _createTestVulkanPrimitive		(IRender* render, Env* env);
 Primitive* _createTestVulkanPrimitiveColor	(IRender* render, Env* env);
 Primitive* _createBone						(Object* root, IRender* render, Env* env);

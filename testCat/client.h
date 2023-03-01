@@ -111,8 +111,9 @@ private:
 
 	// for object test 	(读取gltf file data解析到自己的内存中，然后渲染)
 	Object*					m_object;
-	Primitive*				m_gridPrimitive;
+	//Primitive*				m_gridPrimitive;
 	Primitive*				m_bonePrimitive;
+	Object*					m_grid;
 
 	int						m_totalFrame;
 	uint64					m_totalTime;

@@ -24,6 +24,10 @@ namespace cat {
 
 ObjectIDMap<Object>* Object::s_objectIDMap = NULL;
 
+Object::Object() : Object(NULL)
+{
+}
+
 Object::Object(Object* parent) :
 	m_id					(_objectIDMap().alloc_id()),
 	m_parent				(parent),
@@ -56,7 +60,7 @@ Object::~Object()
 
 void Object::loadNode(cgltf_node* node, const char* const path, IRender* render, Env* env)
 {
-	m_env = env;
+	//m_env = env;
 	env->addToGltfNodeMap(node, id());
 
 	// create mesh
@@ -64,7 +68,7 @@ void Object::loadNode(cgltf_node* node, const char* const path, IRender* render,
 	if (NULL != node->mesh)
 	{
 		m_mesh = new Mesh();
-		m_mesh->load(node->mesh, path, node->skin == NULL ? 0 : node->skin->joints_count,  this, render, m_env);
+		m_mesh->load(node->mesh, path, node->skin == NULL ? 0 : node->skin->joints_count,  this, render, env);
 	}
 	
 	if (NULL != node->name)
@@ -102,7 +106,7 @@ void Object::loadNode(cgltf_node* node, const char* const path, IRender* render,
 			continue;
 
 		Object* c = new Object(this);
-		c->loadNode(node->children[i], path, render, m_env);
+		c->loadNode(node->children[i], path, render, env);
 		m_childs.push_back(c);
 	}
 }

@@ -35,7 +35,7 @@ Primitive::Primitive() :
 	m_primitiveType				(cat::PRIMITIVE_TYPE_POINTS),
 	m_material					(NULL),
 	m_shader					(NULL),
-	m_shaderMacros				(NULL),
+	//m_shaderMacros				(NULL),
 	m_pickShader				(NULL),
 	m_parent					(NULL)
 {
@@ -60,16 +60,7 @@ int _attrNameToIndex(const char* const name)
 	return attrIndex;
 }
 
-bool _hasAttr(const cgltf_primitive&	primitive, const char* const attrName)
-{
-	int len = strlen(attrName);
-	for (uint i = 0; i < primitive.attributes_count; ++i)
-	{
-		if (0 == _strnicmp(attrName, primitive.attributes[i].name, len))
-			return true;	
-	}
-	return false;
-}
+
 
 void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 {
@@ -174,72 +165,10 @@ void Primitive::load(cgltf_primitive* data, const char* const path, int skinJoin
 	{
 		m_material	= m_env->getDefaultMaterial();
 	}
-
-	//ShaderMacro macros[128];
-	//int			macroCount = 0;
-	m_shaderMacros = new ShaderMacroArray();
-
-	//ShaderMacroArray& macros = *m_shaderMacros;
-	ShaderMacroArray macros;
-	macros.clear();
-
-	assert(NULL == m_shader);
-
-	bool hasJoints	= _hasAttr(primitive, "joints");
-	bool hasWeights	= _hasAttr(primitive, "weights");
-	if (skinJointCount > 0 && hasJoints && hasWeights)
-	{
-		macros.add("SKIN");
-		macros.add("JOINT_MATRIX_COUNT", skinJointCount);
-	}
-	if (_hasAttr(primitive, "NORMAL"))
-	{
-		macros.add("NORMAL");
-	}
-	if (_hasAttr(primitive, "TANGENT"))
-	{
-		macros.add("TANGENT");
-	}
-	if (_hasAttr(primitive, "TEXCOORD"))
-	{
-		if (NULL != m_material && NULL != m_material->texture())
-		{
-			macros.add("TEXTURE");
-		}
-		else
-		{
-			const char* objectName = (NULL == m_parent || NULL == m_parent->parent()) ? "" : m_parent->parent()->name().c_str();
-			const char* meshName	= NULL == m_parent  ? "" : m_parent->name().c_str();
-			printf("warning : object [%s] mesh [%s]\n\tprimitive attribute has TEXCOORD, but material has NO texture.\n", objectName, meshName);
-		}
-	}
-	if (_hasAttr(primitive, "COLOR"))
-	{
-		macros.add("COLOR");
-	}
-
-	loadShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros, true);
-	//m_vsShaderFilename = "object.vert";
-	//m_psShaderFilename = "object.frag";
-
-	//m_shader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
-
-	//ShaderMacroArray pickMacros;
-	//pickMacros.assign(macros);
-	//pickMacros.remove("COLOR");
-	//pickMacros.remove("TEXTURE");
-	//pickMacros.add("PICK");
-	//m_pickShader = m_env->getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag",  pickMacros.data(), pickMacros.size());
 }
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
 {
-	//Material* material = m_material;
-	////if (NULL == material || NULL == material->texture())
-	////	material = Material::_default();
-	//if (NULL == m_material)
-	//	return;
-
 	void* texture = NULL;
 	if (NULL == m_material || NULL == m_material->texture())
 		texture = NULL;		//m_env->getDefaultMaterial()->texture();
@@ -286,7 +215,7 @@ bool _isInArray(T* array, int lastIndex, T buf)
 
 void Primitive::release()
 {
-	safe_delete(m_shaderMacros);
+	//safe_delete(m_shaderMacros);
 
 	if (NULL != m_deviceIndexBuffer)
 	{
@@ -377,69 +306,18 @@ void Primitive::loadMemory(
 	m_shader = shader;
 }
 
-//void Primitive::setShader(const char* const vsFilename, const char* const psFilename, const ShaderMacro* macros, const int shaderMacroCount)
-//{
-//
-//}
-
-
-void Primitive::_loadShader(bool updatePickShader)
+void Primitive::setShaderWithPick(Shader* shader, Env* env)
 {
-	m_shader = m_env->getShader(m_vsShaderFilename.c_str(), m_psShaderFilename.c_str(), m_shaderMacros->data(), m_shaderMacros->size());
+	setShader(shader);
 
-	if (updatePickShader)
-	{
-		ShaderMacroArray pickMacros;
-		pickMacros.assign(*m_shaderMacros);
-		pickMacros.remove("COLOR");
-		pickMacros.remove("TEXTURE");
-		pickMacros.add("PICK");
-		m_pickShader = m_env->getShader(m_vsShaderFilename.c_str(), m_psShaderFilename.c_str(), pickMacros.data(), pickMacros.size());
-	}
+	ShaderMacroArray pickMacros;
+	pickMacros.assign(shader->macros());
+	pickMacros.remove("COLOR");
+	pickMacros.remove("TEXTURE");
+	pickMacros.add("PICK");
+	m_pickShader = env->getShader(shader->vsFilename(), shader->psFilename(), pickMacros.data(), pickMacros.size());
 }
 
-void Primitive::loadShader(const char* const vsFilename, const char* const psFilename, const ShaderMacroArray& macros, bool updatePickShader)
-{
-	//if (NULL != m_shader)
-	//{
-	//	assert(false);
-	//	return;
-	//}
-	m_vsShaderFilename = vsFilename;
-	m_psShaderFilename = psFilename;
-	if (NULL == m_shaderMacros)
-		m_shaderMacros = new ShaderMacroArray();
-
-	m_shaderMacros->assign(macros);
-
-	_loadShader(updatePickShader);
-}
-
-//void Primitive::loadShader()
-//{
-//	string512 vsPath = SHADER_PATH;
-//	vsPath += m_vsShaderFilename.c_str();
-//
-//	string512 psPath = SHADER_PATH;
-//	psPath += m_psShaderFilename.c_str();
-//
-//	loadShader(vsPath.c_str(), psPath.c_str(), *m_shaderMacros);
-//}
-
-//void Primitive::loadShader(const char* const vs_filename, const char* const ps_filename, const ShaderMacro* macros, const int macroCount, bool updatePickShader)
-//{
-//	ShaderMacroArray macroArray;
-//	for (int i = 0; i < macroCount; ++i)
-//		macroArray.add(macros[i]);
-//	loadShader(vs_filename, ps_filename, macroArray, updatePickShader);
-//}
-
-void Primitive::loadShader(const ShaderMacroArray& macros, bool updatePickShader)
-{
-	m_shaderMacros->assign(macros);
-
-	_loadShader(updatePickShader);
-}
 
 void Primitive::setTexture(const char* const filename)
 {
@@ -449,7 +327,6 @@ void Primitive::setTexture(const char* const filename)
 		return;
 	}
 	m_material = new Material();
-	//m_material->setTexture();
 }
 
 void Primitive::setAttrs(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices)
@@ -466,7 +343,14 @@ void Primitive::setAttrs(const VertexAttr* attrs, const int attrCount, const int
 	}
 	m_attrCount = attrCount;
 	memcpy(m_attrs, attrs, m_attrCount * sizeof(attrs[0]));
-	memcpy(m_attrBufferIndices, attrBufferIndices, m_attrCount * sizeof(attrBufferIndices[0]));
+	if (NULL == attrBufferIndices)
+	{
+		memset(m_attrBufferIndices, 0, sizeof(m_attrBufferIndices[0]) * attrCount);
+	}
+	else
+	{
+		memcpy(m_attrBufferIndices, attrBufferIndices, m_attrCount * sizeof(attrBufferIndices[0]));
+	}
 }
 
 void Primitive::setIndices(const void* indices, const int indexCount, const ELEM_TYPE indexComponentType)

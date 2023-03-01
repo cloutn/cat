@@ -24,6 +24,7 @@ public:
 	void			draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
 	void			addPrimitive	(Primitive*);
 	Object*			parent			() { return m_parent; }
+	void			setParent		(Object* p) { m_parent = p ;}
 	const String&	name			() const { return m_name; }
 	void			setEnableSkin	(bool enable);
 

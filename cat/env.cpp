@@ -38,6 +38,11 @@ Shader* Env::getDefaultShader()
 	return m_defaultShader;
 }
 
+Shader* Env::getDefaultShader(const ShaderMacroArray& macros)
+{
+	return m_shaderCache->getDefaultShader(macros);
+}
+
 void Env::setDefaultMaterial(const char* const textureFilename)
 {
 	m_defaultMaterialTextureName = textureFilename;

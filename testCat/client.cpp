@@ -1,6 +1,7 @@
 #include "./client.h"
 
 #include "./testPrimitive.h"
+#include "./simpleShape.h"
 
 #include "cat/camera.h"
 #include "cat/object.h"
@@ -46,8 +47,9 @@ Client::Client()
 	m_rightDragPrev				= { 0, 0 };
 #endif
 
-	m_gridPrimitive				= NULL;
+	//m_gridPrimitive				= NULL;
 	m_bonePrimitive				= NULL;
+	m_grid						= NULL;
 
 	m_env						= NULL;
 	m_object					= NULL;
@@ -88,7 +90,8 @@ void Client::init()
 	m_object = findObject("RootNode (gltf orientation matrix)");
 	m_bonePrimitive = _createBone(m_object, &m_render, m_env);
 
-	m_gridPrimitive = _createGridPrimitive(&m_render, m_env);
+	//m_gridPrimitive = _createGridPrimitive(&m_render, m_env);
+	m_grid = _createGrid(&m_render, m_env);
 
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
@@ -164,7 +167,8 @@ Client::~Client()
 	delete m_camera;
 	m_render.release();	
 	scl::log::release();
-	delete m_gridPrimitive;
+	delete m_grid;
+	//delete m_gridPrimitive;
 	delete m_bonePrimitive;
 	delete m_env;
 	Object::releaseObjectIDMap();
@@ -183,8 +187,10 @@ void Client::_renderScene(bool isPick)
 		m_scenes[i]->draw(m_camera->matrix(), isPick, &m_render);
 	}
 
-	if (NULL != m_gridPrimitive)
-		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
+	//if (NULL != m_gridPrimitive)
+	//	m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
+	if (NULL != m_grid)
+		m_grid->draw(m_camera->matrix(), isPick, &m_render);
 
 	if (NULL != m_bonePrimitive)
 	{
