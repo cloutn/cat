@@ -4,6 +4,7 @@
 #include "cat/material.h"
 #include "cat/cgltf_util.h"
 #include "cat/shader.h"
+#include "cat/shaderCache.h"
 #include "cat/mesh.h"
 #include "cat/object.h"
 #include "cat/env.h"
@@ -247,75 +248,69 @@ void Primitive::release()
 }
 
 
-void Primitive::loadMemory(
-	void*				indices,
-	const int			indexCount,
-	const ELEM_TYPE		indexComponentType,
-	void**				verticesList,
-	int*				vertexCountList,
-	int*				sizeOfVertex,
-	int					attrCount,
-	VertexAttr*			attrs,
-	int*				attrVertexBuffer,
-	PRIMITIVE_TYPE		primitiveType,
-	Material*			material,
-	Shader*				shader,
-	IRender*			render)
-{
-	release();
-
-	m_render = render;
-
-	m_primitiveType = primitiveType;
-
-	// index
-	m_indexCount = indexCount;
-	m_indexOffset = 0;
-	m_indexComponentType = indexComponentType;
-	m_deviceIndexBuffer = render->createIndexBuffer(-1);
-	const int indexBytes = m_indexCount * cgltf_component_size(m_indexComponentType);
-	render->copyIndexBuffer(indices, m_deviceIndexBuffer, indexBytes);
-
-	// vertex
-	m_attrCount = attrCount;
-	m_deviceVertexBuffers = new void*[m_attrCount];
-	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
-	m_attrs = new VertexAttr[m_attrCount];
-	memset(m_attrs, 0, sizeof(m_attrs[0]) * m_attrCount);
-	memcpy(m_attrs, attrs, sizeof(m_attrs[0]) * m_attrCount);
-	scl::tree<int, void*> bufferMap;
-	for (int i = 0; i < attrCount; ++i)
-	{
-		const int bufferIndex = attrVertexBuffer[i];
-		scl::tree<int, void*>::iterator it = bufferMap.find(bufferIndex);
-		if (it == bufferMap.end())
-		{
-			VertexAttr& attr = attrs[i];
-			m_deviceVertexBuffers[i] = render->createVertexBuffer(-1);
-			//G.refCounter.AddRef(m_deviceVertexBuffers[i]);
-			const int vertexBytes = vertexCountList[bufferIndex] * sizeOfVertex[bufferIndex];
-			render->copyVertexBuffer(verticesList[bufferIndex], m_deviceVertexBuffers[i], vertexBytes);
-			bufferMap.add(bufferIndex, m_deviceVertexBuffers[i]);
-		}
-		else
-			m_deviceVertexBuffers[i] = (*it).second;
-	}
-
-	// material
-	m_material = material;
-	m_shader = shader;
-}
+//void Primitive::loadMemory(
+//	void*				indices,
+//	const int			indexCount,
+//	const ELEM_TYPE		indexComponentType,
+//	void**				verticesList,
+//	int*				vertexCountList,
+//	int*				sizeOfVertex,
+//	int					attrCount,
+//	VertexAttr*			attrs,
+//	int*				attrVertexBuffer,
+//	PRIMITIVE_TYPE		primitiveType,
+//	Material*			material,
+//	Shader*				shader,
+//	IRender*			render)
+//{
+//	release();
+//
+//	m_render = render;
+//
+//	m_primitiveType = primitiveType;
+//
+//	// index
+//	m_indexCount = indexCount;
+//	m_indexOffset = 0;
+//	m_indexComponentType = indexComponentType;
+//	m_deviceIndexBuffer = render->createIndexBuffer(-1);
+//	const int indexBytes = m_indexCount * cgltf_component_size(m_indexComponentType);
+//	render->copyIndexBuffer(indices, m_deviceIndexBuffer, indexBytes);
+//
+//	// vertex
+//	m_attrCount = attrCount;
+//	m_deviceVertexBuffers = new void*[m_attrCount];
+//	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
+//	m_attrs = new VertexAttr[m_attrCount];
+//	memset(m_attrs, 0, sizeof(m_attrs[0]) * m_attrCount);
+//	memcpy(m_attrs, attrs, sizeof(m_attrs[0]) * m_attrCount);
+//	scl::tree<int, void*> bufferMap;
+//	for (int i = 0; i < attrCount; ++i)
+//	{
+//		const int bufferIndex = attrVertexBuffer[i];
+//		scl::tree<int, void*>::iterator it = bufferMap.find(bufferIndex);
+//		if (it == bufferMap.end())
+//		{
+//			VertexAttr& attr = attrs[i];
+//			m_deviceVertexBuffers[i] = render->createVertexBuffer(-1);
+//			//G.refCounter.AddRef(m_deviceVertexBuffers[i]);
+//			const int vertexBytes = vertexCountList[bufferIndex] * sizeOfVertex[bufferIndex];
+//			render->copyVertexBuffer(verticesList[bufferIndex], m_deviceVertexBuffers[i], vertexBytes);
+//			bufferMap.add(bufferIndex, m_deviceVertexBuffers[i]);
+//		}
+//		else
+//			m_deviceVertexBuffers[i] = (*it).second;
+//	}
+//
+//	// material
+//	m_material = material;
+//	m_shader = shader;
+//}
 
 void Primitive::setShaderWithPick(Shader* shader, Env* env)
 {
 	setShader(shader);
-
-	ShaderMacroArray pickMacros;
-	pickMacros.assign(shader->macros());
-	pickMacros.remove("COLOR");
-	pickMacros.remove("TEXTURE");
-	pickMacros.add("PICK");
-	m_pickShader = env->getShader(shader->vsFilename(), shader->psFilename(), pickMacros.data(), pickMacros.size());
+	m_pickShader = env->shaderCache()->getPickShader(shader);
 }
 
 

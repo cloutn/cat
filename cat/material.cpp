@@ -53,9 +53,9 @@ void Material::load(cgltf_material* data, const char* const currentPath, IRender
 
 void Material::init(IRender* render, const char* const textureFilename, Env* env)
 {
-	m_render	= render;
-	m_env		= env;
-	m_textureFile = env->getTextureFile(textureFilename);
+	m_render		= render;
+	m_env			= env;
+	m_textureFile	= env->getTextureFile(textureFilename);
 
 	//int			textureWidth	= 0;
 	//int			textureHeight	= 0;

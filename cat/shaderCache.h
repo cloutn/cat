@@ -24,6 +24,7 @@ public:
 	Shader*			removeMacro					(Shader* shader, const char* macro);
 	Shader*			removeMacro					(Shader* shader, const char** macros, const int macroCount);
 	Shader*			getDefaultShader			(const ShaderMacroArray& macros);
+	Shader*			getPickShader				(Shader* shader);
 
 private:
 	enum MODIFY_TYPE

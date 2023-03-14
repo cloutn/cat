@@ -35,21 +35,21 @@ public:
 	void				setShaderWithPick	(Shader* shader, Env* env);
 	void				setPickShader		(Shader* pickShader) { m_pickShader = pickShader; }
 	void				setTexture			(const char* const filename);
-	void				loadMemory			(
-		void*			indices, 
-		const int		indexCount, 
-		const ELEM_TYPE	indexComponentType, 
-		void**			verticesList,
-		int*			vertexCountList,
-		int*			sizeOfVertex,
-		int				attrCount,
-		VertexAttr*		attrs,
-		int*			attrVertexBuffer,
-		PRIMITIVE_TYPE	primitiveType,
-		Material*		material,
-		Shader*			shader,
-		IRender*		render
-		);
+	//void				loadMemory			(
+	//	void*			indices, 
+	//	const int		indexCount, 
+	//	const ELEM_TYPE	indexComponentType, 
+	//	void**			verticesList,
+	//	int*			vertexCountList,
+	//	int*			sizeOfVertex,
+	//	int				attrCount,
+	//	VertexAttr*		attrs,
+	//	int*			attrVertexBuffer,
+	//	PRIMITIVE_TYPE	primitiveType,
+	//	Material*		material,
+	//	Shader*			shader,
+	//	IRender*		render
+	//	);
 	void				setRender			(IRender* render) { m_render = render; } 
 	void				setEnv				(Env* env) { m_env = env; } 
 	void**				vertexBuffers		() { return m_deviceVertexBuffers;	}

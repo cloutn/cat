@@ -105,6 +105,18 @@ cat::Shader* ShaderCache::getDefaultShader(const ShaderMacroArray& macros)
 	return getShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag", macros.data(), macros.size());
 }
 
+cat::Shader* ShaderCache::getPickShader(Shader* shader)
+{
+	ShaderMacroArray pickMacros;
+	pickMacros.assign(shader->macros());
+	pickMacros.remove("COLOR");
+	pickMacros.remove("TEXTURE");
+	pickMacros.add("PICK");
+	Shader* pickShader = getShader(shader->vsFilename(), shader->psFilename(), pickMacros.data(), pickMacros.size());
+
+	return pickShader;
+}
+
 cat::Shader* ShaderCache::_modifyMacro(Shader* shader, const char** macros, const int macroCount, const MODIFY_TYPE type)
 {
 	ShaderMacroArray newMacros;

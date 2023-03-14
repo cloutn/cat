@@ -44,7 +44,6 @@ Object* _createGrid(IRender* render, Env* env)
 		float x = static_cast<float>(i - (COLUMN- 1) / 2);	
 		vertices[ROW * 2 + 2 * i		] = { vector3{x,	0, 10}, color };
 		vertices[ROW * 2 + 2 * i + 1	] = { vector3{x,	0, -10}, color };
-
 	}
 
 	// index
@@ -58,7 +57,6 @@ Object* _createGrid(IRender* render, Env* env)
 	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, attrCount);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
-	p->setTexture(NULL);
 	p->setShaderWithPick(env->getDefaultShader(macros), env);
 
 	Object* obj = new Object();
@@ -75,6 +73,19 @@ Object* _createGrid(IRender* render, Env* env)
 
 cat::Object* _createCube(IRender* render, Env* env)
 {
+	vertex_color vertices[8] = 
+	{
+		{ 0.5,	0.5,	0.5,	0xFFFFFFFF },
+		{ 0.5,	0.5,	-0.5,	0xFFFFFFFF },
+		{ -0.5,	0.5,	0.5,	0xFFFFFFFF },
+		{ -0.5,	0.5,	-0.5,	0xFFFFFFFF },
+		{ 0.5,	-0.5,	0.5,	0xFFFFFFFF },
+		{ 0.5,	-0.5,	-0.5,	0xFFFFFFFF },
+		{ -0.5,	-0.5,	0.5,	0xFFFFFFFF },
+		{ -0.5,	-0.5,	-0.5,	0xFFFFFFFF },
+	};
+	//uint16 indices[]
+
 	Primitive* p = new Primitive();
 	p->setRender(render);
 	p->setEnv(env);
