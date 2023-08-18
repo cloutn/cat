@@ -43,6 +43,7 @@ public:
 	bool	wantCaptureKeyboard			();
 	bool	wantCaptureMouse			();
 	void	registerEvent				(GUI_EVENT event, GUIEventFuncT pfunc);
+	void	setForceOpenSceneTree		(bool v) { m_forceOpenSceneTree = v; }
 
 private:
 	void	_showWindowScene			();
@@ -66,11 +67,9 @@ private:
 	void	_operateGlobalRotate2		(Object* object, scl::matrix transformMove, const scl::matrix& parentMatrix, const scl::matrix& inverseParentMatrix);
 	
 private:
-	Client*						m_client;	
-	//Object*						m_selectObject;
-
-
-	scl::array<GUIEventFuncT, GUI_EVENT_COUNT> m_events;
+	Client*										m_client = NULL;	
+	scl::array<GUIEventFuncT, GUI_EVENT_COUNT>	m_events;
+	bool										m_forceOpenSceneTree = false;
 
 }; // class MainGUI
 

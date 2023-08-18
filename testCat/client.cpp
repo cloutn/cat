@@ -245,6 +245,7 @@ void Client::_clickSelectObject(int x, int y)
 	if (NULL != primitive)
 	{
 		m_selectObject = primitive->parentObject();
+		m_gui.setForceOpenSceneTree(true);
 		printf("picked object = %x\n", (unsigned int)primitive);	
 	}
 }

@@ -229,7 +229,11 @@ void MainGUI::_onGUIScene(const int sceneIndex, bool& isContextMenuOpen)
 	sceneName.format("Scene_%d", sceneIndex);
 
 	bool hasSelectedChild = (NULL != scene->objectByID(m_client->getSelectObjectID(), true));
-	ImGui::SetNextItemOpen(hasSelectedChild);
+	if (m_forceOpenSceneTree && hasSelectedChild)
+	{
+		ImGui::SetNextItemOpen(hasSelectedChild);
+		m_forceOpenSceneTree = false;
+	}
 
 	if (ImGui::TreeNode(sceneName.c_str()))
 	{
