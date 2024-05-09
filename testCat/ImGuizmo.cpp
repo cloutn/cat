@@ -2841,6 +2841,26 @@ namespace IMGUIZMO_NAMESPACE
             const vec_t dx = directionUnary[perpXIndex];
             const vec_t dy = directionUnary[perpYIndex];
             const vec_t origin = directionUnary[normalIndex] - dx - dy;
+
+
+            const vec_t center = dx * 0.5 + dy * 0.5;
+            const vec_t end = center + directionUnary[normalIndex];
+            ImVec2 baseSSpace = worldToPos(center, res, position, size);
+		    ImVec2 worldDirSSpace = worldToPos(end, res, position, size);
+		    gContext.mDrawList->AddLine(baseSSpace, worldDirSSpace,  IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
+
+		    // Arrow head begin
+		    //ImVec2 dir(origin - worldDirSSpace);
+
+		    //float d = sqrtf(ImLengthSqr(dir));
+		    //dir /= d; // Normalize
+		    //dir *= gContext.mStyle.TranslationLineArrowSize;
+
+		    //ImVec2 ortogonalDir(dir.y, -dir.x); // Perpendicular vector
+		    //ImVec2 a(worldDirSSpace + dir);
+		    //gContext.mDrawList->AddTriangleFilled(worldDirSSpace - dir, a + ortogonalDir, a - ortogonalDir, colors[i + 1]);
+
+
             for (int iPanel = 0; iPanel < 9; iPanel++)
             {
                vec_t boxCoord = boxOrigin + indexVectorX * float(iPanel % 3) + indexVectorY * float(iPanel / 3) + makeVect(1.f, 1.f, 1.f);

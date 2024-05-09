@@ -55,28 +55,18 @@ public:
 class vertex_color
 {
 public:
-	scl::vector3 position;
-	uint32	color;
+	scl::vector3	position;
+	uint32			color;
 
-	static int getAttr(VertexAttr* attrs, const int capacity);
+	static int get_attr(VertexAttr* attrs, const int capacity);
 };
-
-//class vertex_coord
-//{
-//public:
-//	scl::vector4	position;
-//	uint32			color;
-//	scl::vector2	texcoord;
-//};
 
 class vertex_color_uv
 {
 public:
-	float x, y, z;
+	float	x, y, z;
 	uint32	color;
-	float u, v;
-
-	//static const uint32 FVF = (FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
+	float	u, v;
 
 	void set(
 		float	_x,
@@ -109,9 +99,12 @@ public:
 	void set_xy		(float _x, float _y)			{ x = _x; y = _y; }
 	void set_color	(uint32 _color)					{ color = _color; }
 	void set_uv		(float _u, float _v)			{ u = _u; v = _v; }
-	//void set_index	(uint8 _index)					{ index = _index; }
 	void mul_matrix	(const scl::matrix& m);
 	void clear		()								{ x = 0; y = 0; z = 0; color = 0; u = 0; v = 0; }
+
+	static const VertexAttr*	get_attr();
+	static int					get_attr_count() { return 3; }
+
 };
 
 //enum VERTEX_SLOT

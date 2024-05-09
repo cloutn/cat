@@ -27,6 +27,7 @@ class Primitive;
 class Env;
 class Scene;
 class Animation;
+class Terrain;
 
 class Client
 {
@@ -128,6 +129,8 @@ private:
 	OPERATE_TYPE			m_operateType;
 	TRANSFORM_TYPE			m_transformType;
 	//Object*					m_selectObject;
+
+	Terrain*				m_terrain;
 };
 
 } //namespace cat

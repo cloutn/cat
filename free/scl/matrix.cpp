@@ -575,6 +575,50 @@ matrix matrix::lookat2(scl::vector3 eye, scl::vector3 target, scl::vector3 upDir
 	return matrix;
 }
 
+void matrix::decompose_lookat(const scl::matrix& result, float& posX, float& posY, float& posZ, float& lookAtX, float& lookAtY, float& lookAtZ, float& upX, float& upY, float& upZ)
+{
+	scl::vector3 foward;
+	scl::vector3 left;
+	scl::vector3 up;
+
+	left.x = result.m[0][0];
+	left.y = result.m[1][0];
+	left.z = result.m[2][0];
+
+	up.x = result.m[0][1];
+	up.y = result.m[1][1];
+	up.z = result.m[2][1];
+
+	foward.x = result.m[0][2];
+	foward.y = result.m[1][2];
+	foward.z = result.m[2][2];
+
+	// camera view rotate is orthogonal (which each column has unit length and perpendicular to the other column.)
+	// so the inverse matrix is equal to its transpose matrix
+	// 旋转矩阵是正交矩阵，所以逆矩阵和转置矩阵相同
+	scl::matrix rotateInverse = {
+		left.x,		left.y,		left.z,		0,
+		up.x,		up.y,		up.z,		0,
+		foward.x,	foward.y,	foward.z,	0,
+		0,			0,			0,			1
+	};
+
+	scl::matrix transform = result;
+	transform.mul(rotateInverse);
+
+	posX = -transform.x4;
+	posY = -transform.y4;
+	posZ = -transform.z4;
+
+	lookAtX = posX - foward.x;
+	lookAtY = posY - foward.y;
+	lookAtZ = posZ - foward.z;
+
+	upX = up.x;
+	upY = up.y;
+	upZ = up.z;
+}
+
 // code snippet from http://www.songho.ca/opengl/gl_camera.html
 //typedef matrix Matrix4;
 //typedef scl::vector3 Vector3;

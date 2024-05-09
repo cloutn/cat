@@ -134,6 +134,7 @@ public:
 	static void		lookat					(scl::matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ);
 	static matrix	lookat					(float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ);
 	static matrix	lookat2					(scl::vector3 pos, scl::vector3 lookAt, scl::vector3 up);
+	static void		decompose_lookat		(const scl::matrix& lookatMatrix, float& posX, float& posY, float& posZ, float& lookAtX, float& lookAtY, float& lookAtZ, float& upX, float& upY, float& upZ);
 
 	//求逆矩阵
 	static bool		inverse					(scl::matrix& m, scl::matrix& result);

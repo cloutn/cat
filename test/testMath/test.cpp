@@ -102,9 +102,14 @@ void test_matrix_mul(bool print)
 
 void test_camera(bool print)
 {
-	scl::matrix sLookAt = matrix::lookat(1, 1, 1, 0, 0, 0, 0, 1, 0);
-	glm::mat4	gLookAt = glm::lookAtRH(glm::vec3{1, 1, 1}, glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0});
+	scl::vector3	pos			= {11.11, -22.22, 333.33};
+	scl::vector3	lookat		= {10, -20, 30};
+	scl::vector3	up			= {0, 1, 0};
+	scl::matrix		sLookAt		= matrix::lookat(pos.x, pos.y, pos.z, lookat.x, lookat.y, lookat.z, up.x, up.y, up.z);
+	scl::matrix		sLookAt2	= matrix::lookat2(pos, lookat, up);
+	glm::mat4		gLookAt		= glm::lookAtRH(glm::vec3{pos.x, pos.y, pos.z}, glm::vec3{lookat.x, lookat.y, lookat.z}, glm::vec3{up.x, up.y, up.z});
 	assert(compare_mat(sLookAt, gLookAt, print));
+	assert(compare_mat(sLookAt2, gLookAt, print));
 
 	float w = 1280;
 	float h = 800;
@@ -117,6 +122,30 @@ void test_camera(bool print)
 	assert(compare_mat(sOrtho, gOrtho, print));
 
 	//scl::matrix::frustum(m_projection, -w/2, w/2, -h/2, h/2, -100, 100);
+}
+
+
+void test_camera_look_at(bool print)
+{
+	//scl::matrix sLookAt = matrix::lookat(1, 1, 1, 0, 0, 0, 0, 1, 0);
+	//glm::mat4	gLookAt = glm::lookAtRH(glm::vec3{1, 1, 1}, glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0});
+	//assert(compare_mat(sLookAt, gLookAt, print));
+
+	// 测试 decompose_lookat
+	//		从一个参数集合构造一个 camera view matrix
+	//		然后用 decompose_lookat 来将矩阵还原为参数集合
+	//		注意，由于计算过程 normalized 的原因，所以decompose得出的参数不会和之前输入参数完全一致
+	//		但是用第二次decompose得出的参数重新计算matrix，一定是和第一次的matrix完全一致的，
+	//		最终，我们检查这两个matrix从而得知 decompose 是否执行正确。
+	scl::matrix sLookAt1 = matrix::lookat(10, 20, -30, 0, 0, 0, 0, 1, 0);
+
+	scl::vector3 pos;
+	scl::vector3 lookAt;
+	scl::vector3 up;
+	matrix::decompose_lookat(sLookAt1, pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
+
+	scl::matrix sLookAt2 = matrix::lookat(pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, up.x, up.y, up.z);
+	assert(compare_mat(sLookAt1, sLookAt2, print));
 }
 
 void test_rotate_order(bool print)

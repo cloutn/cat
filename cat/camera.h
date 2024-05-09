@@ -24,6 +24,7 @@ public:
 	void					setView			(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up);
 	void					setProjection	(float fov, float aspect, float near, float far);
 	void					setAspect		(float aspect);
+	void					setViewByMatrix	(const scl::matrix& m);
 
 	void					move			(scl::vector3 d);
 	void					move			(float dx, float dy, float dz) { move({dx, dy, dz}); }

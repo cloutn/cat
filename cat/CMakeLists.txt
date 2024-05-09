@@ -42,6 +42,7 @@ set(header_files
 	eglWindow.h
 	color.h
 	vertex.h
+	terrain.h
 )
 
 set(src_files
@@ -75,6 +76,7 @@ set(src_files
 	eglWindow.cpp
 	color.cpp
 	vertex.cpp
+	terrain.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})

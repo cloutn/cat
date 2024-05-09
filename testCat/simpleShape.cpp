@@ -17,11 +17,10 @@ using scl::vector3;
 
 Object* _createGrid(IRender* render, Env* env)
 {
-	Primitive* p = new Primitive();
 
 	// attr
 	VertexAttr	attrs[16] = { 0 };
-	int			attrCount = vertex_color::getAttr(attrs, countof(attrs));
+	int			attrCount = vertex_color::get_attr(attrs, countof(attrs));
 
 	ShaderMacroArray macros;
 	macros.add("COLOR");
@@ -51,6 +50,7 @@ Object* _createGrid(IRender* render, Env* env)
 	for (int i = 0; i < VERTEX_COUNT; ++i)
 		indices[i] = i;
 
+	Primitive* p = new Primitive();
 	p->setRender(render);
 	p->setEnv(env);
 	p->setPrimitiveType(PRIMITIVE_TYPE_LINES);

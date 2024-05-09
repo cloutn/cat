@@ -124,6 +124,7 @@ void MainGUI::init(Client* client)
 	style.ScaleLineCircleSize			*= scale;
 	style.CenterCircleSize				*= scale;
 	style.HatchedAxisLineThickness		= 0;
+	gizmo::AllowAxisFlip(false);
 }
 
 
@@ -349,6 +350,17 @@ void MainGUI::_processGizmo()
 	Camera*					camera				= m_client->getCamera();
 	const TRANSFORM_TYPE	transformType		= m_client->transformType();
 	const OPERATE_TYPE		operateType			= m_client->operateType();
+	gizmo::OPERATION		gizmoOperation		= _operateTypeToGizmo(operateType);
+
+	// view handle manipulate
+	scl::matrix				viewMatrixAfter		= camera->viewMatrix();
+	const scl::matrix&		projectionMatrix	= camera->projectionMatrix();
+	scl::matrix				matrix				= scl::matrix::identity();
+	gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
+	if (!(viewMatrixAfter == camera->viewMatrix()))
+	{
+		camera->setViewByMatrix(viewMatrixAfter);
+	}
 
 	if (TRANSFORM_TYPE_LOCAL == transformType)
 	{

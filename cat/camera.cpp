@@ -56,6 +56,13 @@ void Camera::setAspect(float aspect)
 	m_aspect			= aspect;
 }
 
+void Camera::setViewByMatrix(const scl::matrix& m)
+{
+	m_viewDirty = true;
+	m_dirty		= true;
+	scl::matrix::decompose_lookat(m, m_position.x, m_position.y, m_position.z, m_target.x, m_target.y, m_target.z, m_up.x, m_up.y, m_up.z);
+}
+
 void Camera::move(scl::vector3 d)
 {
 	vector3 lookat	= _front();

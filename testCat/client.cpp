@@ -14,6 +14,7 @@
 #include "cat/env.h"
 #include "cat/def.h"
 #include "cat/vertex.h"
+#include "cat/terrain.h"
 
 #include "scl/type.h"
 #include "scl/time.h"
@@ -59,6 +60,7 @@ Client::Client()
 	m_totalTime					= 1;
 	m_operateType				= OPERATE_TYPE_TRANSLATE;
 	m_transformType				= TRANSFORM_TYPE_LOCAL;
+	m_terrain					= new Terrain();
 
 	m_mousePosition.clear();
 }
@@ -92,6 +94,8 @@ void Client::init()
 
 	//m_gridPrimitive = _createGridPrimitive(&m_render, m_env);
 	m_grid = _createGrid(&m_render, m_env);
+
+	m_terrain->init(&m_render, m_env);
 
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
@@ -164,6 +168,7 @@ Client::~Client()
 	for (int i = 0; i < m_scenes.size(); ++i)
 		delete m_scenes[i];
 
+	delete m_terrain;
 	delete m_camera;
 	m_render.release();	
 	scl::log::release();
@@ -182,6 +187,8 @@ Client& Client::inst()
 
 void Client::_renderScene(bool isPick)
 {
+	m_terrain->draw(m_camera->matrix(), isPick, &m_render);
+
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
 		m_scenes[i]->draw(m_camera->matrix(), isPick, &m_render);
