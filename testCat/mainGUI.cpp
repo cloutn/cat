@@ -124,6 +124,9 @@ void MainGUI::init(Client* client)
 	style.ScaleLineCircleSize			*= scale;
 	style.CenterCircleSize				*= scale;
 	style.HatchedAxisLineThickness		= 0;
+	style.Colors[gizmo::DIRECTION_X]	= ImVec4(222/255.f,	56/255.f,	80/255.f,	1.000f); 
+	style.Colors[gizmo::DIRECTION_Y]	= ImVec4(133/255.f,	210/255.f,	12/255.f,	1.000f); 
+	style.Colors[gizmo::DIRECTION_Z]	= ImVec4(46/255.f,	134/255.f,	233/255.f,	1.000f); 
 	gizmo::AllowAxisFlip(false);
 }
 
@@ -356,7 +359,8 @@ void MainGUI::_processGizmo()
 	scl::matrix				viewMatrixAfter		= camera->viewMatrix();
 	const scl::matrix&		projectionMatrix	= camera->projectionMatrix();
 	scl::matrix				matrix				= scl::matrix::identity();
-	gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
+	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
+	//gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
 	if (!(viewMatrixAfter == camera->viewMatrix()))
 	{
 		camera->setViewByMatrix(viewMatrixAfter);

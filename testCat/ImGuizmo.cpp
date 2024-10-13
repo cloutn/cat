@@ -792,6 +792,20 @@ namespace IMGUIZMO_NAMESPACE
       return ImGui::ColorConvertFloat4ToU32(gContext.mStyle.Colors[idx]);
    }
 
+   static vec_t worldToPos3(const vec_t& worldPos, const matrix_t& mat, ImVec2 position = ImVec2(gContext.mX, gContext.mY), ImVec2 size = ImVec2(gContext.mWidth, gContext.mHeight))
+   {
+      vec_t trans;
+      trans.TransformPoint(worldPos, mat);
+      trans *= 0.5f / trans.w;
+      trans += makeVect(0.5f, 0.5f);
+      trans.y = 1.f - trans.y;
+      trans.x *= size.x;
+      trans.y *= size.y;
+      trans.x += position.x;
+      trans.y += position.y;
+      return trans;
+   }
+
    static ImVec2 worldToPos(const vec_t& worldPos, const matrix_t& mat, ImVec2 position = ImVec2(gContext.mX, gContext.mY), ImVec2 size = ImVec2(gContext.mWidth, gContext.mHeight))
    {
       vec_t trans;
@@ -2750,6 +2764,13 @@ namespace IMGUIZMO_NAMESPACE
       ViewManipulate(view, length, position, size, backgroundColor);
    }
 
+    void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+   {
+      // Scale is always local or matrix will be skewed when applying world scale or oriented matrix
+      ComputeContext(view, projection, matrix, (operation & SCALE) ? LOCAL : mode);
+      ViewManipulateAxis(view, length, position, size, backgroundColor);
+   }
+
    void ViewManipulate(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
    {
       static bool isDraging = false;
@@ -2833,34 +2854,21 @@ namespace IMGUIZMO_NAMESPACE
 
             const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
             vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
+            //printf("\n------\nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f\n------\n", 
+            //    gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w, 
+            //    gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
+            //    posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w);
 
             float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert + 0.5f;
             float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert + 0.5f;
+
+			if (/*iFace == 0 &&*/ iPass == 0)
+				printf("[%d] localx = %f, localy = %f\n", iFace, localx, localy);
 
             // panels
             const vec_t dx = directionUnary[perpXIndex];
             const vec_t dy = directionUnary[perpYIndex];
             const vec_t origin = directionUnary[normalIndex] - dx - dy;
-
-
-            const vec_t center = dx * 0.5 + dy * 0.5;
-            const vec_t end = center + directionUnary[normalIndex];
-            ImVec2 baseSSpace = worldToPos(center, res, position, size);
-		    ImVec2 worldDirSSpace = worldToPos(end, res, position, size);
-		    gContext.mDrawList->AddLine(baseSSpace, worldDirSSpace,  IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
-
-		    // Arrow head begin
-		    //ImVec2 dir(origin - worldDirSSpace);
-
-		    //float d = sqrtf(ImLengthSqr(dir));
-		    //dir /= d; // Normalize
-		    //dir *= gContext.mStyle.TranslationLineArrowSize;
-
-		    //ImVec2 ortogonalDir(dir.y, -dir.x); // Perpendicular vector
-		    //ImVec2 a(worldDirSSpace + dir);
-		    //gContext.mDrawList->AddTriangleFilled(worldDirSSpace - dir, a + ortogonalDir, a - ortogonalDir, colors[i + 1]);
-
-
             for (int iPanel = 0; iPanel < 9; iPanel++)
             {
                vec_t boxCoord = boxOrigin + indexVectorX * float(iPanel % 3) + indexVectorY * float(iPanel / 3) + makeVect(1.f, 1.f, 1.f);
@@ -2987,6 +2995,119 @@ namespace IMGUIZMO_NAMESPACE
 
          vec_t newEye = camTarget + newDir * length;
          LookAt(&newEye.x, &camTarget.x, &referenceUp.x, view);
+      }
+
+      // restore view/projection because it was used to compute ray
+      ComputeContext(svgView.m16, svgProjection.m16, gContext.mModelSource.m16, gContext.mMode);
+   }
+
+   void ViewManipulateAxis(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+   {
+      //static bool isDraging = false;
+      //static bool isClicking = false;
+      //static bool isInside = false;
+      //static vec_t interpolationUp;
+      //static vec_t interpolationDir;
+      //static int interpolationFrames = 0;
+      //const vec_t referenceUp = makeVect(0.f, 1.f, 0.f);
+
+      matrix_t svgView, svgProjection;
+      svgView = gContext.mViewMat;
+      svgProjection = gContext.mProjectionMat;
+
+      ImGuiIO& io = ImGui::GetIO();
+      //gContext.mDrawList->AddRectFilled(position, position + size, backgroundColor);
+      matrix_t viewInverse;
+      viewInverse.Inverse(*(matrix_t*)view);
+
+      const vec_t camTarget = viewInverse.v.position - viewInverse.v.dir * length;
+
+      // view/projection matrices
+      const float distance = 3.f;
+      matrix_t cubeProjection, cubeView;
+      float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
+      Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, cubeProjection.m16);
+
+      vec_t dir = makeVect(viewInverse.m[2][0], viewInverse.m[2][1], viewInverse.m[2][2]);
+      vec_t up = makeVect(viewInverse.m[1][0], viewInverse.m[1][1], viewInverse.m[1][2]);
+      vec_t eye = dir * distance;
+      vec_t zero = makeVect(0.f, 0.f);
+      LookAt(&eye.x, &zero.x, &up.x, cubeView.m16);
+
+      // set context
+      gContext.mViewMat = cubeView;
+      gContext.mProjectionMat = cubeProjection;
+      ComputeCameraRay(gContext.mRayOrigin, gContext.mRayVector, position, size);
+
+      const matrix_t res = cubeView * cubeProjection;
+
+	  // colors
+	  ImU32 colors[7];
+	  ComputeColors(colors, MT_NONE, TRANSLATE);
+
+      struct AxisEnd
+      {
+          int face;
+          vec_t pos;
+      };
+      AxisEnd axis_ends[6];
+	  //int axis_index[6];
+	  for (int iFace = 0; iFace < 6; iFace++)
+	  {
+		  axis_ends[iFace].face = iFace;
+		  vec_t end_normal = directionUnary[iFace % 3];
+		  if (iFace >= 3)
+			  end_normal = -end_normal;
+		  axis_ends[iFace].pos = worldToPos3(end_normal, res, position, size);
+	  }
+
+	  qsort(axis_ends, 6, sizeof(AxisEnd), [](void const* _a, void const* _b) {
+		  AxisEnd* a = (AxisEnd*)_a;
+		  AxisEnd* b = (AxisEnd*)_b;
+		  return (a->pos.z < b->pos.z) ? 1 : -1;
+		  });
+
+	  const vec_t center = { 0, 0 };
+	  ImVec2 begin = worldToPos(center, res, position, size);
+	  for (int iFace = 0; iFace < 6; ++iFace)
+	  {
+		  AxisEnd& e = axis_ends[iFace];
+
+		  ImVec2 e2(e.pos.x, e.pos.y);
+
+		  ImU32 color = colors[(e.face % 3) + 1];
+		  ImU32 color_deep = IM_COL32(0x77, 0x77, 0x77, 0x77);
+		  ImU32 color_light = IM_COL32(0xAA, 0xAA, 0xAA, 0xAA);
+		  if (e.face < 3)
+			  //gContext.mDrawList->AddLine(begin, e2, IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
+			  gContext.mDrawList->AddLine(begin, e2, color, gContext.mStyle.TranslationLineThickness);
+		  else
+			  gContext.mDrawList->AddLine(begin, e2, color_deep, gContext.mStyle.TranslationLineThickness);
+
+		  const int normalIndex = (iFace % 3);
+		  const int perpXIndex = (normalIndex + 1) % 3;
+		  const int perpYIndex = (normalIndex + 2) % 3;
+		  const float invert = (iFace > 2) ? -1.f : 1.f;
+		  const vec_t n = directionUnary[normalIndex] * invert;
+		  const vec_t facePlan = BuildPlan(n * 0.5f, n);
+
+		  const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
+		  vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
+		  float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert + 0.5f;
+		  float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert + 0.5f;
+          float dist = sqrtf(localx * localx + localy * localy);
+
+          if (iFace == 2)
+            printf("[%d] localx = %f, localy = %f, dist = %f\n", iFace, localx, localy, dist);
+
+          bool inside = false;
+          if (dist < 10)
+              inside = true;
+
+		  if (e.face < 3)
+			  gContext.mDrawList->AddCircleFilled(e2, 10, inside ? color_light : color);
+		  else
+			  gContext.mDrawList->AddCircle(e2, 10, inside ? color_light : color);
       }
 
       // restore view/projection because it was used to compute ray

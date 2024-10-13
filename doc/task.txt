@@ -1,0 +1,63 @@
+
+
+[编辑器] [...v0] imgizmo 的左上角的方向指示器改进，类似unity逻辑
+
+[渲染] [v0] gltf 原生数据 render（基本完成）
+
+[渲染] [v0] gltf mesh 加载（已完成）
+
+[渲染] [v0] gltf 基础材质纹理加载（已完成）
+
+[场景] [v0] 基础场景组织 v0（已完成）
+
+[动画] [v0] skinned mesh 动画 (基本完成)
+
+[渲染] 整理一下render的代码。
+
+[资源]（非必要功能，延后。先在gltf基础上做后续开发）fbx 在 windows 下的加载, 使用sdk
+
+[资源]（非必要功能，延后。）fbx 在 android 下的加载，考虑使用 openfbx 或者 assimp 代码。
+
+[渲染] [光照]冯氏光照模型 
+
+[渲染] [光照]blinned-phong
+
+[渲染]基础pbr光照
+
+[渲染]IBL实现
+
+[渲染] 生成阴影图
+
+[渲染] 使用阴影图
+
+[渲染] 场景阴影bake（使用 Unreal 的 LightMass）
+
+[地形] 刷高度图（地形刷子需要编辑器的支持）
+
+[地形] 地形纹理
+
+[地形] 植被 GPU Instance
+
+[地形] 雪地沙地脚印，用TS
+
+[地形] 地形高度图渲染和纹理。
+
+[地形] 进阶：RVT实现。
+
+[渲染][天空盒]实现最简单的天空盒
+
+[渲染][水体]河流
+
+[渲染][水体] 大海（FFT Fast Fourier Transform 快速傅里叶变换）
+
+[渲染][水体] 瀑布
+
+[渲染][水体] 涟漪  unity 实现参考 https://blog.csdn.net/ak47007tiger/article/details/115270022
+
+[场景] 八叉树空间管理。
+
+[物理] 接入physiX 4.0
+
+[AI] 寻路，接入recast and detour navmesh
+
+
