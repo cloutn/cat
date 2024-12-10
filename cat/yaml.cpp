@@ -242,7 +242,7 @@ void node::set_type(NODE_TYPE type)
 	case NODE_TYPE_SEQ_INLINE:
 		{
 			m_node |= ryml::SEQ;
-			m_node |= ryml::_WIP_STYLE_FLOW_SL;
+			m_node |= ryml::FLOW_SL;
 		}
 		break;
 	case NODE_TYPE_SCALAR:
