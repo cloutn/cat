@@ -14,6 +14,8 @@
 
 namespace c4 {
 
+C4_SUPPRESS_WARNING_GCC_CLANG_WITH_PUSH("-Wold-style-cast")
+
 namespace detail {
 
 
@@ -36,38 +38,38 @@ void afree_impl(void *ptr)
 
 void* aalloc_impl(size_t size, size_t alignment)
 {
+    // alignment must be nonzero and a power of 2
+    C4_CHECK(alignment > 0 && (alignment & (alignment - 1u)) == 0);
+    // NOTE: alignment needs to be sized in multiples of sizeof(void*)
+    if(C4_UNLIKELY(alignment < sizeof(void*)))
+        alignment = sizeof(void*);
+    static_assert((sizeof(void*) & (sizeof(void*)-1u)) == 0, "sizeof(void*) must be a power of 2");
+    C4_CHECK(((alignment & (sizeof(void*) - 1u))) == 0u);
     void *mem;
 #if defined(C4_WIN) || defined(C4_XBOX)
     mem = ::_aligned_malloc(size, alignment);
     C4_CHECK(mem != nullptr || size == 0);
-#elif defined(C4_ARM)
-    // https://stackoverflow.com/questions/53614538/undefined-reference-to-posix-memalign-in-arm-gcc
-    // https://electronics.stackexchange.com/questions/467382/e2-studio-undefined-reference-to-posix-memalign/467753
-    mem = memalign(alignment, size);
-    C4_CHECK(mem != nullptr || size == 0);
 #elif defined(C4_POSIX) || defined(C4_IOS) || defined(C4_MACOS)
-    // NOTE: alignment needs to be sized in multiples of sizeof(void*)
-    size_t amult = alignment;
-    if(C4_UNLIKELY(alignment < sizeof(void*)))
-    {
-        amult = sizeof(void*);
-    }
-    int ret = ::posix_memalign(&mem, amult, size);
+    int ret = ::posix_memalign(&mem, alignment, size);
     if(C4_UNLIKELY(ret))
     {
-        if(ret == EINVAL)
-        {
-            C4_ERROR("The alignment argument %zu was not a power of two, "
-                     "or was not a multiple of sizeof(void*)", alignment);
-        }
-        else if(ret == ENOMEM)
+        C4_ASSERT(ret != EINVAL); // this was already handled above
+        if(ret == ENOMEM)
         {
             C4_ERROR("There was insufficient memory to fulfill the "
                      "allocation request of %zu bytes (alignment=%lu)", size, size);
         }
         return nullptr;
     }
+#elif defined(C4_ARM) || defined(C4_ANDROID)
+    // https://stackoverflow.com/questions/53614538/undefined-reference-to-posix-memalign-in-arm-gcc
+    // https://electronics.stackexchange.com/questions/467382/e2-studio-undefined-reference-to-posix-memalign/467753
+    mem = memalign(alignment, size);
+    C4_CHECK(mem != nullptr || size == 0);
 #else
+    (void)size;
+    (void)alignment;
+    mem = nullptr;
     C4_NOT_IMPLEMENTED_MSG("need to implement an aligned allocation for this platform");
 #endif
     C4_ASSERT_MSG((uintptr_t(mem) & (alignment-1)) == 0, "address %p is not aligned to %zu boundary", mem, alignment);
@@ -202,7 +204,6 @@ void* MemoryResourceLinear::do_allocate(size_t sz, size_t alignment, void *hint)
     if(m_pos + sz > m_size)
     {
         C4_ERROR("out of memory");
-        return nullptr;
     }
     void *mem = m_mem + m_pos;
     size_t space = m_size - m_pos;
@@ -217,7 +218,6 @@ void* MemoryResourceLinear::do_allocate(size_t sz, size_t alignment, void *hint)
     else
     {
         C4_ERROR("could not align memory");
-        mem = nullptr;
     }
     return mem;
 }
@@ -275,6 +275,8 @@ void* MemoryResourceLinear::do_reallocate(void* ptr, size_t oldsz, size_t newsz,
  * @see https://github.com/emeryberger/Malloc-Implementations/tree/master/allocators
  *
  * */
+
+C4_SUPPRESS_WARNING_GCC_CLANG_POP
 
 } // namespace c4
 

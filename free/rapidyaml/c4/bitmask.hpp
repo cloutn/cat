@@ -9,12 +9,17 @@
 #include "c4/enum.hpp"
 #include "c4/format.hpp"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #   pragma warning(push)
 #   pragma warning(disable : 4996) // 'strncpy', fopen, etc: This function or variable may be unsafe
-#elif defined(__clang__)
+#endif
+
+#if defined(__clang__)
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wold-style-cast"
 #elif defined(__GNUC__)
 #   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
 #   if __GNUC__ >= 8
 #       pragma GCC diagnostic ignored "-Wstringop-truncation"
 #       pragma GCC diagnostic ignored "-Wstringop-overflow"
@@ -236,7 +241,7 @@ typename std::underlying_type<Enum>::type str2bm_read_one(const char *str, size_
         C4_CHECK_MSG(p != nullptr, "no valid enum pair name for '%.*s'", (int)sz, str);
         return static_cast<I>(p->value);
     }
-    I tmp;
+    I tmp{0};
     size_t len = uncat(csubstr(str, sz), tmp);
     C4_CHECK_MSG(len != csubstr::npos, "could not read string as an integral type: '%.*s'", (int)sz, str);
     return tmp;
@@ -322,7 +327,10 @@ typename std::underlying_type<Enum>::type str2bm(const char *str)
 
 #ifdef _MSC_VER
 #   pragma warning(pop)
-#elif defined(__clang__)
+#endif
+
+#if defined(__clang__)
+#   pragma clang diagnostic pop
 #elif defined(__GNUC__)
 #   pragma GCC diagnostic pop
 #endif

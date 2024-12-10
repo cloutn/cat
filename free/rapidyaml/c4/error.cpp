@@ -35,9 +35,11 @@
 #ifdef __clang__
 #   pragma clang diagnostic push
 #   pragma clang diagnostic ignored "-Wformat-nonliteral"
+#   pragma clang diagnostic ignored "-Wold-style-cast"
 #elif defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
 
@@ -46,6 +48,7 @@ namespace c4 {
 
 static error_flags         s_error_flags = ON_ERROR_DEFAULTS;
 static error_callback_type s_error_callback = nullptr;
+
 
 //-----------------------------------------------------------------------------
 
@@ -67,6 +70,7 @@ void set_error_callback(error_callback_type cb)
 {
     s_error_callback = cb;
 }
+
 
 //-----------------------------------------------------------------------------
 
@@ -100,8 +104,15 @@ void handle_error(srcloc where, const char *fmt, ...)
     {
         if(s_error_callback)
         {
-            s_error_callback(buf, msglen/*ss.c_strp(), ss.tellp()*/);
+            s_error_callback(buf, msglen);
         }
+    }
+
+    if(s_error_flags & ON_ERROR_THROW)
+    {
+#if defined(C4_EXCEPTIONS_ENABLED) && defined(C4_ERROR_THROWS_EXCEPTION)
+        throw std::runtime_error(buf);
+#endif
     }
 
     if(s_error_flags & ON_ERROR_ABORT)
@@ -109,14 +120,8 @@ void handle_error(srcloc where, const char *fmt, ...)
         abort();
     }
 
-    if(s_error_flags & ON_ERROR_THROW)
-    {
-#if defined(C4_EXCEPTIONS_ENABLED) && defined(C4_ERROR_THROWS_EXCEPTION)
-        throw Exception(buf);
-#else
-        abort();
-#endif
-    }
+    abort(); // abort anyway, in case nothing was set
+    C4_UNREACHABLE_AFTER_ERR();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,20 +129,19 @@ void handle_error(srcloc where, const char *fmt, ...)
 void handle_warning(srcloc where, const char *fmt, ...)
 {
     va_list args;
-    char buf[1024]; //sstream<c4::string> ss;
+    char buf[1024];
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
     C4_LOGF_WARN("\n");
 #if defined(C4_ERROR_SHOWS_FILELINE) && defined(C4_ERROR_SHOWS_FUNC)
-    C4_LOGF_WARN("%s:%d: WARNING: %s\n", where.file, where.line, buf/*ss.c_strp()*/);
+    C4_LOGF_WARN("%s:%d: WARNING: %s\n", where.file, where.line, buf);
     C4_LOGF_WARN("%s:%d: WARNING: here: %s\n", where.file, where.line, where.func);
 #elif defined(C4_ERROR_SHOWS_FILELINE)
-    C4_LOGF_WARN("%s:%d: WARNING: %s\n", where.file, where.line, buf/*ss.c_strp()*/);
+    C4_LOGF_WARN("%s:%d: WARNING: %s\n", where.file, where.line, buf);
 #elif ! defined(C4_ERROR_SHOWS_FUNC)
-    C4_LOGF_WARN("WARNING: %s\n", buf/*ss.c_strp()*/);
+    C4_LOGF_WARN("WARNING: %s\n", buf);
 #endif
-    //c4::log.flush();
 }
 
 //-----------------------------------------------------------------------------
@@ -149,33 +153,38 @@ bool is_debugger_attached()
     if(first_call)
     {
         first_call = false;
+        C4_SUPPRESS_WARNING_GCC_PUSH
+        #if defined(__GNUC__) && __GNUC__ > 9
+        C4_SUPPRESS_WARNING_GCC("-Wanalyzer-fd-leak")
+        #endif
         //! @see http://stackoverflow.com/questions/3596781/how-to-detect-if-the-current-process-is-being-run-by-gdb
         //! (this answer: http://stackoverflow.com/a/24969863/3968589 )
         char buf[1024] = "";
-
         int status_fd = open("/proc/self/status", O_RDONLY);
         if (status_fd == -1)
         {
             return 0;
         }
-
-        ssize_t num_read = ::read(status_fd, buf, sizeof(buf));
-
-        if (num_read > 0)
+        else
         {
-            static const char TracerPid[] = "TracerPid:";
-            char *tracer_pid;
-
-            if(num_read < 1024)
+            ssize_t num_read = ::read(status_fd, buf, sizeof(buf));
+            if (num_read > 0)
             {
-                buf[num_read] = 0;
+                static const char TracerPid[] = "TracerPid:";
+                char *tracer_pid;
+                if(num_read < 1024)
+                {
+                    buf[num_read] = 0;
+                }
+                tracer_pid = strstr(buf, TracerPid);
+                if (tracer_pid)
+                {
+                    first_call_result = !!::atoi(tracer_pid + sizeof(TracerPid) - 1);
+                }
             }
-            tracer_pid = strstr(buf, TracerPid);
-            if (tracer_pid)
-            {
-                first_call_result = !!::atoi(tracer_pid + sizeof(TracerPid) - 1);
-            }
+            close(status_fd);
         }
+        C4_SUPPRESS_WARNING_GCC_POP
     }
     return first_call_result;
 #elif defined(C4_PS4)
@@ -209,6 +218,7 @@ bool is_debugger_attached()
     size = sizeof(info);
     junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
     assert(junk == 0);
+    (void)junk;
 
     // We're being debugged if the P_TRACED flag is set.
     return ((info.kp_proc.p_flag & P_TRACED) != 0);

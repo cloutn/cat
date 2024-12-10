@@ -24,7 +24,7 @@
 /** @see http://sourceforge.net/p/predef/wiki/Compilers/ for a list of compiler identifier macros */
 /** @see https://msdn.microsoft.com/en-us/library/b0084kay.aspx for VS2013 predefined macros */
 
-#if defined(_MSC_VER)// && (defined(C4_WIN) || defined(C4_XBOX) || defined(C4_UE4))
+#if defined(_MSC_VER) && !defined(__clang__)
 #   define C4_MSVC
 #   define C4_MSVC_VERSION_2022 17
 #   define C4_MSVC_VERSION_2019 16
@@ -36,7 +36,7 @@
 #       define C4_MSVC_VERSION C4_MSVC_VERSION_2022  // visual studio 2022
 #       define C4_MSVC_2022
 #   elif _MSC_VER >= 1920
-#       define C4_MSVC_VERSION C_4MSVC_VERSION_2019  // visual studio 2019
+#       define C4_MSVC_VERSION C4_MSVC_VERSION_2019  // visual studio 2019
 #       define C4_MSVC_2019
 #   elif _MSC_VER >= 1910
 #       define C4_MSVC_VERSION C4_MSVC_VERSION_2017  // visual studio 2017
@@ -93,6 +93,9 @@
 #           define C4_CLANG_VERSION __apple_build_version__
 #       endif
 #   elif defined(__GNUC__)
+#       ifdef __MINGW32__
+#           define C4_MINGW
+#       endif
 #       define C4_GCC
 #       if defined(__GNUC_PATCHLEVEL__)
 #           define C4_GCC_VERSION C4_VERSION_ENCODED(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)

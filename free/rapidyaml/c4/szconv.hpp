@@ -10,6 +10,8 @@
 
 namespace c4 {
 
+C4_SUPPRESS_WARNING_GCC_CLANG_WITH_PUSH("-Wold-style-cast")
+
 /** @todo this would be so much easier with calls to numeric_limits::max()... */
 template<class SizeOut, class SizeIn>
 struct is_narrower_size : std::conditional
@@ -51,13 +53,15 @@ szconv(SizeIn sz) noexcept
 template<class SizeOut, class SizeIn>
 C4_ALWAYS_INLINE
 typename std::enable_if<is_narrower_size<SizeOut, SizeIn>::value, SizeOut>::type
-szconv(SizeIn sz) C4_NOEXCEPT_X
+szconv(SizeIn sz)
 {
     C4_XASSERT(sz >= 0);
     C4_XASSERT_MSG((SizeIn)sz <= (SizeIn)std::numeric_limits<SizeOut>::max(), "size conversion overflow: in=%zu", (size_t)sz);
     SizeOut szo = static_cast<SizeOut>(sz);
     return szo;
 }
+
+C4_SUPPRESS_WARNING_GCC_CLANG_POP
 
 } // namespace c4
 

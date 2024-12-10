@@ -13,22 +13,26 @@
 
 #ifdef __clang__
 #   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wold-style-cast"
 #elif defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wtype-limits" // disable warnings on size_t>=0, used heavily in assertions below. These assertions are a preparation step for providing the index type as a template parameter.
 #   pragma GCC diagnostic ignored "-Wuseless-cast"
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
 
 namespace c4 {
 
+/** @defgroup doc_substr Substring: read/write string views
+ * @{ */
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/** @cond dev */
 namespace detail {
-
 template<typename C>
 static inline void _do_reverse(C *C4_RESTRICT first, C *C4_RESTRICT last)
 {
@@ -39,36 +43,33 @@ static inline void _do_reverse(C *C4_RESTRICT first, C *C4_RESTRICT last)
         *first++ = tmp;
     }
 }
-
 } // namespace detail
-
+/** @endcond */
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/** @cond dev */
 // utility macros to deuglify SFINAE code; undefined after the class.
 // https://stackoverflow.com/questions/43051882/how-to-disable-a-class-member-funrtion-for-certain-template-types
 #define C4_REQUIRE_RW(ret_type) \
     template <typename U=C> \
     typename std::enable_if< ! std::is_const<U>::value, ret_type>::type
-// non-const-to-const
-#define C4_NC2C(ty) \
-    typename std::enable_if<std::is_const<C>::value && ( ! std::is_const<ty>::value), ty>::type
+/** @endcond */
 
 
 /** a non-owning string-view, consisting of a character pointer
  * and a length.
  *
  * @note The pointer is explicitly restricted.
- * @note Because of a C++ limitation, there cannot coexist overloads for
- * constructing from a char[N] and a char*; the latter will always be chosen
- * by the compiler. To construct an object of this type, call to_substr() or
- * to_csubstr(). For a more detailed explanation on why the overloads cannot
- * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html
  *
- * @see to_substr()
- * @see to_csubstr()
+ * @see a [quickstart
+ * sample](https://rapidyaml.readthedocs.io/latest/doxygen/group__doc__quickstart.html#ga43e253da0692c13967019446809c1113)
+ * in rapidyaml's documentation.
+ *
+ * @see @ref substr and @ref to_substr()
+ * @see @ref csubstr and @ref to_csubstr()
  */
 template<class C>
 struct C4CORE_EXPORT basic_substring
@@ -100,7 +101,11 @@ public:
     enum : size_t { npos = (size_t)-1, NONE = (size_t)-1 };
 
     /// convert automatically to substring of const C
-    operator ro_substr () const { ro_substr s(str, len); return s; }
+    template<class U=C>
+    C4_ALWAYS_INLINE operator typename std::enable_if<!std::is_const<U>::value, ro_substr const&>::type () const noexcept
+    {
+        return *(ro_substr const*)this; // don't call the str+len ctor because it does a check
+    }
 
     /** @} */
 
@@ -109,15 +114,17 @@ public:
     /** @name Default construction and assignment */
     /** @{ */
 
-    constexpr basic_substring() : str(nullptr), len(0) {}
+    C4_ALWAYS_INLINE constexpr basic_substring() noexcept : str(), len() {}
 
-    constexpr basic_substring(basic_substring const&) = default;
-    constexpr basic_substring(basic_substring     &&) = default;
-    constexpr basic_substring(std::nullptr_t) : str(nullptr), len(0) {}
+    C4_ALWAYS_INLINE basic_substring(basic_substring const&) noexcept = default;
+    C4_ALWAYS_INLINE basic_substring(basic_substring     &&) noexcept = default;
+    C4_ALWAYS_INLINE basic_substring(std::nullptr_t) noexcept : str(nullptr), len(0) {}
 
-    basic_substring& operator= (basic_substring const&) = default;
-    basic_substring& operator= (basic_substring     &&) = default;
-    basic_substring& operator= (std::nullptr_t) { str = nullptr; len = 0; return *this; }
+    C4_ALWAYS_INLINE basic_substring& operator= (basic_substring const&) noexcept = default;
+    C4_ALWAYS_INLINE basic_substring& operator= (basic_substring     &&) noexcept = default;
+    C4_ALWAYS_INLINE basic_substring& operator= (std::nullptr_t) noexcept { str = nullptr; len = 0; return *this; }
+
+    C4_ALWAYS_INLINE void clear() noexcept { str = nullptr; len = 0; }
 
     /** @} */
 
@@ -126,62 +133,60 @@ public:
     /** @name Construction and assignment from characters with the same type */
     /** @{ */
 
-    //basic_substring(C *s_) : str(s_), len(s_ ? strlen(s_) : 0) {}
-    /** the overload for receiving a single C* pointer will always
-     * hide the array[N] overload. So it is disabled. If you want to
-     * construct a substr from a single pointer containing a C-style string,
-     * you can call c4::to_substr()/c4::to_csubstr().
-     * @see c4::to_substr()
-     * @see c4::to_csubstr() */
+    /** Construct from an array.
+     * @warning the input string need not be zero terminated, but the
+     * length is taken as if the string was zero terminated */
     template<size_t N>
-    constexpr basic_substring(C (&s_)[N]) noexcept : str(s_), len(N-1) {}
-    basic_substring(C *s_, size_t len_) : str(s_), len(len_) { C4_ASSERT(str || !len_); }
-    basic_substring(C *beg_, C *end_) : str(beg_), len(static_cast<size_t>(end_ - beg_)) { C4_ASSERT(end_ >= beg_); }
+    C4_ALWAYS_INLINE constexpr basic_substring(C (&s_)[N]) noexcept : str(s_), len(N-1) {}
+    /** Construct from a pointer and length.
+     * @warning the input string need not be zero terminated. */
+    C4_ALWAYS_INLINE basic_substring(C *s_, size_t len_) noexcept : str(s_), len(len_) { C4_ASSERT(str || !len_); }
+    /** Construct from two pointers.
+     * @warning the end pointer MUST BE larger than or equal to the begin pointer
+     * @warning the input string need not be zero terminated */
+    C4_ALWAYS_INLINE basic_substring(C *beg_, C *end_) noexcept : str(beg_), len(static_cast<size_t>(end_ - beg_)) { C4_ASSERT(end_ >= beg_); }
+    /** Construct from a C-string (zero-terminated string)
+     * @warning the input string MUST BE zero terminated.
+     * @warning will call strlen()
+     * @note this overload uses SFINAE to prevent it from overriding the array ctor
+     * @see For a more detailed explanation on why the plain overloads cannot
+     * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
+    template<class U, typename std::enable_if<std::is_same<U, C*>::value || std::is_same<U, NCC_*>::value, int>::type=0>
+    C4_ALWAYS_INLINE basic_substring(U s_) noexcept : str(s_), len(s_ ? strlen(s_) : 0) {}
 
-    //basic_substring& operator= (C *s_) { this->assign(s_); return *this; }
+    /** Assign from an array.
+     * @warning the input string need not be zero terminated, but the
+     * length is taken as if the string was zero terminated */
     template<size_t N>
-    basic_substring& operator= (C (&s_)[N]) { this->assign<N>(s_); return *this; }
+    C4_ALWAYS_INLINE void assign(C (&s_)[N]) noexcept { str = (s_); len = (N-1); }
+    /** Assign from a pointer and length.
+     * @warning the input string need not be zero terminated. */
+    C4_ALWAYS_INLINE void assign(C *s_, size_t len_) noexcept { str = s_; len = len_; C4_ASSERT(str || !len_); }
+    /** Assign from two pointers.
+     * @warning the end pointer MUST BE larger than or equal to the begin pointer
+     * @warning the input string need not be zero terminated. */
+    C4_ALWAYS_INLINE void assign(C *beg_, C *end_) noexcept { C4_ASSERT(end_ >= beg_); str = (beg_); len = static_cast<size_t>(end_ - beg_); }
+    /** Assign from a C-string (zero-terminated string)
+     * @warning the input string must be zero terminated.
+     * @warning will call strlen()
+     * @note this overload uses SFINAE to prevent it from overriding the array ctor
+     * @see For a more detailed explanation on why the plain overloads cannot
+     * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
+    template<class U, typename std::enable_if<std::is_same<U, C*>::value || std::is_same<U, NCC_*>::value, int>::type=0>
+    C4_ALWAYS_INLINE void assign(U s_) noexcept { str = (s_); len = (s_ ? strlen(s_) : 0); }
 
-    //void assign(C *s_) { str = (s_); len = (s_ ? strlen(s_) : 0); }
-    /** the overload for receiving a single C* pointer will always
-     * hide the array[N] overload. So it is disabled. If you want to
-     * construct a substr from a single pointer containing a C-style string,
-     * you can call c4::to_substr()/c4::to_csubstr().
-     * @see c4::to_substr()
-     * @see c4::to_csubstr() */
+    /** Assign from an array.
+     * @warning the input string need not be zero terminated. */
     template<size_t N>
-    void assign(C (&s_)[N]) { str = (s_); len = (N-1); }
-    void assign(C *s_, size_t len_) { str = s_; len = len_; C4_ASSERT(str || !len_); }
-    void assign(C *beg_, C *end_) { C4_ASSERT(end_ >= beg_); str = (beg_); len = (end_ - beg_); }
-
-    void clear() { str = nullptr; len = 0; }
-
-    /** @} */
-
-public:
-
-    /** @name Construction from non-const characters */
-    /** @{ */
-
-    // when the char type is const, allow construction and assignment from non-const chars
-
-    /** only available when the char type is const */
-    template<size_t N, class U=NCC_> explicit basic_substring(C4_NC2C(U) (&s_)[N]) { str = s_; len = N-1; }
-    /** only available when the char type is const */
-    template<          class U=NCC_>          basic_substring(C4_NC2C(U) *s_, size_t len_) { str = s_; len = len_; }
-    /** only available when the char type is const */
-    template<          class U=NCC_>          basic_substring(C4_NC2C(U) *beg_, C4_NC2C(U) *end_) { C4_ASSERT(end_ >= beg_); str = beg_; len = end_ - beg_;  }
-
-    /** only available when the char type is const */
-    template<size_t N, class U=NCC_> void assign(C4_NC2C(U) (&s_)[N]) { str = s_; len = N-1; }
-    /** only available when the char type is const */
-    template<          class U=NCC_> void assign(C4_NC2C(U) *s_, size_t len_) { str = s_; len = len_; }
-    /** only available when the char type is const */
-    template<          class U=NCC_> void assign(C4_NC2C(U) *beg_, C4_NC2C(U) *end_) { C4_ASSERT(end_ >= beg_); str = beg_; len = end_ - beg_;  }
-
-    /** only available when the char type is const */
-    template<size_t N, class U=NCC_>
-    basic_substring& operator=(C4_NC2C(U) (&s_)[N]) { str = s_; len = N-1; return *this; }
+    C4_ALWAYS_INLINE basic_substring& operator= (C (&s_)[N]) noexcept { str = (s_); len = (N-1); return *this; }
+    /** Assign from a C-string (zero-terminated string)
+     * @warning the input string MUST BE zero terminated.
+     * @warning will call strlen()
+     * @note this overload uses SFINAE to prevent it from overriding the array ctor
+     * @see For a more detailed explanation on why the plain overloads cannot
+     * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
+    template<class U, typename std::enable_if<std::is_same<U, C*>::value || std::is_same<U, NCC_*>::value, int>::type=0>
+    C4_ALWAYS_INLINE basic_substring& operator= (U s_) noexcept { str = s_; len = s_ ? strlen(s_) : 0; return *this; }
 
     /** @} */
 
@@ -190,28 +195,28 @@ public:
     /** @name Standard accessor methods */
     /** @{ */
 
-    bool   has_str()   const { return ! empty() && str[0] != C(0); }
-    bool   empty()     const { return (len == 0 || str == nullptr); }
-    bool   not_empty() const { return (len != 0 && str != nullptr); }
-    size_t size()      const { return len; }
+    C4_ALWAYS_INLINE C4_PURE bool   has_str()   const noexcept { return ! empty() && str[0] != C(0); }
+    C4_ALWAYS_INLINE C4_PURE bool   empty()     const noexcept { return (len == 0 || str == nullptr); }
+    C4_ALWAYS_INLINE C4_PURE bool   not_empty() const noexcept { return (len != 0 && str != nullptr); }
+    C4_ALWAYS_INLINE C4_PURE size_t size()      const noexcept { return len; }
 
-    iterator begin() { return str; }
-    iterator end  () { return str + len; }
+    C4_ALWAYS_INLINE C4_PURE iterator begin() noexcept { return str; }
+    C4_ALWAYS_INLINE C4_PURE iterator end  () noexcept { return str + len; }
 
-    const_iterator begin() const { return str; }
-    const_iterator end  () const { return str + len; }
+    C4_ALWAYS_INLINE C4_PURE const_iterator begin() const noexcept { return str; }
+    C4_ALWAYS_INLINE C4_PURE const_iterator end  () const noexcept { return str + len; }
 
-    C      * data()       { return str; }
-    C const* data() const { return str; }
+    C4_ALWAYS_INLINE C4_PURE C      * data()       noexcept { return str; }
+    C4_ALWAYS_INLINE C4_PURE C const* data() const noexcept { return str; }
 
-    inline C      & operator[] (size_t i)       { C4_ASSERT(i >= 0 && i < len); return str[i]; }
-    inline C const& operator[] (size_t i) const { C4_ASSERT(i >= 0 && i < len); return str[i]; }
+    C4_ALWAYS_INLINE C4_PURE C      & operator[] (size_t i)       noexcept { C4_ASSERT(i >= 0 && i < len); return str[i]; }
+    C4_ALWAYS_INLINE C4_PURE C const& operator[] (size_t i) const noexcept { C4_ASSERT(i >= 0 && i < len); return str[i]; }
 
-    inline C      & front()       { C4_ASSERT(len > 0 && str != nullptr); return *str; }
-    inline C const& front() const { C4_ASSERT(len > 0 && str != nullptr); return *str; }
+    C4_ALWAYS_INLINE C4_PURE C      & front()       noexcept { C4_ASSERT(len > 0 && str != nullptr); return *str; }
+    C4_ALWAYS_INLINE C4_PURE C const& front() const noexcept { C4_ASSERT(len > 0 && str != nullptr); return *str; }
 
-    inline C      & back()       { C4_ASSERT(len > 0 && str != nullptr); return *(str + len - 1); }
-    inline C const& back() const { C4_ASSERT(len > 0 && str != nullptr); return *(str + len - 1); }
+    C4_ALWAYS_INLINE C4_PURE C      & back()       noexcept { C4_ASSERT(len > 0 && str != nullptr); return *(str + len - 1); }
+    C4_ALWAYS_INLINE C4_PURE C const& back() const noexcept { C4_ASSERT(len > 0 && str != nullptr); return *(str + len - 1); }
 
     /** @} */
 
@@ -220,28 +225,35 @@ public:
     /** @name Comparison methods */
     /** @{ */
 
-    int compare(C const c) const
+    C4_PURE int compare(C const c) const noexcept
     {
         C4_XASSERT((str != nullptr) || len == 0);
-        if( ! len)
+        if(C4_LIKELY(str != nullptr && len > 0))
+            return (*str != c) ? *str - c : (static_cast<int>(len) - 1);
+        else
             return -1;
-        if(*str == c)
-            return static_cast<int>(len - 1);
-        return *str - c;
     }
 
-    int compare(const char *that, size_t sz) const
+    C4_PURE int compare(const char *C4_RESTRICT that, size_t sz) const noexcept
     {
         C4_XASSERT(that || sz  == 0);
         C4_XASSERT(str  || len == 0);
         if(C4_LIKELY(str && that))
         {
-            int ret = strncmp(str, that, len < sz ? len : sz);
-            if(ret == 0 && len != sz)
-                ret = len < sz ? -1 : 1;
-            return ret;
+            {
+                const size_t min = len < sz ? len : sz;
+                for(size_t i = 0; i < min; ++i)
+                    if(str[i] != that[i])
+                        return str[i] < that[i] ? -1 : 1;
+            }
+            if(len < sz)
+                return -1;
+            else if(len == sz)
+                return 0;
+            else
+                return 1;
         }
-        if((!str && !that) || (len == sz))
+        else if(len == sz)
         {
             C4_XASSERT(len == 0 && sz == 0);
             return 0;
@@ -249,31 +261,31 @@ public:
         return len < sz ? -1 : 1;
     }
 
-    C4_ALWAYS_INLINE int compare(ro_substr const that) const { return this->compare(that.str, that.len); }
+    C4_ALWAYS_INLINE C4_PURE int compare(ro_substr const that) const noexcept { return this->compare(that.str, that.len); }
 
-    C4_ALWAYS_INLINE bool operator== (std::nullptr_t) const { return str == nullptr || len == 0; }
-    C4_ALWAYS_INLINE bool operator!= (std::nullptr_t) const { return str != nullptr || len == 0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator== (std::nullptr_t) const noexcept { return str == nullptr; }
+    C4_ALWAYS_INLINE C4_PURE bool operator!= (std::nullptr_t) const noexcept { return str != nullptr; }
 
-    C4_ALWAYS_INLINE bool operator== (C const c) const { return this->compare(c) == 0; }
-    C4_ALWAYS_INLINE bool operator!= (C const c) const { return this->compare(c) != 0; }
-    C4_ALWAYS_INLINE bool operator<  (C const c) const { return this->compare(c) <  0; }
-    C4_ALWAYS_INLINE bool operator>  (C const c) const { return this->compare(c) >  0; }
-    C4_ALWAYS_INLINE bool operator<= (C const c) const { return this->compare(c) <= 0; }
-    C4_ALWAYS_INLINE bool operator>= (C const c) const { return this->compare(c) >= 0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator== (C const c) const noexcept { return this->compare(c) == 0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator!= (C const c) const noexcept { return this->compare(c) != 0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator<  (C const c) const noexcept { return this->compare(c) <  0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator>  (C const c) const noexcept { return this->compare(c) >  0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator<= (C const c) const noexcept { return this->compare(c) <= 0; }
+    C4_ALWAYS_INLINE C4_PURE bool operator>= (C const c) const noexcept { return this->compare(c) >= 0; }
 
-    template<class U> C4_ALWAYS_INLINE bool operator== (basic_substring<U> const that) const { return this->compare(that) == 0; }
-    template<class U> C4_ALWAYS_INLINE bool operator!= (basic_substring<U> const that) const { return this->compare(that) != 0; }
-    template<class U> C4_ALWAYS_INLINE bool operator<  (basic_substring<U> const that) const { return this->compare(that) <  0; }
-    template<class U> C4_ALWAYS_INLINE bool operator>  (basic_substring<U> const that) const { return this->compare(that) >  0; }
-    template<class U> C4_ALWAYS_INLINE bool operator<= (basic_substring<U> const that) const { return this->compare(that) <= 0; }
-    template<class U> C4_ALWAYS_INLINE bool operator>= (basic_substring<U> const that) const { return this->compare(that) >= 0; }
+    template<class U> C4_ALWAYS_INLINE C4_PURE bool operator== (basic_substring<U> const that) const noexcept { return this->compare(that) == 0; }
+    template<class U> C4_ALWAYS_INLINE C4_PURE bool operator!= (basic_substring<U> const that) const noexcept { return this->compare(that) != 0; }
+    template<class U> C4_ALWAYS_INLINE C4_PURE bool operator<  (basic_substring<U> const that) const noexcept { return this->compare(that) <  0; }
+    template<class U> C4_ALWAYS_INLINE C4_PURE bool operator>  (basic_substring<U> const that) const noexcept { return this->compare(that) >  0; }
+    template<class U> C4_ALWAYS_INLINE C4_PURE bool operator<= (basic_substring<U> const that) const noexcept { return this->compare(that) <= 0; }
+    template<class U> C4_ALWAYS_INLINE C4_PURE bool operator>= (basic_substring<U> const that) const noexcept { return this->compare(that) >= 0; }
 
-    template<size_t N> C4_ALWAYS_INLINE bool operator== (const char (&that)[N]) const { return this->compare(that, N-1) == 0; }
-    template<size_t N> C4_ALWAYS_INLINE bool operator!= (const char (&that)[N]) const { return this->compare(that, N-1) != 0; }
-    template<size_t N> C4_ALWAYS_INLINE bool operator<  (const char (&that)[N]) const { return this->compare(that, N-1) <  0; }
-    template<size_t N> C4_ALWAYS_INLINE bool operator>  (const char (&that)[N]) const { return this->compare(that, N-1) >  0; }
-    template<size_t N> C4_ALWAYS_INLINE bool operator<= (const char (&that)[N]) const { return this->compare(that, N-1) <= 0; }
-    template<size_t N> C4_ALWAYS_INLINE bool operator>= (const char (&that)[N]) const { return this->compare(that, N-1) >= 0; }
+    template<size_t N> C4_ALWAYS_INLINE C4_PURE bool operator== (const char (&that)[N]) const noexcept { return this->compare(that, N-1) == 0; }
+    template<size_t N> C4_ALWAYS_INLINE C4_PURE bool operator!= (const char (&that)[N]) const noexcept { return this->compare(that, N-1) != 0; }
+    template<size_t N> C4_ALWAYS_INLINE C4_PURE bool operator<  (const char (&that)[N]) const noexcept { return this->compare(that, N-1) <  0; }
+    template<size_t N> C4_ALWAYS_INLINE C4_PURE bool operator>  (const char (&that)[N]) const noexcept { return this->compare(that, N-1) >  0; }
+    template<size_t N> C4_ALWAYS_INLINE C4_PURE bool operator<= (const char (&that)[N]) const noexcept { return this->compare(that, N-1) <= 0; }
+    template<size_t N> C4_ALWAYS_INLINE C4_PURE bool operator>= (const char (&that)[N]) const noexcept { return this->compare(that, N-1) >= 0; }
 
     /** @} */
 
@@ -283,23 +295,22 @@ public:
     /** @{ */
 
     /** true if *this is a substring of that (ie, from the same buffer) */
-    inline bool is_sub(ro_substr const that) const
+    C4_ALWAYS_INLINE C4_PURE bool is_sub(ro_substr const that) const noexcept
     {
         return that.is_super(*this);
     }
 
     /** true if that is a substring of *this (ie, from the same buffer) */
-    inline bool is_super(ro_substr const that) const
+    C4_ALWAYS_INLINE C4_PURE bool is_super(ro_substr const that) const noexcept
     {
-        if(C4_UNLIKELY(len == 0))
-        {
+        if(C4_LIKELY(len > 0))
+            return that.str >= str && that.str+that.len <= str+len;
+        else
             return that.len == 0 && that.str == str && str != nullptr;
-        }
-        return that.str >= str && that.str+that.len <= str+len;
     }
 
     /** true if there is overlap of at least one element between that and *this */
-    inline bool overlaps(ro_substr const that) const
+    C4_ALWAYS_INLINE C4_PURE bool overlaps(ro_substr const that) const noexcept
     {
         // thanks @timwynants
         return that.str+that.len > str && that.str < str+len;
@@ -308,14 +319,14 @@ public:
 public:
 
     /** return [first,len[ */
-    basic_substring sub(size_t first) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring sub(size_t first) const noexcept
     {
         C4_ASSERT(first >= 0 && first <= len);
         return basic_substring(str + first, len - first);
     }
 
     /** return [first,first+num[. If num==npos, return [first,len[ */
-    basic_substring sub(size_t first, size_t num) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring sub(size_t first, size_t num) const noexcept
     {
         C4_ASSERT(first >= 0 && first <= len);
         C4_ASSERT((num >= 0 && num <= len) || (num == npos));
@@ -325,7 +336,7 @@ public:
     }
 
     /** return [first,last[. If last==npos, return [first,len[ */
-    basic_substring range(size_t first, size_t last=npos) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring range(size_t first, size_t last=npos) const noexcept
     {
         C4_ASSERT(first >= 0 && first <= len);
         last = last != npos ? last : len;
@@ -334,24 +345,26 @@ public:
         return basic_substring(str + first, last - first);
     }
 
-    /** return [0,num[*/
-    basic_substring first(size_t num) const
+    /** return the first @p num elements: [0,num[*/
+    C4_ALWAYS_INLINE C4_PURE basic_substring first(size_t num) const noexcept
     {
-        return sub(0, num);
+        C4_ASSERT(num <= len || num == npos);
+        return basic_substring(str, num != npos ? num : len);
     }
 
-    /** return [len-num,len[*/
-    basic_substring last(size_t num) const
+    /** return the last @p num elements: [len-num,len[*/
+    C4_ALWAYS_INLINE C4_PURE basic_substring last(size_t num) const noexcept
     {
-        if(num == npos)
-            return *this;
-        return sub(len - num);
+        C4_ASSERT(num <= len || num == npos);
+        return num != npos ?
+            basic_substring(str + len - num, num) :
+            *this;
     }
 
     /** offset from the ends: return [left,len-right[ ; ie, trim a
         number of characters from the left and right. This is
         equivalent to python's negative list indices. */
-    basic_substring offs(size_t left, size_t right) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring offs(size_t left, size_t right) const noexcept
     {
         C4_ASSERT(left  >= 0 && left  <= len);
         C4_ASSERT(right >= 0 && right <= len);
@@ -359,27 +372,47 @@ public:
         return basic_substring(str + left, len - right - left);
     }
 
-    /** return [0, pos+include_pos[ */
-    basic_substring left_of(size_t pos, bool include_pos=false) const
+    /** return [0, pos[ . Same as .first(pos), but provided for compatibility with .right_of() */
+    C4_ALWAYS_INLINE C4_PURE basic_substring left_of(size_t pos) const noexcept
     {
-        if(pos == npos)
-            return *this;
-        return first(pos + include_pos);
+        C4_ASSERT(pos <= len || pos == npos);
+        return (pos != npos) ?
+            basic_substring(str, pos) :
+            *this;
+    }
+
+    /** return [0, pos+include_pos[ . Same as .first(pos+1), but provided for compatibility with .right_of() */
+    C4_ALWAYS_INLINE C4_PURE basic_substring left_of(size_t pos, bool include_pos) const noexcept
+    {
+        C4_ASSERT(pos <= len || pos == npos);
+        return (pos != npos) ?
+            basic_substring(str, pos+include_pos) :
+            *this;
+    }
+
+    /** return [pos+1, len[ */
+    C4_ALWAYS_INLINE C4_PURE basic_substring right_of(size_t pos) const noexcept
+    {
+        C4_ASSERT(pos <= len || pos == npos);
+        return (pos != npos) ?
+            basic_substring(str + (pos + 1), len - (pos + 1)) :
+            basic_substring(str + len, size_t(0));
     }
 
     /** return [pos+!include_pos, len[ */
-    basic_substring right_of(size_t pos, bool include_pos=false) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring right_of(size_t pos, bool include_pos) const noexcept
     {
-        if(pos == npos)
-            return sub(len, 0);
-        return sub(pos + !include_pos);
+        C4_ASSERT(pos <= len || pos == npos);
+        return (pos != npos) ?
+            basic_substring(str + (pos + !include_pos), len - (pos + !include_pos)) :
+            basic_substring(str + len, size_t(0));
     }
 
 public:
 
     /** given @p subs a substring of the current string, get the
      * portion of the current string to the left of it */
-    basic_substring left_of(ro_substr const subs) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring left_of(ro_substr const subs) const noexcept
     {
         C4_ASSERT(is_super(subs) || subs.empty());
         auto ssb = subs.begin();
@@ -393,7 +426,7 @@ public:
 
     /** given @p subs a substring of the current string, get the
      * portion of the current string to the right of it */
-    basic_substring right_of(ro_substr const subs) const
+    C4_ALWAYS_INLINE C4_PURE basic_substring right_of(ro_substr const subs) const noexcept
     {
         C4_ASSERT(is_super(subs) || subs.empty());
         auto sse = subs.end();
@@ -809,7 +842,17 @@ public:
 
 public:
 
-    size_t first_not_of(const C c, size_t start=0) const
+    size_t first_not_of(const C c) const
+    {
+        for(size_t i = 0; i < len; ++i)
+        {
+            if(str[i] != c)
+                return i;
+        }
+        return npos;
+    }
+
+    size_t first_not_of(const C c, size_t start) const
     {
         C4_ASSERT((start >= 0 && start <= len) || (start == len && len == 0));
         for(size_t i = start; i < len; ++i)
@@ -820,7 +863,17 @@ public:
         return npos;
     }
 
-    size_t last_not_of(const C c, size_t start=npos) const
+    size_t last_not_of(const C c) const
+    {
+        for(size_t i = len-1; i != size_t(-1); --i)
+        {
+            if(str[i] != c)
+                return i;
+        }
+        return npos;
+    }
+
+    size_t last_not_of(const C c, size_t start) const
     {
         C4_ASSERT(start == npos || (start >= 0 && start <= len));
         if(start == npos)
@@ -833,7 +886,28 @@ public:
         return npos;
     }
 
-    size_t first_not_of(ro_substr chars, size_t start=0) const
+    size_t first_not_of(ro_substr chars) const
+    {
+        for(size_t i = 0; i < len; ++i)
+        {
+            bool gotit = true;
+            for(size_t j = 0; j < chars.len; ++j)
+            {
+                if(str[i] == chars.str[j])
+                {
+                    gotit = false;
+                    break;
+                }
+            }
+            if(gotit)
+            {
+                return i;
+            }
+        }
+        return npos;
+    }
+
+    size_t first_not_of(ro_substr chars, size_t start) const
     {
         C4_ASSERT((start >= 0 && start <= len) || (start == len && len == 0));
         for(size_t i = start; i < len; ++i)
@@ -855,7 +929,28 @@ public:
         return npos;
     }
 
-    size_t last_not_of(ro_substr chars, size_t start=npos) const
+    size_t last_not_of(ro_substr chars) const
+    {
+        for(size_t i = len-1; i != size_t(-1); --i)
+        {
+            bool gotit = true;
+            for(size_t j = 0; j < chars.len; ++j)
+            {
+                if(str[i] == chars.str[j])
+                {
+                    gotit = false;
+                    break;
+                }
+            }
+            if(gotit)
+            {
+                return i;
+            }
+        }
+        return npos;
+    }
+
+    size_t last_not_of(ro_substr chars, size_t start) const
     {
         C4_ASSERT(start == npos || (start >= 0 && start <= len));
         if(start == npos)
@@ -1038,7 +1133,7 @@ public:
             return ne;
         if(ne.str[0] == '-')
             return first(0);
-        size_t skip_start = (ne.str[0] == '+') ? 1 : 0;
+        size_t skip_start = size_t(ne.str[0] == '+');
         return ne._first_integral_span(skip_start);
     }
 
@@ -1048,62 +1143,71 @@ public:
         basic_substring ne = first_non_empty_span();
         if(ne.empty())
             return ne;
-        size_t skip_start = (ne.str[0] == '+' || ne.str[0] == '-') ? 1 : 0;
+        size_t skip_start = size_t(ne.str[0] == '+' || ne.str[0] == '-');
         return ne._first_integral_span(skip_start);
     }
 
     basic_substring _first_integral_span(size_t skip_start) const
     {
         C4_ASSERT(!empty());
-        if(skip_start == len) {
+        if(skip_start == len)
             return first(0);
-        }
         C4_ASSERT(skip_start < len);
-        if(first_of_any("0x", "0X")) // hexadecimal
+        if(len >= skip_start + 3)
         {
-            skip_start += 2;
-            if(len == skip_start)
-                return first(0);
-            for(size_t i = skip_start; i < len; ++i)
+            if(str[skip_start] != '0')
             {
-                if( ! _is_hex_char(str[i]))
-                    return _is_delim_char(str[i]) ? first(i) : first(0);
+                for(size_t i = skip_start; i < len; ++i)
+                {
+                    char c = str[i];
+                    if(c < '0' || c > '9')
+                        return i > skip_start && _is_delim_char(c) ? first(i) : first(0);
+                }
+            }
+            else
+            {
+                char next = str[skip_start + 1];
+                if(next == 'x' || next == 'X')
+                {
+                    skip_start += 2;
+                    for(size_t i = skip_start; i < len; ++i)
+                    {
+                        const char c = str[i];
+                        if( ! _is_hex_char(c))
+                            return i > skip_start && _is_delim_char(c) ? first(i) : first(0);
+                    }
+                    return *this;
+                }
+                else if(next == 'b' || next == 'B')
+                {
+                    skip_start += 2;
+                    for(size_t i = skip_start; i < len; ++i)
+                    {
+                        const char c = str[i];
+                        if(c != '0' && c != '1')
+                            return i > skip_start && _is_delim_char(c) ? first(i) : first(0);
+                    }
+                    return *this;
+                }
+                else if(next == 'o' || next == 'O')
+                {
+                    skip_start += 2;
+                    for(size_t i = skip_start; i < len; ++i)
+                    {
+                        const char c = str[i];
+                        if(c < '0' || c > '7')
+                            return i > skip_start && _is_delim_char(c) ? first(i) : first(0);
+                    }
+                    return *this;
+                }
             }
         }
-        else if(first_of_any("0o", "0O")) // octal
+        // must be a decimal, or it is not a an number
+        for(size_t i = skip_start; i < len; ++i)
         {
-            skip_start += 2;
-            if(len == skip_start)
-                return first(0);
-            for(size_t i = skip_start; i < len; ++i)
-            {
-                char c = str[i];
-                if(c < '0' || c > '7')
-                    return _is_delim_char(str[i]) ? first(i) : first(0);
-            }
-        }
-        else if(first_of_any("0b", "0B")) // binary
-        {
-            skip_start += 2;
-            if(len == skip_start)
-                return first(0);
-            for(size_t i = skip_start; i < len; ++i)
-            {
-                char c = str[i];
-                if(c != '0' && c != '1')
-                    return _is_delim_char(c) ? first(i) : first(0);
-            }
-        }
-        else // otherwise, decimal
-        {
-            if(len == skip_start)
-                return first(0);
-            for(size_t i = skip_start; i < len; ++i)
-            {
-                char c = str[i];
-                if(c < '0' || c > '9')
-                    return _is_delim_char(c) ? first(i) : first(0);
-            }
+            const char c = str[i];
+            if(c < '0' || c > '9')
+                return i > skip_start && _is_delim_char(c) ? first(i) : first(0);
         }
         return *this;
     }
@@ -1114,125 +1218,433 @@ public:
         basic_substring ne = first_non_empty_span();
         if(ne.empty())
             return ne;
-        size_t skip_start = (ne.str[0] == '+' || ne.str[0] == '-') ? 1 : 0;
-        if(ne.first_of_any("0x", "0X")) // hexadecimal
+        const size_t skip_start = (ne.str[0] == '+' || ne.str[0] == '-');
+        C4_ASSERT(skip_start == 0 || skip_start == 1);
+        // if we have at least three digits after the leading sign, it
+        // can be decimal, or hex, or bin or oct. Ex:
+        // non-decimal: 0x0, 0b0, 0o0
+        // decimal: 1.0, 10., 1e1, 100, inf, nan, infinity
+        if(ne.len >= skip_start+3)
         {
-            skip_start += 2;
-            if(ne.len == skip_start)
-                return ne.first(0);
-            for(size_t i = skip_start; i < ne.len; ++i)
+            // if it does not have leading 0, it must be decimal, or it is not a real
+            if(ne.str[skip_start] != '0')
             {
-                char c = ne.str[i];
-                if(( ! _is_hex_char(c)) && c != '.' && c != 'p' && c != 'P')
+                if(ne.str[skip_start] == 'i') // is it infinity or inf?
                 {
-                    if(c == '-' || c == '+')
-                    {
-                        // we can also have a sign for the exponent
-                        if(i > 1 && (ne[i-1] == 'p' || ne[i-1] == 'P'))
-                        {
-                            continue;
-                        }
-                    }
-                    return _is_delim_char(c) ? ne.first(i) : ne.first(0);
+                    basic_substring word = ne._word_follows(skip_start + 1, "nfinity");
+                    if(word.len)
+                        return word;
+                    return ne._word_follows(skip_start + 1, "nf");
+                }
+                else if(ne.str[skip_start] == 'n') // is it nan?
+                {
+                    return ne._word_follows(skip_start + 1, "an");
+                }
+                else // must be a decimal, or it is not a real
+                {
+                    return ne._first_real_span_dec(skip_start);
                 }
             }
-        }
-        else if(ne.first_of_any("0b", "0B")) // binary
-        {
-            skip_start += 2;
-            if(ne.len == skip_start)
-                return ne.first(0);
-            for(size_t i = skip_start; i < ne.len; ++i)
+            else // starts with 0. is it 0x, 0b or 0o?
             {
-                char c = ne.str[i];
-                if(c != '0' && c != '1' && c != '.')
-                {
-                    return _is_delim_char(c) ? ne.first(i) : ne.first(0);
-                }
+                const char next = ne.str[skip_start + 1];
+                // hexadecimal
+                if(next == 'x' || next == 'X')
+                    return ne._first_real_span_hex(skip_start + 2);
+                // binary
+                else if(next == 'b' || next == 'B')
+                    return ne._first_real_span_bin(skip_start + 2);
+                // octal
+                else if(next == 'o' || next == 'O')
+                    return ne._first_real_span_oct(skip_start + 2);
+                // none of the above. may still be a decimal.
+                else
+                    return ne._first_real_span_dec(skip_start); // do not skip the 0.
             }
         }
-        else if(ne.first_of_any("0o", "0O")) // octal
-        {
-            skip_start += 2;
-            if(ne.len == skip_start)
-                return ne.first(0);
-            for(size_t i = skip_start; i < ne.len; ++i)
-            {
-                char c = ne.str[i];
-                if((c < '0' || c > '7') && c != '.')
-                {
-                    return _is_delim_char(c) ? ne.first(i) : ne.first(0);
-                }
-            }
-        }
-        else // assume decimal
-        {
-            if(ne.len == skip_start)
-                return ne.first(0);
-            for(size_t i = skip_start; i < ne.len; ++i)
-            {
-                char c = ne.str[i];
-                if((c < '0' || c > '9') && (c != '.' && c != 'e' && c != 'E'))
-                {
-                    if(c == '-' || c == '+')
-                    {
-                        // we can also have a sign for the exponent
-                        if(i > 1 && (ne[i-1] == 'e' || ne[i-1] == 'E'))
-                        {
-                            continue;
-                        }
-                    }
-                    else if(i == skip_start)
-                    {
-                        if(c == 'i')
-                        {
-                            if(ne.len >= skip_start + 8 && ne.sub(skip_start, 8) == "infinity")
-                                return _is_delim_char(ne.str[skip_start + 8]) ? ne.first(skip_start + 8) : ne.first(0);
-                            else if(ne.len >= skip_start + 3 && ne.sub(skip_start, 3) == "inf")
-                                return _is_delim_char(ne.str[skip_start + 3]) ? ne.first(skip_start + 3) : ne.first(0);
-                            else
-                                return ne.first(0);
-                        }
-                        else if(c == 'n')
-                        {
-                            if(ne.len >= skip_start + 3 && ne.sub(skip_start, 3) == "nan")
-                                return _is_delim_char(ne.str[skip_start + 3]) ? ne.first(skip_start + 3) : ne.first(0);
-                            else
-                                return ne.first(0);
-                        }
-                        else
-                        {
-                            return ne.first(0);
-                        }
-                    }
-                    else
-                    {
-                        return _is_delim_char(c) ? ne.first(i) : ne.first(0);
-                    }
-                }
-            }
-        }
-        return ne;
+        // less than 3 chars after the leading sign. It is either a
+        // decimal or it is not a real. (cannot be any of 0x0, etc).
+        return ne._first_real_span_dec(skip_start);
     }
 
     /** true if the character is a delimiter character *at the end* */
-    static constexpr C4_ALWAYS_INLINE bool _is_delim_char(char c) noexcept
+    static constexpr C4_ALWAYS_INLINE C4_CONST bool _is_delim_char(char c) noexcept
     {
-        return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\0'
+        return c == ' ' || c == '\n'
             || c == ']' || c == ')'  || c == '}'
-            || c == ',' || c == ';';
+            || c == ',' || c == ';' || c == '\r' || c == '\t' || c == '\0';
     }
 
     /** true if the character is in [0-9a-fA-F] */
-    static constexpr C4_ALWAYS_INLINE bool _is_hex_char(char c) noexcept
+    static constexpr C4_ALWAYS_INLINE C4_CONST bool _is_hex_char(char c) noexcept
     {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
-    /** true if the character is in [0-9a-fA-F] */
-    static constexpr C4_ALWAYS_INLINE bool _is_oct_char(char c) noexcept
+    C4_NO_INLINE C4_PURE basic_substring _word_follows(size_t pos, csubstr word) const noexcept
     {
-        return (c >= '0' && c <= '7');
+        size_t posend = pos + word.len;
+        if(len >= posend && sub(pos, word.len) == word)
+            if(len == posend || _is_delim_char(str[posend]))
+                return first(posend);
+        return first(0);
+    }
+
+    // this function is declared inside the class to avoid a VS error with __declspec(dllimport)
+    C4_NO_INLINE C4_PURE basic_substring _first_real_span_dec(size_t pos) const noexcept
+    {
+        bool intchars = false;
+        bool fracchars = false;
+        bool powchars;
+        // integral part
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '9')
+            {
+                intchars = true;
+            }
+            else if(c == '.')
+            {
+                ++pos;
+                goto fractional_part_dec;
+            }
+            else if(c == 'e' || c == 'E')
+            {
+                ++pos;
+                goto power_part_dec;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        // no . or p were found; this is either an integral number
+        // or not a number at all
+        return intchars ?
+            *this :
+            first(0);
+    fractional_part_dec:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == '.');
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '9')
+            {
+                fracchars = true;
+            }
+            else if(c == 'e' || c == 'E')
+            {
+                ++pos;
+                goto power_part_dec;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars || fracchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        return intchars || fracchars ?
+            *this :
+            first(0);
+    power_part_dec:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == 'e' || str[pos - 1] == 'E');
+        // either digits, or +, or - are expected here, followed by more digits.
+        if((len == pos) || ((!intchars) && (!fracchars)))
+            return first(0);
+        if(str[pos] == '-' || str[pos] == '+')
+            ++pos; // skip the sign
+        powchars = false;
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '9')
+                powchars = true;
+            else if(powchars && _is_delim_char(c))
+                return first(pos);
+            else
+                return first(0);
+        }
+        return powchars ? *this : first(0);
+    }
+
+    // this function is declared inside the class to avoid a VS error with __declspec(dllimport)
+    C4_NO_INLINE C4_PURE basic_substring _first_real_span_hex(size_t pos) const noexcept
+    {
+        bool intchars = false;
+        bool fracchars = false;
+        bool powchars;
+        // integral part
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(_is_hex_char(c))
+            {
+                intchars = true;
+            }
+            else if(c == '.')
+            {
+                ++pos;
+                goto fractional_part_hex;
+            }
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power_part_hex;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        // no . or p were found; this is either an integral number
+        // or not a number at all
+        return intchars ?
+            *this :
+            first(0);
+    fractional_part_hex:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == '.');
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(_is_hex_char(c))
+            {
+                fracchars = true;
+            }
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power_part_hex;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars || fracchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        return intchars || fracchars ?
+            *this :
+            first(0);
+    power_part_hex:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == 'p' || str[pos - 1] == 'P');
+        // either a + or a - is expected here, followed by more chars.
+        // also, using (pos+1) in this check will cause an early
+        // return when no more chars follow the sign.
+        if(len <= (pos+1) || (str[pos] != '+' && str[pos] != '-') || ((!intchars) && (!fracchars)))
+            return first(0);
+        ++pos; // this was the sign.
+        // ... so the (pos+1) ensures that we enter the loop and
+        // hence that there exist chars in the power part
+        powchars = false;
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '9')
+                powchars = true;
+            else if(powchars && _is_delim_char(c))
+                return first(pos);
+            else
+                return first(0);
+        }
+        return *this;
+    }
+
+    // this function is declared inside the class to avoid a VS error with __declspec(dllimport)
+    C4_NO_INLINE C4_PURE basic_substring _first_real_span_bin(size_t pos) const noexcept
+    {
+        bool intchars = false;
+        bool fracchars = false;
+        bool powchars;
+        // integral part
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c == '0' || c == '1')
+            {
+                intchars = true;
+            }
+            else if(c == '.')
+            {
+                ++pos;
+                goto fractional_part_bin;
+            }
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power_part_bin;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        // no . or p were found; this is either an integral number
+        // or not a number at all
+        return intchars ?
+            *this :
+            first(0);
+    fractional_part_bin:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == '.');
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c == '0' || c == '1')
+            {
+                fracchars = true;
+            }
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power_part_bin;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars || fracchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        return intchars || fracchars ?
+            *this :
+            first(0);
+    power_part_bin:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == 'p' || str[pos - 1] == 'P');
+        // either a + or a - is expected here, followed by more chars.
+        // also, using (pos+1) in this check will cause an early
+        // return when no more chars follow the sign.
+        if(len <= (pos+1) || (str[pos] != '+' && str[pos] != '-') || ((!intchars) && (!fracchars)))
+            return first(0);
+        ++pos; // this was the sign.
+        // ... so the (pos+1) ensures that we enter the loop and
+        // hence that there exist chars in the power part
+        powchars = false;
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '9')
+                powchars = true;
+            else if(powchars && _is_delim_char(c))
+                return first(pos);
+            else
+                return first(0);
+        }
+        return *this;
+    }
+
+    // this function is declared inside the class to avoid a VS error with __declspec(dllimport)
+    C4_NO_INLINE C4_PURE basic_substring _first_real_span_oct(size_t pos) const noexcept
+    {
+        bool intchars = false;
+        bool fracchars = false;
+        bool powchars;
+        // integral part
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '7')
+            {
+                intchars = true;
+            }
+            else if(c == '.')
+            {
+                ++pos;
+                goto fractional_part_oct;
+            }
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power_part_oct;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        // no . or p were found; this is either an integral number
+        // or not a number at all
+        return intchars ?
+            *this :
+            first(0);
+    fractional_part_oct:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == '.');
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '7')
+            {
+                fracchars = true;
+            }
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power_part_oct;
+            }
+            else if(_is_delim_char(c))
+            {
+                return intchars || fracchars ? first(pos) : first(0);
+            }
+            else
+            {
+                return first(0);
+            }
+        }
+        return intchars || fracchars ?
+            *this :
+            first(0);
+    power_part_oct:
+        C4_ASSERT(pos > 0);
+        C4_ASSERT(str[pos - 1] == 'p' || str[pos - 1] == 'P');
+        // either a + or a - is expected here, followed by more chars.
+        // also, using (pos+1) in this check will cause an early
+        // return when no more chars follow the sign.
+        if(len <= (pos+1) || (str[pos] != '+' && str[pos] != '-') || ((!intchars) && (!fracchars)))
+            return first(0);
+        ++pos; // this was the sign.
+        // ... so the (pos+1) ensures that we enter the loop and
+        // hence that there exist chars in the power part
+        powchars = false;
+        for( ; pos < len; ++pos)
+        {
+            const char c = str[pos];
+            if(c >= '0' && c <= '9')
+                powchars = true;
+            else if(powchars && _is_delim_char(c))
+                return first(pos);
+            else
+                return first(0);
+        }
+        return *this;
     }
 
     /** @} */
@@ -1250,7 +1662,7 @@ public:
     {
         if(C4_LIKELY(*start_pos < len))
         {
-            for(size_t i = *start_pos, e = len; i < e; i++)
+            for(size_t i = *start_pos; i < len; i++)
             {
                 if(str[i] == sep)
                 {
@@ -1266,13 +1678,13 @@ public:
         else
         {
             bool valid = len > 0 && (*start_pos == len);
-            if(valid && !empty() && str[len-1] == sep)
+            if(valid && str && str[len-1] == sep)
             {
-                out->assign(str + len, (size_t)0); // the cast is needed to prevent overload ambiguity
+                out->assign(str + len, size_t(0)); // the cast is needed to prevent overload ambiguity
             }
             else
             {
-                out->assign(str + len + 1, (size_t)0); // the cast is needed to prevent overload ambiguity
+                out->assign(str + len + 1, size_t(0)); // the cast is needed to prevent overload ambiguity
             }
             *start_pos = len + 1;
             return valid;
@@ -1603,7 +2015,11 @@ public:
         num = num != npos ? num : len - ifirst;
         num = num < that.len ? num : that.len;
         C4_ASSERT(ifirst + num >= 0 && ifirst + num <= len);
-        memcpy(str + sizeof(C) * ifirst, that.str, sizeof(C) * num);
+        // calling memcpy with null strings is undefined behavior
+        // and will wreak havoc in calling code's branches.
+        // see https://github.com/biojppm/rapidyaml/pull/264#issuecomment-1262133637
+        if(num)
+            memcpy(str + sizeof(C) * ifirst, that.str, sizeof(C) * num);
     }
 
 public:
@@ -1700,7 +2116,7 @@ public:
     }
 
     /** replace @p pattern with @p repl, and write the result into
-     * @dst. pattern and repl don't need equal sizes.
+     * @p dst. pattern and repl don't need equal sizes.
      *
      * @return the required size for dst. No overflow occurs if
      * dst.len is smaller than the required size; this can be used to
@@ -1721,7 +2137,7 @@ public:
             {                                                           \
                 C4_ASSERT((last) >= (first));                           \
                 size_t num = static_cast<size_t>((last) - (first));     \
-                if(sz + num <= dst.len)                                 \
+                if(num > 0 && sz + num <= dst.len)                      \
                 {                                                       \
                     memcpy(dst.str + sz, first, num * sizeof(C));       \
                 }                                                       \
@@ -1752,102 +2168,83 @@ public:
 
 
 #undef C4_REQUIRE_RW
-#undef C4_REQUIRE_RO
-#undef C4_NC2C
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** Because of a C++ limitation, substr cannot provide simultaneous
- * overloads for constructing from a char[N] and a char*; the latter
- * will always be chosen by the compiler. So this specialization is
- * provided to simplify obtaining a substr from a char*. Being a
- * function has the advantage of highlighting the strlen() cost.
- *
- * @see to_csubstr
- * @see For a more detailed explanation on why the overloads cannot
- * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
-inline substr to_substr(char *s)
-{
-    return substr(s, s ? strlen(s) : 0);
-}
 
-/** Because of a C++ limitation, substr cannot provide simultaneous
- * overloads for constructing from a char[N] and a char*; the latter
- * will always be chosen by the compiler. So this specialization is
- * provided to simplify obtaining a substr from a char*. Being a
- * function has the advantage of highlighting the strlen() cost.
+/** @defgroup doc_substr_adapters substr adapters
  *
- * @see to_substr
- * @see For a more detailed explanation on why the overloads cannot
- * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
-inline csubstr to_csubstr(char *s)
-{
-    return csubstr(s, s ? strlen(s) : 0);
-}
-
-/** Because of a C++ limitation, substr cannot provide simultaneous
- * overloads for constructing from a const char[N] and a const char*;
- * the latter will always be chosen by the compiler. So this
- * specialization is provided to simplify obtaining a substr from a
- * char*. Being a function has the advantage of highlighting the
- * strlen() cost.
- *
- * @overload to_csubstr
- * @see to_substr
- * @see For a more detailed explanation on why the overloads cannot
- * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
-inline csubstr to_csubstr(const char *s)
-{
-    return csubstr(s, s ? strlen(s) : 0);
-}
+ * to_substr() and to_csubstr() is used in generic code like
+ * format(), and allow adding construction of substrings from new
+ * types like containers.
+ * @{ */
 
 
 /** neutral version for use in generic code */
-inline csubstr to_csubstr(csubstr s)
-{
-    return s;
-}
-
+C4_ALWAYS_INLINE substr to_substr(substr s) noexcept { return s; }
 /** neutral version for use in generic code */
-inline csubstr to_csubstr(substr s)
-{
-    return s;
-}
-
+C4_ALWAYS_INLINE csubstr to_csubstr(substr s) noexcept { return s; }
 /** neutral version for use in generic code */
-inline substr to_substr(substr s)
-{
-    return s;
-}
+C4_ALWAYS_INLINE csubstr to_csubstr(csubstr s) noexcept { return s; }
+
+
+template<size_t N>
+C4_ALWAYS_INLINE substr
+to_substr(char (&s)[N]) noexcept { substr ss(s, N-1); return ss; }
+template<size_t N>
+C4_ALWAYS_INLINE csubstr
+to_csubstr(const char (&s)[N]) noexcept { csubstr ss(s, N-1); return ss; }
+
+
+/** @note this overload uses SFINAE to prevent it from overriding the array overload
+ * @see For a more detailed explanation on why the plain overloads cannot
+ * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
+template<class U>
+C4_ALWAYS_INLINE typename std::enable_if<std::is_same<U, char*>::value, substr>::type
+to_substr(U s) noexcept { substr ss(s); return ss; }
+/** @note this overload uses SFINAE to prevent it from overriding the array overload
+ * @see For a more detailed explanation on why the plain overloads cannot
+ * coexist, see http://cplusplus.bordoon.com/specializeForCharacterArrays.html */
+template<class U>
+C4_ALWAYS_INLINE typename std::enable_if<std::is_same<U, const char*>::value || std::is_same<U, char*>::value, csubstr>::type
+to_csubstr(U s) noexcept { csubstr ss(s); return ss; }
+
+
+/** @} */
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-template<typename C, size_t N> inline bool operator== (const C (&s)[N], basic_substring<C> const that) { return that.compare(s) == 0; }
-template<typename C, size_t N> inline bool operator!= (const C (&s)[N], basic_substring<C> const that) { return that.compare(s) != 0; }
-template<typename C, size_t N> inline bool operator<  (const C (&s)[N], basic_substring<C> const that) { return that.compare(s) >  0; }
-template<typename C, size_t N> inline bool operator>  (const C (&s)[N], basic_substring<C> const that) { return that.compare(s) <  0; }
-template<typename C, size_t N> inline bool operator<= (const C (&s)[N], basic_substring<C> const that) { return that.compare(s) >= 0; }
-template<typename C, size_t N> inline bool operator>= (const C (&s)[N], basic_substring<C> const that) { return that.compare(s) <= 0; }
+/** @defgroup doc_substr_cmp substr comparison operators
+ * @{ */
 
-template<typename C> inline bool operator== (C const c, basic_substring<C> const that) { return that.compare(c) == 0; }
-template<typename C> inline bool operator!= (C const c, basic_substring<C> const that) { return that.compare(c) != 0; }
-template<typename C> inline bool operator<  (C const c, basic_substring<C> const that) { return that.compare(c) >  0; }
-template<typename C> inline bool operator>  (C const c, basic_substring<C> const that) { return that.compare(c) <  0; }
-template<typename C> inline bool operator<= (C const c, basic_substring<C> const that) { return that.compare(c) >= 0; }
-template<typename C> inline bool operator>= (C const c, basic_substring<C> const that) { return that.compare(c) <= 0; }
+template<typename C, size_t N> inline bool operator== (const char (&s)[N], basic_substring<C> const that) noexcept { return that.compare(s, N-1) == 0; }
+template<typename C, size_t N> inline bool operator!= (const char (&s)[N], basic_substring<C> const that) noexcept { return that.compare(s, N-1) != 0; }
+template<typename C, size_t N> inline bool operator<  (const char (&s)[N], basic_substring<C> const that) noexcept { return that.compare(s, N-1) >  0; }
+template<typename C, size_t N> inline bool operator>  (const char (&s)[N], basic_substring<C> const that) noexcept { return that.compare(s, N-1) <  0; }
+template<typename C, size_t N> inline bool operator<= (const char (&s)[N], basic_substring<C> const that) noexcept { return that.compare(s, N-1) >= 0; }
+template<typename C, size_t N> inline bool operator>= (const char (&s)[N], basic_substring<C> const that) noexcept { return that.compare(s, N-1) <= 0; }
+
+template<typename C> inline bool operator== (const char c, basic_substring<C> const that) noexcept { return that.compare(c) == 0; }
+template<typename C> inline bool operator!= (const char c, basic_substring<C> const that) noexcept { return that.compare(c) != 0; }
+template<typename C> inline bool operator<  (const char c, basic_substring<C> const that) noexcept { return that.compare(c) >  0; }
+template<typename C> inline bool operator>  (const char c, basic_substring<C> const that) noexcept { return that.compare(c) <  0; }
+template<typename C> inline bool operator<= (const char c, basic_substring<C> const that) noexcept { return that.compare(c) >= 0; }
+template<typename C> inline bool operator>= (const char c, basic_substring<C> const that) noexcept { return that.compare(c) <= 0; }
+
+/** @} */
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-/** @define C4_SUBSTR_NO_OSTREAM_LSHIFT doctest does not deal well with
+/* C4_SUBSTR_NO_OSTREAM_LSHIFT doctest does not deal well with
  * template operator<<
  * @see https://github.com/onqtam/doctest/pull/431 */
 #ifndef C4_SUBSTR_NO_OSTREAM_LSHIFT
@@ -1881,6 +2278,8 @@ inline OStream& operator<< (OStream& os, basic_substring<C> s)
 #   pragma GCC diagnostic pop
 #endif
 #endif // !C4_SUBSTR_NO_OSTREAM_LSHIFT
+
+/** @} */
 
 } // namespace c4
 

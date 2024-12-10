@@ -3,39 +3,6 @@
 
 /** @file charconv.hpp Lightweight generic type-safe wrappers for
  * converting individual values to/from strings.
- *
- * These are the main functions:
- *
- * @code{.cpp}
- * // Convert the given value, writing into the string.
- * // The resulting string will NOT be null-terminated.
- * // Return the number of characters needed.
- * // This function is safe to call when the string is too small -
- * // no writes will occur beyond the string's last character.
- * template<class T> size_t c4::to_chars(substr buf, T const& C4_RESTRICT val);
- *
- *
- * // Convert the given value to a string using to_chars(), and
- * // return the resulting string, up to and including the last
- * // written character.
- * template<class T> substr c4::to_chars_sub(substr buf, T const& C4_RESTRICT val);
- *
- *
- * // Read a value from the string, which must be
- * // trimmed to the value (ie, no leading/trailing whitespace).
- * // return true if the conversion succeeded.
- * // There is no check for overflow; the value wraps around in a way similar
- * // to the standard C/C++ overflow behavior. For example,
- * // from_chars<int8_t>("128", &val) returns true and val will be
- * // set tot 0.
- * template<class T> bool c4::from_chars(csubstr buf, T * C4_RESTRICT val);
- *
- *
- * // Read the first valid sequence of characters from the string,
- * // skipping leading whitespace, and convert it using from_chars().
- * // Return the number of characters read for converting.
- * template<class T> size_t c4::from_chars_first(csubstr buf, T * C4_RESTRICT val);
- * @endcode
  */
 
 #include "c4/language.hpp"
@@ -52,37 +19,54 @@
 #include "c4/szconv.hpp"
 
 #ifndef C4CORE_NO_FAST_FLOAT
-    C4_SUPPRESS_WARNING_GCC_WITH_PUSH("-Wsign-conversion")
-    C4_SUPPRESS_WARNING_GCC("-Warray-bounds")
-#if __GNUC__ >= 5
-    C4_SUPPRESS_WARNING_GCC("-Wshift-count-overflow")
-#endif
-#   include "c4/ext/fast_float.hpp"
-    C4_SUPPRESS_WARNING_GCC_POP
-#   define C4CORE_HAVE_FAST_FLOAT 1
-#   define C4CORE_HAVE_STD_FROMCHARS 0
 #   if (C4_CPP >= 17)
 #       if defined(_MSC_VER)
-#           if (C4_MSVC_VERSION >= C4_MSVC_VERSION_2019)
+#           if (C4_MSVC_VERSION >= C4_MSVC_VERSION_2019) // VS2017 and lower do not have these macros
 #               include <charconv>
 #               define C4CORE_HAVE_STD_TOCHARS 1
+#               define C4CORE_HAVE_STD_FROMCHARS 0 // prefer fast_float with MSVC
+#               define C4CORE_HAVE_FAST_FLOAT 1
 #           else
 #               define C4CORE_HAVE_STD_TOCHARS 0
+#               define C4CORE_HAVE_STD_FROMCHARS 0
+#               define C4CORE_HAVE_FAST_FLOAT 1
 #           endif
-#       else  // VS2017 and lower do not have these macros
-#           if __has_include(<charconv>) && __cpp_lib_to_chars
-#               define C4CORE_HAVE_STD_TOCHARS 1
+#       else
+#           if __has_include(<charconv>)
 #               include <charconv>
+#               if defined(__cpp_lib_to_chars)
+#                   define C4CORE_HAVE_STD_TOCHARS 1
+#                   define C4CORE_HAVE_STD_FROMCHARS 0 // glibc uses fast_float internally
+#                   define C4CORE_HAVE_FAST_FLOAT 1
+#               else
+#                   define C4CORE_HAVE_STD_TOCHARS 0
+#                   define C4CORE_HAVE_STD_FROMCHARS 0
+#                   define C4CORE_HAVE_FAST_FLOAT 1
+#               endif
 #           else
 #               define C4CORE_HAVE_STD_TOCHARS 0
+#               define C4CORE_HAVE_STD_FROMCHARS 0
+#               define C4CORE_HAVE_FAST_FLOAT 1
 #           endif
 #       endif
 #   else
 #       define C4CORE_HAVE_STD_TOCHARS 0
+#       define C4CORE_HAVE_STD_FROMCHARS 0
+#       define C4CORE_HAVE_FAST_FLOAT 1
+#   endif
+#   if C4CORE_HAVE_FAST_FLOAT
+        C4_SUPPRESS_WARNING_GCC_WITH_PUSH("-Wsign-conversion")
+        C4_SUPPRESS_WARNING_GCC("-Warray-bounds")
+#       if defined(__GNUC__) && __GNUC__ >= 5
+            C4_SUPPRESS_WARNING_GCC("-Wshift-count-overflow")
+#       endif
+#       include "c4/ext/fast_float.hpp"
+        C4_SUPPRESS_WARNING_GCC_POP
 #   endif
 #elif (C4_CPP >= 17)
+#   define C4CORE_HAVE_FAST_FLOAT 0
 #   if defined(_MSC_VER)
-#       if (C4_MSVC_VERSION >= C4_MSVC_VERSION_2019)
+#       if (C4_MSVC_VERSION >= C4_MSVC_VERSION_2019) // VS2017 and lower do not have these macros
 #           include <charconv>
 #           define C4CORE_HAVE_STD_TOCHARS 1
 #           define C4CORE_HAVE_STD_FROMCHARS 1
@@ -90,11 +74,16 @@
 #           define C4CORE_HAVE_STD_TOCHARS 0
 #           define C4CORE_HAVE_STD_FROMCHARS 0
 #       endif
-#   else  // VS2017 and lower do not have these macros
-#       if __has_include(<charconv>) && __cpp_lib_to_chars
-#           define C4CORE_HAVE_STD_TOCHARS 1
-#           define C4CORE_HAVE_STD_FROMCHARS 1
+#   else
+#       if __has_include(<charconv>)
 #           include <charconv>
+#           if defined(__cpp_lib_to_chars)
+#               define C4CORE_HAVE_STD_TOCHARS 1
+#               define C4CORE_HAVE_STD_FROMCHARS 1 // glibc uses fast_float internally
+#           else
+#               define C4CORE_HAVE_STD_TOCHARS 0
+#               define C4CORE_HAVE_STD_FROMCHARS 0
+#           endif
 #       else
 #           define C4CORE_HAVE_STD_TOCHARS 0
 #           define C4CORE_HAVE_STD_FROMCHARS 0
@@ -103,81 +92,124 @@
 #else
 #   define C4CORE_HAVE_STD_TOCHARS 0
 #   define C4CORE_HAVE_STD_FROMCHARS 0
+#   define C4CORE_HAVE_FAST_FLOAT 0
 #endif
 
 
-#if !C4CORE_HAVE_STD_FROMCHARS && !defined(C4CORE_HAVE_FAST_FLOAT)
+#if !C4CORE_HAVE_STD_FROMCHARS
 #include <cstdio>
 #endif
 
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #   pragma warning(push)
+#   pragma warning(disable: 4996) // snprintf/scanf: this function or variable may be unsafe
 #   if C4_MSVC_VERSION != C4_MSVC_VERSION_2017
 #       pragma warning(disable: 4800) //'int': forcing value to bool 'true' or 'false' (performance warning)
 #   endif
-#   pragma warning(disable: 4996) // snprintf/scanf: this function or variable may be unsafe
-#elif defined(__clang__)
+#endif
+
+#if defined(__clang__)
 #   pragma clang diagnostic push
 #   pragma clang diagnostic ignored "-Wtautological-constant-out-of-range-compare"
 #   pragma clang diagnostic ignored "-Wformat-nonliteral"
 #   pragma clang diagnostic ignored "-Wdouble-promotion" // implicit conversion increases floating-point precision
+#   pragma clang diagnostic ignored "-Wold-style-cast"
 #elif defined(__GNUC__)
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #   pragma GCC diagnostic ignored "-Wdouble-promotion" // implicit conversion increases floating-point precision
 #   pragma GCC diagnostic ignored "-Wuseless-cast"
+#   pragma GCC diagnostic ignored "-Wold-style-cast"
+#endif
+
+#if defined(__clang__)
+#define C4_NO_UBSAN_IOVRFLW __attribute__((no_sanitize("signed-integer-overflow")))
+#elif defined(__GNUC__)
+#if __GNUC__ > 7
+#define C4_NO_UBSAN_IOVRFLW __attribute__((no_sanitize("signed-integer-overflow")))
+#else
+#define C4_NO_UBSAN_IOVRFLW
+#endif
+#else
+#define C4_NO_UBSAN_IOVRFLW
 #endif
 
 
 namespace c4 {
 
-typedef enum : uint8_t {
-    /** print the real number in floating point format (like %f) */
-    FTOA_FLOAT = 0,
-    /** print the real number in scientific format (like %e) */
-    FTOA_SCIENT = 1,
-    /** print the real number in flexible format (like %g) */
-    FTOA_FLEX = 2,
-    /** print the real number in hexadecimal format (like %a) */
-    FTOA_HEXA = 3,
-    _FTOA_COUNT
-} RealFormat_e;
-
-
-inline C4_CONSTEXPR14 char to_c_fmt(RealFormat_e f)
-{
-    constexpr const char fmt[] = {
-        'f',  // FTOA_FLOAT
-        'e',  // FTOA_SCIENT
-        'g',  // FTOA_FLEX
-        'a',  // FTOA_HEXA
-    };
-    C4_STATIC_ASSERT(C4_COUNTOF(fmt) == _FTOA_COUNT);
-    #if C4_CPP > 14
-    C4_ASSERT(f < _FTOA_COUNT);
-    #endif
-    return fmt[f];
-}
-
+/** @defgroup doc_charconv Charconv utilities
+ *
+ * Lightweight, very fast generic type-safe wrappers for converting
+ * individual values to/from strings. These are the main generic
+ * functions:
+ *   - @ref doc_to_chars and its alias @ref doc_xtoa: implemented by calling @ref itoa()/@ref utoa()/@ref ftoa()/@ref dtoa() (or generically @ref xtoa())
+ *   - @ref doc_from_chars and its alias @ref doc_atox: implemented by calling @ref atoi()/@ref atou()/@ref atof()/@ref atod() (or generically @ref atox())
+ *   - @ref to_chars_sub()
+ *   - @ref from_chars_first()
+ *   - @ref xtoa()/@ref atox() are implemented in terms @ref write_dec()/@ref read_dec() et al (see @ref doc_write/@ref doc_read())
+ *
+ * And also some modest brag is in order: these functions are really
+ * fast: faster even than C++17 `std::to_chars()` and
+ * `std::to_chars()`, and many dozens of times faster than the
+ * iostream abominations.
+ *
+ * For example, here are some benchmark comparisons for @ref
+ * doc_from_chars (link leads to the main project README, where these
+ * results are shown more systematically).
+ *
+ * <table>
+ * <caption id="atox-i64-results">atox,int64_t</caption>
+ * <tr><th>g++12, linux <th>Visual Studio 2019
+ * <tr><td> \image html linux-x86_64-gxx12.1-Release-c4core-bm-charconv-atox-mega_bytes_per_second-i64.png <td> \image html windows-x86_64-vs2019-Release-c4core-bm-charconv-atox-mega_bytes_per_second-i64.png
+ * </table>
+ *
+ * <table>
+ * <caption id="xtoa-i64-results">xtoa,int64_t</caption>
+ * <tr><th>g++12, linux <th>Visual Studio 2019
+ * <tr><td> \image html linux-x86_64-gxx12.1-Release-c4core-bm-charconv-xtoa-mega_bytes_per_second-i64.png <td> \image html windows-x86_64-vs2019-Release-c4core-bm-charconv-xtoa-mega_bytes_per_second-i64.png
+ * </table>
+ *
+ * To parse floating point, c4core uses
+ * [fastfloat](https://github.com/fastfloat/fast_float), which is
+ * extremely fast, by an even larger factor:
+ *
+ * <table>
+ * <caption id="atox-float-results">atox,float</caption>
+ * <tr><th>g++12, linux <th>Visual Studio 2019
+ * <tr><td> \image html linux-x86_64-gxx12.1-Release-c4core-bm-charconv-atof-mega_bytes_per_second-float.png <td> \image html windows-x86_64-vs2019-Release-c4core-bm-charconv-atof-mega_bytes_per_second-float.png
+ * </table>
+ *
+ * @{
+ */
 
 #if C4CORE_HAVE_STD_TOCHARS
-inline C4_CONSTEXPR14 std::chars_format to_std_fmt(RealFormat_e f)
-{
-    constexpr const std::chars_format fmt[] = {
-        std::chars_format::fixed,       // FTOA_FLOAT
-        std::chars_format::scientific,  // FTOA_SCIENT
-        std::chars_format::general,     // FTOA_FLEX
-        std::chars_format::hex,         // FTOA_HEXA
-    };
-    C4_STATIC_ASSERT(C4_COUNTOF(fmt) == _FTOA_COUNT);
-    #if C4_CPP >= 14
-    C4_ASSERT(f < _FTOA_COUNT);
-    #endif
-    return fmt[f];
-}
-#endif // C4CORE_HAVE_STD_TOCHARS
+/** @warning Use only the symbol. Do not rely on the type or naked value of this enum. */
+typedef enum : std::underlying_type<std::chars_format>::type {
+    /** print the real number in floating point format (like %f) */
+    FTOA_FLOAT = static_cast<std::underlying_type<std::chars_format>::type>(std::chars_format::fixed),
+    /** print the real number in scientific format (like %e) */
+    FTOA_SCIENT = static_cast<std::underlying_type<std::chars_format>::type>(std::chars_format::scientific),
+    /** print the real number in flexible format (like %g) */
+    FTOA_FLEX = static_cast<std::underlying_type<std::chars_format>::type>(std::chars_format::general),
+    /** print the real number in hexadecimal format (like %a) */
+    FTOA_HEXA = static_cast<std::underlying_type<std::chars_format>::type>(std::chars_format::hex),
+} RealFormat_e;
+#else
+/** @warning Use only the symbol. Do not rely on the type or naked value of this enum. */
+typedef enum : char {
+    /** print the real number in floating point format (like %f) */
+    FTOA_FLOAT = 'f',
+    /** print the real number in scientific format (like %e) */
+    FTOA_SCIENT = 'e',
+    /** print the real number in flexible format (like %g) */
+    FTOA_FLEX = 'g',
+    /** print the real number in hexadecimal format (like %a) */
+    FTOA_HEXA = 'a',
+} RealFormat_e;
+#endif
 
+/** @cond dev */
 /** in some platforms, int,unsigned int
  *  are not any of int8_t...int64_t and
  *  long,unsigned long are not any of uint8_t...uint64_t */
@@ -201,6 +233,7 @@ struct is_fixed_length
         value = value_i || value_u
     };
 };
+/** @endcond */
 
 
 //-----------------------------------------------------------------------------
@@ -219,6 +252,7 @@ struct is_fixed_length
 #   endif
 #endif
 
+/** @cond dev */
 namespace detail {
 
 /* python command to get the values below:
@@ -378,25 +412,30 @@ template<> struct charconv_digits_<8u, false>
 };
 } // namespace detail
 
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
 // Helper macros, undefined below
 #define _c4append(c) { if(C4_LIKELY(pos < buf.len)) { buf.str[pos++] = static_cast<char>(c); } else { ++pos; } }
 #define _c4appendhex(i) { if(C4_LIKELY(pos < buf.len)) { buf.str[pos++] = hexchars[i]; } else { ++pos; } }
 
-/** @name digits_dec return the number of digits required to encode a
- * decimal number.
+/** @endcond */
+
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+
+/** @defgroup doc_digits Get number of digits
  *
  * @note At first sight this code may look heavily branchy and
  * therefore inefficient. However, measurements revealed this to be
  * the fastest among the alternatives.
  *
- * @see https://github.com/biojppm/c4core/pull/77 */
-/** @{ */
+ * @see https://github.com/biojppm/c4core/pull/77
+ *
+ * @{
+ */
 
+/** decimal digits for 8 bit integers */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE
 auto digits_dec(T v) noexcept
@@ -407,6 +446,7 @@ auto digits_dec(T v) noexcept
     return ((v >= 100) ? 3u : ((v >= 10) ? 2u : 1u));
 }
 
+/** decimal digits for 16 bit integers */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE
 auto digits_dec(T v) noexcept
@@ -417,6 +457,7 @@ auto digits_dec(T v) noexcept
     return ((v >= 10000) ? 5u : (v >= 1000) ? 4u : (v >= 100) ? 3u : (v >= 10) ? 2u : 1u);
 }
 
+/** decimal digits for 32 bit integers */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE
 auto digits_dec(T v) noexcept
@@ -429,6 +470,7 @@ auto digits_dec(T v) noexcept
             (v >= 1000) ? 4u : (v >= 100) ? 3u : (v >= 10) ? 2u : 1u);
 }
 
+/** decimal digits for 64 bit integers */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE
 auto digits_dec(T v) noexcept
@@ -476,9 +518,8 @@ auto digits_dec(T v) noexcept
         return (v >= 10) ? 2u : 1u;
 }
 
-/** @} */
 
-
+/** return the number of digits required to encode an hexadecimal number. */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE unsigned digits_hex(T v) noexcept
 {
@@ -487,6 +528,7 @@ C4_CONSTEXPR14 C4_ALWAYS_INLINE unsigned digits_hex(T v) noexcept
     return v ? 1u + (msb((typename std::make_unsigned<T>::type)v) >> 2u) : 1u;
 }
 
+/** return the number of digits required to encode a binary number. */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE unsigned digits_bin(T v) noexcept
 {
@@ -495,6 +537,7 @@ C4_CONSTEXPR14 C4_ALWAYS_INLINE unsigned digits_bin(T v) noexcept
     return v ? 1u + msb((typename std::make_unsigned<T>::type)v) : 1u;
 }
 
+/** return the number of digits required to encode an octal number. */
 template<class T>
 C4_CONSTEXPR14 C4_ALWAYS_INLINE unsigned digits_oct(T v_) noexcept
 {
@@ -525,11 +568,14 @@ C4_CONSTEXPR14 C4_ALWAYS_INLINE unsigned digits_oct(T v_) noexcept
 	}
 }
 
+/** @} */
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/** @cond dev */
 namespace detail {
 C4_INLINE_CONSTEXPR const char hexchars[] = "0123456789abcdef";
 C4_INLINE_CONSTEXPR const char digits0099[] =
@@ -539,12 +585,23 @@ C4_INLINE_CONSTEXPR const char digits0099[] =
     "6061626364656667686970717273747576777879"
     "8081828384858687888990919293949596979899";
 } // namespace detail
+/** @endcond */
 
 C4_SUPPRESS_WARNING_GCC_PUSH
 C4_SUPPRESS_WARNING_GCC("-Warray-bounds")  // gcc has false positives here
 #if (defined(__GNUC__) && (__GNUC__ >= 7))
 C4_SUPPRESS_WARNING_GCC("-Wstringop-overflow")  // gcc has false positives here
 #endif
+
+/** @defgroup doc_write_unchecked Write with known number of digits
+ *
+ * Writes a value without checking the buffer length with regards to
+ * the required number of digits to encode the value. It is the
+ * responsibility of the caller to ensure that the provided number of
+ * digits is enough to write the given value. Notwithstanding the
+ * name, assertions are liberally performed, so this code is safe.
+ *
+ * @{ */
 
 template<class T>
 C4_HOT C4_ALWAYS_INLINE
@@ -557,7 +614,8 @@ void write_dec_unchecked(substr buf, T v, unsigned digits_v) noexcept
     // in bm_xtoa: checkoncelog_singlediv_write2
     while(v >= T(100))
     {
-        const T quo = v / T(100);
+        T quo = v;
+        quo /= T(100);
         const auto num = (v - quo * T(100)) << 1u;
         v = quo;
         buf.str[--digits_v] = detail::digits0099[num + 1];
@@ -625,6 +683,19 @@ void write_bin_unchecked(substr buf, T v, unsigned digits_v) noexcept
     C4_ASSERT(digits_v == 0);
 }
 
+/** @} */ // write_unchecked
+
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+/** @defgroup doc_write Write a value
+ *
+ * Writes a value without checking the buffer length
+ * decimal number -- but asserting.
+ *
+ * @{ */
 
 /** write an integer to a string in decimal format. This is the
  * lowest level (and the fastest) function to do this task.
@@ -703,6 +774,7 @@ C4_ALWAYS_INLINE size_t write_bin(substr buf, T v) noexcept
 }
 
 
+/** @cond dev */
 namespace detail {
 template<class U> using NumberWriter = size_t (*)(substr, U);
 template<class T, NumberWriter<T> writer>
@@ -721,6 +793,7 @@ size_t write_num_digits(substr buf, T v, size_t num_digits) noexcept
     return num_digits;
 }
 } // namespace detail
+/** @endcond */
 
 
 /** same as c4::write_dec(), but pad with zeroes on the left
@@ -759,12 +832,22 @@ C4_ALWAYS_INLINE size_t write_oct(substr buf, T val, size_t num_digits) noexcept
     return detail::write_num_digits<T, &write_oct<T>>(buf, val, num_digits);
 }
 
+/** @} */ // write
+
 C4_SUPPRESS_WARNING_GCC_POP
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+
+
+C4_SUPPRESS_WARNING_MSVC_PUSH
+C4_SUPPRESS_WARNING_MSVC(4365) // '=': conversion from 'int' to 'I', signed/unsigned mismatch
+
+/** @defgroup doc_read Read a value
+ *
+ * @{ */
 
 /** read a decimal integer from a string. This is the
  * lowest level (and the fastest) function to do this task.
@@ -778,6 +861,7 @@ C4_SUPPRESS_WARNING_GCC_POP
  * @see overflows<T>() to find out if a number string overflows a type range
  * @return true if the conversion was successful (no overflow check) */
 template<class I>
+C4_NO_UBSAN_IOVRFLW
 C4_ALWAYS_INLINE bool read_dec(csubstr s, I *C4_RESTRICT v) noexcept
 {
     C4_STATIC_ASSERT(std::is_integral<I>::value);
@@ -805,6 +889,7 @@ C4_ALWAYS_INLINE bool read_dec(csubstr s, I *C4_RESTRICT v) noexcept
  * @see overflows<T>() to find out if a number string overflows a type range
  * @return true if the conversion was successful (no overflow check) */
 template<class I>
+C4_NO_UBSAN_IOVRFLW
 C4_ALWAYS_INLINE bool read_hex(csubstr s, I *C4_RESTRICT v) noexcept
 {
     C4_STATIC_ASSERT(std::is_integral<I>::value);
@@ -839,6 +924,7 @@ C4_ALWAYS_INLINE bool read_hex(csubstr s, I *C4_RESTRICT v) noexcept
  * @see overflows<T>() to find out if a number string overflows a type range
  * @return true if the conversion was successful (no overflow check) */
 template<class I>
+C4_NO_UBSAN_IOVRFLW
 C4_ALWAYS_INLINE bool read_bin(csubstr s, I *C4_RESTRICT v) noexcept
 {
     C4_STATIC_ASSERT(std::is_integral<I>::value);
@@ -868,6 +954,7 @@ C4_ALWAYS_INLINE bool read_bin(csubstr s, I *C4_RESTRICT v) noexcept
  * @see overflows<T>() to find out if a number string overflows a type range
  * @return true if the conversion was successful (no overflow check) */
 template<class I>
+C4_NO_UBSAN_IOVRFLW
 C4_ALWAYS_INLINE bool read_oct(csubstr s, I *C4_RESTRICT v) noexcept
 {
     C4_STATIC_ASSERT(std::is_integral<I>::value);
@@ -882,11 +969,18 @@ C4_ALWAYS_INLINE bool read_oct(csubstr s, I *C4_RESTRICT v) noexcept
     return true;
 }
 
+/** @} */
+
+C4_SUPPRESS_WARNING_MSVC_POP
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+C4_SUPPRESS_WARNING_GCC_WITH_PUSH("-Wswitch-default")
+
+/** @cond dev */
 namespace detail {
 inline size_t _itoa2buf(substr buf, size_t pos, csubstr val) noexcept
 {
@@ -975,7 +1069,7 @@ C4_NO_INLINE size_t _itoa2buf(substr buf, I radix, size_t num_digits) noexcept
         buf.str[pos++] = 'x';
         pos = _itoa2bufwithdigits(buf, pos, num_digits, digits_type::min_value_hex());
         break;
-    case I( 2):
+    case I(2):
         // add 3 to account for -0b
         needed_digits = num_digits+3 > digits_type::maxdigits_bin ? num_digits+3 : digits_type::maxdigits_bin;
         if(C4_UNLIKELY(buf.len < needed_digits))
@@ -985,7 +1079,7 @@ C4_NO_INLINE size_t _itoa2buf(substr buf, I radix, size_t num_digits) noexcept
         buf.str[pos++] = 'b';
         pos = _itoa2bufwithdigits(buf, pos, num_digits, digits_type::min_value_bin());
         break;
-    case I( 8):
+    case I(8):
         // add 3 to account for -0o
         needed_digits = num_digits+3 > digits_type::maxdigits_oct ? num_digits+3 : digits_type::maxdigits_oct;
         if(C4_UNLIKELY(buf.len < needed_digits))
@@ -999,7 +1093,12 @@ C4_NO_INLINE size_t _itoa2buf(substr buf, I radix, size_t num_digits) noexcept
     return pos;
 }
 } // namespace detail
+/** @endcond */
 
+
+/** @defgroup doc_itoa itoa: signed to chars
+ *
+ * @{ */
 
 /** convert an integral signed decimal to a string.
  * @note the resulting string is NOT zero-terminated.
@@ -1108,7 +1207,7 @@ C4_ALWAYS_INLINE size_t itoa(substr buf, T v, T radix) noexcept
 
 
 /** same as c4::itoa(), but pad with zeroes on the left such that the
- * resulting string is @p num_digits wide, not account for radix
+ * resulting string is @p num_digits wide, not accounting for radix
  * prefix (0x,0o,0b). The @p radix must be 2, 8, 10 or 16.
  *
  * @note the resulting string is NOT zero-terminated.
@@ -1184,10 +1283,16 @@ C4_ALWAYS_INLINE size_t itoa(substr buf, T v, T radix, size_t num_digits) noexce
     return detail::_itoa2buf<T>(buf, radix, num_digits);
 }
 
+/** @} */
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+
+/** @defgroup doc_utoa utoa: unsigned to chars
+ *
+ * @{ */
 
 /** convert an integral unsigned decimal to a string.
  *
@@ -1312,11 +1417,18 @@ C4_ALWAYS_INLINE size_t utoa(substr buf, T v, T radix, size_t num_digits) noexce
     }
     return total_digits;
 }
+C4_SUPPRESS_WARNING_GCC_POP
+
+/** @} */
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+
+/** @defgroup doc_atoi atoi: chars to signed
+ *
+ * @{ */
 
 /** Convert a trimmed string to a signed integral value. The input
  * string can be formatted as decimal, binary (prefix 0b or 0B), octal
@@ -1328,13 +1440,18 @@ C4_ALWAYS_INLINE size_t utoa(substr buf, T v, T radix, size_t num_digits) noexce
  *
  * @return true if the conversion was successful.
  *
+ * @note a positive sign is not accepted. ie, the string must not
+ * start with '+'
+ *
  * @note overflow is not detected: the return status is true even if
  * the conversion would return a value outside of the type's range, in
- * which case the result will wrap around the type's range.
- * This is similar to native behavior.
+ * which case the result will wrap around the type's range.  This is
+ * similar to native behavior. See @ref doc_overflows and @ref
+ * doc_overflow_checked for overflow checking utilities.
  *
  * @see atoi_first() if the string is not trimmed to the value to read. */
 template<class T>
+C4_NO_UBSAN_IOVRFLW
 C4_ALWAYS_INLINE bool atoi(csubstr str, T * C4_RESTRICT v) noexcept
 {
     C4_STATIC_ASSERT(std::is_integral<T>::value);
@@ -1343,13 +1460,14 @@ C4_ALWAYS_INLINE bool atoi(csubstr str, T * C4_RESTRICT v) noexcept
     if(C4_UNLIKELY(str.len == 0))
         return false;
 
+    C4_ASSERT(str.str[0] != '+');
+
     T sign = 1;
     size_t start = 0;
     if(str.str[0] == '-')
     {
-        if(C4_UNLIKELY(str.len == 1))
+        if(C4_UNLIKELY(str.len == ++start))
             return false;
-        ++start;
         sign = -1;
     }
 
@@ -1398,8 +1516,16 @@ C4_ALWAYS_INLINE size_t atoi_first(csubstr str, T * C4_RESTRICT v)
     return csubstr::npos;
 }
 
+/** @} */
+
 
 //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+/** @defgroup doc_atou atou: chars to unsigned
+ *
+ * @{ */
 
 /** Convert a trimmed string to an unsigned integral value. The string can be
  * formatted as decimal, binary (prefix 0b or 0B), octal (prefix 0o or 0O)
@@ -1410,7 +1536,9 @@ C4_ALWAYS_INLINE size_t atoi_first(csubstr str, T * C4_RESTRICT v)
  *
  * @note overflow is not detected: the return status is true even if
  * the conversion would return a value outside of the type's range, in
- * which case the result will wrap around the type's range.
+ * which case the result will wrap around the type's range. See @ref
+ * doc_overflows and @ref doc_overflow_checked for overflow checking
+ * utilities.
  *
  * @note If the string has a minus character, the return status
  * will be false.
@@ -1470,6 +1598,8 @@ C4_ALWAYS_INLINE size_t atou_first(csubstr str, T *v)
 }
 
 
+/** @} */
+
 #ifdef _MSC_VER
 #   pragma warning(pop)
 #elif defined(__clang__)
@@ -1482,6 +1612,8 @@ C4_ALWAYS_INLINE size_t atou_first(csubstr str, T *v)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+
+/** @cond dev */
 namespace detail {
 inline bool check_overflow(csubstr str, csubstr limit) noexcept
 {
@@ -1500,15 +1632,22 @@ inline bool check_overflow(csubstr str, csubstr limit) noexcept
         return str.len > limit.len;
 }
 } // namespace detail
+/** @endcond */
 
 
-/** Test if the following string would overflow when converted to associated
- * types.
+/** @defgroup doc_overflows overflows: does a number string overflow a type
+ *
+ * @{ */
+
+/** Test if the following string would overflow when converted to
+ * associated integral types; this function is dispatched with SFINAE
+ * to handle differently signed and unsigned types.
  * @return true if number will overflow, false if it fits (or doesn't parse)
+ * @see doc_overflow_checked for format specifiers to enforce no-overflow reads
  */
 template<class T>
 auto overflows(csubstr str) noexcept
-    -> typename std::enable_if<std::is_unsigned<T>::value, bool>::type 
+    -> typename std::enable_if<std::is_unsigned<T>::value, bool>::type
 {
     C4_STATIC_ASSERT(std::is_integral<T>::value);
 
@@ -1566,13 +1705,16 @@ auto overflows(csubstr str) noexcept
 }
 
 
-/** Test if the following string would overflow when converted to associated
- * types.
+/** Test if the following string would overflow when converted to
+ * associated integral types; this function is dispatched with SFINAE
+ * to handle differently signed and unsigned types.
+ *
  * @return true if number will overflow, false if it fits (or doesn't parse)
+ * @see doc_overflow_checked for format specifiers to enforce no-overflow reads
  */
 template<class T>
 auto overflows(csubstr str)
-    -> typename std::enable_if<std::is_signed<T>::value, bool>::type 
+    -> typename std::enable_if<std::is_signed<T>::value, bool>::type
 {
     C4_STATIC_ASSERT(std::is_integral<T>::value);
     if(C4_UNLIKELY(str.len == 0))
@@ -1665,25 +1807,29 @@ auto overflows(csubstr str)
         return detail::check_overflow(str, detail::charconv_digits<T>::max_value_dec());
 }
 
+/** @} */
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/** @cond dev */
 namespace detail {
 
 
+#if (!C4CORE_HAVE_STD_FROMCHARS)
 /** @see http://www.exploringbinary.com/ for many good examples on float-str conversion */
 template<size_t N>
 void get_real_format_str(char (& C4_RESTRICT fmt)[N], int precision, RealFormat_e formatting, const char* length_modifier="")
 {
     int iret;
     if(precision == -1)
-        iret = snprintf(fmt, sizeof(fmt), "%%%s%c", length_modifier, to_c_fmt(formatting));
+        iret = snprintf(fmt, sizeof(fmt), "%%%s%c", length_modifier, formatting);
     else if(precision == 0)
-        iret = snprintf(fmt, sizeof(fmt), "%%.%s%c", length_modifier, to_c_fmt(formatting));
+        iret = snprintf(fmt, sizeof(fmt), "%%.%s%c", length_modifier, formatting);
     else
-        iret = snprintf(fmt, sizeof(fmt), "%%.%d%s%c", precision, length_modifier, to_c_fmt(formatting));
+        iret = snprintf(fmt, sizeof(fmt), "%%.%d%s%c", precision, length_modifier, formatting);
     C4_ASSERT(iret >= 2 && size_t(iret) < sizeof(fmt));
     C4_UNUSED(iret);
 }
@@ -1728,8 +1874,10 @@ size_t print_one(substr str, const char* full_fmt, T v)
     return ret;
 #endif
 }
+#endif // (!C4CORE_HAVE_STD_FROMCHARS)
 
-#if !C4CORE_HAVE_STD_FROMCHARS && !defined(C4CORE_HAVE_FAST_FLOAT)
+
+#if (!C4CORE_HAVE_STD_FROMCHARS) && (!C4CORE_HAVE_FAST_FLOAT)
 /** scans a string using the given type format, while at the same time
  * allowing non-null-terminated strings AND guaranteeing that the given
  * string length is strictly respected, so that no buffer overflows
@@ -1766,24 +1914,28 @@ inline size_t scan_one(csubstr str, const char *type_fmt, T *v)
     C4_ASSERT(num_chars >= 0);
     return (size_t)(num_chars);
 }
-#endif
+#endif // (!C4CORE_HAVE_STD_FROMCHARS) && (!C4CORE_HAVE_FAST_FLOAT)
 
 
 #if C4CORE_HAVE_STD_TOCHARS
 template<class T>
-size_t rtoa(substr buf, T v, int precision=-1, RealFormat_e formatting=FTOA_FLEX)
+C4_ALWAYS_INLINE size_t rtoa(substr buf, T v, int precision=-1, RealFormat_e formatting=FTOA_FLEX) noexcept
 {
     std::to_chars_result result;
     size_t pos = 0;
     if(formatting == FTOA_HEXA)
     {
-        _c4append('0');
-        _c4append('x');
+        if(buf.len > size_t(2))
+        {
+            buf.str[0] = '0';
+            buf.str[1] = 'x';
+        }
+        pos += size_t(2);
     }
     if(precision == -1)
-        result = std::to_chars(buf.str + pos, buf.str + buf.len, v, to_std_fmt(formatting));
+        result = std::to_chars(buf.str + pos, buf.str + buf.len, v, (std::chars_format)formatting);
     else
-        result = std::to_chars(buf.str + pos, buf.str + buf.len, v, to_std_fmt(formatting), precision);
+        result = std::to_chars(buf.str + pos, buf.str + buf.len, v, (std::chars_format)formatting, precision);
     if(result.ec == std::errc())
     {
         // all good, no errors.
@@ -1807,18 +1959,106 @@ size_t rtoa(substr buf, T v, int precision=-1, RealFormat_e formatting=FTOA_FLEX
 }
 #endif // C4CORE_HAVE_STD_TOCHARS
 
+
+#if C4CORE_HAVE_FAST_FLOAT
+template<class T>
+C4_ALWAYS_INLINE bool scan_rhex(csubstr s, T *C4_RESTRICT val) noexcept
+{
+    C4_ASSERT(s.len > 0);
+    C4_ASSERT(s.str[0] != '-');
+    C4_ASSERT(s.str[0] != '+');
+    C4_ASSERT(!s.begins_with("0x"));
+    C4_ASSERT(!s.begins_with("0X"));
+    size_t pos = 0;
+    // integer part
+    for( ; pos < s.len; ++pos)
+    {
+        const char c = s.str[pos];
+        if(c >= '0' && c <= '9')
+            *val = *val * T(16) + T(c - '0');
+        else if(c >= 'a' && c <= 'f')
+            *val = *val * T(16) + T(c - 'a');
+        else if(c >= 'A' && c <= 'F')
+            *val = *val * T(16) + T(c - 'A');
+        else if(c == '.')
+        {
+            ++pos;
+            break; // follow on to mantissa
+        }
+        else if(c == 'p' || c == 'P')
+        {
+            ++pos;
+            goto power; // no mantissa given, jump to power
+        }
+        else
+        {
+            return false;
+        }
+    }
+    // mantissa
+    {
+        // 0.0625 == 1/16 == value of first digit after the comma
+        for(T digit = T(0.0625); pos < s.len; ++pos, digit /= T(16))
+        {
+            const char c = s.str[pos];
+            if(c >= '0' && c <= '9')
+                *val += digit * T(c - '0');
+            else if(c >= 'a' && c <= 'f')
+                *val += digit * T(c - 'a');
+            else if(c >= 'A' && c <= 'F')
+                *val += digit * T(c - 'A');
+            else if(c == 'p' || c == 'P')
+            {
+                ++pos;
+                goto power; // mantissa finished, jump to power
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+power:
+    if(C4_LIKELY(pos < s.len))
+    {
+        if(s.str[pos] == '+') // atoi() cannot handle a leading '+'
+            ++pos;
+        if(C4_LIKELY(pos < s.len))
+        {
+            int16_t powval = {};
+            if(C4_LIKELY(atoi(s.sub(pos), &powval)))
+            {
+                *val *= ipow<T, int16_t, 16>(powval);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+#endif
+
 } // namespace detail
+/** @endcond */
 
 
 #undef _c4appendhex
 #undef _c4append
 
 
-/** Convert a single-precision real number to string.
- * The string will in general be NOT null-terminated.
- * For FTOA_FLEX, \p precision is the number of significand digits. Otherwise
- * \p precision is the number of decimals. */
-inline size_t ftoa(substr str, float v, int precision=-1, RealFormat_e formatting=FTOA_FLEX)
+/** @defgroup doc_ftoa ftoa: float32 to chars
+ *
+ * @{ */
+
+/** Convert a single-precision real number to string.  The string will
+ * in general be NOT null-terminated.  For FTOA_FLEX, \p precision is
+ * the number of significand digits. Otherwise \p precision is the
+ * number of decimals. It is safe to call this function with an empty
+ * or too-small buffer.
+ *
+ * @return the size of the buffer needed to write the number
+ */
+C4_ALWAYS_INLINE size_t ftoa(substr str, float v, int precision=-1, RealFormat_e formatting=FTOA_FLEX) noexcept
 {
 #if C4CORE_HAVE_STD_TOCHARS
     return detail::rtoa(str, v, precision, formatting);
@@ -1829,15 +2069,22 @@ inline size_t ftoa(substr str, float v, int precision=-1, RealFormat_e formattin
 #endif
 }
 
+/** @} */
 
-/** Convert a double-precision real number to string.
- * The string will in general be NOT null-terminated.
- * For FTOA_FLEX, \p precision is the number of significand digits. Otherwise
- * \p precision is the number of decimals.
+
+/** @defgroup doc_dtoa dtoa: float64 to chars
  *
- * @return the number of characters written.
+ * @{ */
+
+/** Convert a double-precision real number to string.  The string will
+ * in general be NOT null-terminated.  For FTOA_FLEX, \p precision is
+ * the number of significand digits. Otherwise \p precision is the
+ * number of decimals. It is safe to call this function with an empty
+ * or too-small buffer.
+ *
+ * @return the size of the buffer needed to write the number
  */
-inline size_t dtoa(substr str, double v, int precision=-1, RealFormat_e formatting=FTOA_FLEX)
+C4_ALWAYS_INLINE size_t dtoa(substr str, double v, int precision=-1, RealFormat_e formatting=FTOA_FLEX) noexcept
 {
 #if C4CORE_HAVE_STD_TOCHARS
     return detail::rtoa(str, v, precision, formatting);
@@ -1848,6 +2095,12 @@ inline size_t dtoa(substr str, double v, int precision=-1, RealFormat_e formatti
 #endif
 }
 
+/** @} */
+
+
+/** @defgroup doc_atof atof: chars to float32
+ *
+ * @{ */
 
 /** Convert a string to a single precision real number.
  * The input string must be trimmed to the value, ie
@@ -1855,44 +2108,36 @@ inline size_t dtoa(substr str, double v, int precision=-1, RealFormat_e formatti
  * @return true iff the conversion succeeded
  * @see atof_first() if the string is not trimmed
  */
-inline bool atof(csubstr str, float * C4_RESTRICT v) noexcept
+C4_ALWAYS_INLINE bool atof(csubstr str, float * C4_RESTRICT v) noexcept
 {
+    C4_ASSERT(str.len > 0);
     C4_ASSERT(str.triml(" \r\t\n").len == str.len);
 #if C4CORE_HAVE_FAST_FLOAT
-    fast_float::from_chars_result result;
-    result = fast_float::from_chars(str.str, str.str + str.len, *v);
-    return result.ec == std::errc();
+    // fastfloat cannot parse hexadecimal floats
+    bool isneg = (str.str[0] == '-');
+    csubstr rem = str.sub(isneg || str.str[0] == '+');
+    if(!(rem.len >= 2 && (rem.str[0] == '0' && (rem.str[1] == 'x' || rem.str[1] == 'X'))))
+    {
+        fast_float::from_chars_result result;
+        result = fast_float::from_chars(str.str, str.str + str.len, *v);
+        return result.ec == std::errc();
+    }
+    else if(detail::scan_rhex(rem.sub(2), v))
+    {
+        *v *= isneg ? -1.f : 1.f;
+        return true;
+    }
+    return false;
 #elif C4CORE_HAVE_STD_FROMCHARS
     std::from_chars_result result;
     result = std::from_chars(str.str, str.str + str.len, *v);
     return result.ec == std::errc();
 #else
-    size_t ret = detail::scan_one(str, "f", v);
-    return ret != csubstr::npos;
-#endif
-}
-
-
-/** Convert a string to a double precision real number.
- * The input string must be trimmed to the value, ie
- * no leading or trailing whitespace can be present.
- * @return true iff the conversion succeeded
- * @see atod_first() if the string is not trimmed
- */
-inline bool atod(csubstr str, double * C4_RESTRICT v) noexcept
-{
-    C4_ASSERT(str.triml(" \r\t\n").len == str.len);
-#if C4CORE_HAVE_FAST_FLOAT
-    fast_float::from_chars_result result;
-    result = fast_float::from_chars(str.str, str.str + str.len, *v);
-    return result.ec == std::errc();
-#elif C4CORE_HAVE_STD_FROMCHARS
-    std::from_chars_result result;
-    result = std::from_chars(str.str, str.str + str.len, *v);
-    return result.ec == std::errc();
-#else
-    size_t ret = detail::scan_one(str, "lf", v);
-    return ret != csubstr::npos;
+    csubstr rem = str.sub(str.str[0] == '-' || str.str[0] == '+');
+    if(!(rem.len >= 2 && (rem.str[0] == '0' && (rem.str[1] == 'x' || rem.str[1] == 'X'))))
+        return detail::scan_one(str, "f", v) != csubstr::npos;
+    else
+        return detail::scan_one(str, "a", v) != csubstr::npos;
 #endif
 }
 
@@ -1911,6 +2156,52 @@ inline size_t atof_first(csubstr str, float * C4_RESTRICT v) noexcept
     return csubstr::npos;
 }
 
+/** @} */
+
+
+/** @defgroup doc_atod atod: chars to float64
+ *
+ * @{ */
+
+/** Convert a string to a double precision real number.
+ * The input string must be trimmed to the value, ie
+ * no leading or trailing whitespace can be present.
+ * @return true iff the conversion succeeded
+ * @see atod_first() if the string is not trimmed
+ */
+C4_ALWAYS_INLINE bool atod(csubstr str, double * C4_RESTRICT v) noexcept
+{
+    C4_ASSERT(str.len > 0);
+    C4_ASSERT(str.triml(" \r\t\n").len == str.len);
+#if C4CORE_HAVE_FAST_FLOAT
+    // fastfloat cannot parse hexadecimal floats
+    bool isneg = (str.str[0] == '-');
+    csubstr rem = str.sub(isneg || str.str[0] == '+');
+    if(!(rem.len >= 2 && (rem.str[0] == '0' && (rem.str[1] == 'x' || rem.str[1] == 'X'))))
+    {
+        fast_float::from_chars_result result;
+        result = fast_float::from_chars(str.str, str.str + str.len, *v);
+        return result.ec == std::errc();
+    }
+    else if(detail::scan_rhex(rem.sub(2), v))
+    {
+        *v *= isneg ? -1. : 1.;
+        return true;
+    }
+    return false;
+#elif C4CORE_HAVE_STD_FROMCHARS
+    std::from_chars_result result;
+    result = std::from_chars(str.str, str.str + str.len, *v);
+    return result.ec == std::errc();
+#else
+    csubstr rem = str.sub(str.str[0] == '-' || str.str[0] == '+');
+    if(!(rem.len >= 2 && (rem.str[0] == '0' && (rem.str[1] == 'x' || rem.str[1] == 'X'))))
+        return detail::scan_one(str, "lf", v) != csubstr::npos;
+    else
+        return detail::scan_one(str, "la", v) != csubstr::npos;
+#endif
+}
+
 
 /** Convert a string to a double precision real number.
  * Leading whitespace is skipped until valid characters are found.
@@ -1926,12 +2217,28 @@ inline size_t atod_first(csubstr str, double * C4_RESTRICT v) noexcept
     return csubstr::npos;
 }
 
+/** @} */
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // generic versions
 
+/** @cond dev */
+// on some platforms, (unsigned) int and (unsigned) long
+// are not any of the fixed length types above
+#define _C4_IF_NOT_FIXED_LENGTH_I(T, ty) C4_ALWAYS_INLINE typename std::enable_if<std::  is_signed<T>::value && !is_fixed_length<T>::value_i, ty>
+#define _C4_IF_NOT_FIXED_LENGTH_U(T, ty) C4_ALWAYS_INLINE typename std::enable_if<std::is_unsigned<T>::value && !is_fixed_length<T>::value_u, ty>
+/** @endcond*/
+
+
+/** @defgroup doc_xtoa xtoa: generic value to chars
+ *
+ * Dispatches to the most appropriate and efficient conversion
+ * function
+ *
+ * @{ */
 C4_ALWAYS_INLINE size_t xtoa(substr s,  uint8_t v) noexcept { return write_dec(s, v); }
 C4_ALWAYS_INLINE size_t xtoa(substr s, uint16_t v) noexcept { return write_dec(s, v); }
 C4_ALWAYS_INLINE size_t xtoa(substr s, uint32_t v) noexcept { return write_dec(s, v); }
@@ -1961,6 +2268,23 @@ C4_ALWAYS_INLINE size_t xtoa(substr s,  int16_t v,  int16_t radix, size_t num_di
 C4_ALWAYS_INLINE size_t xtoa(substr s,  int32_t v,  int32_t radix, size_t num_digits) noexcept { return itoa(s, v, radix, num_digits); }
 C4_ALWAYS_INLINE size_t xtoa(substr s,  int64_t v,  int64_t radix, size_t num_digits) noexcept { return itoa(s, v, radix, num_digits); }
 
+C4_ALWAYS_INLINE size_t xtoa(substr s,  float v, int precision, RealFormat_e formatting=FTOA_FLEX) noexcept { return ftoa(s, v, precision, formatting); }
+C4_ALWAYS_INLINE size_t xtoa(substr s, double v, int precision, RealFormat_e formatting=FTOA_FLEX) noexcept { return dtoa(s, v, precision, formatting); }
+
+template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, size_t)::type xtoa(substr buf, T v) noexcept { return itoa(buf, v); }
+template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, size_t)::type xtoa(substr buf, T v) noexcept { return write_dec(buf, v); }
+template <class T>
+C4_ALWAYS_INLINE size_t xtoa(substr s, T *v) noexcept { return itoa(s, (intptr_t)v, (intptr_t)16); }
+
+/** @} */
+
+/** @defgroup doc_atox atox: generic chars to value
+ *
+ * Dispatches to the most appropriate and efficient conversion
+ * function
+ *
+ * @{ */
+
 C4_ALWAYS_INLINE bool atox(csubstr s,  uint8_t *C4_RESTRICT v) noexcept { return atou(s, v); }
 C4_ALWAYS_INLINE bool atox(csubstr s, uint16_t *C4_RESTRICT v) noexcept { return atou(s, v); }
 C4_ALWAYS_INLINE bool atox(csubstr s, uint32_t *C4_RESTRICT v) noexcept { return atou(s, v); }
@@ -1971,6 +2295,35 @@ C4_ALWAYS_INLINE bool atox(csubstr s,  int32_t *C4_RESTRICT v) noexcept { return
 C4_ALWAYS_INLINE bool atox(csubstr s,  int64_t *C4_RESTRICT v) noexcept { return atoi(s, v); }
 C4_ALWAYS_INLINE bool atox(csubstr s,    float *C4_RESTRICT v) noexcept { return atof(s, v); }
 C4_ALWAYS_INLINE bool atox(csubstr s,   double *C4_RESTRICT v) noexcept { return atod(s, v); }
+
+template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, bool  )::type atox(csubstr buf, T *C4_RESTRICT v) noexcept { return atoi(buf, v); }
+template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, bool  )::type atox(csubstr buf, T *C4_RESTRICT v) noexcept { return atou(buf, v); }
+template <class T>
+C4_ALWAYS_INLINE bool atox(csubstr s, T **v) noexcept { intptr_t tmp; bool ret = atox(s, &tmp); if(ret) { *v = (T*)tmp; } return ret; }
+
+/** @} */
+
+
+/** @defgroup doc_to_chars to_chars: generalized chars to value
+ *
+ * Convert the given value, writing into the string.  The resulting
+ * string will NOT be null-terminated.  Return the number of
+ * characters needed.  This function is safe to call when the string
+ * is too small - no writes will occur beyond the string's last
+ * character.
+ *
+ * Dispatches to the most appropriate and efficient conversion
+ * function.
+ *
+ * @see write_dec, doc_utoa, doc_itoa, doc_ftoa, doc_dtoa
+ *
+ * @warning When serializing floating point values (float or double),
+ * be aware that because it uses defaults, to_chars() may cause a
+ * truncation of the precision. To enforce a particular precision, use
+ * for example @ref c4::fmt::real, or call directly @ref c4::ftoa or
+ * @ref c4::dtoa.
+ *
+ * @{ */
 
 C4_ALWAYS_INLINE size_t to_chars(substr buf,  uint8_t v) noexcept { return write_dec(buf, v); }
 C4_ALWAYS_INLINE size_t to_chars(substr buf, uint16_t v) noexcept { return write_dec(buf, v); }
@@ -1983,6 +2336,30 @@ C4_ALWAYS_INLINE size_t to_chars(substr buf,  int64_t v) noexcept { return itoa(
 C4_ALWAYS_INLINE size_t to_chars(substr buf,    float v) noexcept { return ftoa(buf, v); }
 C4_ALWAYS_INLINE size_t to_chars(substr buf,   double v) noexcept { return dtoa(buf, v); }
 
+template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, size_t)::type to_chars(substr buf, T v) noexcept { return itoa(buf, v); }
+template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, size_t)::type to_chars(substr buf, T v) noexcept { return write_dec(buf, v); }
+template <class T>
+C4_ALWAYS_INLINE size_t to_chars(substr s, T *v) noexcept { return itoa(s, (intptr_t)v, (intptr_t)16); }
+
+/** @} */
+
+
+/** @defgroup doc_from_chars from_chars: generalized chars to value
+ *
+ * Read a value from the string, which must be trimmed to the value
+ * (ie, no leading/trailing whitespace).  return true if the
+ * conversion succeeded.  There is no check for overflow; the value
+ * wraps around in a way similar to the standard C/C++ overflow
+ * behavior. For example, from_chars<int8_t>("128", &val) returns true
+ * and val will be set tot 0. See @ref doc_overflows and @ref
+ * doc_overflow_checked for facilities enforcing no-overflow.
+ *
+ * Dispatches to the most appropriate and efficient conversion
+ * function
+ *
+ * @see doc_from_chars_first, atou, atoi, atof, atod
+ * @{ */
+
 C4_ALWAYS_INLINE bool from_chars(csubstr buf,  uint8_t *C4_RESTRICT v) noexcept { return atou(buf, v); }
 C4_ALWAYS_INLINE bool from_chars(csubstr buf, uint16_t *C4_RESTRICT v) noexcept { return atou(buf, v); }
 C4_ALWAYS_INLINE bool from_chars(csubstr buf, uint32_t *C4_RESTRICT v) noexcept { return atou(buf, v); }
@@ -1993,6 +2370,23 @@ C4_ALWAYS_INLINE bool from_chars(csubstr buf,  int32_t *C4_RESTRICT v) noexcept 
 C4_ALWAYS_INLINE bool from_chars(csubstr buf,  int64_t *C4_RESTRICT v) noexcept { return atoi(buf, v); }
 C4_ALWAYS_INLINE bool from_chars(csubstr buf,    float *C4_RESTRICT v) noexcept { return atof(buf, v); }
 C4_ALWAYS_INLINE bool from_chars(csubstr buf,   double *C4_RESTRICT v) noexcept { return atod(buf, v); }
+
+template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, bool  )::type from_chars(csubstr buf, T *C4_RESTRICT v) noexcept { return atoi(buf, v); }
+template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, bool  )::type from_chars(csubstr buf, T *C4_RESTRICT v) noexcept { return atou(buf, v); }
+template <class T>
+C4_ALWAYS_INLINE bool from_chars(csubstr buf, T **v) noexcept { intptr_t tmp; bool ret = from_chars(buf, &tmp); if(ret) { *v = (T*)tmp; } return ret; }
+
+/** @defgroup doc_from_chars_first from_chars_first: generalized chars to value
+ *
+ * Read the first valid sequence of characters from the string,
+ * skipping leading whitespace, and convert it using @ref doc_from_chars .
+ * Return the number of characters read for converting.
+ *
+ * Dispatches to the most appropriate and efficient conversion
+ * function.
+ *
+ * @see atou_first, atoi_first, atof_first, atod_first
+ * @{ */
 
 C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf,  uint8_t *C4_RESTRICT v) noexcept { return atou_first(buf, v); }
 C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf, uint16_t *C4_RESTRICT v) noexcept { return atou_first(buf, v); }
@@ -2005,41 +2399,17 @@ C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf,  int64_t *C4_RESTRICT v) n
 C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf,    float *C4_RESTRICT v) noexcept { return atof_first(buf, v); }
 C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf,   double *C4_RESTRICT v) noexcept { return atod_first(buf, v); }
 
-
-//-----------------------------------------------------------------------------
-// on some platforms, (unsigned) int and (unsigned) long
-// are not any of the fixed length types above
-
-#define _C4_IF_NOT_FIXED_LENGTH_I(T, ty) C4_ALWAYS_INLINE typename std::enable_if<std::  is_signed<T>::value && !is_fixed_length<T>::value_i, ty>
-#define _C4_IF_NOT_FIXED_LENGTH_U(T, ty) C4_ALWAYS_INLINE typename std::enable_if<std::is_unsigned<T>::value && !is_fixed_length<T>::value_u, ty>
-
-template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, size_t)::type xtoa(substr buf, T v) noexcept { return itoa(buf, v); }
-template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, size_t)::type xtoa(substr buf, T v) noexcept { return write_dec(buf, v); }
-
-template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, bool  )::type atox(csubstr buf, T *C4_RESTRICT v) noexcept { return atoi(buf, v); }
-template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, bool  )::type atox(csubstr buf, T *C4_RESTRICT v) noexcept { return atou(buf, v); }
-
-template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, size_t)::type to_chars(substr buf, T v) noexcept { return itoa(buf, v); }
-template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, size_t)::type to_chars(substr buf, T v) noexcept { return write_dec(buf, v); }
-
-template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, bool  )::type from_chars(csubstr buf, T *C4_RESTRICT v) noexcept { return atoi(buf, v); }
-template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, bool  )::type from_chars(csubstr buf, T *C4_RESTRICT v) noexcept { return atou(buf, v); }
-
 template <class T> _C4_IF_NOT_FIXED_LENGTH_I(T, size_t)::type from_chars_first(csubstr buf, T *C4_RESTRICT v) noexcept { return atoi_first(buf, v); }
 template <class T> _C4_IF_NOT_FIXED_LENGTH_U(T, size_t)::type from_chars_first(csubstr buf, T *C4_RESTRICT v) noexcept { return atou_first(buf, v); }
+template <class T>
+C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf, T **v) noexcept { intptr_t tmp; bool ret = from_chars_first(buf, &tmp); if(ret) { *v = (T*)tmp; } return ret; }
+
+/** @} */
+
+/** @} */
 
 #undef _C4_IF_NOT_FIXED_LENGTH_I
 #undef _C4_IF_NOT_FIXED_LENGTH_U
-
-
-//-----------------------------------------------------------------------------
-// for pointers
-
-template <class T> C4_ALWAYS_INLINE size_t xtoa(substr s, T *v) noexcept { return itoa(s, (intptr_t)v, (intptr_t)16); }
-template <class T> C4_ALWAYS_INLINE bool   atox(csubstr s, T **v) noexcept { intptr_t tmp; bool ret = atox(s, &tmp); if(ret) { *v = (T*)tmp; } return ret; }
-template <class T> C4_ALWAYS_INLINE size_t to_chars(substr s, T *v) noexcept { return itoa(s, (intptr_t)v, (intptr_t)16); }
-template <class T> C4_ALWAYS_INLINE bool   from_chars(csubstr buf, T **v) noexcept { intptr_t tmp; bool ret = from_chars(buf, &tmp); if(ret) { *v = (T*)tmp; } return ret; }
-template <class T> C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf, T **v) noexcept { intptr_t tmp; bool ret = from_chars_first(buf, &tmp); if(ret) { *v = (T*)tmp; } return ret; }
 
 
 //-----------------------------------------------------------------------------
@@ -2048,7 +2418,10 @@ template <class T> C4_ALWAYS_INLINE size_t from_chars_first(csubstr buf, T **v) 
 /** call to_chars() and return a substr consisting of the
  * written portion of the input buffer. Ie, same as to_chars(),
  * but return a substr instead of a size_t.
- *
+ * Convert the given value to a string using to_chars(), and
+ * return the resulting string, up to and including the last
+ * written character.
+ * @ingroup doc_to_chars
  * @see to_chars() */
 template<class T>
 C4_ALWAYS_INLINE substr to_chars_sub(substr buf, T const& C4_RESTRICT v) noexcept
@@ -2062,12 +2435,14 @@ C4_ALWAYS_INLINE substr to_chars_sub(substr buf, T const& C4_RESTRICT v) noexcep
 //-----------------------------------------------------------------------------
 // bool implementation
 
+/** @ingroup doc_to_chars */
 C4_ALWAYS_INLINE size_t to_chars(substr buf, bool v) noexcept
 {
     int val = v;
     return to_chars(buf, val);
 }
 
+/** @ingroup doc_from_chars */
 inline bool from_chars(csubstr buf, bool * C4_RESTRICT v) noexcept
 {
     if(buf == '0')
@@ -2112,6 +2487,7 @@ inline bool from_chars(csubstr buf, bool * C4_RESTRICT v) noexcept
     return ret;
 }
 
+/** @ingroup doc_from_chars_first */
 inline size_t from_chars_first(csubstr buf, bool * C4_RESTRICT v) noexcept
 {
     csubstr trimmed = buf.first_non_empty_span();
@@ -2124,28 +2500,36 @@ inline size_t from_chars_first(csubstr buf, bool * C4_RESTRICT v) noexcept
 //-----------------------------------------------------------------------------
 // single-char implementation
 
+/** @ingroup doc_to_chars */
 inline size_t to_chars(substr buf, char v) noexcept
 {
     if(buf.len > 0)
-        buf[0] = v;
+    {
+        C4_XASSERT(buf.str);
+        buf.str[0] = v;
+    }
     return 1;
 }
 
 /** extract a single character from a substring
- * @note to extract a string instead and not just a single character, use the csubstr overload */
+ * @note to extract a string instead and not just a single character, use the csubstr overload
+ * @ingroup doc_from_chars
+ * */
 inline bool from_chars(csubstr buf, char * C4_RESTRICT v) noexcept
 {
     if(buf.len != 1)
         return false;
-    *v = buf[0];
+    C4_XASSERT(buf.str);
+    *v = buf.str[0];
     return true;
 }
 
+/** @ingroup doc_from_chars_first */
 inline size_t from_chars_first(csubstr buf, char * C4_RESTRICT v) noexcept
 {
     if(buf.len < 1)
         return csubstr::npos;
-    *v = buf[0];
+    *v = buf.str[0];
     return 1;
 }
 
@@ -2153,20 +2537,31 @@ inline size_t from_chars_first(csubstr buf, char * C4_RESTRICT v) noexcept
 //-----------------------------------------------------------------------------
 // csubstr implementation
 
+/** @ingroup doc_to_chars */
 inline size_t to_chars(substr buf, csubstr v) noexcept
 {
     C4_ASSERT(!buf.overlaps(v));
     size_t len = buf.len < v.len ? buf.len : v.len;
-    memcpy(buf.str, v.str, len);
+    // calling memcpy with null strings is undefined behavior
+    // and will wreak havoc in calling code's branches.
+    // see https://github.com/biojppm/rapidyaml/pull/264#issuecomment-1262133637
+    if(len)
+    {
+        C4_ASSERT(buf.str != nullptr);
+        C4_ASSERT(v.str != nullptr);
+        memcpy(buf.str, v.str, len);
+    }
     return v.len;
 }
 
+/** @ingroup doc_from_chars */
 inline bool from_chars(csubstr buf, csubstr *C4_RESTRICT v) noexcept
 {
     *v = buf;
     return true;
 }
 
+/** @ingroup doc_from_chars_first */
 inline size_t from_chars_first(substr buf, csubstr * C4_RESTRICT v) noexcept
 {
     csubstr trimmed = buf.first_non_empty_span();
@@ -2180,27 +2575,46 @@ inline size_t from_chars_first(substr buf, csubstr * C4_RESTRICT v) noexcept
 //-----------------------------------------------------------------------------
 // substr
 
+/** @ingroup doc_to_chars */
 inline size_t to_chars(substr buf, substr v) noexcept
 {
     C4_ASSERT(!buf.overlaps(v));
     size_t len = buf.len < v.len ? buf.len : v.len;
-    memcpy(buf.str, v.str, len);
+    // calling memcpy with null strings is undefined behavior
+    // and will wreak havoc in calling code's branches.
+    // see https://github.com/biojppm/rapidyaml/pull/264#issuecomment-1262133637
+    if(len)
+    {
+        C4_ASSERT(buf.str != nullptr);
+        C4_ASSERT(v.str != nullptr);
+        memcpy(buf.str, v.str, len);
+    }
     return v.len;
 }
 
+/** @ingroup doc_from_chars */
 inline bool from_chars(csubstr buf, substr * C4_RESTRICT v) noexcept
 {
     C4_ASSERT(!buf.overlaps(*v));
-    if(buf.len <= v->len)
+    // is the destination buffer wide enough?
+    if(v->len >= buf.len)
     {
-        memcpy(v->str, buf.str, buf.len);
+        // calling memcpy with null strings is undefined behavior
+        // and will wreak havoc in calling code's branches.
+        // see https://github.com/biojppm/rapidyaml/pull/264#issuecomment-1262133637
+        if(buf.len)
+        {
+            C4_ASSERT(buf.str != nullptr);
+            C4_ASSERT(v->str != nullptr);
+            memcpy(v->str, buf.str, buf.len);
+        }
         v->len = buf.len;
         return true;
     }
-    memcpy(v->str, buf.str, v->len);
     return false;
 }
 
+/** @ingroup doc_from_chars_first */
 inline size_t from_chars_first(csubstr buf, substr * C4_RESTRICT v) noexcept
 {
     csubstr trimmed = buf.first_non_empty_span();
@@ -2208,7 +2622,15 @@ inline size_t from_chars_first(csubstr buf, substr * C4_RESTRICT v) noexcept
     if(C4_UNLIKELY(trimmed.len == 0))
         return csubstr::npos;
     size_t len = trimmed.len > v->len ? v->len : trimmed.len;
-    memcpy(v->str, trimmed.str, len);
+    // calling memcpy with null strings is undefined behavior
+    // and will wreak havoc in calling code's branches.
+    // see https://github.com/biojppm/rapidyaml/pull/264#issuecomment-1262133637
+    if(len)
+    {
+        C4_ASSERT(buf.str != nullptr);
+        C4_ASSERT(v->str != nullptr);
+        memcpy(v->str, trimmed.str, len);
+    }
     if(C4_UNLIKELY(trimmed.len > v->len))
         return csubstr::npos;
     return static_cast<size_t>(trimmed.end() - buf.begin());
@@ -2217,6 +2639,7 @@ inline size_t from_chars_first(csubstr buf, substr * C4_RESTRICT v) noexcept
 
 //-----------------------------------------------------------------------------
 
+/** @ingroup doc_to_chars */
 template<size_t N>
 inline size_t to_chars(substr buf, const char (& C4_RESTRICT v)[N]) noexcept
 {
@@ -2224,16 +2647,21 @@ inline size_t to_chars(substr buf, const char (& C4_RESTRICT v)[N]) noexcept
     return to_chars(buf, sp);
 }
 
+/** @ingroup doc_to_chars */
 inline size_t to_chars(substr buf, const char * C4_RESTRICT v) noexcept
 {
     return to_chars(buf, to_csubstr(v));
 }
 
+/** @} */
+
 } // namespace c4
 
 #ifdef _MSC_VER
 #   pragma warning(pop)
-#elif defined(__clang__)
+#endif
+
+#if defined(__clang__)
 #   pragma clang diagnostic pop
 #elif defined(__GNUC__)
 #   pragma GCC diagnostic pop

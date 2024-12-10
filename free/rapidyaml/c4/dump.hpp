@@ -5,6 +5,8 @@
 
 namespace c4 {
 
+C4_SUPPRESS_WARNING_GCC_CLANG_WITH_PUSH("-Wold-style-cast")
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -365,6 +367,8 @@ C4_ALWAYS_INLINE DumpResults catsep_dump_resume(DumperFn &&dumpfn, substr buf, S
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+/// @cond dev
+
 /** take the function pointer as a function argument */
 template<class DumperFn>
 C4_ALWAYS_INLINE size_t format_dump(DumperFn &&dumpfn, substr buf, csubstr fmt)
@@ -376,7 +380,7 @@ C4_ALWAYS_INLINE size_t format_dump(DumperFn &&dumpfn, substr buf, csubstr fmt)
     return 0u;
 }
 
-/** take the function pointer as a function argument */
+/** take the function pointer as a template argument */
 template<DumperPfn dumpfn>
 C4_ALWAYS_INLINE size_t format_dump(substr buf, csubstr fmt)
 {
@@ -387,9 +391,12 @@ C4_ALWAYS_INLINE size_t format_dump(substr buf, csubstr fmt)
     return 0u;
 }
 
+/// @endcond
+
+
 /** take the function pointer as a function argument */
 template<class DumperFn, class Arg, class... Args>
-size_t format_dump(DumperFn &&dumpfn, substr buf, csubstr fmt, Arg const& C4_RESTRICT a, Args const& C4_RESTRICT ...more)
+C4_NO_INLINE size_t format_dump(DumperFn &&dumpfn, substr buf, csubstr fmt, Arg const& C4_RESTRICT a, Args const& C4_RESTRICT ...more)
 {
     // we can dump without using buf
     // but we'll only dump if the buffer is ok
@@ -412,7 +419,7 @@ size_t format_dump(DumperFn &&dumpfn, substr buf, csubstr fmt, Arg const& C4_RES
 
 /** take the function pointer as a template argument */
 template<DumperPfn dumpfn, class Arg, class... Args>
-size_t format_dump(substr buf, csubstr fmt, Arg const& C4_RESTRICT a, Args const& C4_RESTRICT ...more)
+C4_NO_INLINE size_t format_dump(substr buf, csubstr fmt, Arg const& C4_RESTRICT a, Args const& C4_RESTRICT ...more)
 {
     // we can dump without using buf
     // but we'll only dump if the buffer is ok
@@ -572,6 +579,7 @@ C4_ALWAYS_INLINE DumpResults format_dump_resume(DumperFn &&dumpfn, substr buf, c
     return detail::format_dump_resume(0u, dumpfn, DumpResults{}, buf, fmt, more...);
 }
 
+C4_SUPPRESS_WARNING_GCC_CLANG_POP
 
 } // namespace c4
 

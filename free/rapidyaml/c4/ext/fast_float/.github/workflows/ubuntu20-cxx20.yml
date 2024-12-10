@@ -8,12 +8,12 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use cmake
         run: |
           mkdir build &&
           cd build &&
-          cmake -DCMAKE_CXX_STANDARD=20 -DFASTFLOAT_TEST=ON -DCMAKE_INSTALL_PREFIX:PATH=destination ..  &&
+          cmake -DFASTFLOAT_CXX_STANDARD=20 -DFASTFLOAT_TEST=ON -DCMAKE_INSTALL_PREFIX:PATH=destination ..  &&
           cmake --build .   &&
           ctest --output-on-failure  &&
           cmake --install .

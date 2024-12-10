@@ -58,7 +58,7 @@ struct fail_type__ {};
 #endif // _DOXYGEN_
 
 
-#ifdef NDEBUG
+#if defined(NDEBUG) || defined(C4_NO_DEBUG_BREAK)
 #   define C4_DEBUG_BREAK()
 #else
 #   ifdef __clang__
@@ -177,7 +177,8 @@ struct ScopedErrorSettings
 /** source location */
 struct srcloc;
 
-C4CORE_EXPORT void handle_error(srcloc s, const char *fmt, ...);
+// watchout: for VS the [[noreturn]] needs to come before other annotations like C4CORE_EXPORT
+[[noreturn]] C4CORE_EXPORT void handle_error(srcloc s, const char *fmt, ...);
 C4CORE_EXPORT void handle_warning(srcloc s, const char *fmt, ...);
 
 
@@ -346,12 +347,12 @@ struct srcloc
 // Common error conditions
 
 #define C4_NOT_IMPLEMENTED() C4_ERROR("NOT IMPLEMENTED")
-#define C4_NOT_IMPLEMENTED_MSG(/*msg, */...) C4_ERROR("NOT IMPLEMENTED: " ## __VA_ARGS__)
+#define C4_NOT_IMPLEMENTED_MSG(/*msg, */...) C4_ERROR("NOT IMPLEMENTED: " __VA_ARGS__)
 #define C4_NOT_IMPLEMENTED_IF(condition) do { if(C4_UNLIKELY(condition)) { C4_ERROR("NOT IMPLEMENTED"); } } while(0)
-#define C4_NOT_IMPLEMENTED_IF_MSG(condition, /*msg, */...) do { if(C4_UNLIKELY(condition)) { C4_ERROR("NOT IMPLEMENTED: " ## __VA_ARGS__); } } while(0)
+#define C4_NOT_IMPLEMENTED_IF_MSG(condition, /*msg, */...) do { if(C4_UNLIKELY(condition)) { C4_ERROR("NOT IMPLEMENTED: " __VA_ARGS__); } } while(0)
 
 #define C4_NEVER_REACH() do { C4_ERROR("never reach this point"); C4_UNREACHABLE(); } while(0)
-#define C4_NEVER_REACH_MSG(/*msg, */...) do { C4_ERROR("never reach this point: " ## __VA_ARGS__); C4_UNREACHABLE(); } while(0)
+#define C4_NEVER_REACH_MSG(/*msg, */...) do { C4_ERROR("never reach this point: " __VA_ARGS__); C4_UNREACHABLE(); } while(0)
 
 
 
@@ -359,19 +360,17 @@ struct srcloc
 // helpers for warning suppression
 // idea adapted from https://github.com/onqtam/doctest/
 
+// TODO: add C4_MESSAGE() https://stackoverflow.com/questions/18252351/custom-preprocessor-macro-for-a-conditional-pragma-message-xxx?rq=1
+
 
 #ifdef C4_MSVC
 #define C4_SUPPRESS_WARNING_MSVC_PUSH __pragma(warning(push))
 #define C4_SUPPRESS_WARNING_MSVC(w)  __pragma(warning(disable : w))
 #define C4_SUPPRESS_WARNING_MSVC_POP __pragma(warning(pop))
-#define C4_SUPPRESS_WARNING_MSVC_WITH_PUSH(w)   \
-    C4_SUPPRESS_WARNING_MSVC_PUSH               \
-    C4_SUPPRESS_WARNING_MSVC(w)
 #else // C4_MSVC
 #define C4_SUPPRESS_WARNING_MSVC_PUSH
 #define C4_SUPPRESS_WARNING_MSVC(w)
 #define C4_SUPPRESS_WARNING_MSVC_POP
-#define C4_SUPPRESS_WARNING_MSVC_WITH_PUSH(w)
 #endif // C4_MSVC
 
 
@@ -380,14 +379,10 @@ struct srcloc
 #define C4_SUPPRESS_WARNING_CLANG_PUSH _Pragma("clang diagnostic push")
 #define C4_SUPPRESS_WARNING_CLANG(w) C4_PRAGMA_TO_STR(clang diagnostic ignored w)
 #define C4_SUPPRESS_WARNING_CLANG_POP _Pragma("clang diagnostic pop")
-#define C4_SUPPRESS_WARNING_CLANG_WITH_PUSH(w)  \
-    C4_SUPPRESS_WARNING_CLANG_PUSH              \
-    C4_SUPPRESS_WARNING_CLANG(w)
 #else // C4_CLANG
 #define C4_SUPPRESS_WARNING_CLANG_PUSH
 #define C4_SUPPRESS_WARNING_CLANG(w)
 #define C4_SUPPRESS_WARNING_CLANG_POP
-#define C4_SUPPRESS_WARNING_CLANG_WITH_PUSH(w)
 #endif // C4_CLANG
 
 
@@ -396,15 +391,24 @@ struct srcloc
 #define C4_SUPPRESS_WARNING_GCC_PUSH _Pragma("GCC diagnostic push")
 #define C4_SUPPRESS_WARNING_GCC(w) C4_PRAGMA_TO_STR(GCC diagnostic ignored w)
 #define C4_SUPPRESS_WARNING_GCC_POP _Pragma("GCC diagnostic pop")
-#define C4_SUPPRESS_WARNING_GCC_WITH_PUSH(w)    \
-    C4_SUPPRESS_WARNING_GCC_PUSH                \
-    C4_SUPPRESS_WARNING_GCC(w)
 #else // C4_GCC
 #define C4_SUPPRESS_WARNING_GCC_PUSH
 #define C4_SUPPRESS_WARNING_GCC(w)
 #define C4_SUPPRESS_WARNING_GCC_POP
-#define C4_SUPPRESS_WARNING_GCC_WITH_PUSH(w)
 #endif // C4_GCC
+
+
+#define C4_SUPPRESS_WARNING_MSVC_WITH_PUSH(w)   \
+    C4_SUPPRESS_WARNING_MSVC_PUSH               \
+    C4_SUPPRESS_WARNING_MSVC(w)
+
+#define C4_SUPPRESS_WARNING_CLANG_WITH_PUSH(w)  \
+    C4_SUPPRESS_WARNING_CLANG_PUSH              \
+    C4_SUPPRESS_WARNING_CLANG(w)
+
+#define C4_SUPPRESS_WARNING_GCC_WITH_PUSH(w)    \
+    C4_SUPPRESS_WARNING_GCC_PUSH                \
+    C4_SUPPRESS_WARNING_GCC(w)
 
 
 #define C4_SUPPRESS_WARNING_GCC_CLANG_PUSH \

@@ -8,32 +8,48 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 project(${target})
 
 set(src_files
-	ryml.hpp
-	ryml_std.hpp
-	c4/yml/detail/checks.hpp
-	c4/yml/detail/parser_dbg.hpp
-	c4/yml/detail/print.hpp
-	c4/yml/detail/stack.hpp
-	c4/yml/common.hpp
-	c4/yml/common.cpp
-	c4/yml/emit.def.hpp
-	c4/yml/emit.hpp
-	c4/yml/export.hpp
-	c4/yml/node.hpp
-	c4/yml/node.cpp
-	c4/yml/parse.hpp
-	c4/yml/parse.cpp
-	c4/yml/preprocess.hpp
-	c4/yml/preprocess.cpp
-	c4/yml/std/map.hpp
-	c4/yml/std/std.hpp
-	c4/yml/std/string.hpp
-	c4/yml/std/vector.hpp
-	c4/yml/tree.hpp
-	c4/yml/tree.cpp
-	c4/yml/writer.hpp
-	c4/yml/yml.hpp	
-   c4/allocator.hpp
+        ryml.hpp
+        ryml_std.hpp
+        c4/yml/detail/checks.hpp
+        c4/yml/detail/parser_dbg.hpp
+        c4/yml/detail/print.hpp
+        c4/yml/detail/stack.hpp
+        c4/yml/common.hpp
+        c4/yml/common.cpp
+        c4/yml/emit.def.hpp
+        c4/yml/emit.hpp
+        c4/yml/event_handler_stack.hpp
+        c4/yml/event_handler_tree.hpp
+        c4/yml/filter_processor.hpp
+        c4/yml/fwd.hpp
+        c4/yml/export.hpp
+        c4/yml/node.hpp
+        c4/yml/node.cpp
+        c4/yml/node_type.hpp
+        c4/yml/node_type.cpp
+        c4/yml/parser_state.hpp
+        c4/yml/parse.hpp
+        c4/yml/parse.cpp
+        c4/yml/parse_engine.hpp
+        c4/yml/parse_engine.def.hpp
+        c4/yml/preprocess.hpp
+        c4/yml/preprocess.cpp
+        c4/yml/reference_resolver.hpp
+        c4/yml/reference_resolver.cpp
+        c4/yml/std/map.hpp
+        c4/yml/std/std.hpp
+        c4/yml/std/string.hpp
+        c4/yml/std/vector.hpp
+        c4/yml/tag.hpp
+        c4/yml/tag.cpp
+        c4/yml/tree.hpp
+        c4/yml/tree.cpp
+        c4/yml/version.hpp
+        c4/yml/version.cpp
+        c4/yml/writer.hpp
+        c4/yml/yml.hpp
+        ryml.natvis
+    c4/allocator.hpp
     c4/base64.hpp
     c4/base64.cpp
     c4/blob.hpp
@@ -55,6 +71,7 @@ set(src_files
     c4/export.hpp
     c4/format.hpp
     c4/format.cpp
+    c4/gcc-4.8.hpp
     c4/hash.hpp
     c4/language.hpp
     c4/language.cpp
@@ -70,6 +87,7 @@ set(src_files
     c4/std/std_fwd.hpp
     c4/std/string.hpp
     c4/std/string_fwd.hpp
+    c4/std/string_view.hpp
     c4/std/tuple.hpp
     c4/std/vector.hpp
     c4/std/vector_fwd.hpp
@@ -85,12 +103,7 @@ set(src_files
     c4/windows_pop.hpp
     c4/windows_push.hpp
     c4/c4core.natvis
-    c4/ext/debugbreak/debugbreak.h
-    c4/ext/rng/rng.hpp
-    c4/ext/sg14/inplace_function.h
-	)
-
-
+)
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -110,8 +123,6 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR})
-
-#${PROJECT_SOURCE_DIR}/../../free/gles/qualcomm/include)
 
 add_definitions(-DUNICODE -D_UNICODE)
 

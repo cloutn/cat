@@ -12,8 +12,8 @@
 /* Detect C++ standard.
  * @see http://stackoverflow.com/a/7132549/5875572 */
 #ifndef C4_CPP
-#   ifdef _MSC_VER
-#       if _MSC_VER >= 1910  // >VS2015: VS2017, VS2019
+#   if defined(_MSC_VER) && !defined(__clang__)
+#       if _MSC_VER >= 1910  // >VS2015: VS2017, VS2019, VS2022
 #           if (!defined(_MSVC_LANG))
 #               error _MSVC not defined
 #           endif
@@ -110,33 +110,27 @@
 #endif
 
 /** lifted from this answer: http://stackoverflow.com/a/20170989/5875572 */
-#ifndef _MSC_VER
-#  if __cplusplus < 201103
-#    define C4_CONSTEXPR11
-#    define C4_CONSTEXPR14
-//#    define C4_NOEXCEPT
-#  elif __cplusplus == 201103
-#    define C4_CONSTEXPR11 constexpr
-#    define C4_CONSTEXPR14
-//#    define C4_NOEXCEPT noexcept
-#  else
-#    define C4_CONSTEXPR11 constexpr
-#    define C4_CONSTEXPR14 constexpr
-//#    define C4_NOEXCEPT noexcept
-#  endif
-#else  // _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 #  if _MSC_VER < 1900
 #    define C4_CONSTEXPR11
 #    define C4_CONSTEXPR14
-//#    define C4_NOEXCEPT
 #  elif _MSC_VER < 2000
 #    define C4_CONSTEXPR11 constexpr
 #    define C4_CONSTEXPR14
-//#    define C4_NOEXCEPT noexcept
 #  else
 #    define C4_CONSTEXPR11 constexpr
 #    define C4_CONSTEXPR14 constexpr
-//#    define C4_NOEXCEPT noexcept
+#  endif
+#else
+#  if __cplusplus < 201103
+#    define C4_CONSTEXPR11
+#    define C4_CONSTEXPR14
+#  elif __cplusplus == 201103
+#    define C4_CONSTEXPR11 constexpr
+#    define C4_CONSTEXPR14
+#  else
+#    define C4_CONSTEXPR11 constexpr
+#    define C4_CONSTEXPR14 constexpr
 #  endif
 #endif  // _MSC_VER
 
@@ -147,6 +141,42 @@
 #else
 #define C4_IF_CONSTEXPR constexpr
 #define C4_INLINE_CONSTEXPR inline constexpr
+#endif
+
+#if defined(_MSC_VER) && !defined(__clang__)
+#  if (defined(_CPPUNWIND) && (_CPPUNWIND == 1))
+#    define C4_EXCEPTIONS
+#  endif
+#else
+#  if defined(__EXCEPTIONS) || defined(__cpp_exceptions)
+#    define C4_EXCEPTIONS
+#  endif
+#endif
+
+#ifdef C4_EXCEPTIONS
+#  define C4_IF_EXCEPTIONS_(exc_code, setjmp_code) exc_code
+#  define C4_IF_EXCEPTIONS(exc_code, setjmp_code) do { exc_code } while(0)
+#else
+#  define C4_IF_EXCEPTIONS_(exc_code, setjmp_code) setjmp_code
+#  define C4_IF_EXCEPTIONS(exc_code, setjmp_code) do { setjmp_code } while(0)
+#endif
+
+#if defined(_MSC_VER) && !defined(__clang__)
+#  if defined(_CPPRTTI)
+#    define C4_RTTI
+#  endif
+#else
+#  if defined(__GXX_RTTI)
+#    define C4_RTTI
+#  endif
+#endif
+
+#ifdef C4_RTTI
+#  define C4_IF_RTTI_(code_rtti, code_no_rtti) code_rtti
+#  define C4_IF_RTTI(code_rtti, code_no_rtti) do { code_rtti } while(0)
+#else
+#  define C4_IF_RTTI_(code_rtti, code_no_rtti) code_no_rtti
+#  define C4_IF_RTTI(code_rtti, code_no_rtti) do { code_no_rtti } while(0)
 #endif
 
 
@@ -167,7 +197,7 @@
 //------------------------------------------------------------
 
 #ifndef C4_API
-#   if defined(_MSC_VER)
+#   if defined(_MSC_VER) && !defined(__clang__)
 #       if defined(C4_EXPORT)
 #           define C4_API __declspec(dllexport)
 #       elif defined(C4_IMPORT)
@@ -180,7 +210,33 @@
 #   endif
 #endif
 
-#ifndef _MSC_VER  ///< @todo assuming gcc-like compiler. check it is actually so.
+#if defined(_MSC_VER) && !defined(__clang__)
+#   define C4_RESTRICT __restrict
+#   define C4_RESTRICT_FN __declspec(restrict)
+#   define C4_NO_INLINE __declspec(noinline)
+#   define C4_ALWAYS_INLINE inline __forceinline
+/** these are not available in VS AFAIK */
+#   define C4_CONST
+#   define C4_PURE
+#   define C4_FLATTEN
+#   define C4_HOT         /** @todo */
+#   define C4_COLD        /** @todo */
+#   define C4_ASSUME(...) __assume(__VA_ARGS__)
+#   define C4_EXPECT(x, y) x /** @todo */
+#   define C4_LIKELY(x)   x
+#   define C4_UNLIKELY(x) x
+#   define C4_UNREACHABLE() _c4_msvc_unreachable()
+#   define C4_ATTR_FORMAT(...) /** */
+#   define C4_NORETURN [[noreturn]]
+#   if _MSC_VER >= 1700 // VS2012
+#       define C4_NODISCARD _Check_return_
+#   else
+#       define C4_NODISCARD
+#   endif
+[[noreturn]] __forceinline void _c4_msvc_unreachable() { __assume(false); } ///< https://stackoverflow.com/questions/60802864/emulating-gccs-builtin-unreachable-in-visual-studio
+#   define C4_UNREACHABLE_AFTER_ERR() /* */
+#else
+    ///< @todo assuming gcc-like compiler. check it is actually so.
 /** for function attributes in GCC,
  * @see https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes */
 /** for __builtin functions in GCC,
@@ -206,31 +262,58 @@
 #   define C4_UNREACHABLE() __builtin_unreachable()
 #   define C4_ATTR_FORMAT(...) //__attribute__((format (__VA_ARGS__))) ///< @see https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes
 #   define C4_NORETURN __attribute__((noreturn))
-#else
-#   define C4_RESTRICT __restrict
-#   define C4_RESTRICT_FN __declspec(restrict)
-#   define C4_NO_INLINE __declspec(noinline)
-#   define C4_ALWAYS_INLINE inline __forceinline
-/** these are not available in VS AFAIK */
-#   define C4_CONST
-#   define C4_PURE
-#   define C4_FLATTEN
-#   define C4_HOT         /** @todo */
-#   define C4_COLD        /** @todo */
-#   define C4_EXPECT(x, y) x /** @todo */
-#   define C4_LIKELY(x)   x /** @todo */
-#   define C4_UNLIKELY(x) x /** @todo */
-#   define C4_UNREACHABLE() /** @todo */
-#   define C4_ATTR_FORMAT(...) /** */
-#   define C4_NORETURN /** @todo */
+#   define C4_NODISCARD __attribute__((warn_unused_result))
+#   define C4_UNREACHABLE_AFTER_ERR() C4_UNREACHABLE()
+// C4_ASSUME
+// see https://stackoverflow.com/questions/63493968/reproducing-clangs-builtin-assume-for-gcc
+// preferred option: C++ standard attribute
+#   ifdef __has_cpp_attribute
+#       if __has_cpp_attribute(assume) >= 202207L
+#           define C4_ASSUME(...) [[assume(__VA_ARGS__)]]
+#       endif
+#   endif
+// first fallback: compiler intrinsics/attributes for assumptions
+#   ifndef C4_ASSUME
+#       if defined(__clang__)
+#           define C4_ASSUME(...) __builtin_assume(__VA_ARGS__)
+#       elif defined(__GNUC__)
+#       if __GNUC__ >= 13
+#           define C4_ASSUME(...) __attribute__((__assume__(__VA_ARGS__)))
+#       endif
+#       endif
+#   endif
+// second fallback: possibly evaluating uses of unreachable()
+// Set this to 1 if you want to allow assumptions to possibly evaluate.
+#   ifndef C4_ASSUME_ALLOW_EVAL
+#       define C4_ASSUME_ALLOW_EVAL 0
+#   endif
+#   if !defined(C4_ASSUME) && (C4_ASSUME_ALLOW_EVAL)
+#       define C4_ASSUME(...) do { if (!bool(__VA_ARGS__)) C4_UNREACHABLE(); ) while(0)
+#   endif
+// last fallback: define macro as doing nothing
+#   ifndef C4_ASSUME
+#       define C4_ASSUME(...)
+#   endif
 #endif
 
-#ifndef _MSC_VER
-#   define C4_FUNC __FUNCTION__
-#   define C4_PRETTY_FUNC __PRETTY_FUNCTION__
-#else /// @todo assuming gcc-like compiler. check it is actually so.
+
+#if C4_CPP >= 14
+#   define C4_DEPRECATED(msg) [[deprecated(msg)]]
+#else
+#   if defined(_MSC_VER)
+#       define C4_DEPRECATED(msg) __declspec(deprecated(msg))
+#   else // defined(__GNUC__) || defined(__clang__)
+#       define C4_DEPRECATED(msg) __attribute__((deprecated(msg)))
+#   endif
+#endif
+
+
+#ifdef _MSC_VER
 #   define C4_FUNC __FUNCTION__
 #   define C4_PRETTY_FUNC __FUNCSIG__
+#else /// @todo assuming gcc-like compiler. check it is actually so.
+#   define C4_FUNC __FUNCTION__
+#   define C4_PRETTY_FUNC __PRETTY_FUNCTION__
 #endif
 
 /** prevent compiler warnings about a specific var being unused */
@@ -260,10 +343,10 @@ void use_char_pointer(char const volatile*);
 
 /** @def C4_KEEP_EMPTY_LOOP prevent an empty loop from being optimized out.
  * @see http://stackoverflow.com/a/7084193/5875572 */
-#ifndef _MSC_VER
-#   define C4_KEEP_EMPTY_LOOP { asm(""); }
-#else
+#if defined(_MSC_VER) && !defined(__clang__)
 #   define C4_KEEP_EMPTY_LOOP { char c; C4_DONT_OPTIMIZE(c); }
+#else
+#   define C4_KEEP_EMPTY_LOOP { asm(""); }
 #endif
 
 /** @def C4_VA_LIST_REUSE_MUST_COPY
