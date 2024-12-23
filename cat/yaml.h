@@ -111,7 +111,7 @@ public:
 	T				to_value(T _default) const
 	{
 		T v = _default;
-		if (!m_node.has_val())
+		if (!m_node.readable() || !m_node.has_val())
 			return v;
 		m_node >> v;
 		return v;
