@@ -70,9 +70,36 @@ Object* _createGrid(IRender* render, Env* env)
 	return obj;
 }
 
+//int generate_sphere_vertices(float radius, int latitude_steps, int longitude_steps, vertex_color*& vertices)
+//{
+//    int vertex_count = (latitude_steps + 1) * (longitude_steps + 1);
+//    vertices = new vertex_color[vertex_count];
+//    for (int i = 0; i <= latitude_steps; ++i) 
+//    {
+//        float theta = i * scl::PI / latitude_steps;
+//        float sin_theta = sin(theta);
+//        float cos_theta = cos(theta);
+//        for (int j = 0; j <= longitude_steps; ++j) 
+//        {
+//            float phi = j * 2.0f * scl::PI / longitude_steps;
+//            float sin_phi = sin(phi);
+//            float cos_phi = cos(phi);
+//			int idx = i * (longitude_steps + 1) + j;
+//			assert(idx < vertex_count);
+//            vertices[idx].position.x = radius * sin_theta * cos_phi;
+//            vertices[idx].position.y = radius * sin_theta * sin_phi;
+//            vertices[idx].position.z = radius * cos_theta;
+//        }
+//    }
+//	return vertex_count;
+//}
+
 
 cat::Object* _createCube(IRender* render, Env* env)
 {
+	//vertex_color* sphere_vertices = NULL;
+	//int vertex_count = generate_sphere_vertices(1, 10, 10, sphere_vertices);
+
 	vertex_color vertices[8] = 
 	{
 		{ 0.5,	0.5,	0.5,	0xFFFFFFFF },
@@ -86,10 +113,10 @@ cat::Object* _createCube(IRender* render, Env* env)
 	};
 	//uint16 indices[]
 
-	Primitive* p = new Primitive();
-	p->setRender(render);
-	p->setEnv(env);
-	p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
+	//Primitive* p = new Primitive();
+	//p->setRender(render);
+	//p->setEnv(env);
+	//p->setPrimitiveType(PRIMITIVE_TYPE_TRIANGLES);
 
 	//p->setVertices();
 	//p->setIndices();

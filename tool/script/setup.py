@@ -70,7 +70,7 @@ def generate_testCat():
     cmake_arch = "x64" if G.arch64 else "Win32"
     cmd(['./cmake/bin/cmake.exe', "-G", "Visual Studio 17 2022", "-A", cmake_arch, "-Wno-dev", "-S", src_path, "-B", build_path])
 
-def all():
+def all64():
     G.arch64 = True
     unzip_all()
     build_all()

@@ -253,7 +253,7 @@ void Client::_clickSelectObject(int x, int y)
 	{
 		m_selectObject = primitive->parentObject();
 		m_gui.setForceOpenSceneTree(true);
-		printf("picked object = %x\n", (unsigned int)primitive);	
+		printf("picked object = %llx\n", reinterpret_cast<uint64>(primitive));	
 	}
 }
 
