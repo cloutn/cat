@@ -62,3 +62,5 @@
 /free/lib64
 /lib
 /lib64
+/.vs
+error.log
