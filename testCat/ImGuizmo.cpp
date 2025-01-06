@@ -2854,15 +2854,20 @@ namespace IMGUIZMO_NAMESPACE
 
             const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
             vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
-            //printf("\n------\nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f\n------\n", 
-            //    gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w, 
-            //    gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
-            //    posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w);
+            if (iFace == 2)
+            {
+				printf("\n------\nmouse = %f, %f\nperpXIndex = %d, perpYIndex = %d, invert = %f, \nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f\n------\n",
+					ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y,
+					perpXIndex, perpYIndex, invert,
+					gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w,
+					gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
+					posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w);
+            }
 
             float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert + 0.5f;
             float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert + 0.5f;
 
-			if (/*iFace == 0 &&*/ iPass == 0)
+			if (iFace == 2)
 				printf("[%d] localx = %f, localy = %f\n", iFace, localx, localy);
 
             // panels
@@ -3056,6 +3061,7 @@ namespace IMGUIZMO_NAMESPACE
 	  {
 		  axis_ends[iFace].face = iFace;
 		  vec_t end_normal = directionUnary[iFace % 3];
+          //end_normal.z /= 2;
 		  if (iFace >= 3)
 			  end_normal = -end_normal;
 		  axis_ends[iFace].pos = worldToPos3(end_normal, res, position, size);
@@ -3069,15 +3075,22 @@ namespace IMGUIZMO_NAMESPACE
 
 	  const vec_t center = { 0, 0 };
 	  ImVec2 begin = worldToPos(center, res, position, size);
-	  for (int iFace = 0; iFace < 6; ++iFace)
+	  for (int idx= 0; idx< 6; ++idx)
 	  {
-		  AxisEnd& e = axis_ends[iFace];
+		  AxisEnd& e = axis_ends[idx];
+          int iFace = e.face;
 
 		  ImVec2 e2(e.pos.x, e.pos.y);
 
 		  ImU32 color = colors[(e.face % 3) + 1];
 		  ImU32 color_deep = IM_COL32(0x77, 0x77, 0x77, 0x77);
-		  ImU32 color_light = IM_COL32(0xAA, 0xAA, 0xAA, 0xAA);
+		  //ImU32 color_light = IM_COL32(0xAA, 0xAA, 0xAA, 0xAA);
+		  //ImU32 color_light = color * 1.5;
+          ImVec4 color_vec4 = ImGui::ColorConvertU32ToFloat4(color);
+          color_vec4.x = color_vec4.x * 1.5f;
+          color_vec4.y = color_vec4.y * 1.5f;
+          color_vec4.z = color_vec4.z * 1.5f;
+		  ImU32 color_light = ImGui::ColorConvertFloat4ToU32(color_vec4);
 		  if (e.face < 3)
 			  //gContext.mDrawList->AddLine(begin, e2, IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
 			  gContext.mDrawList->AddLine(begin, e2, color, gContext.mStyle.TranslationLineThickness);
@@ -3089,25 +3102,39 @@ namespace IMGUIZMO_NAMESPACE
 		  const int perpYIndex = (normalIndex + 2) % 3;
 		  const float invert = (iFace > 2) ? -1.f : 1.f;
 		  const vec_t n = directionUnary[normalIndex] * invert;
-		  const vec_t facePlan = BuildPlan(n * 0.5f, n);
+		  //const vec_t facePlan = BuildPlan(n * 0.5f, n);
+		  const vec_t facePlan = BuildPlan(n, n);
 
 		  const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
 		  vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
-		  float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert + 0.5f;
-		  float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert + 0.5f;
+		  float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert/* + 0.5f*/;
+		  float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert/* + 0.5f*/;
           float dist = sqrtf(localx * localx + localy * localy);
 
-          if (iFace == 2)
+          //if (iFace == 2)
             printf("[%d] localx = %f, localy = %f, dist = %f\n", iFace, localx, localy, dist);
 
+		  if (false && iFace == 2)
+		  {
+			  printf("\n------\nmouse = %f, %f\nperpXIndex = %d, perpYIndex = %d, invert = %f, \nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f\n------\n",
+                  ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y,
+                  perpXIndex, perpYIndex, invert,
+				  gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w,
+				  gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
+				  posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w);
+		  }
+
+
           bool inside = false;
-          if (dist < 10)
+          if (dist < 0.1)
               inside = true;
 
 		  if (e.face < 3)
-			  gContext.mDrawList->AddCircleFilled(e2, 10, inside ? color_light : color);
+			  gContext.mDrawList->AddCircleFilled(e2, 20, inside ? color_light : color);
+			  //gContext.mDrawList->AddCircleFilled(e2, 10, color);
 		  else
-			  gContext.mDrawList->AddCircle(e2, 10, inside ? color_light : color);
+			  gContext.mDrawList->AddCircle(e2, 20, inside ? color_light : color);
+			  //gContext.mDrawList->AddCircle(e2, 10, color);
       }
 
       // restore view/projection because it was used to compute ray

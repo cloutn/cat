@@ -359,8 +359,12 @@ void MainGUI::_processGizmo()
 	scl::matrix				viewMatrixAfter		= camera->viewMatrix();
 	const scl::matrix&		projectionMatrix	= camera->projectionMatrix();
 	scl::matrix				matrix				= scl::matrix::identity();
-	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
+
 	//gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
+
+	//gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(0, 0), ImVec2(m_client->getScreenWidth(), m_client->getScreenHeight()), 0x10101010);
+	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(0, 0), ImVec2(m_client->getScreenWidth(), m_client->getScreenHeight()), 0x10101010);
+
 	if (!(viewMatrixAfter == camera->viewMatrix()))
 	{
 		camera->setViewByMatrix(viewMatrixAfter);

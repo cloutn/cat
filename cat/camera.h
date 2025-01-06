@@ -31,8 +31,8 @@ public:
 	void					move_front		(float d);
 	void					move_side		(float d);
 	void					rotate			(float x, float y, float z);
-	void					orbit_right		(float angle);
-	void					orbit_up		(float angle);
+	void					orbit_right		(float angle); // let the camrea rotate around the right vector, the fowrad(front) will turn up and down.
+	void					orbit_up		(float angle); // let the camera rotate around the up vector, the fowrad(front) will turn left or right.
 
 	const	scl::matrix&	matrix			() const;
 	const	scl::matrix&	viewMatrix		() const;

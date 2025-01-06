@@ -93,7 +93,7 @@ void Camera::rotate(float x, float y, float z)
 	m_dirty = true;
 }
 
-
+// let the camrea rotate around the right vector, the fowrad(front) will turn up and down.
 void Camera::orbit_right(float angle)
 {
 	vector3 front = _front();
@@ -113,6 +113,7 @@ void Camera::orbit_right(float angle)
 	m_dirty = true;
 }
 
+// let the camera rotate around the up vector, the fowrad(front) will turn left or right.
 void Camera::orbit_up(float angle)
 {
 	vector3 front = _front();
