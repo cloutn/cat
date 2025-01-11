@@ -265,6 +265,8 @@ namespace IMGUIZMO_NAMESPACE
       float& operator [] (size_t index) { return ((float*)&x)[index]; }
       const float& operator [] (size_t index) const { return ((float*)&x)[index]; }
       bool operator!=(const vec_t& other) const { return memcmp(this, &other, sizeof(vec_t)) != 0; }
+      bool Equals3(const vec_t& other) { return fabs(this->x - other.x) < FLT_EPSILON  && fabs(this->y - other.y) < FLT_EPSILON && fabs(this->z - other.z) < FLT_EPSILON;}
+      bool Equals4(const vec_t& other) { return fabs(this->x - other.x) < FLT_EPSILON  && fabs(this->y - other.y) < FLT_EPSILON && fabs(this->z - other.z) < FLT_EPSILON && fabs(this->w - other.w) < FLT_EPSILON;}
    };
 
    vec_t makeVect(float _x, float _y, float _z = 0.f, float _w = 0.f) { vec_t res; res.x = _x; res.y = _y; res.z = _z; res.w = _w; return res; }
@@ -302,6 +304,123 @@ namespace IMGUIZMO_NAMESPACE
       res.z = normal.z;
       return res;
    }
+
+   //vec_t GetCirclePointOnPlan(const vec_t& point, const vec_t& normal, const float radius)
+   //{
+	  // // normal is perpendiculart to every line on plane : n * (P - P0) = 0
+	  // vec_t p0 = point;
+	  // vec_t p;
+	  // p.Set(0);
+
+	  // if (fabs(normal.x) > FLT_EPSILON)
+	  // {
+		 //  // normal is perpendiculart to every line on plane, so:
+		 //  // n * (P - P0) = 0
+		 //  // we set P = (x, y, z) = (x, 0, 0);
+		 //  // normal.x * (p.x - p0.x) + normal.y * -p0.y+ normal.z * -p0.z = 0; 
+		 //  // normal.x * (p.x - p0.x) - normal.y * p0.y - normal.z * p0.z = 0; 
+		 //  p.x = (normal.y * p0.y + normal.z * p0.z) / normal.x + p0.x;
+	  // }
+	  // else if (fabs(normal.y) > FLT_EPSILON)
+	  // {
+		 //  p.y = (normal.x * p0.x + normal.z * p0.z) / normal.y + p0.y;
+	  // }
+	  // else if (fabs(normal.z) > FLT_EPSILON)
+	  // {
+		 //  p.z = (normal.x * p0.x + normal.y * p0.y) / normal.z + p0.z;
+	  // }
+	  // else
+	  // {
+		 //  IM_ASSERT(false);
+		 //  return p;
+	  // }
+
+   //    vec_t dir = p - point;
+	  // vec_t res;
+	  // res.Normalize(dir);
+   //    res *= radius;
+   //    res += point;
+
+   //    return res;
+   //}
+
+
+   vec_t GetCirclePointOnPlan2(const vec_t& point, const vec_t& normal, const float radius)
+   {
+       // 获取平面上的距离给顶点距离为 radius 的点坐标。不是唯一解，给出一个符合条件的点即可。
+       // 具体算法：
+       // 1. 假如过原点与 normal 平行的直线，不通过点 point，那么求出该直线和平面交点 intersect_pt，获取 point 到 interset_pt 的向量 result_vec，将向量调整为 radius 长度, point_result_vec 即为所求目标点。
+       // 2. 假如过原点与 normla 平行的直线，通过了点 point，那么我们就尝试求出平面和 x 轴的交点 intersect_pt, 获取 point 到 interset_pt 的向量 result_vec，将向量调整为 radius 长度, point_result_vec 即为所求目标点。
+       // 3. 在第2点的假设下，如果 normal 和 x 轴垂直或者平行，那么进行特殊处理即可，具体见下面代码。
+       //
+       // Get the coordinates of the point whose distance on the plane is radius. It is not the only solution. Just give a point that meets the conditions.
+       // Algorithm:
+       // 1. If the line passing through the origin and parallel to normal does not pass through point 'point', then find the intersection point of the line and the plane intersect_pt, get the vector result_vec from point to interset_pt, adjust the vector to radius length, and point_result_vec is the target point.
+       // 2. If the line passing through the origin and parallel to normla passes through point 'point', then we try to find the intersection point of the plane and the x-axis intersect_pt, get the vector result_vec from point to interset_pt, adjust the vector to radius length, and point_result_vec is the target point.
+       // 3. Under the assumption of previous condition 2, if normal is perpendicular or parallel to the x-axis, then special processing can be performed. See the code below for details.
+
+	   vec_t p0 = point;
+	   vec_t n = normal;
+	   n.Normalize();
+       vec_t n_p0 = point;
+       n_p0.Normalize();
+
+       vec_t p = { 0 };
+       if (n.Equals3(n_p0) || n.Equals3(-n_p0)) // set vector from original to point as n_p0, n_p0 is parallel to plane's normal, so we try to caculate intersection bewteen plane and axis X.
+       {
+           vec_t axis_x = { 1, 0, 0, 0 }; 
+           if (n.Equals3(axis_x) || n.Equals3(-axis_x))
+           {
+               // normal is parallel to axis X
+			   // use axis Y as direction on plane
+               p.Set(p0.x, p0.y + 1, p0.z);
+
+           }
+           else if (fabs(Dot(axis_x, n)) < FLT_EPSILON) 
+           {
+               // normal is perpendicular to axis X
+               // use axis X as direction on plane 
+               p.Set(p0.x + 1, p0.y, p0.z);
+           }
+           else
+           {
+               // caculate intersection point between plane and axis X.
+               // line : x = t y = 0 z = 0  { t, 0, 0 }  
+               // plane : n * (p - p0) = 0
+
+               //n * (t - p0.x, -p0.y, -p0.z) = 0
+               //n.x * (t - p0.x) + n.y * -p0.y + n.z * -p0.z = 0
+               //n.x * t - n.x * p0.x = n.y * p0.y + n.z * p0.z
+               float t = (n.x * p0.x + n.y * p0.y + n.z * p0.z) / n.x;
+               p.Set(t, 0, 0);
+           }
+       }
+       else
+       {
+           // The line which contains origin and is parallel to plane's normal do NOT contains point
+           // so we just need to caculate intersection between this line and plane.
+           //
+		   // Plane's normal is perpendiculart to every line on plane : n * (P - P0) = 0
+		   // line formula : x = x0 + l * t, y = y0 + m * t, z = z0 + n * t;
+		   // line parallel to normal, pass orginal. : x = n.x * t; y = n.y * t, z = n.z *t
+		   // n * (n.x * t - p0.x, n.y * t - p0.y, n.z * t - p0.z) = 0
+		   // n.x * (n.x * t - p0.x) + n.y (n.y * t - p0.y) + n.z (n.z * t - p0.z) = 0
+		   // n.x * n.x * t - n.x * p0.x + n.y * n.y * t - n.y * p0.y + n.z * n.z * t - n.z * p0.z = 0
+		   // (n.x * n.x + n.y * n.y + n.z * n.z) * t = n.x * p0.x + n.y * p0.y + n.z * p0.z;
+		   // t = (n.x * p0.x + n.y * p0.y + n.z * p0.z) / (n.x * n.x + n.y * n.y + n.z * n.z)
+		   float t = (n.x * p0.x + n.y * p0.y + n.z * p0.z) / (n.x * n.x + n.y * n.y + n.z * n.z);
+		   p = { n.x * t, n.y * t, n.z * t };
+       }
+
+	   vec_t dir = p - point;
+       vec_t res;
+	   res.Normalize(dir);
+	   res *= radius;
+	   res += point;
+
+       return res;
+   }
+
 
    struct matrix_t
    {
@@ -662,6 +781,9 @@ namespace IMGUIZMO_NAMESPACE
       Colors[HATCHED_AXIS_LINES]    = ImVec4(0.000f, 0.000f, 0.000f, 0.500f);
       Colors[TEXT]                  = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
       Colors[TEXT_SHADOW]           = ImVec4(0.000f, 0.000f, 0.000f, 1.000f);
+
+      ViewManipulateFont            = NULL;
+      ViewManipulateFontSize        = 0.0f;
    }
 
    struct Context
@@ -2764,11 +2886,11 @@ namespace IMGUIZMO_NAMESPACE
       ViewManipulate(view, length, position, size, backgroundColor);
    }
 
-    void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+    void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
    {
       // Scale is always local or matrix will be skewed when applying world scale or oriented matrix
       ComputeContext(view, projection, matrix, (operation & SCALE) ? LOCAL : mode);
-      ViewManipulateAxis(view, length, position, size, backgroundColor);
+      ViewManipulateAxis(view, length, radius3D, position, size, backgroundColor);
    }
 
    void ViewManipulate(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
@@ -3006,7 +3128,7 @@ namespace IMGUIZMO_NAMESPACE
       ComputeContext(svgView.m16, svgProjection.m16, gContext.mModelSource.m16, gContext.mMode);
    }
 
-   void ViewManipulateAxis(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+   void ViewManipulateAxis(float* view, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
    {
       //static bool isDraging = false;
       //static bool isClicking = false;
@@ -3054,6 +3176,7 @@ namespace IMGUIZMO_NAMESPACE
       {
           int face;
           vec_t pos;
+          //vec_t pos_invert;
       };
       AxisEnd axis_ends[6];
 	  //int axis_index[6];
@@ -3065,6 +3188,7 @@ namespace IMGUIZMO_NAMESPACE
 		  if (iFace >= 3)
 			  end_normal = -end_normal;
 		  axis_ends[iFace].pos = worldToPos3(end_normal, res, position, size);
+          //axis_ends[iFace].pos_invert = worldToPos3(end_normal * (1 - radius3D), res, position, size);
 	  }
 
 	  qsort(axis_ends, 6, sizeof(AxisEnd), [](void const* _a, void const* _b) {
@@ -3073,9 +3197,43 @@ namespace IMGUIZMO_NAMESPACE
 		  return (a->pos.z < b->pos.z) ? 1 : -1;
 		  });
 
+      int hoveringIndex = -1;
+      //float hoveringRadius2D = 0;
+      // from Near to Far
+	  for (int idx = 5; idx >= 0; --idx)
+      {
+		  AxisEnd& e = axis_ends[idx];
+          int iFace = e.face;
+
+		  const int normalIndex = (iFace % 3);
+		  const float invert = (iFace > 2) ? -1.f : 1.f;
+		  const vec_t n = directionUnary[normalIndex] * invert;
+
+		  const vec_t facePlan = BuildPlan(n, eye - zero);
+		  const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
+
+		  vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len;
+          float dist = (posOnPlan - n).Length();
+
+		  if (dist >= radius3D)
+          {
+              continue;
+          }
+
+		  //vec_t circlePoint = GetCirclePointOnPlan2(n, eye - zero, radius3D);
+		  //ImVec2 circleCenter2D = worldToPos(n, res, position, size);
+		  //ImVec2 circlePoint2D = worldToPos(circlePoint, res, position, size);
+		  //float radius2D = sqrtf(ImLengthSqr(circlePoint2D - circleCenter2D));
+
+          hoveringIndex = idx;
+          //hoveringRadius2D = radius2D;
+
+		  break;
+      }
+
 	  const vec_t center = { 0, 0 };
 	  ImVec2 begin = worldToPos(center, res, position, size);
-	  for (int idx= 0; idx< 6; ++idx)
+	  for (int idx = 0; idx < 6; ++idx)
 	  {
 		  AxisEnd& e = axis_ends[idx];
           int iFace = e.face;
@@ -3091,50 +3249,126 @@ namespace IMGUIZMO_NAMESPACE
           color_vec4.y = color_vec4.y * 1.5f;
           color_vec4.z = color_vec4.z * 1.5f;
 		  ImU32 color_light = ImGui::ColorConvertFloat4ToU32(color_vec4);
-		  if (e.face < 3)
-			  //gContext.mDrawList->AddLine(begin, e2, IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
-			  gContext.mDrawList->AddLine(begin, e2, color, gContext.mStyle.TranslationLineThickness);
-		  else
-			  gContext.mDrawList->AddLine(begin, e2, color_deep, gContext.mStyle.TranslationLineThickness);
+
 
 		  const int normalIndex = (iFace % 3);
-		  const int perpXIndex = (normalIndex + 1) % 3;
-		  const int perpYIndex = (normalIndex + 2) % 3;
+		  //const int perpXIndex = (normalIndex + 1) % 3;
+		  //const int perpYIndex = (normalIndex + 2) % 3;
 		  const float invert = (iFace > 2) ? -1.f : 1.f;
 		  const vec_t n = directionUnary[normalIndex] * invert;
 		  //const vec_t facePlan = BuildPlan(n * 0.5f, n);
-		  const vec_t facePlan = BuildPlan(n, n);
+		  //const vec_t facePlan = BuildPlan(n, n);
+		  //const vec_t facePlan = BuildPlan(n, eye - zero);
 
-		  const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
-		  vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
-		  float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert/* + 0.5f*/;
-		  float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert/* + 0.5f*/;
-          float dist = sqrtf(localx * localx + localy * localy);
+		  //const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
+
+          vec_t circlePoint = GetCirclePointOnPlan2(n, eye - zero, radius3D);
+          ImVec2 circleCenter2D = worldToPos(n, res, position, size);
+          ImVec2 circlePoint2D = worldToPos(circlePoint, res, position, size);
+          float radius2D = sqrtf(ImLengthSqr(circlePoint2D - circleCenter2D));
+
+          //if (iFace == 0)
+          {
+			  printf("face[%d] radius2D = %f\n", iFace, radius2D);
+          }
+
+		  if (e.face < 3)
+          {
+			  //gContext.mDrawList->AddLine(begin, e2, IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
+			  gContext.mDrawList->AddLine(begin, e2, color, gContext.mStyle.TranslationLineThickness);
+          }
+		  else
+          {
+              ImVec2 dir = e2 - begin;
+              float len = sqrtf(dir.x * dir.x + dir.y * dir.y);
+              ImVec2 e3 = e2;
+              if (fabs(len) > radius2D)
+              {
+				  dir = dir / len;
+				  e3 = e2 - dir * radius2D;
+				  gContext.mDrawList->AddLine(begin, e3, color_deep, gContext.mStyle.TranslationLineThickness);
+              }
+              //else
+              //{
+              //  printf("[%d] len == 0\n", iFace);
+              //}
+              
+			  //ImVec2 e2_invert(e.pos_invert.x, e.pos_invert.y);
+          }
+
+		  //vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
+		  //float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert/* + 0.5f*/;
+		  //float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert/* + 0.5f*/;
+          //float dist = sqrtf(localx * localx + localy * localy);
+
+		  //vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len;
+    //      float dist = (posOnPlan - n).Length();
+
+
 
           //if (iFace == 2)
-            printf("[%d] localx = %f, localy = %f, dist = %f\n", iFace, localx, localy, dist);
+            //printf("[%d] localx = %f, localy = %f, dist = %f\n", iFace, localx, localy, dist);
 
-		  if (false && iFace == 2)
+		  if (iFace == 1)
 		  {
-			  printf("\n------\nmouse = %f, %f\nperpXIndex = %d, perpYIndex = %d, invert = %f, \nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f\n------\n",
-                  ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y,
-                  perpXIndex, perpYIndex, invert,
-				  gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w,
-				  gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
-				  posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w);
+			  //printf("\n------\nmouse = %f, %f\nperpXIndex = %d, perpYIndex = %d, invert = %f, \nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f, e.pos = %f, %f, %f, %f\n------\n",
+     //             ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y,
+     //             perpXIndex, perpYIndex, invert,
+				 // gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w,
+				 // gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
+				 // posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w,
+     //             e.pos.x, e.pos.y, e.pos.z, e.pos.w);
+     //           printf("[%d] dist = %f\n", iFace, dist);
 		  }
 
 
-          bool inside = false;
-          if (dist < 0.1)
-              inside = true;
+          bool inside = idx == hoveringIndex;
+          //if (dist < radius3D)
+              //inside = true;
 
+		  ImFont* font = gContext.mStyle.ViewManipulateFont;
+		  float fontSize = gContext.mStyle.ViewManipulateFontSize;
 		  if (e.face < 3)
-			  gContext.mDrawList->AddCircleFilled(e2, 20, inside ? color_light : color);
+          {
+
+
+			  gContext.mDrawList->AddCircleFilled(e2, radius2D, inside ? color_light : color);
+
+              const char* strX = "X";
+              if (e.face == 1)
+                  strX = "Y";
+              else if (e.face == 2)
+                  strX = "Z";
+              //io.Fonts, setCurrentFont();
+              //io.FontDefault = 
+              ImVec2 fontPos = e2;
+              fontPos.x -= fontSize / 4;
+              fontPos.y -= fontSize / 2;
+			  //gContext.mDrawList->AddText(fontPos, GetColorU32(TEXT_SHADOW), strX);
+			  gContext.mDrawList->AddText(font, fontSize, fontPos, GetColorU32(TEXT_SHADOW), strX);
+			  //gContext.mDrawList->AddText(e2, GetColorU32(TEXT_SHADOW), strX);
 			  //gContext.mDrawList->AddCircleFilled(e2, 10, color);
+
+          }
 		  else
-			  gContext.mDrawList->AddCircle(e2, 20, inside ? color_light : color);
+          {
+              if (inside)
+              {
+				  const char* strX = "-X";
+				  if (e.face == 4)
+					  strX = "-Y";
+				  else if (e.face == 5)
+					  strX = "-Z";
+
+				  ImVec2 fontPos = e2;
+				  fontPos.x -= fontSize / 3;
+				  fontPos.y -= fontSize / 2;
+				  gContext.mDrawList->AddText(font, fontSize, fontPos, GetColorU32(TEXT), strX);
+              }
+
+			  gContext.mDrawList->AddCircle(e2, radius2D, inside ? color_light : color);
 			  //gContext.mDrawList->AddCircle(e2, 10, color);
+          }
       }
 
       // restore view/projection because it was used to compute ray

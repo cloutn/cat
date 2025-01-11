@@ -210,12 +210,12 @@ namespace IMGUIZMO_NAMESPACE
    //
    IMGUI_API void ViewManipulate(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
 
-   IMGUI_API void ViewManipulateAxis(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
+   IMGUI_API void ViewManipulateAxis(float* view, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
 
    // use this version if you did not call Manipulate before and you are just using ViewManipulate
    IMGUI_API void ViewManipulate(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
 
-   IMGUI_API void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
+   IMGUI_API void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
 
 
    IMGUI_API void SetID(int id);
@@ -261,6 +261,8 @@ namespace IMGUIZMO_NAMESPACE
       float ScaleLineCircleSize;        // Size of circle at the end of lines for scale gizmo
       float HatchedAxisLineThickness;   // Thickness of hatched axis lines
       float CenterCircleSize;           // Size of circle at the center of the translate/scale gizmo
+      ImFont* ViewManipulateFont;
+      float ViewManipulateFontSize;
 
       ImVec4 Colors[COLOR::COUNT];
    };
