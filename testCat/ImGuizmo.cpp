@@ -3130,14 +3130,6 @@ namespace IMGUIZMO_NAMESPACE
 
    void ViewManipulateAxis(float* view, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
    {
-      //static bool isDraging = false;
-      //static bool isClicking = false;
-      //static bool isInside = false;
-      //static vec_t interpolationUp;
-      //static vec_t interpolationDir;
-      //static int interpolationFrames = 0;
-      //const vec_t referenceUp = makeVect(0.f, 1.f, 0.f);
-
       matrix_t svgView, svgProjection;
       svgView = gContext.mViewMat;
       svgProjection = gContext.mProjectionMat;
@@ -3172,41 +3164,39 @@ namespace IMGUIZMO_NAMESPACE
 	  ImU32 colors[7];
 	  ComputeColors(colors, MT_NONE, TRANSLATE);
 
+      // sort axis by Z
       struct AxisEnd
       {
           int face;
           vec_t pos;
-          //vec_t pos_invert;
       };
-      AxisEnd axis_ends[6];
-	  //int axis_index[6];
+      AxisEnd axisEnds[6];
 	  for (int iFace = 0; iFace < 6; iFace++)
 	  {
-		  axis_ends[iFace].face = iFace;
-		  vec_t end_normal = directionUnary[iFace % 3];
-          //end_normal.z /= 2;
+		  axisEnds[iFace].face = iFace;
+		  vec_t endNormal = directionUnary[iFace % 3];
 		  if (iFace >= 3)
-			  end_normal = -end_normal;
-		  axis_ends[iFace].pos = worldToPos3(end_normal, res, position, size);
-          //axis_ends[iFace].pos_invert = worldToPos3(end_normal * (1 - radius3D), res, position, size);
+			  endNormal = -endNormal;
+		  axisEnds[iFace].pos = worldToPos3(endNormal, res, position, size);
 	  }
 
-	  qsort(axis_ends, 6, sizeof(AxisEnd), [](void const* _a, void const* _b) {
+	  qsort(axisEnds, 6, sizeof(AxisEnd), [](void const* _a, void const* _b) {
 		  AxisEnd* a = (AxisEnd*)_a;
 		  AxisEnd* b = (AxisEnd*)_b;
 		  return (a->pos.z < b->pos.z) ? 1 : -1;
 		  });
 
+      // try to find mouse hovering axis end ball.
+      // use mouse ray in gContext.mRayVector, caculate intersection of the ray and the plane which perpendicular to the 'camera to origin normal'.
+      // if the distance bewteen intersection point and end ball position is less than radius3D, set hoveringIndex to current face index.
       int hoveringIndex = -1;
-      //float hoveringRadius2D = 0;
-      // from Near to Far
-	  for (int idx = 5; idx >= 0; --idx)
+	  for (int endIdx = 5; endIdx >= 0; --endIdx)
       {
-		  AxisEnd& e = axis_ends[idx];
-          int iFace = e.face;
+		  AxisEnd& e = axisEnds[endIdx];
+          int face = e.face;
 
-		  const int normalIndex = (iFace % 3);
-		  const float invert = (iFace > 2) ? -1.f : 1.f;
+		  const int normalIndex = (face % 3);
+		  const float invert = (face > 2) ? -1.f : 1.f;
 		  const vec_t n = directionUnary[normalIndex] * invert;
 
 		  const vec_t facePlan = BuildPlan(n, eye - zero);
@@ -3216,158 +3206,84 @@ namespace IMGUIZMO_NAMESPACE
           float dist = (posOnPlan - n).Length();
 
 		  if (dist >= radius3D)
-          {
               continue;
-          }
 
-		  //vec_t circlePoint = GetCirclePointOnPlan2(n, eye - zero, radius3D);
-		  //ImVec2 circleCenter2D = worldToPos(n, res, position, size);
-		  //ImVec2 circlePoint2D = worldToPos(circlePoint, res, position, size);
-		  //float radius2D = sqrtf(ImLengthSqr(circlePoint2D - circleCenter2D));
-
-          hoveringIndex = idx;
-          //hoveringRadius2D = radius2D;
-
+          hoveringIndex = endIdx;
 		  break;
       }
 
+      // draw axis
 	  const vec_t center = { 0, 0 };
-	  ImVec2 begin = worldToPos(center, res, position, size);
-	  for (int idx = 0; idx < 6; ++idx)
+      const char* axisNames[6] = { "X", "Y", "Z", "-X", "-Y", "-Z" };
+	  ImVec2 begin2D = worldToPos(center, res, position, size);
+	  for (int endIdx = 0; endIdx < 6; ++endIdx)
 	  {
-		  AxisEnd& e = axis_ends[idx];
-          int iFace = e.face;
+		  AxisEnd& e = axisEnds[endIdx];
+          int face = e.face;
 
-		  ImVec2 e2(e.pos.x, e.pos.y);
+          // colors
+		  ImU32 color = colors[(face % 3) + 1];
+		  ImU32 colorGray = IM_COL32(0x77, 0x77, 0x77, 0x77);
+          ImVec4 colorVec4 = ImGui::ColorConvertU32ToFloat4(color);
+          colorVec4.x = colorVec4.x * 1.5f;
+          colorVec4.y = colorVec4.y * 1.5f;
+          colorVec4.z = colorVec4.z * 1.5f;
+		  ImU32 colorLight = ImGui::ColorConvertFloat4ToU32(colorVec4);
 
-		  ImU32 color = colors[(e.face % 3) + 1];
-		  ImU32 color_deep = IM_COL32(0x77, 0x77, 0x77, 0x77);
-		  //ImU32 color_light = IM_COL32(0xAA, 0xAA, 0xAA, 0xAA);
-		  //ImU32 color_light = color * 1.5;
-          ImVec4 color_vec4 = ImGui::ColorConvertU32ToFloat4(color);
-          color_vec4.x = color_vec4.x * 1.5f;
-          color_vec4.y = color_vec4.y * 1.5f;
-          color_vec4.z = color_vec4.z * 1.5f;
-		  ImU32 color_light = ImGui::ColorConvertFloat4ToU32(color_vec4);
-
-
-		  const int normalIndex = (iFace % 3);
-		  //const int perpXIndex = (normalIndex + 1) % 3;
-		  //const int perpYIndex = (normalIndex + 2) % 3;
-		  const float invert = (iFace > 2) ? -1.f : 1.f;
+		  ImVec2 end2D(e.pos.x, e.pos.y);
+		  const int normalIndex = (face % 3);
+		  const float invert = (face > 2) ? -1.f : 1.f;
 		  const vec_t n = directionUnary[normalIndex] * invert;
-		  //const vec_t facePlan = BuildPlan(n * 0.5f, n);
-		  //const vec_t facePlan = BuildPlan(n, n);
-		  //const vec_t facePlan = BuildPlan(n, eye - zero);
 
-		  //const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
-
+          // radius3D to radius2D 
           vec_t circlePoint = GetCirclePointOnPlan2(n, eye - zero, radius3D);
           ImVec2 circleCenter2D = worldToPos(n, res, position, size);
           ImVec2 circlePoint2D = worldToPos(circlePoint, res, position, size);
           float radius2D = sqrtf(ImLengthSqr(circlePoint2D - circleCenter2D));
 
-          //if (iFace == 0)
+          
+		  if (face < 3)
           {
-			  printf("face[%d] radius2D = %f\n", iFace, radius2D);
-          }
-
-		  if (e.face < 3)
-          {
-			  //gContext.mDrawList->AddLine(begin, e2, IM_COL32(0xF0, 0xA0, 0x60, 0x80), gContext.mStyle.TranslationLineThickness);
-			  gContext.mDrawList->AddLine(begin, e2, color, gContext.mStyle.TranslationLineThickness);
+              // draw positive axis
+			  gContext.mDrawList->AddLine(begin2D, end2D, color, gContext.mStyle.TranslationLineThickness);
           }
 		  else
           {
-              ImVec2 dir = e2 - begin;
+              // draw negative axis
+              ImVec2 dir = end2D - begin2D;
               float len = sqrtf(dir.x * dir.x + dir.y * dir.y);
-              ImVec2 e3 = e2;
+              ImVec2 e3 = end2D;
               if (fabs(len) > radius2D)
               {
 				  dir = dir / len;
-				  e3 = e2 - dir * radius2D;
-				  gContext.mDrawList->AddLine(begin, e3, color_deep, gContext.mStyle.TranslationLineThickness);
+				  e3 = end2D - dir * radius2D;
+				  gContext.mDrawList->AddLine(begin2D, e3, colorGray, gContext.mStyle.TranslationLineThickness);
               }
-              //else
-              //{
-              //  printf("[%d] len == 0\n", iFace);
-              //}
-              
-			  //ImVec2 e2_invert(e.pos_invert.x, e.pos_invert.y);
           }
 
-		  //vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
-		  //float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert/* + 0.5f*/;
-		  //float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert/* + 0.5f*/;
-          //float dist = sqrtf(localx * localx + localy * localy);
-
-		  //vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len;
-    //      float dist = (posOnPlan - n).Length();
-
-
-
-          //if (iFace == 2)
-            //printf("[%d] localx = %f, localy = %f, dist = %f\n", iFace, localx, localy, dist);
-
-		  if (iFace == 1)
-		  {
-			  //printf("\n------\nmouse = %f, %f\nperpXIndex = %d, perpYIndex = %d, invert = %f, \nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f, e.pos = %f, %f, %f, %f\n------\n",
-     //             ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y,
-     //             perpXIndex, perpYIndex, invert,
-				 // gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w,
-				 // gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
-				 // posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w,
-     //             e.pos.x, e.pos.y, e.pos.z, e.pos.w);
-     //           printf("[%d] dist = %f\n", iFace, dist);
-		  }
-
-
-          bool inside = idx == hoveringIndex;
-          //if (dist < radius3D)
-              //inside = true;
-
+          bool inside = endIdx == hoveringIndex;
 		  ImFont* font = gContext.mStyle.ViewManipulateFont;
 		  float fontSize = gContext.mStyle.ViewManipulateFontSize;
-		  if (e.face < 3)
+		  if (face < 3)
           {
+			  gContext.mDrawList->AddCircleFilled(end2D, radius2D, inside ? colorLight : color);
 
-
-			  gContext.mDrawList->AddCircleFilled(e2, radius2D, inside ? color_light : color);
-
-              const char* strX = "X";
-              if (e.face == 1)
-                  strX = "Y";
-              else if (e.face == 2)
-                  strX = "Z";
-              //io.Fonts, setCurrentFont();
-              //io.FontDefault = 
-              ImVec2 fontPos = e2;
+              ImVec2 fontPos = end2D;
               fontPos.x -= fontSize / 4;
               fontPos.y -= fontSize / 2;
-			  //gContext.mDrawList->AddText(fontPos, GetColorU32(TEXT_SHADOW), strX);
-			  gContext.mDrawList->AddText(font, fontSize, fontPos, GetColorU32(TEXT_SHADOW), strX);
-			  //gContext.mDrawList->AddText(e2, GetColorU32(TEXT_SHADOW), strX);
-			  //gContext.mDrawList->AddCircleFilled(e2, 10, color);
-
+			  gContext.mDrawList->AddText(font, fontSize, fontPos, GetColorU32(TEXT_SHADOW), axisNames[face]);
           }
 		  else
           {
               if (inside)
               {
-				  const char* strX = "-X";
-				  if (e.face == 4)
-					  strX = "-Y";
-				  else if (e.face == 5)
-					  strX = "-Z";
-
-				  ImVec2 fontPos = e2;
+				  ImVec2 fontPos = end2D;
 				  fontPos.x -= fontSize / 3;
 				  fontPos.y -= fontSize / 2;
-				  gContext.mDrawList->AddText(font, fontSize, fontPos, GetColorU32(TEXT), strX);
+				  gContext.mDrawList->AddText(font, fontSize, fontPos, GetColorU32(TEXT), axisNames[face]);
               }
 
-			  gContext.mDrawList->AddCircle(e2, radius2D, inside ? color_light : color);
-			  //gContext.mDrawList->AddCircle(e2, 10, color);
+			  gContext.mDrawList->AddCircle(end2D, radius2D, inside ? colorLight : color);
           }
       }
 
