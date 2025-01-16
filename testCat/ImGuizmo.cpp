@@ -2976,21 +2976,10 @@ namespace IMGUIZMO_NAMESPACE
 
             const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, facePlan);
             vec_t posOnPlan = gContext.mRayOrigin + gContext.mRayVector * len - (n * 0.5f);
-            if (iFace == 2)
-            {
-				printf("\n------\nmouse = %f, %f\nperpXIndex = %d, perpYIndex = %d, invert = %f, \nmRayOrigin = %f, %f, %f, %f\nmRayVector = %f, %f, %f, %f\nposOnPlan = %f, %f, %f, %f\n------\n",
-					ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y,
-					perpXIndex, perpYIndex, invert,
-					gContext.mRayOrigin.x, gContext.mRayOrigin.y, gContext.mRayOrigin.z, gContext.mRayOrigin.w,
-					gContext.mRayVector.x, gContext.mRayVector.y, gContext.mRayVector.z, gContext.mRayVector.w,
-					posOnPlan.x, posOnPlan.y, posOnPlan.z, posOnPlan.w);
-            }
 
             float localx = Dot(directionUnary[perpXIndex], posOnPlan) * invert + 0.5f;
             float localy = Dot(directionUnary[perpYIndex], posOnPlan) * invert + 0.5f;
 
-			if (iFace == 2)
-				printf("[%d] localx = %f, localy = %f\n", iFace, localx, localy);
 
             // panels
             const vec_t dx = directionUnary[perpXIndex];
@@ -3130,6 +3119,13 @@ namespace IMGUIZMO_NAMESPACE
 
    void ViewManipulateAxis(float* view, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
    {
+      static bool isDraging = false;
+      static bool isClicking = false;
+	  static vec_t interpolationUp;
+	  static vec_t interpolationDir;
+	  static int interpolationFrames = 0;
+	  const vec_t referenceUp = makeVect(0.f, 1.f, 0.f);
+
       matrix_t svgView, svgProjection;
       svgView = gContext.mViewMat;
       svgProjection = gContext.mProjectionMat;
@@ -3240,7 +3236,6 @@ namespace IMGUIZMO_NAMESPACE
           ImVec2 circleCenter2D = worldToPos(n, res, position, size);
           ImVec2 circlePoint2D = worldToPos(circlePoint, res, position, size);
           float radius2D = sqrtf(ImLengthSqr(circlePoint2D - circleCenter2D));
-
           
 		  if (face < 3)
           {
@@ -3285,6 +3280,100 @@ namespace IMGUIZMO_NAMESPACE
 
 			  gContext.mDrawList->AddCircle(end2D, radius2D, inside ? colorLight : color);
           }
+          if (inside)
+          {
+			  if (io.MouseDown[0] && !isClicking && !isDraging) 
+              {
+				  isClicking = true;
+				  isDraging = true;
+			  }
+          }
+      }
+
+      if (io.MouseDown[0] && (fabsf(io.MouseDelta[0]) || fabsf(io.MouseDelta[1])) && isClicking)
+      {
+         isClicking = false;
+      }
+
+      if (!io.MouseDown[0])
+      {
+         if (isClicking)
+         {
+			AxisEnd& e = axisEnds[hoveringIndex];
+            int face = e.face;
+
+			const int normalIndex = (face % 3);
+			const float invert = (face > 2) ? -1.f : 1.f;
+			const vec_t n = directionUnary[normalIndex] * invert;
+            interpolationDir = n;
+
+            if (fabsf(Dot(interpolationDir, referenceUp)) > 1.0f - 0.01f)
+            {
+               vec_t right = viewInverse.v.right;
+               if (fabsf(right.x) > fabsf(right.z))
+               {
+                  right.z = 0.f;
+               }
+               else
+               {
+                  right.x = 0.f;
+               }
+               right.Normalize();
+               interpolationUp = Cross(interpolationDir, right);
+               interpolationUp.Normalize();
+            }
+            else
+            {
+               interpolationUp = referenceUp;
+            }
+            interpolationFrames = 40;
+            
+         }
+         isClicking = false;
+         isDraging = false;
+      }
+
+	  if (interpolationFrames)
+	  {
+		  interpolationFrames--;
+		  vec_t newDir = viewInverse.v.dir;
+		  newDir.Lerp(interpolationDir, 0.2f);
+		  newDir.Normalize();
+
+		  vec_t newUp = viewInverse.v.up;
+		  newUp.Lerp(interpolationUp, 0.3f);
+		  newUp.Normalize();
+		  newUp = interpolationUp;
+		  vec_t newEye = camTarget + newDir * length;
+		  LookAt(&newEye.x, &camTarget.x, &newUp.x, view);
+	  }
+
+      if (isDraging)
+      {
+         //matrix_t rx, ry, roll;
+
+         //rx.RotationAxis(referenceUp, -io.MouseDelta.x * 0.01f);
+         //ry.RotationAxis(viewInverse.v.right, -io.MouseDelta.y * 0.01f);
+
+         //roll = rx * ry;
+
+         //vec_t newDir = viewInverse.v.dir;
+         //newDir.TransformVector(roll);
+         //newDir.Normalize();
+
+         //// clamp
+         //vec_t planDir = Cross(viewInverse.v.right, referenceUp);
+         //planDir.y = 0.f;
+         //planDir.Normalize();
+         //float dt = Dot(planDir, newDir);
+         //if (dt < 0.0f)
+         //{
+         //   newDir += planDir * dt;
+         //   newDir.Normalize();
+         //}
+
+         //vec_t newEye = camTarget + newDir * length;
+         //LookAt(&newEye.x, &camTarget.x, &referenceUp.x, view);
       }
 
       // restore view/projection because it was used to compute ray
