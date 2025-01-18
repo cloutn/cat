@@ -19,12 +19,14 @@ public:
 	const	float			aspect			() const { return m_aspect;		}
 	const	float			near			() const { return m_near;		}
 	const	float			far				() const { return m_far;		}
+	const	bool			ortho			() const { return m_ortho;	}
 
 	void					set				(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up, float fov, float aspect, float near, float far);
 	void					setView			(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up);
 	void					setProjection	(float fov, float aspect, float near, float far);
 	void					setAspect		(float aspect);
 	void					setViewByMatrix	(const scl::matrix& m);
+	void					setOrtho		(const bool b);
 
 	void					move			(scl::vector3 d);
 	void					move			(float dx, float dy, float dz) { move({dx, dy, dz}); }
@@ -56,6 +58,7 @@ private:
 	float					m_aspect;		// width/height ratio. default 1.f
 	float					m_near;			// near Z. MUST be positive number. default 0.1f
 	float					m_far;			// far Z. MUST be positive number. default 100.f
+	bool					m_ortho;		// is ortho projection.
 
 	mutable scl::matrix		m_viewMatrix;
 	mutable scl::matrix		m_projectionMatrix;

@@ -122,12 +122,14 @@ public:
 	static matrix	rotate_pivot_quaternion	(const vector3& pivot, const quaternion& q);
 
 	//投影矩阵
-	static void		ortho					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
-	static matrix	ortho					(float left, float right, float bottom, float top, float nearZ, float farZ);
 	static void		perspective				(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ);
 	static matrix	perspective				(float fovy, float aspect, float nearZ, float farZ);
 	static void		frustum					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
 	static matrix	frustum					(float left, float right, float bottom, float top, float nearZ, float farZ);
+	static void		ortho					(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ);
+	static matrix	ortho					(float fovy, float aspect, float nearZ, float farZ);
+	static void		volume					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
+	static matrix	volume					(float left, float right, float bottom, float top, float nearZ, float farZ);
 	//static void frustum2	(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
 
 	//摄像机矩阵

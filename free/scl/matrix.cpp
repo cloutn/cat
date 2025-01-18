@@ -388,14 +388,28 @@ matrix matrix::rotate_zyx_radian(float x, float y, float z)
 	return m;
 }
 
-matrix matrix::ortho(float left, float right, float bottom, float top, float nearZ, float farZ)
+matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ)
 {
 	matrix m;
-	ortho(m, left, right, bottom, top, nearZ, farZ);
+	ortho(m, fovy, aspect, nearZ, farZ);
 	return m;
 }
 
-void matrix::ortho(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ)
+{
+   float frustumH = tanf ( fovy / 360.0f * PI ) * nearZ;
+   float frustumW = frustumH * aspect;
+   matrix::volume(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ );
+}
+
+matrix matrix::volume(float left, float right, float bottom, float top, float nearZ, float farZ)
+{
+	matrix m;
+	volume(m, left, right, bottom, top, nearZ, farZ);
+	return m;
+}
+
+void matrix::volume(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
 {
    float dx = right - left;
    float dy = top - bottom;
@@ -424,6 +438,7 @@ void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float
    float frustumW = frustumH * aspect;
    matrix::frustum(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ );
 }
+
 
 //void matrix::frustum(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
 //{

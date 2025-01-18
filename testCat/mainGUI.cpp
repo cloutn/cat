@@ -365,9 +365,11 @@ void MainGUI::_processGizmo()
 	//gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
 
 	//gizmo::ViewManipulate(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, ImVec2(0, 0), ImVec2(m_client->getScreenWidth(), m_client->getScreenHeight()), 0x10101010);
-	//gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, 0.1f, ImVec2(0, 0), ImVec2(m_client->getScreenWidth(), m_client->getScreenHeight()), 0x10101010);
+	//gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 40.0f, 0.1f, ImVec2(0, 0), ImVec2(m_client->getScreenWidth(), m_client->getScreenHeight()), 0x10101010);
 
-	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, 0.2f, ImVec2(100, 100), ImVec2(128, 128), 0x10101010);
+	bool ortho = camera->ortho();
+	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, 0.2f, ImVec2(100, 100), ImVec2(128, 128), 0x20A0A0A0, ortho);
+	camera->setOrtho(ortho);
 
 	if (!(viewMatrixAfter == camera->viewMatrix()))
 	{

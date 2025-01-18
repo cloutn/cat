@@ -131,6 +131,29 @@ namespace IMGUIZMO_NAMESPACE
       Frustum(-xmax, xmax, -ymax, ymax, znear, zfar, m16);
    }
 
+   void Ortho(float left, float right, float bottom, float top, float znear, float zfar, float* m16)
+   {
+      m16[0] = 2 / (right - left);
+      m16[1] = 0.0;
+      m16[2] = 0.0;
+      m16[3] = 0.0;
+
+      m16[4] = 0.0;
+      m16[5] = 2 / (top - bottom);
+      m16[6] = 0.0;
+      m16[7] = 0.0;
+
+      m16[8] = 0;
+      m16[9] = 0;
+      m16[10] = -2 / (zfar - znear);
+      m16[11] = 0;
+
+      m16[12] = -(right + left) / (right - left);
+      m16[13] = -(top + bottom) / (top - bottom);
+      m16[14] = -(zfar + znear) / (zfar - znear);
+      m16[15] = 1;
+   }
+
    void Cross(const float* a, const float* b, float* r)
    {
       r[0] = a[1] * b[2] - a[2] * b[1];
@@ -366,7 +389,40 @@ namespace IMGUIZMO_NAMESPACE
        n_p0.Normalize();
 
        vec_t p = { 0 };
-       if (n.Equals3(n_p0) || n.Equals3(-n_p0)) // set vector from original to point as n_p0, n_p0 is parallel to plane's normal, so we try to caculate intersection bewteen plane and axis X.
+
+       if (fabs(n_p0.LengthSq()) < FLT_EPSILON) // the input param "point" is the original
+       {
+           // n * p = 0
+           if (fabs(n.x) > FLT_EPSILON)
+           {
+               // caculate point { x, 1, 0 }
+               // (x, 1, 0) * n = 0;
+               // x * n.x + n.y = 0;
+               float x = -n.y / n.x;
+               p.Set(x, 1, 0);
+           }
+           else if (fabs(n.y) > FLT_EPSILON)
+           {
+               // caculate point { 1, y, 0 }
+               // (1, y, 0) * n = 0;
+               // n.x + y * n.y = 0;
+               float y  = -n.x / n.y;
+               p.Set(1, y, 0);
+           }
+           else if (fabs(n.z) > FLT_EPSILON)
+           {
+               // caculate point { 1, 0, z }
+               // (1, 0, z) * n = 0;
+               // n.x + z * n.z = 0;
+               float z  = -n.x / n.z;
+               p.Set(1, 0, z);
+           }
+           else
+           {
+                IM_ASSERT(false);
+           }
+       }
+       else if (n.Equals3(n_p0) || n.Equals3(-n_p0)) // set vector from original to point as n_p0, n_p0 is parallel to plane's normal, so we try to caculate intersection bewteen plane and axis X.
        {
            vec_t axis_x = { 1, 0, 0, 0 }; 
            if (n.Equals3(axis_x) || n.Equals3(-axis_x))
@@ -2886,11 +2942,11 @@ namespace IMGUIZMO_NAMESPACE
       ViewManipulate(view, length, position, size, backgroundColor);
    }
 
-    void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+    void ViewManipulateAxis(float* view, const float* projection, OPERATION operation, MODE mode, float* matrix, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor, bool& isOrtho)
    {
       // Scale is always local or matrix will be skewed when applying world scale or oriented matrix
       ComputeContext(view, projection, matrix, (operation & SCALE) ? LOCAL : mode);
-      ViewManipulateAxis(view, length, radius3D, position, size, backgroundColor);
+      ViewManipulateAxis(view, length, radius3D, position, size, backgroundColor, isOrtho);
    }
 
    void ViewManipulate(float* view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
@@ -3117,13 +3173,15 @@ namespace IMGUIZMO_NAMESPACE
       ComputeContext(svgView.m16, svgProjection.m16, gContext.mModelSource.m16, gContext.mMode);
    }
 
-   void ViewManipulateAxis(float* view, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+   void ViewManipulateAxis(float* view, float length, float radius3D, ImVec2 position, ImVec2 size, ImU32 backgroundColor, bool& isOrtho)
    {
       static bool isDraging = false;
       static bool isClicking = false;
 	  static vec_t interpolationUp;
 	  static vec_t interpolationDir;
 	  static int interpolationFrames = 0;
+      static int interpolationProjectionFrames = 0;
+      static const int interpolationProjectionFramesMax = 100;
 	  const vec_t referenceUp = makeVect(0.f, 1.f, 0.f);
 
       matrix_t svgView, svgProjection;
@@ -3131,7 +3189,6 @@ namespace IMGUIZMO_NAMESPACE
       svgProjection = gContext.mProjectionMat;
 
       ImGuiIO& io = ImGui::GetIO();
-      //gContext.mDrawList->AddRectFilled(position, position + size, backgroundColor);
       matrix_t viewInverse;
       viewInverse.Inverse(*(matrix_t*)view);
 
@@ -3139,14 +3196,50 @@ namespace IMGUIZMO_NAMESPACE
 
       // view/projection matrices
       const float distance = 3.f;
+      float lerpedDistance = distance;
       matrix_t cubeProjection, cubeView;
-      float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
-      Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, cubeProjection.m16);
 
-      vec_t dir = makeVect(viewInverse.m[2][0], viewInverse.m[2][1], viewInverse.m[2][2]);
-      vec_t up = makeVect(viewInverse.m[1][0], viewInverse.m[1][1], viewInverse.m[1][2]);
-      vec_t eye = dir * distance;
-      vec_t zero = makeVect(0.f, 0.f);
+      if (interpolationProjectionFrames)
+      {
+          interpolationProjectionFrames--;
+
+		  float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
+		  if (isOrtho) // changing from perspective to ortho
+		  {
+			  //Ortho(-1, 1, -1, 1, 0.01f, 1000.f, cubeProjection.m16);
+              float lerpFov = (fov / sqrtf(2.f)) * (interpolationProjectionFrames + 1) / interpolationProjectionFramesMax; 
+              float tanFov = tanf(lerpFov * DEG2RAD);
+              float near = (0.01f / distance) / tanFov;
+              float far = (1000.f / distance) / tanFov;
+              lerpedDistance = 1 / tanFov;
+
+              printf("lerpFov = %.3f, near = %.3f, far = %.3f\n", lerpFov, near, far);
+			  Perspective(lerpFov, size.x / size.y, near, far, cubeProjection.m16);
+		  }
+		  else
+		  {
+			  Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, cubeProjection.m16);
+		  }
+
+      }
+      else
+      {
+		  if (isOrtho) // changing from 
+		  {
+			  Ortho(-1, 1, -1, 1, 0.01f, 1000.f, cubeProjection.m16);
+		  }
+		  else
+		  {
+		    float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
+			  Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, cubeProjection.m16);
+		  }
+      }
+
+
+      const vec_t dir = makeVect(viewInverse.m[2][0], viewInverse.m[2][1], viewInverse.m[2][2]);
+      const vec_t up = makeVect(viewInverse.m[1][0], viewInverse.m[1][1], viewInverse.m[1][2]);
+      const vec_t eye = dir * lerpedDistance;
+      const vec_t zero = makeVect(0.f, 0.f);
       LookAt(&eye.x, &zero.x, &up.x, cubeView.m16);
 
       // set context
@@ -3181,6 +3274,45 @@ namespace IMGUIZMO_NAMESPACE
 		  AxisEnd* b = (AxisEnd*)_b;
 		  return (a->pos.z < b->pos.z) ? 1 : -1;
 		  });
+
+      // caculate mouse ray hit position on entire face plane.
+	  const vec_t entireFacePlane = BuildPlan(zero, eye - zero);
+	  const float entireFaceHitLen = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, entireFacePlane);
+	  const vec_t entireFaceHitPos = gContext.mRayOrigin + gContext.mRayVector * entireFaceHitLen;
+
+      // if is inside entire circle plane.
+      // perspective transform:
+      // if circle is at origin, 1 / d = a / n (d is distance = 3 here, n is near plane distance from eye)
+      // if circle is at axis end, 1 / (d - L) = b / n    ( L is param length which means axis lenght, d - L  because distance is 3, and axis length is 1)
+      // so: a = n / d, b = n / (d - L),
+      // ratio = b / a = d / (d - L)
+      const float perspectiveRatio = distance / (distance - 1.0f);
+      const float entireRadius3D = 1.0f + radius3D * perspectiveRatio;
+      const float entireFaceHitDist = entireFaceHitPos.Length();
+      bool isInsideEntire = entireFaceHitDist < entireRadius3D;
+
+      // caculate entire radius2D to draw the circle plane
+      const vec_t circlePointOnEntireFace3D = GetCirclePointOnPlan2(zero, eye - zero, entireRadius3D);
+      const ImVec2 circlePointOnEntireFace2D = worldToPos(circlePointOnEntireFace3D, res, position, size);
+      const ImVec2 zero2D = worldToPos(zero, res, position, size);
+	  float entireRadius2D = sqrtf(ImLengthSqr(circlePointOnEntireFace2D - zero2D)) + 1;
+
+	  if (isInsideEntire)
+	  {
+          if (io.MouseDown[0] && !isDraging)
+          {
+              isDraging = true;
+          }
+          if (io.MouseDown[0] && !isClicking)
+          {
+              isClicking = true;
+          }
+	  }
+
+      if (isInsideEntire || isDraging)
+      {
+		  gContext.mDrawList->AddCircleFilled(zero2D, entireRadius2D, backgroundColor);
+      }
 
       // try to find mouse hovering axis end ball.
       // use mouse ray in gContext.mRayVector, caculate intersection of the ray and the plane which perpendicular to the 'camera to origin normal'.
@@ -3282,10 +3414,9 @@ namespace IMGUIZMO_NAMESPACE
           }
           if (inside)
           {
-			  if (io.MouseDown[0] && !isClicking && !isDraging) 
+			  if (io.MouseDown[0] && !isClicking) 
               {
 				  isClicking = true;
-				  isDraging = true;
 			  }
           }
       }
@@ -3299,35 +3430,42 @@ namespace IMGUIZMO_NAMESPACE
       {
          if (isClicking)
          {
-			AxisEnd& e = axisEnds[hoveringIndex];
-            int face = e.face;
+			 if (hoveringIndex >= 0) // is clicking axis end ball
+			 {
+				 AxisEnd& e = axisEnds[hoveringIndex];
+				 int face = e.face;
 
-			const int normalIndex = (face % 3);
-			const float invert = (face > 2) ? -1.f : 1.f;
-			const vec_t n = directionUnary[normalIndex] * invert;
-            interpolationDir = n;
+				 const int normalIndex = (face % 3);
+				 const float invert = (face > 2) ? -1.f : 1.f;
+				 const vec_t n = directionUnary[normalIndex] * invert;
+				 interpolationDir = n;
 
-            if (fabsf(Dot(interpolationDir, referenceUp)) > 1.0f - 0.01f)
-            {
-               vec_t right = viewInverse.v.right;
-               if (fabsf(right.x) > fabsf(right.z))
-               {
-                  right.z = 0.f;
-               }
-               else
-               {
-                  right.x = 0.f;
-               }
-               right.Normalize();
-               interpolationUp = Cross(interpolationDir, right);
-               interpolationUp.Normalize();
-            }
-            else
-            {
-               interpolationUp = referenceUp;
-            }
-            interpolationFrames = 40;
-            
+				 if (fabsf(Dot(interpolationDir, referenceUp)) > 1.0f - 0.01f)
+				 {
+					 vec_t right = viewInverse.v.right;
+					 if (fabsf(right.x) > fabsf(right.z))
+					 {
+						 right.z = 0.f;
+					 }
+					 else
+					 {
+						 right.x = 0.f;
+					 }
+					 right.Normalize();
+					 interpolationUp = Cross(interpolationDir, right);
+					 interpolationUp.Normalize();
+				 }
+				 else
+				 {
+					 interpolationUp = referenceUp;
+				 }
+				 interpolationFrames = 40;
+			 }
+             else if (isInsideEntire) // is clicking background
+             {
+                 isOrtho = !isOrtho;
+                 interpolationProjectionFrames = interpolationProjectionFramesMax;
+             }
          }
          isClicking = false;
          isDraging = false;
@@ -3348,32 +3486,33 @@ namespace IMGUIZMO_NAMESPACE
 		  LookAt(&newEye.x, &camTarget.x, &newUp.x, view);
 	  }
 
+
       if (isDraging)
       {
-         //matrix_t rx, ry, roll;
+         matrix_t rx, ry, roll;
 
-         //rx.RotationAxis(referenceUp, -io.MouseDelta.x * 0.01f);
-         //ry.RotationAxis(viewInverse.v.right, -io.MouseDelta.y * 0.01f);
+         rx.RotationAxis(referenceUp, -io.MouseDelta.x * 0.01f);
+         ry.RotationAxis(viewInverse.v.right, -io.MouseDelta.y * 0.01f);
 
-         //roll = rx * ry;
+         roll = rx * ry;
 
-         //vec_t newDir = viewInverse.v.dir;
-         //newDir.TransformVector(roll);
-         //newDir.Normalize();
+         vec_t newDir = viewInverse.v.dir;
+         newDir.TransformVector(roll);
+         newDir.Normalize();
 
-         //// clamp
-         //vec_t planDir = Cross(viewInverse.v.right, referenceUp);
-         //planDir.y = 0.f;
-         //planDir.Normalize();
-         //float dt = Dot(planDir, newDir);
-         //if (dt < 0.0f)
-         //{
-         //   newDir += planDir * dt;
-         //   newDir.Normalize();
-         //}
+         // clamp
+         vec_t planDir = Cross(viewInverse.v.right, referenceUp);
+         planDir.y = 0.f;
+         planDir.Normalize();
+         float dt = Dot(planDir, newDir);
+         if (dt < 0.0f)
+         {
+            newDir += planDir * dt;
+            newDir.Normalize();
+         }
 
-         //vec_t newEye = camTarget + newDir * length;
-         //LookAt(&newEye.x, &camTarget.x, &referenceUp.x, view);
+         vec_t newEye = camTarget + newDir * length;
+         LookAt(&newEye.x, &camTarget.x, &referenceUp.x, view);
       }
 
       // restore view/projection because it was used to compute ray

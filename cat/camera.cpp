@@ -18,7 +18,8 @@ Camera::Camera() :
 	m_far				(100.f),
 	m_viewDirty			(true),
 	m_projectionDirty	(true),
-	m_dirty				(true)
+	m_dirty				(true),
+	m_ortho			(false)
 {
 	m_matrix = scl::matrix::identity();
 }
@@ -61,6 +62,12 @@ void Camera::setViewByMatrix(const scl::matrix& m)
 	m_viewDirty = true;
 	m_dirty		= true;
 	scl::matrix::decompose_lookat(m, m_position.x, m_position.y, m_position.z, m_target.x, m_target.y, m_target.z, m_up.x, m_up.y, m_up.z);
+}
+
+void Camera::setOrtho(const bool b)
+{
+	m_ortho = b;
+	m_projectionDirty = true;
 }
 
 void Camera::move(scl::vector3 d)
@@ -174,7 +181,10 @@ void Camera::_updateProjection() const
 {
 	if (!m_projectionDirty)
 		return;
-	scl::matrix::perspective(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
+	if (m_ortho)
+		scl::matrix::ortho(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
+	else
+		scl::matrix::perspective(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
 	m_projectionDirty = false;
 }
 
