@@ -3181,7 +3181,7 @@ namespace IMGUIZMO_NAMESPACE
 	  static vec_t interpolationDir;
 	  static int interpolationFrames = 0;
       static int interpolationProjectionFrames = 0;
-      static const int interpolationProjectionFramesMax = 100;
+      static const int interpolationProjectionFramesMax = 30;
 	  const vec_t referenceUp = makeVect(0.f, 1.f, 0.f);
 
       matrix_t svgView, svgProjection;
@@ -3203,24 +3203,25 @@ namespace IMGUIZMO_NAMESPACE
       {
           interpolationProjectionFrames--;
 
+          matrix_t matOrtho;
+		  Ortho(-1, 1, -1, 1, 0.01f, 1000.f, matOrtho.m16);
+
 		  float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
+          matrix_t matPerspective;
+		  Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, matPerspective.m16);
+
+          matrix_t matLerp;
+		  float ratio = (1 - float(interpolationProjectionFrames) / interpolationProjectionFramesMax);
 		  if (isOrtho) // changing from perspective to ortho
 		  {
-			  //Ortho(-1, 1, -1, 1, 0.01f, 1000.f, cubeProjection.m16);
-              float lerpFov = (fov / sqrtf(2.f)) * (interpolationProjectionFrames + 1) / interpolationProjectionFramesMax; 
-              float tanFov = tanf(lerpFov * DEG2RAD);
-              float near = (0.01f / distance) / tanFov;
-              float far = (1000.f / distance) / tanFov;
-              lerpedDistance = 1 / tanFov;
-
-              printf("lerpFov = %.3f, near = %.3f, far = %.3f\n", lerpFov, near, far);
-			  Perspective(lerpFov, size.x / size.y, near, far, cubeProjection.m16);
+              for (int mi = 0; mi < 16; ++mi)
+				  cubeProjection[mi] = matPerspective[mi] + ratio * (matOrtho[mi] - matPerspective[mi]);
 		  }
 		  else
 		  {
-			  Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, cubeProjection.m16);
+              for (int mi = 0; mi < 16; ++mi)
+				  cubeProjection[mi] = matOrtho[mi] + ratio * (matPerspective[mi] - matOrtho[mi]);
 		  }
-
       }
       else
       {
@@ -3230,7 +3231,7 @@ namespace IMGUIZMO_NAMESPACE
 		  }
 		  else
 		  {
-		    float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
+			  float fov = acosf(distance / (sqrtf(distance * distance + 3.f))) * RAD2DEG;
 			  Perspective(fov / sqrtf(2.f), size.x / size.y, 0.01f, 1000.f, cubeProjection.m16);
 		  }
       }
