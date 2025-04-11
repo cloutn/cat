@@ -3181,7 +3181,7 @@ namespace IMGUIZMO_NAMESPACE
 	  static vec_t interpolationDir;
 	  static int interpolationFrames = 0;
       static int interpolationProjectionFrames = 0;
-      static const int interpolationProjectionFramesMax = 30;
+      static const int interpolationProjectionFramesMax = 10;
 	  const vec_t referenceUp = makeVect(0.f, 1.f, 0.f);
 
       matrix_t svgView, svgProjection;

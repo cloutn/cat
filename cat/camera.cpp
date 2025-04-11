@@ -19,7 +19,7 @@ Camera::Camera() :
 	m_viewDirty			(true),
 	m_projectionDirty	(true),
 	m_dirty				(true),
-	m_ortho			(false)
+	m_ortho				(false)
 {
 	m_matrix = scl::matrix::identity();
 }
@@ -33,8 +33,7 @@ void Camera::set(const scl::vector3& position, const scl::vector3& lookat, const
 
 void Camera::setView(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up)
 {
-	m_viewDirty			= true;
-	m_dirty				= true;
+	_invalidateView();
 	m_position			= position;
 	m_target			= lookat;
 	m_up				= up;
@@ -42,8 +41,7 @@ void Camera::setView(const scl::vector3& position, const scl::vector3& lookat, c
 
 void Camera::setProjection(float fov, float aspect, float near, float far)
 {
-	m_projectionDirty	= true;
-	m_dirty				= true;
+	_invalidateProjection();
 	m_fov				= fov;
 	m_aspect			= aspect;
 	m_near				= near;
@@ -52,22 +50,20 @@ void Camera::setProjection(float fov, float aspect, float near, float far)
 
 void Camera::setAspect(float aspect)
 {
-	m_projectionDirty	= true;
-	m_dirty				= true;
+	_invalidateProjection();
 	m_aspect			= aspect;
 }
 
 void Camera::setViewByMatrix(const scl::matrix& m)
 {
-	m_viewDirty = true;
-	m_dirty		= true;
+	_invalidateView();
 	scl::matrix::decompose_lookat(m, m_position.x, m_position.y, m_position.z, m_target.x, m_target.y, m_target.z, m_up.x, m_up.y, m_up.z);
 }
 
 void Camera::setOrtho(const bool b)
 {
 	m_ortho = b;
-	m_projectionDirty = true;
+	_invalidateProjection();
 }
 
 void Camera::move(scl::vector3 d)
@@ -75,8 +71,7 @@ void Camera::move(scl::vector3 d)
 	vector3 lookat	= _front();
 	m_position		+= d;
 	m_target		= m_position + lookat;
-	m_viewDirty		= true;
-	m_dirty			= true;
+	_invalidateView();
 }
 
 
@@ -96,8 +91,7 @@ void Camera::rotate(float x, float y, float z)
 	m_up = vector3::cross(right, front);
 	m_up.normalize();
 
-	m_viewDirty = true;
-	m_dirty = true;
+	_invalidateView();
 }
 
 // let the camrea rotate around the right vector, the fowrad(front) will turn up and down.
@@ -116,8 +110,7 @@ void Camera::orbit_right(float angle)
 	m_target = m_position + front;
 	m_up = vector3::cross(right, front);
 
-	m_viewDirty = true;
-	m_dirty = true;
+	_invalidateView();
 }
 
 // let the camera rotate around the up vector, the fowrad(front) will turn left or right.
@@ -138,8 +131,7 @@ void Camera::orbit_up(float angle)
 	m_target = m_position + front;
 	m_up = vector3::cross(right, front);
 
-	m_viewDirty = true;
-	m_dirty = true;
+	_invalidateView();
 }
 
 const scl::matrix& Camera::matrix() const
@@ -186,6 +178,18 @@ void Camera::_updateProjection() const
 	else
 		scl::matrix::perspective(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
 	m_projectionDirty = false;
+}
+
+void Camera::_invalidateView() const
+{
+	m_viewDirty = true;
+	m_dirty = true;
+}
+
+void Camera::_invalidateProjection() const
+{
+	m_projectionDirty = true;
+	m_dirty = true;
 }
 
 void Camera::move_front(float d)

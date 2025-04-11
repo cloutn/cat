@@ -46,6 +46,8 @@ private:
 	//scl::vector3			_right			(const scl::vector3& front) const;	// right vector = cross(front, up)
 	void					_updateView		() const;
 	void					_updateProjection() const;
+	void					_invalidateView	() const;
+	void					_invalidateProjection() const;
 
 private:
 	// view
