@@ -82,6 +82,7 @@ void Client::init()
 	m_env->setDefaultMaterial("art/default.png");
 
 	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f);
+	//m_camera->setOrtho(true);
 
 	m_gui.init(this);
 	m_gui.registerEvent(GUI_EVENT_PICK_PASS_CLICK, scl::bind(this, &Client::OnButtonClick_PickPass));

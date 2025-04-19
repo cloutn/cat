@@ -85,9 +85,9 @@ void vertex_color_uv::mul_matrix(const scl::matrix& m)
 const cat::VertexAttr* vertex_color_uv::get_attr()
 {
 	static const VertexAttr s_attrs[3] = {
-			{ 0, 4, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), 0 },
-			{ 1, 4, ELEM_TYPE_UINT8,	1, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, color) },
-			{ 2, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, u) }
+			{ 0, 3, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), 0 },
+			{ 5, 4, ELEM_TYPE_UINT8,	1, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, color) },
+			{ 3, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, u) }
 	};
 	return s_attrs;
 }

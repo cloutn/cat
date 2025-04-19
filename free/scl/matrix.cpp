@@ -397,9 +397,9 @@ matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ)
 
 void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ)
 {
-   float frustumH = tanf ( fovy / 360.0f * PI ) * nearZ;
-   float frustumW = frustumH * aspect;
-   matrix::volume(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ );
+   float frustumHeight = tanf ( fovy / 360.0f * PI ) * nearZ;
+   float frustumWidth = frustumHeight * aspect;
+   matrix::volume(m, -frustumWidth, frustumWidth, -frustumHeight, frustumHeight, nearZ, farZ );
 }
 
 matrix matrix::volume(float left, float right, float bottom, float top, float nearZ, float farZ)

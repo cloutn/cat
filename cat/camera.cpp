@@ -62,6 +62,8 @@ void Camera::setViewByMatrix(const scl::matrix& m)
 
 void Camera::setOrtho(const bool b)
 {
+	if (m_ortho == b)
+		return;
 	m_ortho = b;
 	_invalidateProjection();
 }
