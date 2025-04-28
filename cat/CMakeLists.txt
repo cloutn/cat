@@ -43,6 +43,7 @@ set(header_files
 	color.h
 	vertex.h
 	terrain.h
+	AABB.h
 )
 
 set(src_files
@@ -77,6 +78,7 @@ set(src_files
 	color.cpp
 	vertex.cpp
 	terrain.cpp
+	AABB.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})

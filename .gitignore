@@ -64,3 +64,5 @@
 /lib64
 /.vs
 error.log
+/test/testMath/build64
+/test/testScl/build64
