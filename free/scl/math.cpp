@@ -56,6 +56,11 @@ int pow(int base, int times)
 }
 
 
+float inv_sqrt(float f)
+{
+	return 1.0f / ::sqrtf(f);
+}
+
 float lerpf(float from, float to, float t)
 {
 	return from + t * (to - from);

@@ -12,6 +12,9 @@ int main()
 	test::test_camera_look_at	(false);
 	test::test_decompose		(false);
 	test::test_quaternion		(false);
+	test::test_plane			(false);
+	test::test_plane2			(false);
+	test::test_plane3			(false);
 
 
 	printf("finished.\n");

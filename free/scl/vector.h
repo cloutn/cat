@@ -40,15 +40,21 @@ public:
 
 	void	clear();
 
-	bool	equal			(const float _x, const float _y, const float _z) const { return scl::float_equal(x, _x) && scl::float_equal(y, _y) && scl::float_equal(z, _z); }
+	bool	equal	 		(const float _x, const float _y, const float _z, const float epsilon = MATH_FLOAT_EPSILON) const { return scl::float_equal(x, _x, epsilon) && scl::float_equal(y, _y, epsilon) && scl::float_equal(z, _z, epsilon); }
+	bool	equal	 		(const vector3& other, const float epsilon = MATH_FLOAT_EPSILON) const { return equal(other.x, other.y, other.z, epsilon); }
 	void	set				(const float x, const float y, const float z);
 	void	add				(const float x, const float y, const float z);
 	float	length			() const;
+	float	length_sqr		() const;
+	float	magnitude		() const { return length(); }
+	float	magnitude_sqr	() const { return length_sqr(); }
 	bool	empty			() const { return float_equal(length(), 0); }
+	bool	is_zero			() const { return empty(); }
 	void	normalize		();
+	bool	is_normalized	() const;
 	void	mul_matrix		(const matrix& m);
 	vector3	cross			(const vector3& v);	
-	vector3	dot				(const vector3& v);	
+	float	dot				(const vector3& v) const;	
 
 	vector3& 	operator-=	(const vector3& other);
 	vector3& 	operator+=	(const vector3& other);
@@ -91,6 +97,9 @@ public:
 	{
 		s << x << y << z;
 	}
+
+	const float* value_ptr() const { return &(this->x); }
+	float* value_ptr() { return &(this->x); }
 };
 
 class vector4
@@ -120,7 +129,7 @@ public:
 	void	clear		();
 	void	set			(const float x, const float y, const float z, const float d);
 	float	length		() const;	//向量长度
-	void	fromPoint	(const point& from, const point& to);
+	//void	fromPoint	(const point& from, const point& to);
 	void	normalize	();
 	void	mul			(matrix& m);
 	void	div			(const float v);
@@ -140,7 +149,7 @@ public:
 	static float		cosa2	(const vector4& v1, const vector4& v2);	
 
 	//计算法向量
-	static vector4&		get_normal_vector(const point& p1, const point&p2, const point& p3); 
+	//static vector4&		get_normal_vector(const point& p1, const point&p2, const point& p3); 
 };
 
 inline vector3 c_vector3(const float x, const float y, const float z)

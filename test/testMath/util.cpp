@@ -23,6 +23,11 @@ void _print(const float* m)
 	}
 }
 
+bool float_equal(const float a, const float b)
+{
+	return scl::float_equal(a, b, 1e-5);
+}
+
 //void _print_float4(const float* m)
 //{
 //	for (int i = 0; i < 4; ++i)
@@ -66,7 +71,7 @@ bool mat_equal(const float* m1, const float* m2)
 {
 	for (int i = 0; i < 16; ++i)
 	{
-		if (!scl::float_equal(m1[i], m2[i]))
+		if (!test::float_equal(m1[i], m2[i]))
 			return false;
 	}
 	return true;
@@ -74,24 +79,24 @@ bool mat_equal(const float* m1, const float* m2)
 
 bool quat_equal(const glm::quat& q1, const scl::quaternion& q2)
 {
-	if (!scl::float_equal(q1.x, q2.x))
+	if (!test::float_equal(q1.x, q2.x))
 		return false;
-	if (!scl::float_equal(q1.y, q2.y))
+	if (!test::float_equal(q1.y, q2.y))
 		return false;
-	if (!scl::float_equal(q1.z, q2.z))
+	if (!test::float_equal(q1.z, q2.z))
 		return false;
-	if (!scl::float_equal(q1.w, q2.w))
+	if (!test::float_equal(q1.w, q2.w))
 		return false;
 	return true;
 }
 
 bool vector3_equal(const glm::vec3& q1, const scl::vector3& q2)
 {
-	if (!scl::float_equal(q1.x, q2.x))
+	if (!test::float_equal(q1.x, q2.x))
 		return false;
-	if (!scl::float_equal(q1.y, q2.y))
+	if (!test::float_equal(q1.y, q2.y))
 		return false;
-	if (!scl::float_equal(q1.z, q2.z))
+	if (!test::float_equal(q1.z, q2.z))
 		return false;
 	return true;
 }
@@ -100,7 +105,7 @@ bool vector3_equal(const glm::vec3& q1, const scl::vector3& q2)
 //{
 //	for (int i = 0; i < 4; ++i)
 //	{
-//		if (!scl::float_equal(f1[i], f2[i]))
+//		if (!test::float_equal(f1[i], f2[i]))
 //			return false;
 //	}
 //	return true;
@@ -173,9 +178,27 @@ bool compare_vector3(const glm::vec3& vec1, const scl::vector3& vec2, bool needP
 bool float3_euqal(const float* v1, const float* v2)
 {
 	for (int i = 0; i < 3; ++i)
-		if (!scl::float_equal(v1[i], v2[i]))
+		if (!test::float_equal(v1[i], v2[i]))
 			return false;
 	return true;
+}
+
+bool float4_euqal(const float* v1, const float* v2)
+{
+	for (int i = 0; i < 4; ++i)
+		if (!test::float_equal(v1[i], v2[i]))
+			return false;
+	return true;
+}
+
+glm::vec3 glm_vector(float* f3)
+{
+	return { f3[0], f3[1], f3[2] };
+}
+
+scl::vector3 scl_vector(float* v)
+{
+	return { v[0], v[1], v[2] };
 }
 
 } // namespace test 

@@ -67,7 +67,8 @@ set(header_files
 	vring_queue.h
 	wstring.h
 	zip_int.h
-	function.h)
+	function.h
+	plane.h)
 
 set(src_files
 	android.cpp

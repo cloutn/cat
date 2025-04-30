@@ -30,6 +30,11 @@ float vector3::length() const
 	return sqrtf(x * x + y * y + z * z);
 }
 
+float vector3::length_sqr() const
+{
+	return (x * x + y * y + z * z);
+}
+
 void vector3::normalize()
 {
 	if (float_equal(x, 0) && float_equal(y, 0) && float_equal(z, 0))
@@ -41,6 +46,12 @@ void vector3::normalize()
 	z /= len;
 }
 
+bool vector3::is_normalized() const
+{
+	float len = length_sqr();
+	return float_equal(len, 1.0f);
+
+}
 vector3& vector3::operator-=( const vector3& other )
 {
 	this->x -= other.x;
@@ -139,13 +150,12 @@ scl::vector3 vector3::cross(const vector3& v)
 
 float vector3::dot( const vector3& v1, const vector3& v2 )
 {
-	//TODO vector.d没有处理？
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
-scl::vector3 vector3::dot(const vector3& v)
+float vector3::dot(const vector3& v) const
 {
-	scl::vector3 r = cross(*this, v);
+	float r = dot(*this, v);
 	return r;
 }
 
@@ -225,15 +235,15 @@ float vector4::length() const
 	return sqrtf(x * x + y * y + z * z);
 }
 
-void vector4::fromPoint( const point& from, const point& to )
-{
-	x = to.x - from.x;
-	y = to.y - from.y;
-	z = to.z - from.z;
-
-	//TODO d应该怎么处理?
-	w = to.d - from.d;
-}
+//void vector4::fromPoint( const point& from, const point& to )
+//{
+//	x = to.x - from.x;
+//	y = to.y - from.y;
+//	z = to.z - from.z;
+//
+//	//TODO d应该怎么处理?
+//	w = to.d - from.d;
+//}
 
 vector4& vector4::cross( const vector4& v1, const vector4& v2 )
 {
@@ -326,16 +336,16 @@ void vector4::div(const float v)
 	w /= v;
 }
 
-vector4& vector4::get_normal_vector( const point& p1, const point&p2, const point& p3 )
-{
-	vector4 v1;
-	v1.fromPoint( p1, p2 );
-	vector4 v2;
-	v2.fromPoint( p2, p3 );
-	vector4& q = vector4::cross(v1, v2);
-	q.normalize();
-	return q;
-}
+//vector4& vector4::get_normal_vector( const point& p1, const point&p2, const point& p3 )
+//{
+//	vector4 v1;
+//	v1.fromPoint( p1, p2 );
+//	vector4 v2;
+//	v2.fromPoint( p2, p3 );
+//	vector4& q = vector4::cross(v1, v2);
+//	q.normalize();
+//	return q;
+//}
 
 
 

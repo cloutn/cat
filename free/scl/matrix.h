@@ -211,7 +211,7 @@ inline bool matrix::operator==(const matrix& other) const
 	{
 		for (int j = 0; j < 4; ++j)
 		{
-			if (!float_equal(m[i][j], other.m[i][j], 0.0001f))
+			if (!float_equal(m[i][j], other.m[i][j], MATH_FLOAT_EPSILON))
 			{
 				return false;
 			}

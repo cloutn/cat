@@ -284,7 +284,7 @@ void test14()
 
 	wstring16 s2 = L"23.554";
 	double f1 = s2.to_double();
-	assert(scl::absolute(f1 - 23.554) < 0.0001);
+	assert(scl::absolute(f1 - 23.554) < scl::MATH_FLOAT_EPSILON);
 
 	wstring32 s3 = L"5300000000";
 	long long i8 = s3.to_int64();

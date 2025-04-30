@@ -12,6 +12,9 @@ void test_camera_look_at	(bool print = false);
 void test_rotate_order		(bool print = false);
 void test_decompose			(bool print = false);
 void test_quaternion		(bool print = false);
+void test_plane				(bool print = false);
+void test_plane2			(bool print = false);
+void test_plane3			(bool print = false);
 
 } // namespace test
 

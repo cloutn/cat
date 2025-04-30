@@ -6,6 +6,8 @@
 
 #include "scl/type.h"
 
+#include <assert.h>
+
 namespace scl {
 
 const float PI			= 3.1415926535897932384626433832795f;
@@ -20,6 +22,10 @@ const	uint64	MAX_UINT64	= 0xFFFFFFFFFFFFFFFF;
 
 const	int		MIN_INT		= 0x80000000;
 const	int64	MIN_INT64	= 0x8000000000000000;
+
+//const float FLOAT_EPSILON = 0.0001f;
+const float MATH_FLOAT_EPSILON = 1e-6;
+const double MATH_DOUBLE_EPSILON = 1e-6;
 
 //求绝对值
 template<typename T> 
@@ -93,26 +99,27 @@ inline T clamp(const T v, const T _min, const T _max)
 
 
 //判断浮点数是否相等
-inline bool float_equal(const float a, const float b, const float precision = 0.0001)
+inline bool float_equal(const float a, const float b, const float precision = MATH_FLOAT_EPSILON)
 {
+	assert(precision < 0.1f);
 	return absolute(a - b) <= precision;
 }
 
 //判断浮点数是否为0
-inline bool float_is_zero(const float a, const float precision = 0.0001)
+inline bool float_is_zero(const float a, const float precision = MATH_FLOAT_EPSILON)
 {
 	return float_equal(a, 0, precision);
 }
 
 
 //浮点数大于
-inline bool float_greater(const float a, const float b, const float precision = 0.0001)
+inline bool float_greater(const float a, const float b, const float precision = MATH_FLOAT_EPSILON)
 {
 	return a - b > precision;
 }
 
 //浮点数小于
-inline bool float_smaller(const float a, const float b, const float precision = 0.0001)
+inline bool float_smaller(const float a, const float b, const float precision = MATH_FLOAT_EPSILON)
 {
 	return b - a > precision;
 }
@@ -132,6 +139,10 @@ uint min_prime(uint n);
 
 //求base的times次方
 int pow(int base, int times);
+
+// Computes a fully accurate inverse square root
+float inv_sqrt(float f);
+
 
 //对2π求模
 inline double mod2PI(const double angel)

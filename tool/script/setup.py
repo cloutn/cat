@@ -130,7 +130,7 @@ args = parser.parse_args()
 
 op = args.operation
 G.arch64 = (args.arch==64)
-print("action = %s, arch64 = %r" % (op, G.arch64))
+print("operation function = %s, arch64 = %r" % (op, G.arch64))
 if op in all_funcs:
     locals()[op]()
 else:

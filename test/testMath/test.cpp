@@ -6,6 +6,7 @@
 #include "scl/quaternion.h"
 #include "scl/vector.h"
 #include "scl/assert.h"
+#include "scl/plane.h"
 
 #include <glm/vec3.hpp> 
 #include <glm/vec4.hpp>
@@ -117,7 +118,7 @@ void test_camera(bool print)
 	glm::mat4	gProjection = glm::perspective(glm::radians(45.0f), w/h, 0.1f, 100.0f);
 	assert(compare_mat(sProjection, gProjection, print));
 
-	matrix		sOrtho = matrix::ortho(-w/2, w/2, -h/2, h/2, -10000, 10000);
+	matrix		sOrtho = matrix::volume(-w/2, w/2, -h/2, h/2, -10000, 10000);
 	glm::mat4	gOrtho = glm::orthoRH(-w/2, w/2, -h/2, h/2, -10000.0f, 10000.0f);
 	assert(compare_mat(sOrtho, gOrtho, print));
 
@@ -203,7 +204,7 @@ void test_decompose(bool print)
 	vector3	sEulerDecompose2 = { 0 };
 	vector3 sEuler	= { r[0], r[1], r[2] };
 	matrix::decompose_rotation_xyz(sRotate, sEulerDecompose2);
-	assert(sEuler == sEulerDecompose2);
+	assert(sEuler.equal(sEulerDecompose2, 1e-5));
 
 	vector3		sTranslateDecompose;
 	vector3		sScaleDecompose;
@@ -211,7 +212,7 @@ void test_decompose(bool print)
 	matrix		sMatRotateDecompose;
 	quaternion	sQuaternionDecompose;
 	matrix::decompose(sAll, &sTranslateDecompose, &sScaleDecompose, &sEulerDecompose, &sMatRotateDecompose, &sQuaternionDecompose); 
-	assert(sEuler == sEulerDecompose);
+	assert(sEuler.equal(sEulerDecompose, 1e-5));
 	assert(sTranslateDecompose == vector3({t[0], t[1], t[2]}));
 	assert(sScaleDecompose == vector3({s[0], s[1], s[2]}));
 	assert(compare_mat(sMatRotateDecompose, sRotate, print));
@@ -299,6 +300,122 @@ void test_quaternion(bool print)
 			}
 		}
 	}
+}
+
+glm::vec4 glm_plane_from_normal_point(glm::vec3 normal, glm::vec3 pt) 
+{
+    glm::vec3 norm = glm::normalize(normal);
+    return { norm.x, norm.y, norm.z, -glm::dot(pt, norm) };
+}
+
+glm::vec4 glm_plane_from_points(glm::vec3 pt1, glm::vec3 pt2, glm::vec3 pt3) 
+{
+	glm::vec3 v1 = pt2 - pt1;
+	glm::vec3 v2 = pt3 - pt1;
+	glm::vec3 n = glm::normalize(glm::cross(v1, v2));
+	return glm_plane_from_normal_point(n, pt1);
+}
+
+void test_plane(bool print)
+{
+	float			n[]			= { 1, 2,	3 };
+	float			pos[]		= { 4, 5, 6 };
+	float			otherPt[]	= { 11.5, 27.2, -5.5};
+
+	glm::vec3		gNormal		= glm_vector(n);
+	glm::vec3		gPos		= glm_vector(pos);
+	glm::vec4		gPlane		= glm_plane_from_normal_point(gNormal, gPos);
+	glm::vec3		gOtherPt	= glm_vector(otherPt);
+	glm::vec3		gPlaneNormal= glm_vector(glm::value_ptr(gPlane)); 
+	float			gDotPoint	= glm::dot(gPlaneNormal, gOtherPt) + gPlane.w;
+
+	scl::vector3	sNormal		= scl_vector(n);
+	scl::vector3	sPos		= scl_vector(pos);
+	scl::vector3	sOtherPt	= scl_vector(otherPt);
+	scl::plane		sPlane		= scl::plane::create_from_normal_point(sNormal, sPos);
+	float			sDotPoint	= sPlane.dot(sOtherPt);
+
+	assert(float4_euqal(glm::value_ptr(gPlane), sPlane.value_ptr()));
+	assert(test::float_equal(gDotPoint, sDotPoint));
+}
+
+void test_plane2(bool print)
+{
+	float			p1[]	=	{ 1, 2,	3 };
+	float			p2[]	=	{ 4, 0.5, 6 };
+	float			p3[]	=	{ 17, 15, 2.6 };
+
+	glm::vec3		gPt1		{ p1[0], p1[1], p1[2] };
+	glm::vec3		gPt2		{ p2[0], p2[1], p2[2] };
+	glm::vec3		gPt3		{ p3[0], p3[1], p3[2] };
+	glm::vec4		gPlane	=	glm_plane_from_points(gPt1, gPt2, gPt3);
+
+	scl::vector3	sPt1		{ p1[0], p1[1], p1[2] };
+	scl::vector3	sPt2		{ p2[0], p2[1], p2[2] };
+	scl::vector3	sPt3		{ p3[0], p3[1], p3[2] };
+	
+	scl::plane		sPlane	= scl::plane::create_from_point(sPt1, sPt2, sPt3);
+
+	assert(float4_euqal(glm::value_ptr(gPlane), sPlane.value_ptr()));
+}
+
+void test_plane3(bool print)
+{
+	float			intercepts[]= { 1, 2, 3 };
+	float			posX[]		= { intercepts[0],	0,				0 };
+	float			posY[]		= { 0,				intercepts[1],	0 };
+	float			posZ[]		= { 0,				0,				intercepts[2] };
+
+	scl::plane p1 = scl::plane::create_from_intercept(intercepts[0], intercepts[1], intercepts[2]);
+	scl::plane p2 = scl::plane::create_from_point(scl_vector(posX), scl_vector(posY), scl_vector(posZ));
+
+	assert(p1 == p2);
+
+	float			pt1[]		= { 1, 2, 3 };
+	float			pt2[]		= { 0.1, 0.2, 0.3 };
+	float			pt3[]		= { 1/3.0f, 2/3.0f, 1 };
+	float			pt4[]		= { 10, 20, 30 };
+	
+	scl::vector3 vv1 = scl_vector(pt2);
+	float len = vv1.length();
+	float dot1 = p1.dot(scl_vector(pt1));
+	float dot2 = p1.dot(scl_vector(pt2));
+	float dot3 = p1.dot(scl_vector(pt3));
+
+	assert(dot1 > 0);
+	assert(dot2 < 0);
+	assert(dot3 == 0);
+
+	// test distance to point, the result number is from Houdini.
+	assert(float_equal(dot1, 1.714286));
+	assert(float_equal(dot2, -0.6));
+
+	float pt_distance = p1.point_distance(scl_vector(pt2));
+	assert(float_equal(pt_distance, 0.6));
+
+	int side1 = p1.side(scl_vector(pt1));
+	int side2 = p1.side(scl_vector(pt2));
+	int side3 = p1.side(scl_vector(pt3));
+	int side4 = p1.side(scl_vector(pt4));
+
+	assert(side1 == 1);
+	assert(side2 == -1);
+	assert(side3 == 0);
+	assert(side4 == 1);
+
+	bool is_same12 = p1.same_side(scl_vector(pt1), scl_vector(pt2));
+	bool is_same13 = p1.same_side(scl_vector(pt1), scl_vector(pt3));
+	bool is_same14 = p1.same_side(scl_vector(pt1), scl_vector(pt4));
+	bool is_same23 = p1.same_side(scl_vector(pt2), scl_vector(pt3));
+	bool is_same24 = p1.same_side(scl_vector(pt2), scl_vector(pt4));
+
+	assert(!is_same12);
+	assert(is_same13);
+	assert(is_same14);
+	assert(is_same23);
+	assert(!is_same24);
+	//assert(float4_euqal(glm::value_ptr(gPlane), sPlane.value_ptr()));
+	//assert(test::float_equal(gDotPoint, sDotPoint));
 }
 
 } // namespace test
