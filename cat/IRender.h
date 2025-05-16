@@ -21,15 +21,18 @@ enum PRIMITIVE_TYPE
 	PRIMITIVE_TYPE_TRIANGLE_FAN,
 };
 
+// if you want to see the vulkan relative date type and normalize means, 
+// see _attrToVkFormat in vulkanRender.cpp
+// (dateType + size + normalize) = (VkFormat in vulkan api)
 class VertexAttr
 {
 public:
-	int			index;
-	int			size;
-	ELEM_TYPE	dataType;
-	int			normalize;
-	int			stride;
-	void*		offset;
+	int			index;			// shader location
+	int			size;			// count of dataType. if size=3, dataType=int8, VkFormat=VK_FORMAT_R8G8B8_SNORM
+	ELEM_TYPE	dataType;		// int / uint/ int8 / uint8 / float 
+	int			normalize;		// is data normalized.
+	int			stride;			// stride is the byte stride between consecutive elements within the buffer.
+	void*		offset;			// offset is a byte offset of this attribute relative to the start of an element in the vertex input binding.
 };
 
 class IRender

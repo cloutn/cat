@@ -1443,6 +1443,13 @@ VkPipelineVertexInputStateCreateInfo _buildVulkanVertexInput(const VertexAttr* a
 	//		...
 	//	} 	]
 
+	// VkVertexInputBindingDescription		是用来描述一个 buffer 的绑定信息的。
+	//										所以只有在存在多个buffer的时候，我们才需要创建多个 viBinds，这也是下面 binding 变量的逻辑。
+	// VkVertexInputAttributeDescription	是用来描述顶点属性，以及该属性在shader中的变量的location。
+	//										每个顶点属性都要对应创建一个 viAttrs
+	//
+	// 创建的多个 bind des 和 attr des 会通过 VkPipelineVertexInputStateCreateInfo 返回。
+
 	int			binding		= -1;
 	const void*	prevBuffer	= NULL;
 	int			viAttrCount	= 0;

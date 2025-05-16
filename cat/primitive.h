@@ -20,6 +20,8 @@ class Env;
 class ShaderMacro;
 class ShaderMacroArray;
 class Object;
+class VertexAttrMapper;
+
 
 class Primitive
 {
@@ -68,6 +70,9 @@ public:
 	Mesh*				parent				() { return m_parent; }
 	Object*				parentObject		();
 
+	void*				vertexAttr(const int vertexIndex, const int attrIndex);
+	const VertexAttrMapper*	vertexAttrMapper();
+
 private:
 	void				_loadVertex			(const cgltf_primitive&	primitive, IRender* render);
 
@@ -95,6 +100,11 @@ private:
 
 	//TODO parent is for debug
 	Mesh*				m_parent;
+
+	// 顶点属性到 shader location 的映射器的索引
+	// 默认索引器是 0
+	// 如果用于渲染 primitive 的 shader 所使用的 shader location 的定义和默认不同，则需要在这里指定其他的映射器。
+	uint8				m_vertexAttrMapperIndex; 
 };
 
 } // namespace cat {

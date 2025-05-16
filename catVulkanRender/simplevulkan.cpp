@@ -2137,14 +2137,18 @@ void svkCmdBindVertexBuffers(VkCommandBuffer cb, int firstBinding, void** vertex
 	VkDeviceSize	offsets[64]			= { 0 };
 	VkBuffer		vkVertexBuffers[64] = { 0 };
 	int				vkVertexBufferCount = 0;
+	svkBuffer*		prevBuffer			= NULL;
 	for (int i = 0; i < attrCount; ++i)
 	{
-		svkBuffer* svkBuf= static_cast<svkBuffer*>(vertexBuffers[i]);
+		svkBuffer* svkBuf = static_cast<svkBuffer*>(vertexBuffers[i]);
 		if (NULL == svkBuf)
+			continue;
+		if (svkBuf == prevBuffer) // see _buildVulkanVertexInput
 			continue;
 		vkVertexBuffers[vkVertexBufferCount] = svkBuf->buffer;
 		offsets[vkVertexBufferCount] = 0;
 		++vkVertexBufferCount;
+		prevBuffer = svkBuf;
 	}
 	vkCmdBindVertexBuffers(cb, firstBinding, vkVertexBufferCount, vkVertexBuffers, offsets);                
 }

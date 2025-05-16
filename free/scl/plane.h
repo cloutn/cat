@@ -32,6 +32,7 @@ public:
 
 	bool			operator==				(const plane& other) { return normal == other.normal && float_equal(w, other.w); }
 
+	// return 1 if point is on the side of normal, return -1 if point is on the adverse side of the normal. return 0 if point is on the plane.
 	int				side					(const vector3& pt) const;
 	bool			same_side				(const vector3& pt1, const vector3& pt2) const;
 	float			dot						(const vector3& pt) const;
@@ -94,7 +95,7 @@ scl::plane plane::create_from_intercept(float x_intercept, float y_intercept, fl
 int plane::side(const vector3& pt) const
 {
 	float d = dot(pt);
-	if (float_is_zero(d))
+	if (float_is_zero(d, 1e-4))
 		return 0;
 	else
 		return d > 0 ? 1 : -1;

@@ -9,18 +9,19 @@
 #include "cat/object.h"
 #include "cat/env.h"
 #include "cat/def.h"
+#include "cat/vertex.h"
 
 #include "scl/assert.h"
 
 #include "cgltf/cgltf.h"
 
-#include <string.h>
+//#include <string.h>
 
 #include "gltf_raw_render.h"
 
 namespace cat {
 	
-int _attrNameToIndex(const char* const name);
+//int _attrNameToIndex(const char* const name);
 
 Primitive::Primitive() : 
 	m_render					(NULL),
@@ -38,7 +39,8 @@ Primitive::Primitive() :
 	m_shader					(NULL),
 	//m_shaderMacros				(NULL),
 	m_pickShader				(NULL),
-	m_parent					(NULL)
+	m_parent					(NULL),
+	m_vertexAttrMapperIndex		(0)
 {
 }
 
@@ -47,21 +49,19 @@ Primitive::~Primitive()
 	release();
 }
 
-int _attrNameToIndex(const char* const name)
-{
-	int attrIndex = -1;
-	if		(0 == _stricmp(name, "POSITION"		))	attrIndex = 0;
-	else if (0 == _stricmp(name, "NORMAL"		))	attrIndex = 1;
-	else if (0 == _stricmp(name, "TANGENT"		))	attrIndex = 2;
-	else if (0 == _stricmp(name, "TEXCOORD_0"	))	attrIndex = 3;
-	else if (0 == _stricmp(name, "TEXCOORD_1"	))	attrIndex = 4;
-	else if (0 == _stricmp(name, "COLOR_0"		))	attrIndex = 5;
-	else if (0 == _stricmp(name, "JOINTS_0"		))	attrIndex = 6;
-	else if (0 == _stricmp(name, "WEIGHTS_0"	))	attrIndex = 7;
-	return attrIndex;
-}
-
-
+//int _attrNameToIndex(const char* const name)
+//{
+//	int attrIndex = -1;
+//	if		(0 == _stricmp(name, "POSITION"		))	attrIndex = 0;
+//	else if (0 == _stricmp(name, "NORMAL"		))	attrIndex = 1;
+//	else if (0 == _stricmp(name, "TANGENT"		))	attrIndex = 2;
+//	else if (0 == _stricmp(name, "TEXCOORD_0"	))	attrIndex = 3;
+//	else if (0 == _stricmp(name, "TEXCOORD_1"	))	attrIndex = 4;
+//	else if (0 == _stricmp(name, "COLOR_0"		))	attrIndex = 5;
+//	else if (0 == _stricmp(name, "JOINTS_0"		))	attrIndex = 6;
+//	else if (0 == _stricmp(name, "WEIGHTS_0"	))	attrIndex = 7;
+//	return attrIndex;
+//}
 
 void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 {
@@ -97,7 +97,8 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 		cgltf_attribute&	attr		= primitive.attributes[i];
 		cgltf_accessor*		accessor	= attr.data;	
 
-		m_attrs[i].index = _attrNameToIndex(attr.name);
+		//m_attrs[i].index = _attrNameToIndex(attr.name);
+		m_attrs[i].index = vertexAttrMapper()->gltfAttrNameToLocation(attr.name);
 		if (m_attrs[i].index < 0)
 		{
 			printf("attr index = %s\n", attr.name);
@@ -415,6 +416,19 @@ cat::Object* Primitive::parentObject()
 	if (NULL == parent())
 		return NULL;
 	return parent()->parent();
+}
+
+
+void* Primitive::vertexAttr(const int vertexIndex, const int attrIndex)
+{
+	return NULL;
+}
+
+const VertexAttrMapper* Primitive::vertexAttrMapper()
+{
+	if (m_vertexAttrMapperIndex == -1)
+		return &VertexAttrMapper::default();
+	return m_env->vertexAttrMapper(m_vertexAttrMapperIndex);
 }
 
 } // namespace cat

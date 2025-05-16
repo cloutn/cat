@@ -35,6 +35,103 @@ class VertexAttr;
 //	vertex& operator+=(const scl::vector3& v);
 //};
 
+//	ShaderChannel
+//	{
+//	    None = -1,
+//	    Vertex = 0,   // Vertex (vector3)
+//	    Normal,       // Normal (vector3)
+//	    Tangent,      // Tangent (vector4)
+//	    Color,        // Vertex color
+//	    TexCoord0,    // Texcoord 0
+//	    TexCoord1,    // Texcoord 1
+//	    TexCoord2,    // Texcoord 2
+//	    TexCoord3,    // Texcoord 3
+//	    TexCoord4,    // Texcoord 4
+//	    TexCoord5,    // Texcoord 5
+//	    TexCoord6,    // Texcoord 6
+//	    TexCoord7,    // Texcoord 7
+//	    BlendWeights, // Blend weights
+//	    BlendIndices, // Blend indices
+//	    Count,        // Keep this last!
+//	};
+//
+
+//int _attrNameToIndex(const char* const name)
+//{
+//	int attrIndex = -1;
+//	if		(0 == _stricmp(name, "POSITION"		))	attrIndex = 0;
+//	else if (0 == _stricmp(name, "NORMAL"		))	attrIndex = 1;
+//	else if (0 == _stricmp(name, "TANGENT"		))	attrIndex = 2;
+//	else if (0 == _stricmp(name, "TEXCOORD_0"	))	attrIndex = 3;
+//	else if (0 == _stricmp(name, "TEXCOORD_1"	))	attrIndex = 4;
+//	else if (0 == _stricmp(name, "COLOR_0"		))	attrIndex = 5;
+//	else if (0 == _stricmp(name, "JOINTS_0"		))	attrIndex = 6;
+//	else if (0 == _stricmp(name, "WEIGHTS_0"	))	attrIndex = 7;
+//	return attrIndex;
+//}
+
+
+// vertex attribute names
+enum VERTEX_ATTR
+{
+	VERTEX_ATTR_INVALID = -1,
+	VERTEX_ATTR_POSITION,
+	VERTEX_ATTR_NORMAL,
+	VERTEX_ATTR_TANGENT,
+	VERTEX_ATTR_TEXCOORD0,
+	VERTEX_ATTR_TEXCOORD1,
+	VERTEX_ATTR_COLOR0,
+	VERTEX_ATTR_JOINTS_0,
+	VERTEX_ATTR_WEIGHTS_0,
+
+	// extra vertex attributes
+	VERTEX_ATTR_TEXCOORD2,
+	VERTEX_ATTR_TEXCOORD3,
+	VERTEX_ATTR_TEXCOORD4,
+	VERTEX_ATTR_TEXCOORD5,
+	VERTEX_ATTR_TEXCOORD6,
+	VERTEX_ATTR_TEXCOORD7,
+	VERTEX_ATTR_COLOR1,
+	VERTEX_ATTR_JOINTS_1,
+	VERTEX_ATTR_WEIGHTS_1,
+	VERTEX_ATTR_COUNT,
+};
+
+
+//
+// 顶点属性映射器
+//
+// 用于将指定的顶点属性映射到具体的 ShaderLocation。
+// 如果遵循引擎本身的 shader location 的定义，那么这个转换就和枚举 VERTEX_ATTR 是一致的。
+// 如果使用了第三方的 shader 需要调整 shader location，则需要自己构造 locations 数组的对应关系，并传递给 primitive。
+// 注意，这种映射只在第一次生成 VertexAttr 的时候才生效。
+//
+class VertexAttrMapper
+{
+public:
+	uint8 locations[VERTEX_ATTR_COUNT];
+
+	VertexAttrMapper();
+
+	int location(VERTEX_ATTR attr) const;
+
+	int gltfAttrNameToLocation(const char* const gltfAttrName) const;
+
+	static VERTEX_ATTR gltfAttrNameToEnum(const char* const name);
+
+	static const VertexAttrMapper& default() 
+	{
+		static VertexAttrMapper mapper;
+		return mapper;
+	}
+
+	static int defaultLocation(VERTEX_ATTR attr)
+	{
+		return default().location(attr);
+	}
+};
+
+
 class vertex_uv
 {
 public:

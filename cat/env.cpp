@@ -5,6 +5,7 @@
 #include "cat/shader.h"
 #include "cat/object.h"
 #include "cat/IRender.h"
+#include "cat/vertex.h"
 
 #include "cgltf/cgltf.h"
 
@@ -15,12 +16,16 @@ Env::Env() :
 	m_render			(NULL)
 {
 	m_shaderCache = new ShaderCache();
+	m_vertexAttrMappers = new VertexAttrMapper[MAX_VERTEX_ATTR_MAPPER_COUNT];
 }
 
 Env::~Env()
 {
 	if (NULL != m_shaderCache)
 		delete m_shaderCache;
+
+	if (NULL != m_vertexAttrMappers)
+		delete[] m_vertexAttrMappers;
 }
 
 Shader* Env::getShader(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, const int macroCount)
@@ -147,12 +152,19 @@ scl::vector4 Env::registerPickPrimitive(Primitive* primitive)
 	return color;
 }
 
-cat::Primitive* Env::getPickPrimitive(scl::vector4& color)
+Primitive* Env::getPickPrimitive(scl::vector4& color)
 {
 	uint32			id = float_to_argb(color.a, color.r, color.g, color.b);
 	if (id >= m_pickPrimitives.size())
 		return NULL;
 	return m_pickPrimitives[id];
+}
+
+VertexAttrMapper* Env::vertexAttrMapper(const int index)
+{
+	if (index < 0 || index >= MAX_VERTEX_ATTR_MAPPER_COUNT)
+		return &m_vertexAttrMappers[0];
+	return &m_vertexAttrMappers[index];
 }
 
 //void Env::addToBufferMap(cgltf_buffer_view* bufferView, void* buffer)
