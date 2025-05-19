@@ -71,30 +71,30 @@ class VertexAttr;
 //}
 
 
-// vertex attribute names
-enum VERTEX_ATTR
+// vertex attribute location
+enum ATTR_LOC
 {
-	VERTEX_ATTR_INVALID = -1,
-	VERTEX_ATTR_POSITION,
-	VERTEX_ATTR_NORMAL,
-	VERTEX_ATTR_TANGENT,
-	VERTEX_ATTR_TEXCOORD0,
-	VERTEX_ATTR_TEXCOORD1,
-	VERTEX_ATTR_COLOR0,
-	VERTEX_ATTR_JOINTS_0,
-	VERTEX_ATTR_WEIGHTS_0,
+	ATTR_LOC_INVALID	=	-1,
+	ATTR_LOC_POSITION	=	0,
+	ATTR_LOC_NORMAL		=	1,
+	ATTR_LOC_TANGENT	=	2,
+	ATTR_LOC_TEXCOORD0	=	3,
+	ATTR_LOC_TEXCOORD1	=	4,
+	ATTR_LOC_COLOR0		=	5,
+	ATTR_LOC_JOINTS_0	=	6,
+	ATTR_LOC_WEIGHTS_0	=	7,
 
 	// extra vertex attributes
-	VERTEX_ATTR_TEXCOORD2,
-	VERTEX_ATTR_TEXCOORD3,
-	VERTEX_ATTR_TEXCOORD4,
-	VERTEX_ATTR_TEXCOORD5,
-	VERTEX_ATTR_TEXCOORD6,
-	VERTEX_ATTR_TEXCOORD7,
-	VERTEX_ATTR_COLOR1,
-	VERTEX_ATTR_JOINTS_1,
-	VERTEX_ATTR_WEIGHTS_1,
-	VERTEX_ATTR_COUNT,
+	ATTR_LOC_TEXCOORD2	=	8,
+	ATTR_LOC_TEXCOORD3	=	9,
+	ATTR_LOC_TEXCOORD4	=	10,
+	ATTR_LOC_TEXCOORD5	=	11,
+	ATTR_LOC_TEXCOORD6	=	12,
+	ATTR_LOC_TEXCOORD7	=	13,
+	ATTR_LOC_COLOR1		=	14,
+	ATTR_LOC_JOINTS_1	=	15,
+	ATTR_LOC_WEIGHTS_1	=	16,
+	ATTR_LOC_COUNT,
 };
 
 
@@ -102,35 +102,36 @@ enum VERTEX_ATTR
 // 顶点属性映射器
 //
 // 用于将指定的顶点属性映射到具体的 ShaderLocation。
-// 如果遵循引擎本身的 shader location 的定义，那么这个转换就和枚举 VERTEX_ATTR 是一致的。
+// 如果遵循引擎本身的 shader location 的定义，那么这个转换就和枚举 ATTR_LOC 是一致的。
 // 如果使用了第三方的 shader 需要调整 shader location，则需要自己构造 locations 数组的对应关系，并传递给 primitive。
 // 注意，这种映射只在第一次生成 VertexAttr 的时候才生效。
 //
-class VertexAttrMapper
-{
-public:
-	uint8 locations[VERTEX_ATTR_COUNT];
+//class VertexAttrMapper
+//{
+//public:
+//	uint8 locations[ATTR_LOC_COUNT];
+//
+//	VertexAttrMapper();
+//
+//	int location(ATTR_LOC attr) const;
+//
+//	int gltfAttrNameToLocation(const char* const gltfAttrName) const;
+//
+//	static ATTR_LOC gltfAttrNameToEnum(const char* const name);
+//
+//	static const VertexAttrMapper& default() 
+//	{
+//		static VertexAttrMapper mapper;
+//		return mapper;
+//	}
+//
+//	static int defaultLocation(ATTR_LOC attr)
+//	{
+//		return default().location(attr);
+//	}
+//};
 
-	VertexAttrMapper();
-
-	int location(VERTEX_ATTR attr) const;
-
-	int gltfAttrNameToLocation(const char* const gltfAttrName) const;
-
-	static VERTEX_ATTR gltfAttrNameToEnum(const char* const name);
-
-	static const VertexAttrMapper& default() 
-	{
-		static VertexAttrMapper mapper;
-		return mapper;
-	}
-
-	static int defaultLocation(VERTEX_ATTR attr)
-	{
-		return default().location(attr);
-	}
-};
-
+ATTR_LOC gltfAttrNameToLocation(const char* const gltfAttrName);
 
 class vertex_uv
 {

@@ -104,7 +104,7 @@ private:
 	// 顶点属性到 shader location 的映射器的索引
 	// 默认索引器是 0
 	// 如果用于渲染 primitive 的 shader 所使用的 shader location 的定义和默认不同，则需要在这里指定其他的映射器。
-	uint8				m_vertexAttrMapperIndex; 
+	//uint8				m_vertexAttrMapperIndex; 
 };
 
 } // namespace cat {

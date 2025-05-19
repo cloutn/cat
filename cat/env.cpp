@@ -16,7 +16,7 @@ Env::Env() :
 	m_render			(NULL)
 {
 	m_shaderCache = new ShaderCache();
-	m_vertexAttrMappers = new VertexAttrMapper[MAX_VERTEX_ATTR_MAPPER_COUNT];
+	//m_vertexAttrMappers = new VertexAttrMapper[MAX_VERTEX_ATTR_MAPPER_COUNT];
 }
 
 Env::~Env()
@@ -24,8 +24,8 @@ Env::~Env()
 	if (NULL != m_shaderCache)
 		delete m_shaderCache;
 
-	if (NULL != m_vertexAttrMappers)
-		delete[] m_vertexAttrMappers;
+	//if (NULL != m_vertexAttrMappers)
+	//	delete[] m_vertexAttrMappers;
 }
 
 Shader* Env::getShader(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, const int macroCount)
@@ -160,12 +160,12 @@ Primitive* Env::getPickPrimitive(scl::vector4& color)
 	return m_pickPrimitives[id];
 }
 
-VertexAttrMapper* Env::vertexAttrMapper(const int index)
-{
-	if (index < 0 || index >= MAX_VERTEX_ATTR_MAPPER_COUNT)
-		return &m_vertexAttrMappers[0];
-	return &m_vertexAttrMappers[index];
-}
+//VertexAttrMapper* Env::vertexAttrMapper(const int index)
+//{
+//	if (index < 0 || index >= MAX_VERTEX_ATTR_MAPPER_COUNT)
+//		return &m_vertexAttrMappers[0];
+//	return &m_vertexAttrMappers[index];
+//}
 
 //void Env::addToBufferMap(cgltf_buffer_view* bufferView, void* buffer)
 //{

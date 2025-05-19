@@ -87,9 +87,9 @@ void vertex_color_uv::mul_matrix(const scl::matrix& m)
 const cat::VertexAttr* vertex_color_uv::get_attr()
 {
 	static const VertexAttr s_attrs[3] = {
-			{ 0, 3, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), 0 },
-			{ 5, 4, ELEM_TYPE_UINT8,	1, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, color) },
-			{ 3, 2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, u) }
+			{ ATTR_LOC_POSITION,	3, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), 0 },
+			{ ATTR_LOC_COLOR0,		4, ELEM_TYPE_UINT8,	1, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, color) },
+			{ ATTR_LOC_TEXCOORD0,	2, ELEM_TYPE_FLOAT,	0, sizeof(vertex_color_uv), OFFSET(vertex_color_uv, u) }
 	};
 	return s_attrs;
 }
@@ -102,45 +102,45 @@ int vertex_color::get_attr(VertexAttr* attrs, const int capacity)
 		return 0;
 	}
 
-	attrs[0] = { VertexAttrMapper::defaultLocation(VERTEX_ATTR_POSITION), 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 };
-	attrs[1] = { VertexAttrMapper::defaultLocation(VERTEX_ATTR_COLOR0), 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) };
+	attrs[0] = { ATTR_LOC_POSITION, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 };
+	attrs[1] = { ATTR_LOC_COLOR0, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) };
 
 	return 2;
 }
 
-VertexAttrMapper::VertexAttrMapper()
-{
-	for (int i = 0; i < VERTEX_ATTR_COUNT; ++i)
-		locations[i] = i;
-}
+//VertexAttrMapper::VertexAttrMapper()
+//{
+//	for (int i = 0; i < ATTR_LOC_COUNT; ++i)
+//		locations[i] = i;
+//}
+//
+//int VertexAttrMapper::location(ATTR_LOC attr) const
+//{
+//	if (attr <= ATTR_LOC_INVALID || attr >= ATTR_LOC_COUNT)
+//	{
+//		assert(false);
+//		return -1;
+//	}
+//	return locations[attr];
+//}
+//
+//int VertexAttrMapper::gltfAttrNameToLocation(const char* const gltfAttrName) const
+//{
+//	ATTR_LOC attr = gltfAttrNameToEnum(gltfAttrName);
+//	return attr >= 0 ? locations[attr] : -1;
+//}
 
-int VertexAttrMapper::location(VERTEX_ATTR attr) const
+ATTR_LOC gltfAttrNameToLocation(const char* const name)
 {
-	if (attr <= VERTEX_ATTR_INVALID || attr >= VERTEX_ATTR_COUNT)
-	{
-		assert(false);
-		return -1;
-	}
-	return locations[attr];
-}
-
-int VertexAttrMapper::gltfAttrNameToLocation(const char* const gltfAttrName) const
-{
-	VERTEX_ATTR attr = gltfAttrNameToEnum(gltfAttrName);
-	return attr >= 0 ? locations[attr] : -1;
-}
-
-cat::VERTEX_ATTR VertexAttrMapper::gltfAttrNameToEnum(const char* const name)
-{
-	VERTEX_ATTR attr = VERTEX_ATTR_INVALID;
-	if (0 == scl_strcasecmp(name, "POSITION"))	attr = VERTEX_ATTR_POSITION;
-	else if (0 == scl_strcasecmp(name, "NORMAL"))	attr = VERTEX_ATTR_NORMAL;
-	else if (0 == scl_strcasecmp(name, "TANGENT"))	attr = VERTEX_ATTR_TANGENT;
-	else if (0 == scl_strcasecmp(name, "TEXCOORD_0"))	attr = VERTEX_ATTR_TEXCOORD0;
-	else if (0 == scl_strcasecmp(name, "TEXCOORD_1"))	attr = VERTEX_ATTR_TEXCOORD1;
-	else if (0 == scl_strcasecmp(name, "COLOR_0"))	attr = VERTEX_ATTR_COLOR0;
-	else if (0 == scl_strcasecmp(name, "JOINTS_0"))	attr = VERTEX_ATTR_JOINTS_0;
-	else if (0 == scl_strcasecmp(name, "WEIGHTS_0"))	attr = VERTEX_ATTR_WEIGHTS_0;
+	ATTR_LOC attr = ATTR_LOC_INVALID;
+	if (0 == scl_strcasecmp(name, "POSITION"))			attr = ATTR_LOC_POSITION;
+	else if (0 == scl_strcasecmp(name, "NORMAL"))		attr = ATTR_LOC_NORMAL;
+	else if (0 == scl_strcasecmp(name, "TANGENT"))		attr = ATTR_LOC_TANGENT;
+	else if (0 == scl_strcasecmp(name, "TEXCOORD_0"))	attr = ATTR_LOC_TEXCOORD0;
+	else if (0 == scl_strcasecmp(name, "TEXCOORD_1"))	attr = ATTR_LOC_TEXCOORD1;
+	else if (0 == scl_strcasecmp(name, "COLOR_0"))		attr = ATTR_LOC_COLOR0;
+	else if (0 == scl_strcasecmp(name, "JOINTS_0"))		attr = ATTR_LOC_JOINTS_0;
+	else if (0 == scl_strcasecmp(name, "WEIGHTS_0"))	attr = ATTR_LOC_WEIGHTS_0;
 	return attr;
 }
 

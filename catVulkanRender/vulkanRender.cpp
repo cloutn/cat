@@ -1456,7 +1456,7 @@ VkPipelineVertexInputStateCreateInfo _buildVulkanVertexInput(const VertexAttr* a
 	for (int i = 0; i < attrCount; ++i)
 	{
 		const VertexAttr&					attr	= attrs[i];
-		if (attr.index < 0)
+		if (attr.location < 0)
 			continue;
 
 		const void*							buffer	= vertexBuffers[i];
@@ -1474,7 +1474,7 @@ VkPipelineVertexInputStateCreateInfo _buildVulkanVertexInput(const VertexAttr* a
 			prevBuffer								= buffer;
 		}
 
-		viAttr.location								= attr.index;
+		viAttr.location								= attr.location;
 		viAttr.binding								= binding;
 		viAttr.format								= _attrToVkFormat(attr); 
 		viAttr.offset								= uint32_t((uintptr_t(attr.offset)));

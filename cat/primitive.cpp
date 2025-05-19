@@ -39,8 +39,8 @@ Primitive::Primitive() :
 	m_shader					(NULL),
 	//m_shaderMacros				(NULL),
 	m_pickShader				(NULL),
-	m_parent					(NULL),
-	m_vertexAttrMapperIndex		(0)
+	m_parent					(NULL)//,
+	//m_vertexAttrMapperIndex		(0)
 {
 }
 
@@ -98,8 +98,8 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 		cgltf_accessor*		accessor	= attr.data;	
 
 		//m_attrs[i].index = _attrNameToIndex(attr.name);
-		m_attrs[i].index = vertexAttrMapper()->gltfAttrNameToLocation(attr.name);
-		if (m_attrs[i].index < 0)
+		m_attrs[i].location = gltfAttrNameToLocation(attr.name);
+		if (m_attrs[i].location < 0)
 		{
 			printf("attr index = %s\n", attr.name);
 			continue;
@@ -424,12 +424,12 @@ void* Primitive::vertexAttr(const int vertexIndex, const int attrIndex)
 	return NULL;
 }
 
-const VertexAttrMapper* Primitive::vertexAttrMapper()
-{
-	if (m_vertexAttrMapperIndex == -1)
-		return &VertexAttrMapper::default();
-	return m_env->vertexAttrMapper(m_vertexAttrMapperIndex);
-}
+//const VertexAttrMapper* Primitive::vertexAttrMapper()
+//{
+//	if (m_vertexAttrMapperIndex == -1)
+//		return &VertexAttrMapper::default();
+//	return m_env->vertexAttrMapper(m_vertexAttrMapperIndex);
+//}
 
 } // namespace cat
 

@@ -27,7 +27,7 @@ enum PRIMITIVE_TYPE
 class VertexAttr
 {
 public:
-	int			index;			// shader location
+	int			location;		// shader location
 	int			size;			// count of dataType. if size=3, dataType=int8, VkFormat=VK_FORMAT_R8G8B8_SNORM
 	ELEM_TYPE	dataType;		// int / uint/ int8 / uint8 / float 
 	int			normalize;		// is data normalized.

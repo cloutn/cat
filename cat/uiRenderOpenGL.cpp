@@ -348,10 +348,10 @@ void UIRenderOpenGL::draw2(
 		glcheck( glBindBuffer(GL_ARRAY_BUFFER, static_cast<uint>(reinterpret_cast<uint64>(vertexBuffer))) );
 
 		VertexAttr a = attrs[i];
-		if (a.index < 0)
+		if (a.location < 0)
 			continue;
-		glcheck( glEnableVertexAttribArray(a.index) );
-		glcheck( glVertexAttribPointer(a.index, a.size, VertexAttrDataTypeToGLDataType(a.dataType), a.normalize, a.stride, (void*)a.offset) );
+		glcheck( glEnableVertexAttribArray(a.location) );
+		glcheck( glVertexAttribPointer(a.location, a.size, VertexAttrDataTypeToGLDataType(a.dataType), a.normalize, a.stride, (void*)a.offset) );
 		//if (a.index >= 3)
 		//{
 		//		printf("index = %d size = %d type = %d stride = %d offset = %x\n", a.index, a.size, VertexAttrDataTypeToGLDataType(a.dataType), a.stride, a.offset);

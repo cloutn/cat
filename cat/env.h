@@ -18,7 +18,7 @@ class Material;
 class Object;
 class Primitive;
 class IRender;
-class VertexAttrMapper;
+//class VertexAttrMapper;
 
 class Env
 {
@@ -48,7 +48,7 @@ public:
 	scl::vector4				registerPickPrimitive		(Primitive* primitive);
 	Primitive*					getPickPrimitive			(scl::vector4& color);
 
-	VertexAttrMapper*			vertexAttrMapper			(const int index = 0);
+	//VertexAttrMapper*			vertexAttrMapper			(const int index = 0);
 
 private:
 
@@ -65,8 +65,8 @@ private:
 	typedef scl::array<Primitive*, 1024>					PickPrimitiveArray;
 	PickPrimitiveArray										m_pickPrimitives;
 
-	const static int										MAX_VERTEX_ATTR_MAPPER_COUNT = 32;
-	VertexAttrMapper*										m_vertexAttrMappers;
+	//const static int										MAX_VERTEX_ATTR_MAPPER_COUNT = 32;
+	//VertexAttrMapper*										m_vertexAttrMappers;
 
 }; // class Env
 
