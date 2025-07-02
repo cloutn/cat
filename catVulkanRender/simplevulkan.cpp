@@ -1642,29 +1642,34 @@ void svkEndCommandBufferAndSubmit(svkDevice& device, VkCommandBuffer commandBuff
 	vkDestroyFence(device.device, fence, NULL);
 }
 
-svkBuffer svkCreateVertexBuffer(svkDevice& device, const void* data, const int dataSize)
+svkBuffer svkCreateVertexBuffer(svkDevice& device, const void* src, const int dataSize)
 {
 	VkDeviceMemory	memory;
 	VkBuffer		buffer = _genBuffer(device, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, dataSize, &memory);
-	svkBuffer		svkbuf { buffer, memory }; 
+	svkBuffer		svkNewBuf { buffer, memory }; 
 
-	if (NULL != data)
-		svkCopyBuffer(device, svkbuf, data, dataSize);
+	if (NULL != src)
+		svkWriteBuffer(device, svkNewBuf, src, dataSize);
 
-	return svkbuf;
+	return svkNewBuf;
 }
 
-svkBuffer svkCreateIndexBuffer(svkDevice& device, const void* data, const int dataSize)
+svkBuffer svkCreateIndexBuffer(svkDevice& device, const void* src, const int dataSize)
 {
-	VkResult		err;
+	//VkResult		err;
 	VkDeviceMemory	memory;
 	VkBuffer		buffer = _genBuffer(device, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, dataSize, &memory);
+	svkBuffer		svkNewBuf { buffer, memory }; 
 
-	void* mapmm = NULL;
-	err = vkMapMemory(device.device, memory, 0, VK_WHOLE_SIZE, 0, &mapmm);
-	assert(!err);
-	memcpy(mapmm, data, dataSize);
-	vkUnmapMemory(device.device, memory);
+	if (NULL != src)
+	{
+		svkWriteBuffer(device, svkNewBuf, src, dataSize);
+	}
+	//void* mapmm = NULL;
+	//err = vkMapMemory(device.device, memory, 0, VK_WHOLE_SIZE, 0, &mapmm);
+	//assert(!err);
+	//memcpy(mapmm, data, dataSize);
+	//vkUnmapMemory(device.device, memory);
 
 	return svkBuffer{ buffer, memory };
 }
@@ -1679,22 +1684,34 @@ svkBuffer svkCreateUniformBuffer(svkDevice& device, void* data, const int dataSi
 	_svkBuffer.memory = memory;
 	if (NULL != data)
 	{
-		svkCopyBuffer(device, _svkBuffer, data, dataSize);
+		svkWriteBuffer(device, _svkBuffer, data, dataSize);
 	}
 
 	return _svkBuffer;
 }
 
-void svkCopyBuffer(svkDevice& device, svkBuffer& buffer, const void* data, const int dataSize)
+void svkWriteBuffer(svkDevice& device, svkBuffer& dstBuffer, const void* src, const int dataSize)
 {
-	if (NULL == data)
+	if (NULL == src || dataSize <= 0)
 		return;
 
-	void* mapmm = svkMapBuffer(device, buffer);
+	void* dst = svkMapBuffer(device, dstBuffer, dataSize);
 
-	memcpy(mapmm, data, dataSize);
+	memcpy(dst, src, dataSize);
 
-	svkUnmapBuffer(device, buffer);
+	svkUnmapBuffer(device, dstBuffer);
+}
+
+void svkReadBuffer(svkDevice& device, svkBuffer& srcBuffer, void* dst, const int dataSize)
+{
+	if (NULL == dst || dataSize <= 0)
+		return;
+
+	void* src = svkMapBuffer(device, srcBuffer, dataSize);
+
+	memcpy(dst, src, dataSize);
+
+	svkUnmapBuffer(device, srcBuffer);
 }
 
 void* svkMapBuffer(svkDevice& device, svkBuffer& buffer)

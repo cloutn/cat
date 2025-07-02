@@ -201,7 +201,7 @@ void UIRenderOpenGL::releaseTexture(void* texture)
 }
 
 
-void UIRenderOpenGL::copyVertexBuffer(const void* data, void* vertexBuffer, const int sizeInByte)
+void UIRenderOpenGL::writeVertexBuffer(const void* data, void* vertexBuffer, const int sizeInByte)
 {
 	uint vbo = static_cast<uint>(reinterpret_cast<uint64>(vertexBuffer));
 	glcheck( glBindBuffer(GL_ARRAY_BUFFER, vbo) );
@@ -475,7 +475,7 @@ void UIRenderOpenGL::onResize(const int width, const int height, bool forceSet)
 	glcheck( glViewport(0, 0, getDeviceWidth(), getDeviceHeight()) );
 }
 
-void UIRenderOpenGL::copyIndexBuffer(const void* data, void* indexBuffer, const int sizeInByte)
+void UIRenderOpenGL::writeIndexBuffer(const void* data, void* indexBuffer, const int sizeInByte)
 {
 	uint vbo = static_cast<uint>(reinterpret_cast<uint64>(indexBuffer));
 	glcheck( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo) );

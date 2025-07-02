@@ -45,12 +45,12 @@ public:
 	//vertex
 	virtual void*			createVertexBuffer	(const int size);
 	virtual void			releaseVertexBuffer	(void* vertexBuffer);
-	virtual void			copyVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte);//注意，UI使用的vertex的fvf格式是(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
+	virtual void			writeVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte);//注意，UI使用的vertex的fvf格式是(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
 
 	//index
 	virtual void*			createIndexBuffer	(const int size);
 	virtual void			releaseIndexBuffer	(void* indexBuffer);
-	virtual void			copyIndexBuffer		(const void* data, void* indexBuffer, const int sizeInByte);
+	virtual void			writeIndexBuffer		(const void* data, void* indexBuffer, const int sizeInByte);
 
 	//buffer
 	//virtual void*			createBuffer		();

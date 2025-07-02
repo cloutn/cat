@@ -43,12 +43,18 @@ public:
 	//vertex
 	virtual void*			createVertexBuffer	(const int vertexCount) = 0;
 	virtual void			releaseVertexBuffer	(void* vertexBuffer) = 0;
-	virtual void			copyVertexBuffer	(const void* data, void* vertexBuffer, const int sizeInByte) = 0;//注意，UI使用的vertex的fvf格式是(FVF_XYZ | FVF_DIFFUSE | FVF_TEX1);
+	virtual void			writeVertexBuffer	(const void* src, void* dstVertexBuffer, const int sizeInByte) = 0;	
+	virtual void			readVertexBuffer	(void* dst, void* srcVertexBuffer, const int sizeInByte) = 0;			
+	//virtual void*			mapVertexBuffer		(void* vertexBuffer) = 0;
+	//virtual void			unmapVertexBuffer	(void* vertexBuffer) = 0;
 
 	//index
 	virtual void*			createIndexBuffer	(const int vertexCount) = 0;
 	virtual void			releaseIndexBuffer	(void* vertexBuffer) = 0;
-	virtual void			copyIndexBuffer		(const void* data, void* vertexBuffer, const int sizeInByte) = 0;
+	virtual void			writeIndexBuffer	(const void* src, void* dstVertexBuffer, const int sizeInByte) = 0;
+	virtual void			readIndexBuffer		(void* dst, void* srcVertexBuffer, const int sizeInByte) = 0;
+	//virtual void*			mapIndexBuffer		(void* indexBuffer) = 0;
+	//virtual void			unmapIndexBuffer	(void* indexBuffer) = 0;
 
 	//virtual void*			createBuffer		() = 0;
 	//virtual void			releaseBuffer		(void* vertexBuffer) = 0;

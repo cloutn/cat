@@ -31,9 +31,12 @@ Primitive::Primitive() :
 	m_indexComponentType		(ELEM_TYPE_INVALID),
 	m_indexOffset				(0),
 	m_deviceVertexBuffers		(NULL),
+	m_vertexCount				(0),
 	m_attrCount					(0),
 	m_attrs						(NULL),
 	m_attrBufferIndices			(NULL),
+	//m_cpuVertexBuffers			(NULL),
+	//m_useCPUVertexBuffer		(true),
 	m_primitiveType				(cat::PRIMITIVE_TYPE_POINTS),
 	m_material					(NULL),
 	m_shader					(NULL),
@@ -75,8 +78,9 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 	int		attrOffsets[1024]	= { 0 };
 
 	// calculate sizeof(attr), calculate offset
-	int		sizeofVertex		= 0;
-	int		vertexCount			= primitive.attributes[0].data->count;
+	int	sizeofVertex			= 0;
+	const int	vertexCount		= primitive.attributes[0].data->count;
+	m_vertexCount				= vertexCount;
 	for (int i = 0; i < m_attrCount; ++i)
 	{
 		cgltf_attribute&	attr		= primitive.attributes[i];
@@ -126,7 +130,7 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 	}
 
 	void* deviceBuffer = render->createVertexBuffer(-1);
-	render->copyVertexBuffer(buffer, deviceBuffer, bufferSize);
+	render->writeVertexBuffer(buffer, deviceBuffer, bufferSize);
 	m_deviceVertexBuffers[0] = deviceBuffer; // if all attrs share one buffer, we only need to set the first element in array, the vulkanRender will try to use first element when meet a NULL ptr in array.
 
 	delete[] buffer;
@@ -242,9 +246,33 @@ void Primitive::release()
 			m_render->releaseVertexBuffer(buf);
 			//m_deviceVertexBuffers[i] = NULL;
 		}
+		for (int i = 0; i < m_attrCount; ++i)
+		{
+			m_deviceVertexBuffers[i] = NULL;
+		}
 		delete[] m_deviceVertexBuffers;
 	}
+
+	//if (NULL != m_cpuVertexBuffers)
+	//{
+	//	for (int i = 0; i < m_attrCount; ++i)
+	//	{
+	//		void* buf = m_cpuVertexBuffers[i];
+	//		if (NULL == buf)
+	//			continue;
+	//		if (_isInArray(m_cpuVertexBuffers, i - 1, buf))
+	//			continue;
+	//		delete[] buf;
+	//	}
+	//	for (int i = 0; i < m_attrCount; ++i)
+	//	{
+	//		m_cpuVertexBuffers[i] = NULL;
+	//	}
+	//	delete[] m_cpuVertexBuffers;
+	//}
+
 	safe_delete(m_material);
+	m_vertexCount = 0;
 	m_attrCount = 0;
 }
 
@@ -255,7 +283,7 @@ void Primitive::release()
 //	const ELEM_TYPE		indexComponentType,
 //	void**				verticesList,
 //	int*				vertexCountList,
-//	int*				sizeOfVertex,
+//	int*				sizeofVertex,
 //	int					attrCount,
 //	VertexAttr*			attrs,
 //	int*				attrVertexBuffer,
@@ -295,7 +323,7 @@ void Primitive::release()
 //			VertexAttr& attr = attrs[i];
 //			m_deviceVertexBuffers[i] = render->createVertexBuffer(-1);
 //			//G.refCounter.AddRef(m_deviceVertexBuffers[i]);
-//			const int vertexBytes = vertexCountList[bufferIndex] * sizeOfVertex[bufferIndex];
+//			const int vertexBytes = vertexCountList[bufferIndex] * sizeofVertex[bufferIndex];
 //			render->copyVertexBuffer(verticesList[bufferIndex], m_deviceVertexBuffers[i], vertexBytes);
 //			bufferMap.add(bufferIndex, m_deviceVertexBuffers[i]);
 //		}
@@ -323,6 +351,21 @@ void Primitive::setTexture(const char* const filename)
 		return;
 	}
 	m_material = new Material();
+}
+
+void* Primitive::vertexBuffer(const int bufferIndex)
+{
+	if (bufferIndex < 0 || bufferIndex >= m_attrCount)
+		return NULL;
+
+	int		idx = bufferIndex;
+	void*	buf = m_deviceVertexBuffers[bufferIndex];
+	while (NULL == buf && idx > 0)
+	{
+		--idx;
+		buf = m_deviceVertexBuffers[idx];	
+	}
+	return buf;
 }
 
 void Primitive::setAttrs(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices)
@@ -359,11 +402,11 @@ void Primitive::setIndices(const void* indices, const int indexCount, const ELEM
 	m_indexComponentType	= indexComponentType;
 	m_deviceIndexBuffer		= m_render->createIndexBuffer(-1);
 	const int indexBytes	= m_indexCount * elem_type_byte(m_indexComponentType);
-	m_render->copyIndexBuffer(indices, m_deviceIndexBuffer, indexBytes);
+	m_render->writeIndexBuffer(indices, m_deviceIndexBuffer, indexBytes);
 	m_indexOffset = 0;
 }
 
-void Primitive::setVertices(void** verticesList, int* vertexCountList, int* sizeOfVertex)
+void Primitive::setVertices(const void** const verticesList, const int vertexCount, const int* const sizeofVertex)
 {
 	if (NULL == m_render)
 		return;
@@ -377,6 +420,7 @@ void Primitive::setVertices(void** verticesList, int* vertexCountList, int* size
 	const int attrCount = m_attrCount;
 	m_deviceVertexBuffers = new void*[m_attrCount];
 	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
+	m_vertexCount = vertexCount;
 	scl::tree<int, void*> bufferMap;
 	for (int i = 0; i < attrCount; ++i)
 	{
@@ -387,8 +431,8 @@ void Primitive::setVertices(void** verticesList, int* vertexCountList, int* size
 			VertexAttr& attr = m_attrs[i];
 			m_deviceVertexBuffers[i] = m_render->createVertexBuffer(-1);
 			//G.refCounter.AddRef(m_deviceVertexBuffers[i]);
-			const int vertexBytes = vertexCountList[bufferIndex] * sizeOfVertex[bufferIndex];
-			m_render->copyVertexBuffer(verticesList[bufferIndex], m_deviceVertexBuffers[i], vertexBytes);
+			const int vertexBytes = vertexCount * sizeofVertex[bufferIndex];
+			m_render->writeVertexBuffer(verticesList[bufferIndex], m_deviceVertexBuffers[i], vertexBytes);
 			bufferMap.add(bufferIndex, m_deviceVertexBuffers[i]);
 		}
 		else
@@ -396,19 +440,23 @@ void Primitive::setVertices(void** verticesList, int* vertexCountList, int* size
 	}
 }
 
-void Primitive::setVertices(void* vertices, int vertexCount, int sizeOfVertex)
+void Primitive::setVertices(const void* vertices, const int vertexCount, const int sizeofVertex)
 {
-	void* verticesList[1] = { vertices };
-	int vertexCountList[1] = { vertexCount };
-	int sizeOfVertexList[1] = { sizeOfVertex };
-	setVertices(verticesList, vertexCountList, sizeOfVertexList);
+	const void* verticesList[1] = { vertices };
+	const int sizeofVertexList[1] = { sizeofVertex };
+	setVertices(verticesList, vertexCount, sizeofVertexList);
 }
 
-void Primitive::updateVertices(void* vertices, int vertexCount, int sizeOfVertex)
+void Primitive::updateVertices(void* vertices, int vertexCount, int sizeofVertex)
 {
 	if (m_deviceVertexBuffers[0] <= 0)
 		return;
-	m_render->copyVertexBuffer(vertices, m_deviceVertexBuffers[0], sizeOfVertex * vertexCount);
+	if (vertexCount != m_vertexCount)
+	{
+		assert(false);
+		return;
+	}
+	m_render->writeVertexBuffer(vertices, m_deviceVertexBuffers[0], sizeofVertex * vertexCount);
 }
 
 cat::Object* Primitive::parentObject()
@@ -419,9 +467,33 @@ cat::Object* Primitive::parentObject()
 }
 
 
-void* Primitive::vertexAttr(const int vertexIndex, const int attrIndex)
+void Primitive::vertexAttr(const int vertexIndex, const int attrIndex, void* outputBuffer, const int outputBufferCapacity)
 {
-	return NULL;
+	assert(false);
+	//if (attrIndex < 0 || attrIndex >= m_attrCount)
+	//	return;
+
+	//VertexAttr&	attr			= m_attrs[attrIndex];
+	//int			sizeofVertex	= attr.stride;
+	//if (sizeofVertex > outputBufferCapacity)
+	//	return;
+
+	//void*		deviceBuf		= vertexBuffer(attrIndex);
+	//byte*		vertexData		= new byte[sizeofVertex];
+	//memset(vertexData, 0, sizeofVertex);
+	//m_render->readVertexBuffer(vertexData, deviceBuf, sizeofVertex);
+	////byte*		buf			= static_cast<byte*>(m_render->mapVertexBuffer(deviceBuf));
+	////byte*		vertexBegin	= buf + attr.stride * vertexIndex;
+	//
+	//delete[] vertexData;
+
+	//return NULL;
+}
+
+scl::vector3 Primitive::vertexPosition(const int vertexIndex)
+{
+	assert(false);
+	return scl::vector3();
 }
 
 //const VertexAttrMapper* Primitive::vertexAttrMapper()

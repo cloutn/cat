@@ -282,20 +282,49 @@ void VulkanRender::releaseVertexBuffer(void* vertexBuffer)
 	delete vertexBuffer;
 }
 
-void VulkanRender::copyVertexBuffer(const void* data, void* vertexBuffer, const int sizeInByte)
+void VulkanRender::writeVertexBuffer(const void* src, void* dstVertexBuffer, const int sizeInByte)
 {
-	if (NULL == vertexBuffer)
+	if (NULL == dstVertexBuffer || NULL == src || sizeInByte <= 0)
 		return;
-	svkBuffer* buf = static_cast<svkBuffer*>(vertexBuffer);
-	if (NULL != buf->buffer)
+
+	svkBuffer* dstBuffer = static_cast<svkBuffer*>(dstVertexBuffer);
+	if (NULL != dstBuffer->buffer)
 	{
-		svkCopyBuffer(m_device, *buf, data, sizeInByte);
+		svkWriteBuffer(m_device, *dstBuffer, src, sizeInByte);
 	}
 	else
 	{
-		*buf = svkCreateVertexBuffer(m_device, data, sizeInByte);
+		*dstBuffer = svkCreateVertexBuffer(m_device, src, sizeInByte);
 	}
 }
+
+void VulkanRender::readVertexBuffer(void* dst, void* srcVertexBuffer, const int sizeInByte)
+{
+	if (NULL == srcVertexBuffer || NULL == dst || sizeInByte <= 0)
+		return;
+
+	svkBuffer* srcBuffer = static_cast<svkBuffer*>(srcVertexBuffer);
+	svkReadBuffer(m_device, *srcBuffer, dst, sizeInByte);
+}
+
+//void* VulkanRender::mapVertexBuffer(void* vertexBuffer)
+//{
+//	if (NULL == vertexBuffer)
+//		return NULL;
+//
+//	svkBuffer* buf = static_cast<svkBuffer*>(vertexBuffer);
+//	void* mapmm = svkMapBuffer(m_device, *buf);
+//	return mapmm;
+//}
+//
+//void VulkanRender::unmapVertexBuffer(void* vertexBuffer)
+//{
+//	if (NULL == vertexBuffer)
+//		return;
+//
+//	svkBuffer* buf = static_cast<svkBuffer*>(vertexBuffer);
+//	svkUnmapBuffer(m_device, *buf);
+//}
 
 void* VulkanRender::createIndexBuffer(const int bufferSize)
 {
@@ -314,19 +343,48 @@ void VulkanRender::releaseIndexBuffer(void* indexBuffer)
 }
 
 
-void VulkanRender::copyIndexBuffer(const void* data, void* indexBuffer, const int sizeInByte)
+void VulkanRender::writeIndexBuffer(const void* src, void* dstIndexBuffer, const int sizeInByte)
 {
-	if (NULL == indexBuffer)
+	if (NULL == dstIndexBuffer)
 		return;
-	svkBuffer* buf = static_cast<svkBuffer*>(indexBuffer);
-	if (NULL != buf->buffer)
+	svkBuffer* dstBuffer = static_cast<svkBuffer*>(dstIndexBuffer);
+	if (NULL != dstBuffer->buffer)
 	{
-		assert(false);
-		return;
+		svkWriteBuffer(m_device, *dstBuffer, src, sizeInByte);
 	}
-	*buf = svkCreateIndexBuffer(m_device, data, sizeInByte);
+	else
+	{
+		*dstBuffer = svkCreateIndexBuffer(m_device, src, sizeInByte);
+	}
 }
 
+void VulkanRender::readIndexBuffer(void* dst, void* srcIndexBuffer, const int sizeInByte)
+{
+	if (NULL == srcIndexBuffer || NULL == dst || sizeInByte <= 0)
+		return;
+
+	svkBuffer* srcBuffer = static_cast<svkBuffer*>(srcIndexBuffer);
+	svkReadBuffer(m_device, *srcBuffer, dst, sizeInByte);
+}
+
+//void* VulkanRender::mapIndexBuffer(void* indexBuffer)
+//{
+//	if (NULL == indexBuffer)
+//		return NULL;
+//
+//	svkBuffer* buf = static_cast<svkBuffer*>(indexBuffer);
+//	void* mapmm = svkMapBuffer(m_device, *buf);
+//	return mapmm;
+//}
+//
+//void VulkanRender::unmapIndexBuffer(void* indexBuffer)
+//{
+//	if (NULL == indexBuffer)
+//		return;
+//
+//	svkBuffer* buf = static_cast<svkBuffer*>(indexBuffer);
+//	svkUnmapBuffer(m_device, *buf);
+//}
 
 void* VulkanRender::createTexture(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel)
 {

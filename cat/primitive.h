@@ -43,7 +43,7 @@ public:
 	//	const ELEM_TYPE	indexComponentType, 
 	//	void**			verticesList,
 	//	int*			vertexCountList,
-	//	int*			sizeOfVertex,
+	//	int*			sizeofVertex,
 	//	int				attrCount,
 	//	VertexAttr*		attrs,
 	//	int*			attrVertexBuffer,
@@ -55,6 +55,7 @@ public:
 	void				setRender			(IRender* render) { m_render = render; } 
 	void				setEnv				(Env* env) { m_env = env; } 
 	void**				vertexBuffers		() { return m_deviceVertexBuffers;	}
+	void*				vertexBuffer		(const int bufferIndex);
 	void*				indexBuffer			() { return m_deviceIndexBuffer;	}
 	int					attrCount			() const { return m_attrCount;		}
 	const VertexAttr*	attrs				() const { return m_attrs;			}
@@ -63,15 +64,16 @@ public:
 	// index 的具体对应关系参见函数 setVertices 的多 verticesList 版本。
 	void				setAttrs			(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices = NULL);
 	void				setIndices			(const void* indices, const int indexCount, const ELEM_TYPE indexComponentType);
-	void				setVertices			(void** verticesList, int* vertexCountList, int* sizeOfVertex);
-	void				setVertices			(void* vertices, int vertexCount, int sizeOfVertex);
+	void				setVertices			(const void** const verticesList, const int vertexCountList, const int* const sizeofVertex);
+	void				setVertices			(const void* vertices, const int vertexCount, const int sizeofVertex);
 	void				setPrimitiveType	(PRIMITIVE_TYPE t) { m_primitiveType = t; }
-	void				updateVertices		(void* vertices, int vertexCount, int sizeOfVertex);
+	void				updateVertices		(void* vertices, int vertexCount, int sizeofVertex);
 	Mesh*				parent				() { return m_parent; }
 	Object*				parentObject		();
 
-	void*				vertexAttr(const int vertexIndex, const int attrIndex);
-	const VertexAttrMapper*	vertexAttrMapper();
+	void				vertexAttr(const int vertexIndex, const int attrIndex, void* outputBuffer, const int outputBufferCapacity);
+	//const VertexAttrMapper*	vertexAttrMapper();
+	scl::vector3		vertexPosition(const int vertexIndex);
 
 private:
 	void				_loadVertex			(const cgltf_primitive&	primitive, IRender* render);
@@ -88,9 +90,12 @@ private:
 
 	// vertices data
 	void**				m_deviceVertexBuffers;
+	int					m_vertexCount;
 	int					m_attrCount;
 	VertexAttr*			m_attrs;
 	int*				m_attrBufferIndices;
+	//void**				m_cpuVertexBuffers;
+	//bool				m_useCPUVertexBuffer;
 
 	// other data
 	PRIMITIVE_TYPE		m_primitiveType;

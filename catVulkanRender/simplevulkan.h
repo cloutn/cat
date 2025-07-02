@@ -223,7 +223,8 @@ void					svkDestroySwapchain				(svkDevice& device, svkSwapchain& swapchain, boo
 
 // buffer
 svkBuffer				svkCreateBuffer					(svkDevice& device, VkBufferUsageFlags usage, const int size);
-void					svkCopyBuffer					(svkDevice& device, svkBuffer&, const void* data, const int dataSize);
+void					svkWriteBuffer					(svkDevice& device, svkBuffer& dstBuffer, const void* src, const int dataSize);
+void					svkReadBuffer					(svkDevice& device, svkBuffer& srcBuffer, void* dst, const int dataSize);
 void*					svkMapBuffer					(svkDevice& device, svkBuffer&);
 void*					svkMapBuffer					(svkDevice& device, svkBuffer&, const int bytes); // bytes = -1 (VK_WHOLE_SIZE) means copy all available bytes
 void*					svkMapMemory					(svkDevice& device, VkDeviceMemory& memory, const int bytes);
