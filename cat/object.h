@@ -42,7 +42,7 @@ public:
 	const String&				name						() const { return m_name; }
 	void						setName						(const char* const name) { m_name = name; }
 	int							id							() const { return m_id; }
-	const scl::varray<Object*>	childs						() const { return m_childs; }
+	const scl::varray<Object*>&	childs						() const { return m_childs; }
 	int							childCount					() const { return m_childs.size(); }
 	Object*						child						(int index) { return m_childs[index]; }
 	const Object*				childConst					(int index) const { return m_childs[index]; }

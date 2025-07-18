@@ -5,6 +5,7 @@
 #include "cat/string.h"
 
 #include "scl/vector.h"
+#include "scl/varray.h"
 
 struct cgltf_primitive;
 struct cgltf_buffer_view;
@@ -52,31 +53,39 @@ public:
 	//	Shader*			shader,
 	//	IRender*		render
 	//	);
-	void				setRender			(IRender* render) { m_render = render; } 
-	void				setEnv				(Env* env) { m_env = env; } 
-	void**				vertexBuffers		() { return m_deviceVertexBuffers;	}
-	void*				vertexBuffer		(const int bufferIndex);
-	void*				indexBuffer			() { return m_deviceIndexBuffer;	}
-	int					attrCount			() const { return m_attrCount;		}
-	const VertexAttr*	attrs				() const { return m_attrs;			}
+	void						setRender			(IRender* render) { m_render = render; } 
+	void						setEnv				(Env* env) { m_env = env; } 
+	void**						vertexBuffers		() { return m_deviceVertexBuffers;	}
+	void*						vertexBuffer		(const int bufferIndex);
+	void*						indexBuffer			() { return m_deviceIndexBuffer;	}
+	int							attrCount			() const { return m_attrCount;		}
+	const VertexAttr*			attrs				() const { return m_attrs;			}
 
 	// 当顶点属性位于不同的 buffer 的时候，需要用参数 attrBufferIndices 指定每个 buffer 所在的 index
 	// index 的具体对应关系参见函数 setVertices 的多 verticesList 版本。
-	void				setAttrs			(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices = NULL);
-	void				setIndices			(const void* indices, const int indexCount, const ELEM_TYPE indexComponentType);
-	void				setVertices			(const void** const verticesList, const int vertexCountList, const int* const sizeofVertex);
-	void				setVertices			(const void* vertices, const int vertexCount, const int sizeofVertex);
-	void				setPrimitiveType	(PRIMITIVE_TYPE t) { m_primitiveType = t; }
-	void				updateVertices		(void* vertices, int vertexCount, int sizeofVertex);
-	Mesh*				parent				() { return m_parent; }
-	Object*				parentObject		();
+	void						setAttrs			(const VertexAttr* attrs, const int attrCount, const int* attrBufferIndices = NULL);
+	void						setIndices			(const void* indices, const int indexCount, const ELEM_TYPE indexComponentType);
+	void						setVertices			(const void** const verticesList, const int vertexCountList, const int* const sizeofVertex);
+	void						setVertices			(const void* vertices, const int vertexCount, const int sizeofVertex);
+	void						setPrimitiveType	(PRIMITIVE_TYPE t) { m_primitiveType = t; }
+	void						updateVertices		(void* vertices, int vertexCount, int sizeofVertex);
+	Mesh*						parent				() { return m_parent; }
+	Object*						parentObject		();
 
-	void				vertexAttr(const int vertexIndex, const int attrIndex, void* outputBuffer, const int outputBufferCapacity);
+	// 注意，这里的 attrIndex 参数的含义是 m_attrs 数组的下标，而不是 ATTR_LOC 枚举所表示的 shader 中的 attr location。
+	void						vertexAttr			(const int vertexIndex, const int attrIndex, void* outputBuffer, const int outputBufferCapacity);
+
+	// 注意，这里的 attrIndex 参数的含义是 m_attrs 数组的下标，而不是 ATTR_LOC 枚举所表示的 shader 中的 attr location。
+	void						vertexAttrs			(const int attrIndex, void* outputBuffer, const int outputBufferCapacity);
+
 	//const VertexAttrMapper*	vertexAttrMapper();
-	scl::vector3		vertexPosition(const int vertexIndex);
+	scl::vector3				vertexPosition		(const int vertexIndex);
+	void						vertexPositions		(scl::vector3* positions, int& vertexCount, int positionsCapacity);
+	scl::varray<scl::vector3>	vertexPositions		();
 
 private:
-	void				_loadVertex			(const cgltf_primitive&	primitive, IRender* render);
+	void						_loadVertex			(const cgltf_primitive&	primitive, IRender* render);
+	int							_attrLocationToIndex(const int attrLocation);
 
 private:
 	IRender*			m_render;

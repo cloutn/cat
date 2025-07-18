@@ -227,7 +227,9 @@ void					svkWriteBuffer					(svkDevice& device, svkBuffer& dstBuffer, const void
 void					svkReadBuffer					(svkDevice& device, svkBuffer& srcBuffer, void* dst, const int dataSize);
 void*					svkMapBuffer					(svkDevice& device, svkBuffer&);
 void*					svkMapBuffer					(svkDevice& device, svkBuffer&, const int bytes); // bytes = -1 (VK_WHOLE_SIZE) means copy all available bytes
+void*					svkMapBuffer					(svkDevice& device, svkBuffer&, const VkDeviceSize offset, const VkDeviceSize bytes);
 void*					svkMapMemory					(svkDevice& device, VkDeviceMemory& memory, const int bytes);
+void*					svkMapMemory					(svkDevice& device, VkDeviceMemory& memory, const VkDeviceSize offset, const VkDeviceSize bytes);
 void					svkUnmapBuffer					(svkDevice& device, svkBuffer&);
 void					svkUnmapMemory					(svkDevice& device, VkDeviceMemory& memory);
 void					svkDestroyBuffer				(svkDevice& device, svkBuffer& buffer);

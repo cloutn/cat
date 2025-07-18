@@ -28,6 +28,12 @@ public:
 	varray(): m_array(NULL), m_size(0), m_maxSize(0), m_option(0) {}
 	~varray();
 
+	varray(varray&& other) noexcept;
+	varray& operator=(varray&& other) noexcept;
+
+	varray(const varray& other);
+	varray& operator=(const varray& other);
+
 	//stl兼容接口。iterator暂时简化为T*
 	typedef T			value_type;
 	typedef int			size_type;
@@ -141,6 +147,98 @@ inline void swapmem2(T& a, T& b)
 ////////////////////////////////////////////////////////////////////////////////
 //	varray实现
 ////////////////////////////////////////////////////////////////////////////////
+
+
+template<typename T> 
+varray<T>::varray(varray<T>&& other) noexcept :
+	m_array(other.m_array),
+	m_size(other.m_size),
+	m_maxSize(other.m_maxSize),
+	m_option(other.m_option)
+{
+	other.m_array = NULL;
+	other.m_size = 0;
+	other.m_maxSize = 0;
+	other.m_option = 0;
+}
+
+template<typename T> 
+varray<T>::varray(const varray<T>& other) : 
+	m_array(NULL), m_size(0), m_maxSize(0), m_option(other.m_option)
+{
+	if (other.m_size > 0)
+	{
+		_grow_to(other.m_size);
+		for (int i = 0; i < other.m_size; ++i)
+		{
+			if (!_disable_constructor())
+				::new (&m_array[i]) T;
+			m_array[i] = other.m_array[i];
+		}
+		m_size = other.m_size;
+	}
+}
+
+template<typename T> 
+varray<T>& varray<T>::operator=(varray<T>&& other) noexcept
+{
+	if (this != &other)
+	{
+		//if (!_disable_destructor())
+		{
+			for (int i = 0; i < m_size; ++i)
+				m_array[i].~T();
+		}
+		::free(m_array);
+
+		m_array = other.m_array;
+		m_size = other.m_size;
+		m_maxSize = other.m_maxSize;
+		m_option = other.m_option;
+
+		other.m_array = NULL;
+		other.m_size = 0;
+		other.m_maxSize = 0;
+		other.m_option = 0;
+	}
+	return *this;
+}
+
+template<typename T> 
+varray<T>& varray<T>::operator=(const varray<T>& other)
+{
+	if (this != &other)
+	{
+		// 释放当前资源
+		if (!_disable_destructor())
+		{
+			for (int i = 0; i < m_size; ++i)
+				m_array[i].~T();
+		}
+		::free(m_array);
+
+		// 重置成员变量
+		m_array = NULL;
+		m_size = 0;
+		m_maxSize = 0;
+		m_option = other.m_option;
+
+		// 拷贝数据
+		if (other.m_size > 0)
+		{
+			_grow_to(other.m_size);
+			for (int i = 0; i < other.m_size; ++i)
+			{
+				if (!_disable_constructor())
+					::new (&m_array[i]) T;
+				m_array[i] = other.m_array[i];
+			}
+			m_size = other.m_size;
+		}
+	}
+	return *this;
+}
+
 template<typename T> 
 varray<T>::~varray()
 { 
@@ -414,12 +512,12 @@ void varray<T>::resize(const int size)
 		return;
 	}
 	if (size > m_size)
-	for (int i = m_size; i < size; ++i)
-		push_back_fast();
+		for (int i = m_size; i < size; ++i)
+			push_back_fast();
 
 	if (size < m_size)
-	for (int i = m_size - 1; i >= size; --i)
-		erase(i);
+		for (int i = m_size - 1; i >= size; --i)
+			erase(i);
 };
 
 template <typename T>

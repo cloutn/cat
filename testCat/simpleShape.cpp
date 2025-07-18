@@ -17,10 +17,9 @@ using scl::vector3;
 
 Object* _createGrid(IRender* render, Env* env)
 {
-
 	// attr
-	VertexAttr	attrs[16] = { 0 };
-	int			attrCount = vertex_color::get_attr(attrs, countof(attrs));
+	const VertexAttr*	attrs		= vertex_color::get_attr();
+	const int			attrCount	= vertex_color::get_attr_count();
 
 	ShaderMacroArray macros;
 	macros.add("COLOR");
@@ -97,6 +96,8 @@ Object* _createGrid(IRender* render, Env* env)
 
 cat::Object* _createCube(IRender* render, Env* env)
 {
+	// TODO: 实现立方体创建
+	// 
 	//vertex_color* sphere_vertices = NULL;
 	//int vertex_count = generate_sphere_vertices(1, 10, 10, sphere_vertices);
 

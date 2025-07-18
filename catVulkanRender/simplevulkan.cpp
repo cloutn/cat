@@ -1724,11 +1724,25 @@ void* svkMapBuffer(svkDevice& device, svkBuffer& buffer, const int bytes)
 	return svkMapMemory(device, buffer.memory, bytes);
 }
 
+void* svkMapBuffer(svkDevice& device, svkBuffer& buffer, const VkDeviceSize offset, const VkDeviceSize bytes)
+{
+	return svkMapMemory(device, buffer.memory, offset, bytes);
+}
+
 void* svkMapMemory(svkDevice& device, VkDeviceMemory& memory, const int bytes)
 {
 	VkResult	err;
 	void*		mapmem = NULL;
 	err = vkMapMemory(device.device, memory, 0, bytes, 0, &mapmem);
+	assert(!err);
+	return mapmem;
+}
+
+void* svkMapMemory(svkDevice& device, VkDeviceMemory& memory, const VkDeviceSize offset, const VkDeviceSize bytes)
+{
+	VkResult	err;
+	void*		mapmem = NULL;
+	err = vkMapMemory(device.device, memory, offset, bytes, 0, &mapmem);
 	assert(!err);
 	return mapmem;
 }

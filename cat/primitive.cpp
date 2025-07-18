@@ -22,6 +22,8 @@
 namespace cat {
 	
 //int _attrNameToIndex(const char* const name);
+using scl::vector3;
+using scl::vector4;
 
 Primitive::Primitive() : 
 	m_render					(NULL),
@@ -137,6 +139,19 @@ void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
 }
 
 
+int Primitive::_attrLocationToIndex(const int attrLocation)
+{
+	int attrIndex = -1;
+	for (int i = 0; i < m_attrCount; ++i)
+	{
+		if (m_attrs[i].location != attrLocation)
+			continue;
+		attrIndex= i;
+		break;
+	}
+	return attrIndex;
+}
+
 void Primitive::load(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env)
 {
 	if (NULL == data)
@@ -186,9 +201,9 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 	int					_attrCount		= attrCount();
 	const VertexAttr*	_attrs			= attrs();
 	void*				_shader			= isPick ? m_pickShader->shader(render) : m_shader->shader(m_render);
-	scl::vector4		pickColor		= isPick ? m_env->registerPickPrimitive(this) : scl::vector4();
+	vector4				pickColor		= isPick ? m_env->registerPickPrimitive(this) : vector4();
 	void*				_pushConst		= isPick ? &pickColor : NULL;
-	int					_pushConstSize	= isPick ? sizeof(scl::vector4) : 0;
+	int					_pushConstSize	= isPick ? sizeof(vector4) : 0;
 
 	render->draw2(
 		texture,
@@ -421,6 +436,9 @@ void Primitive::setVertices(const void** const verticesList, const int vertexCou
 	m_deviceVertexBuffers = new void*[m_attrCount];
 	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
 	m_vertexCount = vertexCount;
+
+	// 处理属性可能分布在多个 buffer 中的情况，同时还要考虑复用的情况。
+	// 注意 m_attrBufferIndices 是在 setAttr 接口中传入的属性，所以 buffer 的实际分布情况是外部指定的。
 	scl::tree<int, void*> bufferMap;
 	for (int i = 0; i < attrCount; ++i)
 	{
@@ -469,31 +487,160 @@ cat::Object* Primitive::parentObject()
 
 void Primitive::vertexAttr(const int vertexIndex, const int attrIndex, void* outputBuffer, const int outputBufferCapacity)
 {
-	assert(false);
-	//if (attrIndex < 0 || attrIndex >= m_attrCount)
-	//	return;
+	if (attrIndex < 0 || attrIndex >= m_attrCount)
+		return;
+	
+	if (vertexIndex < 0 || vertexIndex >= m_vertexCount)
+		return;
+	
+	if (NULL == outputBuffer || outputBufferCapacity <= 0)
+		return;
 
-	//VertexAttr&	attr			= m_attrs[attrIndex];
-	//int			sizeofVertex	= attr.stride;
-	//if (sizeofVertex > outputBufferCapacity)
-	//	return;
+	const VertexAttr& attr = m_attrs[attrIndex];
+	
+	const int attrSize = attr.size * elem_type_byte(attr.dataType);
+	if (attrSize > outputBufferCapacity)
+		return;
 
-	//void*		deviceBuf		= vertexBuffer(attrIndex);
-	//byte*		vertexData		= new byte[sizeofVertex];
-	//memset(vertexData, 0, sizeofVertex);
-	//m_render->readVertexBuffer(vertexData, deviceBuf, sizeofVertex);
-	////byte*		buf			= static_cast<byte*>(m_render->mapVertexBuffer(deviceBuf));
-	////byte*		vertexBegin	= buf + attr.stride * vertexIndex;
-	//
-	//delete[] vertexData;
+	void* deviceBuf = vertexBuffer(attrIndex);
+	if (NULL == deviceBuf)
+		return;
 
-	//return NULL;
+	const int vertexOffset	= vertexIndex * attr.stride;
+	const int attrOffset	= static_cast<int>(reinterpret_cast<uintptr_t>(attr.offset));
+	const int totalOffset	= vertexOffset + attrOffset;
+
+	m_render->readVertexBuffer(outputBuffer, deviceBuf, attrSize, totalOffset);
 }
 
-scl::vector3 Primitive::vertexPosition(const int vertexIndex)
+void Primitive::vertexAttrs(const int attrIndex, void* outputBuffer, const int outputBufferCapacity)
 {
-	assert(false);
-	return scl::vector3();
+	if (attrIndex < 0 || attrIndex >= m_attrCount)
+		return;
+	
+	if (NULL == outputBuffer || outputBufferCapacity <= 0)
+		return;
+
+	const VertexAttr&	attr			= m_attrs[attrIndex];
+	const int			attrSize		= attr.size * elem_type_byte(attr.dataType);
+	const int			totalAttrSize	= attrSize * m_vertexCount;
+	if (totalAttrSize > outputBufferCapacity)
+		return;
+
+	void* deviceBuf = vertexBuffer(attrIndex);
+	if (NULL == deviceBuf)
+		return;
+
+	const int attrOffset = static_cast<int>(reinterpret_cast<uintptr_t>(attr.offset));
+
+	// 读取所有顶点的该属性数据
+	// 注意：这里假设所有顶点的该属性数据是连续存储的
+	// 如果顶点数据是交错的（interleaved），需要逐个顶点读取
+	if (attr.stride == attrSize)
+	{
+		// 属性数据是连续的，可以直接读取整个缓冲区
+		m_render->readVertexBuffer(outputBuffer, deviceBuf, totalAttrSize, attrOffset);
+	}
+	else
+	{
+		// 属性数据是交错的，先读取整个缓冲区到临时内存
+		const int totalBufferSize = attr.stride * m_vertexCount;
+		byte* tempBuffer = new byte[totalBufferSize];
+		
+		m_render->readVertexBuffer(tempBuffer, deviceBuf, totalBufferSize, 0);
+		
+		byte* outputPtr = static_cast<byte*>(outputBuffer);
+		for (int i = 0; i < m_vertexCount; ++i)
+		{
+			const int vertexOffset = i * attr.stride;
+			const int attrDataOffset = vertexOffset + attrOffset;
+			
+			memcpy(outputPtr, tempBuffer + attrDataOffset, attrSize);
+			outputPtr += attrSize;
+		}
+		
+		delete[] tempBuffer;
+	}
+}
+
+vector3 Primitive::vertexPosition(const int vertexIndex)
+{
+	if (vertexIndex < 0 || vertexIndex >= m_vertexCount)
+		return vector3::zero();
+
+	int positionAttrIndex = _attrLocationToIndex(ATTR_LOC_POSITION);
+	if (positionAttrIndex < 0)
+		return vector3::zero();
+
+	const VertexAttr& attr = m_attrs[positionAttrIndex];
+	if (attr.size != 3 || attr.dataType != ELEM_TYPE_FLOAT)
+		return vector3::zero();
+
+	float positionData[3] = { 0 };
+	
+	vertexAttr(vertexIndex, positionAttrIndex, positionData, sizeof(positionData));
+	
+	return { positionData[0], positionData[1], positionData[2] };
+}
+
+void Primitive::vertexPositions(vector3* positions, int& vertexCount, int positionsCapacity)
+{
+	int positionAttrIndex = _attrLocationToIndex(ATTR_LOC_POSITION);
+	if (positionAttrIndex < 0)
+	{
+		vertexCount = 0;
+		return;
+	}
+
+	const VertexAttr& attr = m_attrs[positionAttrIndex];
+	
+	if (attr.size != 3 || attr.dataType != ELEM_TYPE_FLOAT)
+	{
+		vertexCount = 0;
+		return;
+	}
+
+	if (positions == nullptr)
+	{
+		vertexCount = m_vertexCount;
+		return;
+	}
+
+	if (positionsCapacity < m_vertexCount)
+	{
+		vertexCount = m_vertexCount;
+		return;
+	}
+
+	vertexCount = m_vertexCount;
+	
+	float*		positionData	= positions[0].value_ptr();
+	const int	totalSize		= m_vertexCount * sizeof(vector3);
+	
+	vertexAttrs(positionAttrIndex, positionData, totalSize);
+}
+
+scl::varray<vector3> Primitive::vertexPositions()
+{
+	scl::varray<vector3> result;
+	
+	int positionAttrIndex = _attrLocationToIndex(ATTR_LOC_POSITION);
+	if (positionAttrIndex < 0)
+		return result;
+
+	const VertexAttr& attr = m_attrs[positionAttrIndex];
+	if (attr.size != 3 || attr.dataType != ELEM_TYPE_FLOAT)
+		return result;
+
+	result.reserve(m_vertexCount);
+	result.resize(m_vertexCount);
+	
+	float* positionData = reinterpret_cast<float*>(result.c_array());
+	const int totalSize = m_vertexCount * sizeof(vector3);
+	
+	vertexAttrs(positionAttrIndex, positionData, totalSize);
+	
+	return result;
 }
 
 //const VertexAttrMapper* Primitive::vertexAttrMapper()

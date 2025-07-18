@@ -156,7 +156,10 @@ public:
 	scl::vector3	position;
 	uint32			color;
 
-	static int get_attr(VertexAttr* attrs, const int capacity);
+	//static int get_attr(VertexAttr* attrs, const int capacity);
+
+	static const VertexAttr*	get_attr();
+	static int					get_attr_count() { return 2; }
 };
 
 class vertex_color_uv

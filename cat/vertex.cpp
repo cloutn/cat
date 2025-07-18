@@ -94,18 +94,27 @@ const cat::VertexAttr* vertex_color_uv::get_attr()
 	return s_attrs;
 }
 
-int vertex_color::get_attr(VertexAttr* attrs, const int capacity)
+//int vertex_color::get_attr(VertexAttr* attrs, const int capacity)
+//{
+//	if (capacity < 2)
+//	{
+//		assert(false);
+//		return 0;
+//	}
+//
+//	attrs[0] = { ATTR_LOC_POSITION, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 };
+//	attrs[1] = { ATTR_LOC_COLOR0, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) };
+//
+//	return 2;
+//}
+
+const cat::VertexAttr* vertex_color::get_attr()
 {
-	if (capacity < 2)
-	{
-		assert(false);
-		return 0;
-	}
-
-	attrs[0] = { ATTR_LOC_POSITION, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 };
-	attrs[1] = { ATTR_LOC_COLOR0, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) };
-
-	return 2;
+	static const VertexAttr s_attrs[3] = {
+			{ ATTR_LOC_POSITION, 3, ELEM_TYPE_FLOAT, 0, sizeof(vertex_color), 0 },
+			{ ATTR_LOC_COLOR0, 4, ELEM_TYPE_UINT8, 1, sizeof(vertex_color), OFFSET(vertex_color, color) }
+	};
+	return s_attrs;
 }
 
 //VertexAttrMapper::VertexAttrMapper()

@@ -91,7 +91,11 @@ void Client::init()
 	loadGltf("art/chibi_idle/scene.gltf");
 
 	m_object = findObject("RootNode (gltf orientation matrix)");
-	m_bonePrimitive = _createBone(m_object, &m_render, m_env);
+	m_bonePrimitive = createBone(m_object, &m_render, m_env);
+
+	testPrimitive_vertexAttr(&m_render, m_env);
+	testPrimitive_vertexPosition(&m_render, m_env);
+	testPrimitive_vertexPosition_edgeCase(&m_render, m_env);
 
 	//m_gridPrimitive = _createGridPrimitive(&m_render, m_env);
 	m_grid = _createGrid(&m_render, m_env);
@@ -204,7 +208,7 @@ void Client::_renderScene(bool isPick)
 	{
 		scl::varray<vertex_color> vertices;
 		scl::varray<uint16> indices;
-		CollectBoneVertices(m_object, vertices, indices);
+		collectBoneVertices(m_object, vertices, indices);
 		m_bonePrimitive->updateVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
 	}

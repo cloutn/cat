@@ -7,6 +7,7 @@
 #include "scl/wstring.h"
 #include "scl/assert.h"
 #include "scl/page_array.h"
+#include "scl/vector.h"
 
 #include <stdio.h>
 
@@ -16,6 +17,7 @@ using scl::varray;
 using scl::parray;
 using scl::parray_const;
 using scl::swapmem;
+using scl::vector3;
 //
 //template<typename T>
 // void printArray(parray<T>& a)
@@ -259,6 +261,113 @@ void testPageArray()
 	//a.push_back(100);
 }
 
+void testVArrayMoveSemantics()
+{
+    // 测试移动构造函数
+    scl::varray<int> v1;
+    v1.push_back(1);
+    v1.push_back(2);
+    v1.push_back(3);
+    
+    assert(v1.size() == 3);
+    
+    // 移动构造
+    scl::varray<int> v2 = std::move(v1);
+    
+    assert(v1.size() == 0);  // 移动后原对象应该为空
+    assert(v2.size() == 3);  // 新对象应该包含所有元素
+    assert(v2[0] == 1);
+    assert(v2[1] == 2);
+    assert(v2[2] == 3);
+    
+    // 测试移动赋值操作符
+    scl::varray<int> v3;
+    v3.push_back(4);
+    v3.push_back(5);
+    
+    assert(v3.size() == 2);
+    
+    v3 = std::move(v2);
+    
+    assert(v2.size() == 0);  // 移动后原对象应该为空
+    assert(v3.size() == 3);  // 新对象应该包含所有元素
+    assert(v3[0] == 1);
+    assert(v3[1] == 2);
+    assert(v3[2] == 3);
+    
+    // 测试 vector3 的 varray
+    scl::varray<scl::vector3> positions;
+    positions.push_back({1.0f, 2.0f, 3.0f});
+    positions.push_back({4.0f, 5.0f, 6.0f});
+    
+    assert(positions.size() == 2);
+    assert(positions[0].x == 1.0f);
+    assert(positions[0].y == 2.0f);
+    assert(positions[0].z == 3.0f);
+    assert(positions[1].x == 4.0f);
+    assert(positions[1].y == 5.0f);
+    assert(positions[1].z == 6.0f);
+    
+    // 移动 vector3 的 varray
+    scl::varray<scl::vector3> positions2 = std::move(positions);
+    assert(positions.size() == 0);   // 移动后原对象应该为空
+    assert(positions2.size() == 2);  // 新对象应该包含所有元素
+    assert(positions2[0].x == 1.0f);
+    assert(positions2[0].y == 2.0f);
+    assert(positions2[0].z == 3.0f);
+    assert(positions2[1].x == 4.0f);
+    assert(positions2[1].y == 5.0f);
+    assert(positions2[1].z == 6.0f);
+}
+
+void testVArrayPerformanceFeatures()
+{
+    // 测试禁用构造函数和析构函数
+    scl::varray<int> v1;
+    v1.disable_constructor();
+    v1.disable_destructor();
+    
+    // 使用 push_back_fast 避免不必要的拷贝
+    int& elem = v1.push_back_fast();
+    elem = 42;
+    
+    assert(v1[0] == 42);
+    
+    // 测试 zero_memory
+    v1.push_back_fast(4); // 添加4个元素
+    v1.zero_memory();
+    assert(v1[0] == 0);  // zero_memory 后所有元素应该为0
+}
+
+void testVArrayCopySemantics()
+{
+    // 测试拷贝构造函数
+    scl::varray<int> v1;
+    v1.push_back(1);
+    v1.push_back(2);
+    v1.push_back(3);
+    
+    assert(v1.size() == 3);
+    
+    // 拷贝构造
+    scl::varray<int> v2 = v1;
+    
+    assert(v1.size() == 3);  // 拷贝后原对象应该保持不变
+    assert(v2.size() == 3);  // 新对象应该包含相同的元素
+    assert(v2[0] == 1);
+    assert(v2[1] == 2);
+    assert(v2[2] == 3);
+    
+    // 修改 v2，验证它们是独立的
+    v2.push_back(4);
+    assert(v1.size() == 3);  // 原对象应该不受影响
+    assert(v2.size() == 4);  // 新对象应该包含额外的元素
+    assert(v1[0] == 1);      // 原对象的元素应该保持不变
+    assert(v1[1] == 2);
+    assert(v1[2] == 3);
+    assert(v2[3] == 4);      // 新对象应该包含新添加的元素
+}
+
  void testArray()
 {
 	array<int, 10> a;
@@ -294,6 +403,12 @@ void testPageArray()
 	testSwapMemory();
 
 	testVArray();
+
+	testVArrayMoveSemantics();
+
+    testVArrayPerformanceFeatures();
+
+    testVArrayCopySemantics();
 
 	testPArray();
 

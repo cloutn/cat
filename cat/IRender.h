@@ -44,7 +44,7 @@ public:
 	virtual void*			createVertexBuffer	(const int vertexCount) = 0;
 	virtual void			releaseVertexBuffer	(void* vertexBuffer) = 0;
 	virtual void			writeVertexBuffer	(const void* src, void* dstVertexBuffer, const int sizeInByte) = 0;	
-	virtual void			readVertexBuffer	(void* dst, void* srcVertexBuffer, const int sizeInByte) = 0;			
+	virtual void			readVertexBuffer	(void* dst, void* srcVertexBuffer, const int sizeInByte, const int offset = 0) = 0;			
 	//virtual void*			mapVertexBuffer		(void* vertexBuffer) = 0;
 	//virtual void			unmapVertexBuffer	(void* vertexBuffer) = 0;
 
@@ -52,7 +52,7 @@ public:
 	virtual void*			createIndexBuffer	(const int vertexCount) = 0;
 	virtual void			releaseIndexBuffer	(void* vertexBuffer) = 0;
 	virtual void			writeIndexBuffer	(const void* src, void* dstVertexBuffer, const int sizeInByte) = 0;
-	virtual void			readIndexBuffer		(void* dst, void* srcVertexBuffer, const int sizeInByte) = 0;
+	virtual void			readIndexBuffer		(void* dst, void* srcVertexBuffer, const int sizeInByte, const int offset = 0) = 0;
 	//virtual void*			mapIndexBuffer		(void* indexBuffer) = 0;
 	//virtual void			unmapIndexBuffer	(void* indexBuffer) = 0;
 

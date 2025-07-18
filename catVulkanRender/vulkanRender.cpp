@@ -298,13 +298,17 @@ void VulkanRender::writeVertexBuffer(const void* src, void* dstVertexBuffer, con
 	}
 }
 
-void VulkanRender::readVertexBuffer(void* dst, void* srcVertexBuffer, const int sizeInByte)
+void VulkanRender::readVertexBuffer(void* dst, void* srcVertexBuffer, const int sizeInByte, const int offset)
 {
 	if (NULL == srcVertexBuffer || NULL == dst || sizeInByte <= 0)
 		return;
 
 	svkBuffer* srcBuffer = static_cast<svkBuffer*>(srcVertexBuffer);
-	svkReadBuffer(m_device, *srcBuffer, dst, sizeInByte);
+	
+	// 使用带 offset 的 svkMapMemory 版本
+	void* src = svkMapMemory(m_device, srcBuffer->memory, static_cast<VkDeviceSize>(offset), static_cast<VkDeviceSize>(sizeInByte));
+	memcpy(dst, src, sizeInByte);
+	svkUnmapMemory(m_device, srcBuffer->memory);
 }
 
 //void* VulkanRender::mapVertexBuffer(void* vertexBuffer)
@@ -358,13 +362,17 @@ void VulkanRender::writeIndexBuffer(const void* src, void* dstIndexBuffer, const
 	}
 }
 
-void VulkanRender::readIndexBuffer(void* dst, void* srcIndexBuffer, const int sizeInByte)
+void VulkanRender::readIndexBuffer(void* dst, void* srcIndexBuffer, const int sizeInByte, const int offset)
 {
 	if (NULL == srcIndexBuffer || NULL == dst || sizeInByte <= 0)
 		return;
 
 	svkBuffer* srcBuffer = static_cast<svkBuffer*>(srcIndexBuffer);
-	svkReadBuffer(m_device, *srcBuffer, dst, sizeInByte);
+	
+	// 使用带 offset 的 svkMapMemory 版本
+	void* src = svkMapMemory(m_device, srcBuffer->memory, static_cast<VkDeviceSize>(offset), static_cast<VkDeviceSize>(sizeInByte));
+	memcpy(dst, src, sizeInByte);
+	svkUnmapMemory(m_device, srcBuffer->memory);
 }
 
 //void* VulkanRender::mapIndexBuffer(void* indexBuffer)

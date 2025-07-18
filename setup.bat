@@ -10,6 +10,9 @@ cd "tool"
 ::genereate win32
 ::"./python/python" "script/setup.py" all -arch=32
 
+:: check source code encoding...
+"./python/python" "script/find_gbk.py" ./
+
 cd ..
 
 echo complete.
