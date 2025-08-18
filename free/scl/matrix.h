@@ -12,6 +12,15 @@ class vector3;
 class vector4;
 class quaternion;
 
+// NDC Z Range
+enum class Z_RANGE
+{
+	NEGATIVE_ONE_TO_ONE = 0,
+	ONE_TO_NEGATIVE_ONE = 1,
+	ZERO_TO_ONE			= 2,
+	ONE_TO_ZERO			= 3,
+};
+
 ////////////////////////////////////
 //	matrix:
 //		x1 y1 z1 d1
@@ -122,15 +131,15 @@ public:
 	static matrix	rotate_pivot_quaternion	(const vector3& pivot, const quaternion& q);
 
 	//投影矩阵
-	static void		perspective				(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ);
-	static matrix	perspective				(float fovy, float aspect, float nearZ, float farZ);
-	static void		frustum					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
-	static matrix	frustum					(float left, float right, float bottom, float top, float nearZ, float farZ);
-	static void		ortho					(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ);
-	static matrix	ortho					(float fovy, float aspect, float nearZ, float farZ);
-	static void		volume					(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
-	static matrix	volume					(float left, float right, float bottom, float top, float nearZ, float farZ);
-	//static void frustum2	(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ);
+	static void		perspective					(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
+	static matrix	perspective					(float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
+	static void		frustum						(matrix& m, float l, float r, float b, float t, float n, float f, Z_RANGE zRange);
+	static matrix	frustum						(float l, float r, float b, float t, float n, float f, Z_RANGE zRange) { matrix m; frustum(l, r, b, t, n, f, zRange); return m;}
+
+	static void		ortho						(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
+	static matrix	ortho						(float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
+	static void		volume						(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ, Z_RANGE zRange);
+	static matrix	volume						(float left, float right, float bottom, float top, float nearZ, float farZ, Z_RANGE zRange) { matrix m; volume(m, left, right, bottom, top, nearZ, farZ, zRange); return m;}
 
 	//摄像机矩阵
 	static void		lookat					(scl::matrix& result, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ);

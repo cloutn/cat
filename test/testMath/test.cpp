@@ -31,6 +31,7 @@ namespace test {
 using scl::matrix;
 using scl::quaternion;
 using scl::vector3;
+using scl::Z_RANGE;
 
 void test_rotate(bool print)
 {
@@ -118,7 +119,7 @@ void test_camera(bool print)
 	glm::mat4	gProjection = glm::perspective(glm::radians(45.0f), w/h, 0.1f, 100.0f);
 	assert(compare_mat(sProjection, gProjection, print));
 
-	matrix		sOrtho = matrix::volume(-w/2, w/2, -h/2, h/2, -10000, 10000);
+	matrix		sOrtho = matrix::volume(-w/2, w/2, -h/2, h/2, -10000, 10000, Z_RANGE::NEGATIVE_ONE_TO_ONE);
 	glm::mat4	gOrtho = glm::orthoRH(-w/2, w/2, -h/2, h/2, -10000.0f, 10000.0f);
 	assert(compare_mat(sOrtho, gOrtho, print));
 

@@ -66,3 +66,7 @@
 error.log
 /test/testMath/build64
 /test/testScl/build64
+/tool/script/__pycache__
+/test/testScl/bin64
+/test/testMath/bin64
+/test/testScl/test/testScl.log

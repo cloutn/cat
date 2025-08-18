@@ -144,9 +144,6 @@ cat::Primitive* createTestPrimitive_getVertexData(IRender* render, Env* env, ver
 	return p;
 }
 
-
-
-
 Primitive* createTestVulkanPrimitive(IRender* render, Env* env)
 {
 	Primitive* p = new Primitive();
@@ -311,11 +308,11 @@ void testPrimitive_vertexAttr(IRender* render, Env* env)
 	}
 
 	// 测试获取所有顶点的位置属性
-	float allPositions[3][3] = { 0 }; // [顶点数量][x,y,z]
+	float allPositions[3][3] = { 0 };
 	p->vertexAttrs(0, allPositions, sizeof(allPositions));
 
 	// 测试获取所有顶点的颜色属性
-	uint32 allColors[3] = { 0 }; // [顶点数量]
+	uint32 allColors[3] = { 0 }; 
 	p->vertexAttrs(1, allColors, sizeof(allColors));
 
 	for (int i = 0; i < countof(vertices); ++i)
@@ -346,7 +343,7 @@ void testPrimitive_vertexPosition(IRender* render, Env* env)
 
 	// 测试1：通过参数传递数组的方式
 	int vertexCount = 0;
-	vector3 positions[3]; // 栈上分配数组
+	vector3 positions[3]; 
 	int positionsCapacity = 3;
 	
 	p->vertexPositions(positions, vertexCount, positionsCapacity);

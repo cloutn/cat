@@ -388,57 +388,165 @@ matrix matrix::rotate_zyx_radian(float x, float y, float z)
 	return m;
 }
 
-matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ)
+matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
 {
 	matrix m;
-	ortho(m, fovy, aspect, nearZ, farZ);
+	ortho(m, fovy, aspect, nearZ, farZ, nearFarMapping);
 	return m;
 }
 
-void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ)
+void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
 {
-   float frustumHeight = tanf ( fovy / 360.0f * PI ) * nearZ;
-   float frustumWidth = frustumHeight * aspect;
-   matrix::volume(m, -frustumWidth, frustumWidth, -frustumHeight, frustumHeight, nearZ, farZ );
+	float frustumHeight = tanf(fovy / 360.0f * PI) * nearZ;
+	float frustumWidth = frustumHeight * aspect;
+	matrix::volume(m, -frustumWidth, frustumWidth, -frustumHeight, frustumHeight, nearZ, farZ, nearFarMapping);
 }
 
-matrix matrix::volume(float left, float right, float bottom, float top, float nearZ, float farZ)
-{
-	matrix m;
-	volume(m, left, right, bottom, top, nearZ, farZ);
-	return m;
-}
+//matrix matrix::volume(float left, float right, float bottom, float top, float nearZ, float farZ)
+//{
+//	matrix m;
+//	volume(m, left, right, bottom, top, nearZ, farZ);
+//	return m;
+//}
 
-void matrix::volume(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+void matrix::volume(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ, Z_RANGE nearFarMapping)
 {
    float dx = right - left;
    float dy = top - bottom;
    float dz = farZ - nearZ;
+   float f = farZ;
+   float n = nearZ;
 
    if (dx == 0.0f || dy == 0.0f || dz == 0.0f)
       return;
 
+	float A = 0;
+	float B = 0;
+
+	switch (nearFarMapping)
+	{
+	case Z_RANGE::NEGATIVE_ONE_TO_ONE:
+		{
+			A = 2.0f / (n - f);
+			B = (n + f) / (n - f);
+		}
+		break;
+	case Z_RANGE::ONE_TO_NEGATIVE_ONE:
+		{
+			A = -2.0f / (n - f);
+			B =	-(n + f) / (n - f);
+		}
+		break;
+	case Z_RANGE::ZERO_TO_ONE:
+		{
+			A = 1.0f / (n - f);
+			B = n / (n - f);
+		}
+		break;
+	case Z_RANGE::ONE_TO_ZERO:
+		{
+			A = -1.0f / (n - f);
+			B = -f / (n - f);
+		}
+		break;
+	default: assert(false); 
+		break;
+	}
+
    m.set(
-		2.0f / dx,				0,						0,						0,
-		0,						2.0f / dy,				0, 						0,
-		0,						0,						-2.0f / dz,				0,		
-		-(right + left) / dx,	-(top + bottom) / dy,	-(nearZ + farZ) / dz,	1);
+		2.0f / dx,				0,						0,		0,
+		0,						2.0f / dy,				0, 		0,
+		0,						0,						A,		0,		
+		-(right + left) / dx,	-(top + bottom) / dy,	B,		1);
 }
 
-matrix matrix::perspective(float fovy, float aspect, float nearZ, float farZ)
+//void matrix::volume(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+//{
+//   float dx = right - left;
+//   float dy = top - bottom;
+//   float dz = farZ - nearZ;
+//   float f = farZ;
+//   float n = nearZ;
+//
+//   if (dx == 0.0f || dy == 0.0f || dz == 0.0f)
+//      return;
+//
+//   m.set(
+//		2.0f / dx,				0,						0,						0,
+//		0,						2.0f / dy,				0, 						0,
+//		0,						0,						-2.0f / (f - n),				0,		
+//		-(right + left) / dx,	-(top + bottom) / dy,	-(f + n) / (f - n),	1);
+//
+//}
+
+//void matrix::volume_one_to_negative_one(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+//{
+//   float dx = right - left;
+//   float dy = top - bottom;
+//   float dz = farZ - nearZ;
+//   float f = farZ;
+//   float n = nearZ;
+//
+//   if (dx == 0.0f || dy == 0.0f || dz == 0.0f)
+//      return;
+//
+//   m.set(
+//		2.0f / dx,				0,						0,						0,
+//		0,						2.0f / dy,				0, 						0,
+//		0,						0,						-2.0f / (n - f),				0,		
+//		-(right + left) / dx,	-(top + bottom) / dy,	-(n + f) / (n - f),	1);
+//}
+
+//void matrix::volume_zero_to_one(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+//{
+//   float dx = right - left;
+//   float dy = top - bottom;
+//   float dz = farZ - nearZ;
+//   float f = farZ;
+//   float n = nearZ;
+//
+//   if (dx == 0.0f || dy == 0.0f || dz == 0.0f)
+//      return;
+//
+//   m.set(
+//		2.0f / dx,				0,						0,						0,
+//		0,						2.0f / dy,				0, 						0,
+//		0,						0,						1.0f / (n - f),			0,		
+//		-(right + left) / dx,	-(top + bottom) / dy,	n / (n - f),			1);
+//}
+
+
+//void matrix::volume_one_to_zero(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
+//{
+//   float dx = right - left;
+//   float dy = top - bottom;
+//   float dz = farZ - nearZ;
+//   float f = farZ;
+//   float n = nearZ;
+//
+//   if (dx == 0.0f || dy == 0.0f || dz == 0.0f)
+//      return;
+//
+//   m.set(
+//		2.0f / dx,				0,						0,						0,
+//		0,						2.0f / dy,				0, 						0,
+//		0,						0,						1.0f / (f - n),			0,		
+//		-(right + left) / dx,	-(top + bottom) / dy,	f / (f - n),			1);
+//}
+
+matrix matrix::perspective(float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
 {
 	matrix m;
-	perspective(m, fovy, aspect, nearZ, farZ);
+	perspective(m, fovy, aspect, nearZ, farZ, nearFarMapping);
 	return m;
 }
 
-void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float farZ)
+void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
 {
    float frustumH = tanf ( fovy / 360.0f * PI ) * nearZ;
    float frustumW = frustumH * aspect;
-   matrix::frustum(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ );
+   matrix::frustum(m, -frustumW, frustumW, -frustumH, frustumH, nearZ, farZ, nearFarMapping);
 }
-
 
 //void matrix::frustum(matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ)
 //{
@@ -456,25 +564,105 @@ void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float
 //		0,						0,						2.0f * nearZ * farZ / dz,	0);
 //}
 
-matrix matrix::frustum(float l, float r, float b, float t, float n, float f)
+//matrix matrix::frustum(float l, float r, float b, float t, float n, float f)
+//{
+//	matrix m;
+//	frustum(m, l, r, b, t, n, f);
+//	return m;
+//}
+
+//void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f)
+//{
+//   if (r <= l || t <= b || f <= n)
+//      return;
+//
+//   m.set(
+//		2 * n / (r - l),		0,						0,							0,
+//		0,						2 * n / (t - b),		0,							0,
+//		(r + l) / (r - l),		(t + b) / (t - b),		-(n + f) / (f - n),		-1.0f,
+//		0,						0,						-2 * n * f / (f - n),		0);
+//}
+
+
+// https://www.songho.ca/opengl/gl_projectionmatrix.html
+void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f, Z_RANGE nearFarMapping)
 {
-	matrix m;
-	frustum(m, l, r, b, t, n, f);
-	return m;
+	if (r <= l || t <= b || f <= n)
+		return;
+
+	float A = 0;
+	float B = 0;
+
+	switch (nearFarMapping)
+	{
+	case Z_RANGE::NEGATIVE_ONE_TO_ONE:
+		{
+			A = -(f + n) / (f - n);
+			B = -2 * n * f / (f - n);
+		}
+		break;
+	case Z_RANGE::ONE_TO_NEGATIVE_ONE:
+		{
+			A = (f + n) / (f - n);
+			B = 2 * n * f / (f - n);
+		}
+		break;
+	case Z_RANGE::ZERO_TO_ONE:
+		{
+			A = f / (n - f);
+			B = n * f / (n - f);
+		}
+		break;
+	case Z_RANGE::ONE_TO_ZERO:
+		{
+			A = n / (f - n);
+			B = n * f / (f - n);
+		}
+		break;
+	default:
+		assert(false);
+		break;
+	}
+
+	m.set(
+		2 * n / (r - l),		0,						0,		0,
+		0,						2 * n / (t - b),		0,		0,
+		(r + l) / (r - l),		(t + b) / (t - b),		A,		-1.0f,
+		0,						0,						B,		0);
 }
 
-void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f)
-{
-   if (r <= l || t <= b || f <= n)
-      return;
-
-   m.set(
-		2 * n / (r - l),		0,						0,							0,
-		0,						2 * n / (t - b),		0,							0,
-		(r + l) / (r - l),		(t + b) / (t - b),		-(n + f) / (f - n),		-1.0f,
-		0,						0,						-2 * n * f / (f - n),		0);
-}
-
+//void matrix::frustum_one_to_zero(matrix& m, float l, float r, float b, float t, float n, float f)
+//{
+//	if (r <= l || t <= b || f <= n)
+//		return;
+//
+//	m.set(
+//		2 * n / (r - l),		0,						0,							0,
+//		0,						2 * n / (t - b),		0,							0,
+//		(r + l) / (r - l),		(t + b) / (t - b),		n / (f - n),				-1.0f,
+//		0,						0,						n * f / (f - n),			0);
+//}
+//
+//void matrix::frustum_zero_to_one(matrix& m, float l, float r, float b, float t, float n, float f)
+//{
+//	if (r <= l || t <= b || f <= n)
+//		return;
+//
+//	m.set(
+//		2 * n / (r - l),		0,						0,							0,
+//		0,						2 * n / (t - b),		0,							0,
+//		(r + l) / (r - l),		(t + b) / (t - b),		f / (n - f),				-1.0f,
+//		0,						0,						n * f / (n - f),			0);
+//}
+//
+//void matrix::frustum_one_to_negative_one(matrix& m, float l, float r, float b, float t, float n, float f)
+//{
+//   m.set(
+//		2 * n / (r - l),		0,						0,							0,
+//		0,						2 * n / (t - b),		0,							0,
+//		(r + l) / (r - l),		(t + b) / (t - b),		(f + n) / (f - n),		-1.0f,
+//		0,						0,						2 * n * f / (f - n),		0);
+//}
 
 matrix matrix::lookat(float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ, float upX, float upY, float upZ)
 {
