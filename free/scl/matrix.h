@@ -134,7 +134,7 @@ public:
 	static void		perspective					(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
 	static matrix	perspective					(float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
 	static void		frustum						(matrix& m, float l, float r, float b, float t, float n, float f, Z_RANGE zRange);
-	static matrix	frustum						(float l, float r, float b, float t, float n, float f, Z_RANGE zRange) { matrix m; frustum(l, r, b, t, n, f, zRange); return m;}
+	static matrix	frustum						(float l, float r, float b, float t, float n, float f, Z_RANGE zRange) { matrix m; frustum(m, l, r, b, t, n, f, zRange); return m;}
 
 	static void		ortho						(scl::matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
 	static matrix	ortho						(float fovy, float aspect, float nearZ, float farZ, Z_RANGE zRange = Z_RANGE::NEGATIVE_ONE_TO_ONE);
