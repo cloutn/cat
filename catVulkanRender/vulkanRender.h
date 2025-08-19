@@ -47,6 +47,7 @@ public:
 	void					swap					();
 	void					clear					();
 	void					setOnSurfaceResize		(scl::class_function<void (int, int)> func) { m_onSurfaceResize = func; }
+	void					setReverseZ				(bool v) { m_reverseZ = v; }
 
 	void					updateMVP				(const scl::matrix& mvp);
 //	void					onResize				(const int width, const int height, bool forceSet = false);
@@ -260,6 +261,7 @@ private:
 	uint32_t			m_frameUniformBufferOffset;
 	CommandAllocator*	m_commandAllocator[MAX_FRAME];
 	VkCommandBuffer		m_bindCommandBuffer;
+	bool				m_reverseZ;
 
 
 	//for recreate surface

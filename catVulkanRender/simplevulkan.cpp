@@ -2013,7 +2013,7 @@ svkPipeline svkCreatePipeline(svkDevice& device, VkDescriptorSetLayout descLayou
 	ds.sType					= VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 	ds.depthTestEnable			= VK_TRUE;
 	ds.depthWriteEnable			= VK_TRUE;
-	ds.depthCompareOp			= VK_COMPARE_OP_LESS_OR_EQUAL;
+	ds.depthCompareOp			= VK_COMPARE_OP_LESS;
 	ds.depthBoundsTestEnable	= VK_FALSE;
 	ds.back.failOp				= VK_STENCIL_OP_KEEP;
 	ds.back.passOp				= VK_STENCIL_OP_KEEP;
@@ -2658,7 +2658,8 @@ svkPipeline svkCreatePipelineEx(
 	VkPrimitiveTopology		topology, 
 	VkPipelineVertexInputStateCreateInfo& viCreateInfo, 
 	svkShaderProgram&		shaderProgram, 
-	VkPipelineCache*		oldPipelineCache)
+	VkPipelineCache*		oldPipelineCache,
+	VkCompareOp				compareOp)
 {
 	svkPipeline pipeline;
 	VkResult err;
@@ -2709,7 +2710,7 @@ svkPipeline svkCreatePipelineEx(
 	ds.sType					= VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 	ds.depthTestEnable			= VK_TRUE;
 	ds.depthWriteEnable			= VK_TRUE;
-	ds.depthCompareOp			= VK_COMPARE_OP_LESS_OR_EQUAL;
+	ds.depthCompareOp			= compareOp;
 	ds.depthBoundsTestEnable	= VK_FALSE;
 	ds.back.failOp				= VK_STENCIL_OP_KEEP;
 	ds.back.passOp				= VK_STENCIL_OP_KEEP;

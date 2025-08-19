@@ -198,7 +198,7 @@ void					svkDestroyDescriptorPool		(svkDevice& device, VkDescriptorPool pool);
 
 // pipeline 
 svkPipeline				svkCreatePipeline				(svkDevice& device, VkDescriptorSetLayout pipelineLayout, VkRenderPass renderPass, VkPipelineCache* cache);
-svkPipeline				svkCreatePipelineEx				(svkDevice& device, VkDescriptorSetLayout pipelineLayout, VkRenderPass renderPass, VkPrimitiveTopology topology, VkPipelineVertexInputStateCreateInfo& viCreateInfo, svkShaderProgram& shaderProgram, VkPipelineCache* cache);
+svkPipeline				svkCreatePipelineEx				(svkDevice& device, VkDescriptorSetLayout pipelineLayout, VkRenderPass renderPass, VkPrimitiveTopology topology, VkPipelineVertexInputStateCreateInfo& viCreateInfo, svkShaderProgram& shaderProgram, VkPipelineCache* cache, VkCompareOp compareOp);
 void					svkDestroyPipeline				(svkDevice&, svkPipeline&, bool deleteCache = true);
 
 // record commands

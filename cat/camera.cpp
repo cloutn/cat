@@ -7,6 +7,7 @@ namespace cat {
 using scl::vector3;
 using scl::quaternion;
 using scl::matrix;
+using scl::z_range;
 
 Camera::Camera() : 
 	m_position			{0, 0, -1},
@@ -19,16 +20,20 @@ Camera::Camera() :
 	m_viewDirty			(true),
 	m_projectionDirty	(true),
 	m_dirty				(true),
-	m_ortho				(false)
+	m_ortho				(false),
+	m_zRange			(z_range::negative_one_to_one)
 {
-	m_matrix = scl::matrix::identity();
+	m_matrix			= matrix::identity();
+	m_projectionMatrix	= matrix::identity();
+	m_viewMatrix		= matrix::identity();
 }
 
 
-void Camera::set(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up, float fov, float aspect, float near, float far)
+void Camera::set(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up, float fov, float aspect, float near, float far, z_range zRange)
 {
 	setView(position, lookat, up);
 	setProjection(fov, aspect, near, far);
+	setZRange(zRange);
 }
 
 void Camera::setView(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up)
@@ -65,6 +70,15 @@ void Camera::setOrtho(const bool b)
 	if (m_ortho == b)
 		return;
 	m_ortho = b;
+	_invalidateProjection();
+}
+
+void Camera::setZRange(const scl::z_range r)
+{
+	if (m_zRange == r)
+		return;
+
+	m_zRange = r;
 	_invalidateProjection();
 }
 
@@ -176,9 +190,9 @@ void Camera::_updateProjection() const
 	if (!m_projectionDirty)
 		return;
 	if (m_ortho)
-		scl::matrix::ortho(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
+		scl::matrix::ortho(m_projectionMatrix, m_fov, m_aspect, m_near, m_far, m_zRange);
 	else
-		scl::matrix::perspective(m_projectionMatrix, m_fov, m_aspect, m_near, m_far);
+		scl::matrix::perspective(m_projectionMatrix, m_fov, m_aspect, m_near, m_far, m_zRange);
 	m_projectionDirty = false;
 }
 

@@ -388,14 +388,14 @@ matrix matrix::rotate_zyx_radian(float x, float y, float z)
 	return m;
 }
 
-matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
+matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ, z_range nearFarMapping)
 {
 	matrix m;
 	ortho(m, fovy, aspect, nearZ, farZ, nearFarMapping);
 	return m;
 }
 
-void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
+void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ, z_range nearFarMapping)
 {
 	float frustumHeight = tanf(fovy / 360.0f * PI) * nearZ;
 	float frustumWidth = frustumHeight * aspect;
@@ -409,7 +409,7 @@ void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ,
 //	return m;
 //}
 
-void matrix::volume(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ, Z_RANGE nearFarMapping)
+void matrix::volume(scl::matrix& m, float left, float right, float bottom, float top, float nearZ, float farZ, z_range nearFarMapping)
 {
    float dx = right - left;
    float dy = top - bottom;
@@ -425,25 +425,25 @@ void matrix::volume(scl::matrix& m, float left, float right, float bottom, float
 
 	switch (nearFarMapping)
 	{
-	case Z_RANGE::NEGATIVE_ONE_TO_ONE:
+	case z_range::negative_one_to_one:
 		{
 			A = 2.0f / (n - f);
 			B = (n + f) / (n - f);
 		}
 		break;
-	case Z_RANGE::ONE_TO_NEGATIVE_ONE:
+	case z_range::one_to_negative_one:
 		{
 			A = -2.0f / (n - f);
 			B =	-(n + f) / (n - f);
 		}
 		break;
-	case Z_RANGE::ZERO_TO_ONE:
+	case z_range::zero_to_one:
 		{
 			A = 1.0f / (n - f);
 			B = n / (n - f);
 		}
 		break;
-	case Z_RANGE::ONE_TO_ZERO:
+	case z_range::one_to_zero:
 		{
 			A = -1.0f / (n - f);
 			B = -f / (n - f);
@@ -534,14 +534,14 @@ void matrix::volume(scl::matrix& m, float left, float right, float bottom, float
 //		-(right + left) / dx,	-(top + bottom) / dy,	f / (f - n),			1);
 //}
 
-matrix matrix::perspective(float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
+matrix matrix::perspective(float fovy, float aspect, float nearZ, float farZ, z_range nearFarMapping)
 {
 	matrix m;
 	perspective(m, fovy, aspect, nearZ, farZ, nearFarMapping);
 	return m;
 }
 
-void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float farZ, Z_RANGE nearFarMapping)
+void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float farZ, z_range nearFarMapping)
 {
    float frustumH = tanf ( fovy / 360.0f * PI ) * nearZ;
    float frustumW = frustumH * aspect;
@@ -585,7 +585,7 @@ void matrix::perspective(matrix& m, float fovy, float aspect, float nearZ, float
 
 
 // https://www.songho.ca/opengl/gl_projectionmatrix.html
-void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f, Z_RANGE nearFarMapping)
+void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, float f, z_range nearFarMapping)
 {
 	if (r <= l || t <= b || f <= n)
 		return;
@@ -595,25 +595,25 @@ void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, flo
 
 	switch (nearFarMapping)
 	{
-	case Z_RANGE::NEGATIVE_ONE_TO_ONE:
+	case z_range::negative_one_to_one:
 		{
 			A = -(f + n) / (f - n);
 			B = -2 * n * f / (f - n);
 		}
 		break;
-	case Z_RANGE::ONE_TO_NEGATIVE_ONE:
+	case z_range::one_to_negative_one:
 		{
 			A = (f + n) / (f - n);
 			B = 2 * n * f / (f - n);
 		}
 		break;
-	case Z_RANGE::ZERO_TO_ONE:
+	case z_range::zero_to_one:
 		{
 			A = f / (n - f);
 			B = n * f / (n - f);
 		}
 		break;
-	case Z_RANGE::ONE_TO_ZERO:
+	case z_range::one_to_zero:
 		{
 			A = n / (f - n);
 			B = n * f / (f - n);

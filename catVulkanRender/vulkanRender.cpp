@@ -48,6 +48,7 @@ VulkanRender::VulkanRender()  :
 	m_pickCommandAllocator		(NULL),
 	m_pickFence					(NULL),
 	m_pickSemaphore				(NULL),
+	m_pickCopyCommandBuffer		(NULL),
 	m_isInit					(false),
 	m_minimized					(false),
 	m_frameIndex				(-1),
@@ -55,6 +56,7 @@ VulkanRender::VulkanRender()  :
 	m_matrixChanged				(false),
 	m_scale						(1.0f),
 	m_frameUniformBufferOffset	(0),
+	m_reverseZ					(false),
 	m_windowInstance			(NULL),
 	m_windowHandle				(NULL),
 	m_IMGUIDescriptorPool		(NULL),
@@ -73,6 +75,9 @@ VulkanRender::VulkanRender()  :
 	memclr(m_drawContext);
 	memclr(m_pickRenderTarget);
 	memclr(m_deviceInfo);
+	memclr(m_commandAllocator);
+	memclr(m_mainDepthImage);
+	memclr(m_pickPassImageCPUBuffer);
 	//m_pickImageSize.clear();
 	//m_pickImageOffset.clear();
 }
@@ -618,7 +623,7 @@ scl::vector4 VulkanRender::endPickPass(int x, int y)
 	svkResetCommandBuffer(primaryCb);
 	svkBeginCommandBuffer(primaryCb);
 	scl::vector4& clearColor = m_drawContext.clearColorRGBA;
-	svkCmdBeginRenderPass(primaryCb, clearColor.r, clearColor.g, clearColor.b, clearColor.a, 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
+	svkCmdBeginRenderPass(primaryCb, clearColor.r, clearColor.g, clearColor.b, clearColor.a, m_reverseZ ? 0 : 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
 	
 	CommandAllocator* commandAllocator = m_drawContext.commandAllocator;
 	if (commandAllocator->getAllocCount() > 0)
@@ -729,7 +734,7 @@ void VulkanRender::endScenePass()
 	VkCommandBuffer& primaryCb = m_frames[m_frameIndex].commandBuffer;
 	svkBeginCommandBuffer(primaryCb);
 	scl::vector4& clearColor = m_drawContext.clearColorRGBA;
-	svkCmdBeginRenderPass(primaryCb, clearColor.r, clearColor.g, clearColor.b, clearColor.a, 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
+	svkCmdBeginRenderPass(primaryCb, clearColor.r, clearColor.g, clearColor.b, clearColor.a, m_reverseZ ? 0 : 1.0f, 0, m_drawContext.renderPass, m_drawContext.framebuffer, m_drawContext.width, m_drawContext.height, true);
 	
 	CommandAllocator* commandAllocator = m_commandAllocator[m_frameIndex];
 	if (commandAllocator->getAllocCount() > 0)
@@ -907,7 +912,7 @@ void VulkanRender::_preparePipeline(
 		svkShaderProgram*						shaderProgram	= static_cast<svkShaderProgram*>(shader);
 
 		pipeline	= new svkPipeline;
-		*pipeline	= svkCreatePipelineEx(m_device, descriptorSetLayout, m_drawContext.renderPass, vkTopology, viCreateInfo, *shaderProgram, NULL);
+		*pipeline	= svkCreatePipelineEx(m_device, descriptorSetLayout, m_drawContext.renderPass, vkTopology, viCreateInfo, *shaderProgram, NULL, m_reverseZ ? VK_COMPARE_OP_GREATER: VK_COMPARE_OP_LESS);
 		m_pipelines.add(pipelineKey, pipeline);
 	}
 }

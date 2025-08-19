@@ -19,22 +19,24 @@ public:
 	const	float			aspect			() const { return m_aspect;		}
 	const	float			near			() const { return m_near;		}
 	const	float			far				() const { return m_far;		}
-	const	bool			ortho			() const { return m_ortho;	}
+	const	bool			ortho			() const { return m_ortho;		}
+	const	scl::z_range	zRange			() const { return m_zRange;	}
 
-	void					set				(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up, float fov, float aspect, float near, float far);
+	void					set				(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up, float fov, float aspect, float near, float far, scl::z_range zRange);
 	void					setView			(const scl::vector3& position, const scl::vector3& lookat, const scl::vector3 up);
 	void					setProjection	(float fov, float aspect, float near, float far);
 	void					setAspect		(float aspect);
 	void					setViewByMatrix	(const scl::matrix& m);
 	void					setOrtho		(const bool b);
+	void					setZRange		(const scl::z_range r);
 
 	void					move			(scl::vector3 d);
 	void					move			(float dx, float dy, float dz) { move({dx, dy, dz}); }
 	void					move_front		(float d);
 	void					move_side		(float d);
 	void					rotate			(float x, float y, float z);
-	void					orbit_right		(float angle); // let the camrea rotate around the right vector, the fowrad(front) will turn up and down.
-	void					orbit_up		(float angle); // let the camera rotate around the up vector, the fowrad(front) will turn left or right.
+	void					orbit_right		(float angle); // let the camera rotate around the right vector, the foward(front) will turn up and down.
+	void					orbit_up		(float angle); // let the camera rotate around the up vector, the foward(front) will turn left or right.
 
 	const	scl::matrix&	matrix			() const;
 	const	scl::matrix&	viewMatrix		() const;
@@ -61,6 +63,7 @@ private:
 	float					m_near;			// near Z. MUST be positive number. default 0.1f
 	float					m_far;			// far Z. MUST be positive number. default 100.f
 	bool					m_ortho;		// is ortho projection.
+	scl::z_range			m_zRange;		// Clipping/NDC z range, by default, OpenGL(-1,1), Vulkan(0,1)
 
 	mutable scl::matrix		m_viewMatrix;
 	mutable scl::matrix		m_projectionMatrix;
