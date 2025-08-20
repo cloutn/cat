@@ -31,6 +31,7 @@ void Config::load(const char* const filename)
 	clearColor				= root["clearColor"				].to_uint();
 	screenSize				= root["screenSize"				].to_vector2i();
 	screenPos				= root["screenPos"				].to_vector2i();
+	reverseZ				= root["reverseZ"				].to_bool();
 }
 
 void Config::save(const char* const filename)
@@ -40,9 +41,11 @@ void Config::save(const char* const filename)
 
 	root.add("showDemoWindow",			showDemoWindow);
 	root.add("showDeviceInfoWindow",	showDeviceInfoWindow);
+	root.add("showConfigWindow",		showConfigWindow);
 	root.add("clearColor",				ryml::fmt::hex(clearColor));
 	root.add("screenSize",				screenSize);
 	root.add("screenPos",				screenPos);
+	root.add("reverseZ",				reverseZ);
 
 	doc.save(filename);
 }

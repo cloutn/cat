@@ -73,7 +73,7 @@ void Client::init()
 	m_window.init(m_config.screenPos.x, m_config.screenPos.y, m_config.screenSize.x, m_config.screenSize.y, L"main", L"", true);
 	m_render.init(m_window.getInstance(), m_window.getHandle());
 	m_render.setOnSurfaceResize(scl::bind(this, &Client::OnSurfaceResize));
-	m_render.setReverseZ(true);
+	m_render.setReverseZ(m_config.reverseZ);
 	m_window.registerEventHandler(scl::bind(this, &Client::onEvent));
 #endif
 
@@ -82,7 +82,16 @@ void Client::init()
 	m_env->setDefaultShader(SHADER_PATH "object.vert", SHADER_PATH "object.frag");
 	m_env->setDefaultMaterial("art/default.png");
 
-	m_camera->set({0, 0, 2}, {0, 0, -1}, {0, 1, 0}, 45.f, static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 0.1f, 100.f, scl::z_range::one_to_zero);
+	m_camera->set(
+		{0, 0, 2}, 
+		{0, 0, -1}, 
+		{0, 1, 0}, 
+		45.f, 
+		static_cast<float>(m_render.getDeviceWidth())/m_render.getDeviceHeight(), 
+		0.1f, 
+		100.f, 
+		m_config.reverseZ ? scl::z_range::one_to_zero : scl::z_range::zero_to_one);
+
 	//m_camera->setOrtho(true);
 
 	m_gui.init(this);
