@@ -6,6 +6,7 @@
 #include "cat/def.h"
 
 #include "scl/matrix.h"
+#include "scl/log.h"
 
 #include "cgltf\cgltf.h"
 
@@ -34,7 +35,7 @@ matrix* _loadMatrices(cgltf_accessor* accessor, int outputMatrixCount)
 	return output;
 }
 
-Skin::Skin() : m_inverseBindMatrices(NULL), m_inverseBindMatrixCount(0), m_jointMatrices(NULL)
+Skin::Skin() : m_inverseBindMatrices(NULL), m_inverseBindMatrixCount(0), m_jointMatrices(NULL), m_root(NULL)
 {
 
 }
@@ -59,6 +60,13 @@ void Skin::load(cgltf_skin* skinData, Env* env)
 		Object* obj = env->getObjectByGltfNode(node);
 		assert(NULL != obj);
 		m_joints.push_back(obj);
+
+
+	}
+
+	if (NULL != skinData->skeleton)
+	{
+		m_root = env->getObjectByGltfNode(skinData->skeleton);
 	}
 }
 
@@ -75,6 +83,53 @@ scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inve
 	}
 	matrixCount = m_inverseBindMatrixCount;
 	return m_jointMatrices;
+}
+
+const cat::Object* Skin::root() const
+{
+	if (NULL != m_root)
+		return m_root;
+
+	if (m_joints.size() <= 0)
+		return NULL;
+
+	// Start from first joint and trace up to find root
+	Object* current = m_joints[0];
+	const int MAX_DEPTH = m_joints.size() + 1;
+	int depth = 0;
+	
+	while (depth < MAX_DEPTH)
+	{
+		const Object* parent = current->parent();
+		
+		// If parent is NULL, current is root
+		if (NULL == parent)
+		{
+			m_root = current;
+			break;
+		}
+		
+		// If parent is not in joints array, current is root
+		if (!m_joints.contains(parent))
+		{
+			m_root = current;
+			break;
+		}
+		
+		// Move up to parent
+		current = const_cast<Object*>(parent);
+		++depth;
+	}
+	
+	if (depth >= MAX_DEPTH && m_root == NULL)
+	{
+		m_root = m_joints[0];
+
+		// TODO: Add warning log here if logging system is available
+		log_warning("Possible cycle detected in joint hierarchy, using first joint as root");
+	}
+	
+	return m_root;
 }
 
 } // namespace cat

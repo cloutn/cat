@@ -53,7 +53,7 @@ SCL_ASSERT_TRY
 }
 SCL_ASSERT_CATCH
 {
-		log_warn << "get a catch in task_thread::thread_func !" << scl::endl;
+		log_warn("get a catch in task_thread::thread_func !");
 		continue;
 }
 

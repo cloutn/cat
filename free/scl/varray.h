@@ -7,6 +7,8 @@
 #include "scl/type.h"
 #include "scl/assert.h"
 #include "scl/math.h"
+#include "scl/type_traits.h"
+
 #include <new>	//placement new
 		
 #if defined(SCL_LINUX) || defined(SCL_APPLE) || defined(SCL_ANDROID) || defined(SCL_HTML5)
@@ -75,6 +77,13 @@ public:
 	void	erase_element_fast	(const T& elem);	//当对数组内元素的顺序不关心的时候，使用RemoveFast接口提高效率
 	int		find				(const T& elem) const;
 	bool	contains			(const T& elem) const { return find(elem) != -1; }
+
+#pragma warning(push)
+#pragma warning(disable: 4180)
+	// array<int*>::contains can accept <const int*> param
+	bool	contains			(const remove_pointer_t<T>*& elem) const { return find(const_cast<T&>(elem)) != -1; }
+#pragma warning(pop)
+
 	void	zero_memory			(const int start = 0, const int len = -1);
 	void	disable_constructor	() { m_option |= OPTION_DISABLE_CONSTRUCTOR; }
 	void	disable_destructor	() { m_option |= OPTION_DISABLE_DESTRUCTOR; }

@@ -21,6 +21,7 @@
 #include "testBigInt.h"
 #include "testHeap.h"
 #include "testPath.h"
+#include "testTypeTraits.h"
 
 #include "scl/allocator.h"
 #include "scl/list.h"
@@ -75,6 +76,7 @@ int main(int argc, char* argv[])
 	testBigInt();
 	testIniFile();
 	testPath();
+	testTypeTraits();
 	//
 
 	////以下为非常规测试

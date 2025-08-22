@@ -7,6 +7,7 @@
 #include "scl/type.h"
 #include "scl/assert.h"
 #include "scl/math.h"
+#include "scl/type_traits.h"
 
 //#include <stdlib.h> //for qsort
 #include <algorithm> //for std sort
@@ -102,6 +103,13 @@ public:
 	void	erase_element_fast	(const T& elem);
 	int		find				(const T& elem) const;
 	bool	contains			(const T& elem) const { return find(elem) != -1; }
+
+#pragma warning(push)
+#pragma warning(disable: 4180)
+	// array<int*>::contains can accept <const int*> param
+	bool	contains			(const remove_pointer_t<T>*& elem) const { return find(const_cast<T&>(elem)) != -1; }
+#pragma warning(pop)
+
 	void	assign				(const T* other, const int count);
 	int		capacity			() const { return MAX_SIZE; }
 

@@ -68,7 +68,8 @@ set(header_files
 	wstring.h
 	zip_int.h
 	function.h
-	plane.h)
+	plane.h
+	type_traits.h)
 
 set(src_files
 	android.cpp

@@ -70,3 +70,4 @@ error.log
 /test/testScl/bin64
 /test/testMath/bin64
 /test/testScl/test/testScl.log
+/testCat/testCat.log

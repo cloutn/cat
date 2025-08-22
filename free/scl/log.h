@@ -24,14 +24,15 @@ namespace scl {
 #endif
 
 class log_stream;
-#define log_verbose		scl::log_stream(scl::LOG_LEVEL_VERBOSE,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_debug		scl::log_stream(scl::LOG_LEVEL_DEBUG,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_info		scl::log_stream(scl::LOG_LEVEL_INFO,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_warn		scl::log_stream(scl::LOG_LEVEL_WARN,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_error		scl::log_stream(scl::LOG_LEVEL_ERROR,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_fatal		scl::log_stream(scl::LOG_LEVEL_FATAL,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_user1		scl::log_stream(scl::LOG_LEVEL_USER1,	-1, __FILE__, SCL_FUNCTION, __LINE__)
-#define log_user(l)		scl::log_stream(l,						-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_verbose_safe	scl::log_stream(scl::LOG_LEVEL_VERBOSE,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_debug_safe		scl::log_stream(scl::LOG_LEVEL_DEBUG,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_info_safe		scl::log_stream(scl::LOG_LEVEL_INFO,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_warn_safe		scl::log_stream(scl::LOG_LEVEL_WARN,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_error_safe		scl::log_stream(scl::LOG_LEVEL_ERROR,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_fatal_safe		scl::log_stream(scl::LOG_LEVEL_FATAL,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+
+#define log_user1_safe		scl::log_stream(scl::LOG_LEVEL_USER1,	-1, __FILE__, SCL_FUNCTION, __LINE__)
+#define log_user_safe(l)	scl::log_stream(l,						-1, __FILE__, SCL_FUNCTION, __LINE__)
 
 
 
@@ -45,24 +46,27 @@ class log_stream;
 //注意，log_direct是线程不安全的，不保证不会发生日志打印错误或死锁，所有的log_direct都是error日志
 //当只有主线程打印日志的时候，是不会开启多线程模式的，所以尽量不要使用log_direct
 #ifdef SCL_WIN
-#define log_verbose_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_VERBOSE,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
-#define log_debug_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_DEBUG,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
-#define log_info_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_INFO,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
-#define log_warn_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_WARN,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
-#define log_error_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_ERROR,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
-#define log_fatal_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_FATAL,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+#define log_verbose(s, ...)    scl::log::out(scl::LOG_LEVEL_VERBOSE,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+#define log_debug(s, ...)    scl::log::out(scl::LOG_LEVEL_DEBUG,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+#define log_info(s, ...)    scl::log::out(scl::LOG_LEVEL_INFO,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+#define log_warn(s, ...)    scl::log::out(scl::LOG_LEVEL_WARN,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+#define log_error(s, ...)    scl::log::out(scl::LOG_LEVEL_ERROR,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+#define log_fatal(s, ...)    scl::log::out(scl::LOG_LEVEL_FATAL,    -1, __FILE__, __FUNCTION__, __LINE__, s, __VA_ARGS__)
+
 #define log_direct(s, ...)	scl::log::direct_out(scl::LOG_LEVEL_DEBUG,	-1, __FILE__, SCL_FUNCTION, __LINE__, s, __VA_ARGS__)
 #endif
 #if defined(SCL_LINUX) || defined(SCL_APPLE) || defined (SCL_ANDROID)
-#define log_verbose_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_VERBOSE,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
-#define log_debug_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_DEBUG,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
-#define log_info_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_INFO,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
-#define log_warn_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_WARN,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
-#define log_error_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_ERROR,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
-#define log_fatal_unsafe(s, ...)    scl::log::out(scl::LOG_LEVEL_FATAL,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+#define log_verbose(s, ...)    scl::log::out(scl::LOG_LEVEL_VERBOSE,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+#define log_debug(s, ...)    scl::log::out(scl::LOG_LEVEL_DEBUG,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+#define log_info(s, ...)    scl::log::out(scl::LOG_LEVEL_INFO,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+#define log_warn(s, ...)    scl::log::out(scl::LOG_LEVEL_WARN,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+#define log_error(s, ...)    scl::log::out(scl::LOG_LEVEL_ERROR,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+#define log_fatal(s, ...)    scl::log::out(scl::LOG_LEVEL_FATAL,    -1, __FILE__, __FUNCTION__, __LINE__, s, ##__VA_ARGS__)
+
 #define log_direct(s, ...)	scl::log::direct_out(scl::LOG_LEVEL_DEBUG,	-1, __FILE__, SCL_FUNCTION, __LINE__, s, ##__VA_ARGS__)
 #endif
 
+#define log_warning log_warn
 
 class ini_file;
 class log

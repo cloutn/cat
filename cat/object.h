@@ -45,9 +45,11 @@ public:
 	const scl::varray<Object*>&	childs						() const { return m_childs; }
 	int							childCount					() const { return m_childs.size(); }
 	Object*						child						(int index) { return m_childs[index]; }
-	const Object*				childConst					(int index) const { return m_childs[index]; }
+	const Object*				child						(int index) const { return m_childs[index]; }
 	Object*						child						(const char* const objectName);
 	Object*						childByID					(const int id, bool recursive = false);
+	Object*						parent						() { return m_parent; }
+	const Object*				parent						() const { return m_parent; }
 	void						setRotate					(const scl::quaternion& v);
 	void						setRotateAngle				(const scl::vector3& v);
 	void						setScale					(const scl::vector3& v);
