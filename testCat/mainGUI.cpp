@@ -349,6 +349,9 @@ void MainGUI::_processGizmo()
 	if (NULL == object)
 		return;
 
+	if (object->hasSkin())
+		object = object->skinRoot();
+
 	gizmo::SetOrthographic	(false);	
 	gizmo::SetRect			(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
 

@@ -224,21 +224,32 @@ ObjectIDMap<Object>& Object::_objectIDMap()
 
 void Object::setRotate(const scl::quaternion& v)
 {
+	if (v == _transform()->rotate())
+		return;
 	_transform()->setRotate(v);
 }
 
 void Object::setRotateAngle(const scl::vector3& v)
 {
+	scl::quaternion q;
+	q.from_euler_angle(v.x, v.y, v.z);
+	if (q == _transform()->rotate())
+		return;
+
 	_transform()->setRotateAngle(v);
 }
 
 void Object::setScale(const scl::vector3& v)
 {
+	if (v == _transform()->scale())
+		return;
 	_transform()->setScale(v);
 }
 
 void Object::setMove(const scl::vector3& v)
 {
+	if (v == _transform()->move())
+		return;
 	_transform()->setMove(v);
 }
 
@@ -294,6 +305,11 @@ Transform* Object::_transform()
 	if (NULL == m_transform)	
 		m_transform = new Transform;
 	return m_transform;
+}
+
+cat::Object* Object::skinRoot() 
+{
+	return (NULL == m_skin) ? NULL : m_skin->root();
 }
 
 void Object::releaseObjectIDMap()

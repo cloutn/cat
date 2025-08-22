@@ -85,7 +85,7 @@ scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inve
 	return m_jointMatrices;
 }
 
-const cat::Object* Skin::root() const
+cat::Object* Skin::root()
 {
 	if (NULL != m_root)
 		return m_root;
@@ -131,6 +131,7 @@ const cat::Object* Skin::root() const
 	
 	return m_root;
 }
+
 
 } // namespace cat
 

@@ -18,10 +18,11 @@ public:
 
 	void					load				(cgltf_skin* skinData, Env* env);
 
-	// TODO use cache, dont't generate every frame
+	// TODO use cache, don't generate every frame
 	scl::matrix*			generateJointMatrix	(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform);
 
-	const Object*			root				() const;
+	const Object*			root				() const { return root(); }
+	Object*					root				();
 
 private:
 	scl::matrix*			m_inverseBindMatrices;

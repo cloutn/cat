@@ -67,6 +67,10 @@ public:
 	bool						isEnableAnimation			() const { return m_enableAnimation; }
 	void						setEnableAnimation			(const bool v) { m_enableAnimation = v; }
 	void						setMesh						(Mesh* mesh) { m_mesh = mesh; }
+	const Skin*					skin						() const { return m_skin; }
+	bool						hasSkin						() const { return skin() != NULL; }
+	Object*						skinRoot					();
+	const Object*				skinRoot					() const { return skinRoot(); }
 
 	// static 
 	static Object*				objectByID					(const int id) { return _objectIDMap().get(id); }
