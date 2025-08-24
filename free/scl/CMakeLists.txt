@@ -113,9 +113,25 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(ARCH 64) 
 endif()
 
-set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH})
-set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH})
-set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
+# 设置库输出目录
+set(LIB_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH})
+
+# 输出调试信息
+message(STATUS "SCL Library output directory: ${LIB_OUTPUT_DIR}")
+message(STATUS "PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+
+# 确保输出目录存在
+file(MAKE_DIRECTORY ${LIB_OUTPUT_DIR})
+
+set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${LIB_OUTPUT_DIR})
+set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LIB_OUTPUT_DIR})
+set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
+
+# 在Windows上使用_d后缀区分Debug版本，Linux上通常不区分
+if(WIN32)
+	set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
+endif()
 
 target_include_directories(
 	${target}
@@ -125,10 +141,21 @@ target_include_directories(
 add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DSCL_FORCE_SLEEP)
 
-
+# 平台特定定义
 if(WIN32)
   #add_definitions("/wd4819") 
   add_definitions("/source-charset:utf-8")
-endif(WIN32)
+elseif(UNIX AND NOT APPLE)
+  add_definitions(-DSCL_LINUX)
+elseif(APPLE)
+  add_definitions(-DSCL_APPLE)
+endif()
+
+# 添加自定义命令，确保库文件被复制到正确位置
+add_custom_command(TARGET ${target} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+    $<TARGET_FILE:${target}> ${LIB_OUTPUT_DIR}/$<TARGET_FILE_NAME:${target}>
+    COMMENT "Copying ${target} to ${LIB_OUTPUT_DIR}"
+)
 
 

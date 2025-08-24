@@ -281,7 +281,7 @@ int _demangle(char* const s, const int len, char* output, const int outputlen, c
 	if (NULL == mangled || NULL == offset || NULL == end || mangled >= offset)
 	{
 		slen += snprintf(output + slen, outputlen > slen ? outputlen - slen : 0, "%s\n", s);
-		break;
+		return slen;
 	}
 	
 	*mangled++		= 0;
@@ -293,12 +293,11 @@ int _demangle(char* const s, const int len, char* output, const int outputlen, c
 	size_t demangled_len = 512;
 	char* ret = abi::__cxa_demangle(mangled, demangled, &demangled_len, &status);
 	if (status == 0)
-		slen += snprintf(output + slen, outputlen > slen ? outputlen - slen : 0, "%s : %s+%s\n", symbols[j], ret, offset);
+		slen += snprintf(output + slen, outputlen > slen ? outputlen - slen : 0, "%s : %s+%s\n", s, ret, offset);
 	else
-		slen += snprintf(output + slen, outputlen > slen ? outputlen - slen : 0, "%s : %s+%s\n", symbols[j], mangled, offset);
+		slen += snprintf(output + slen, outputlen > slen ? outputlen - slen : 0, "%s : %s+%s\n", s, mangled, offset);
 	
 	return slen;
-}
 }
 #endif
 

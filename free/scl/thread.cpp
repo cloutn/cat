@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
+#include <stdint.h>
 #endif
 
 #if defined(SCL_LINUX) || defined(SCL_ANDROID) || defined(SCL_HTML5)
@@ -113,7 +114,7 @@ int thread::__init_main_thread_info()
 	_i.index		= index;
 
 #if defined(SCL_LINUX) || defined(SCL_APPLE)
-	_i.pthread_id	= reinterpret_cast<uint64>(pthread_self());
+	_i.pthread_id	= static_cast<uint64>(reinterpret_cast<uintptr_t>(pthread_self()));
 #elif defined(SCL_ANDROID)
 	_i.pthread_id	= pthread_self();
 #else
@@ -160,7 +161,7 @@ void* PlatformThreadFunction(void* p)
 #ifdef SCL_ANDROID
 	pinfo->pthread_id	= pthread_self();
 #else
-	pinfo->pthread_id	= reinterpret_cast<uint64>(pthread_self());
+	pinfo->pthread_id	= static_cast<uint64>(reinterpret_cast<uintptr_t>(pthread_self()));
 #endif
 
 	while (pinfo->signal == thread::SIGNAL_HUNG)

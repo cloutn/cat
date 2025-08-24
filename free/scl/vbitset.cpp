@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #endif
 
+#ifdef SCL_LINUX
+#include <stdlib.h>
+#endif
+
 #ifdef SCL_WIN
 #include <malloc.h>
 #endif

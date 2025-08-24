@@ -53,7 +53,7 @@ public:
 	void		div				(const big_int& down, big_int& mod); // up ÷ div = up.div(down);
 
 	//正负号相关
-	void		not				()	{ m_sign = -m_sign;		}		//取反
+	void		negate			()	{ m_sign = -m_sign;		}		//取反
 	void		absolute		()	{ m_sign = 1;			}		//绝对值
 	char		sign			()	const { assert(m_sign >= -1 && m_sign <= 1); return m_sign;		}		//正负号	,1表示正数，-1表示负数
 
@@ -295,7 +295,7 @@ void big_int<MAX_BYTE_COUNT>::dec(const big_int& bi)
 			big_int t(*this);
 			*this = bi;
 			this->_dec_value(t);
-			this->not();
+			this->negate();
 		}
 		else //if compare > 0
 		{

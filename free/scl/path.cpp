@@ -11,12 +11,21 @@
 #include <CoreFoundation/CFUtilities.h>
 #endif
 
+#if defined(SCL_APPLE_MAC)
+#include <mach-o/dyld.h>
+#endif
+
 #if defined(SCL_WIN)
 #include <Windows.h>
 #endif
 
+#if defined(SCL_LINUX) || defined(SCL_APPLE_MAC)
+#include <unistd.h>
+#endif
+
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 namespace scl {
 
@@ -46,8 +55,26 @@ void get_application_path(char* out, const int outlen)
 	extract_path(s);
 #endif
 
-#if defined(SCL_LINUX) || defined(SCL_APPLE_MAC)
-	readlink("/proc/self/exe", out, outlen);
+#if defined(SCL_LINUX)
+	ssize_t len = readlink("/proc/self/exe", out, outlen - 1);
+	if (len > 0) {
+		out[len] = '\0';
+		pstring s(out, outlen);
+		extract_path(s);
+	} else {
+		out[0] = '\0';
+	}
+#endif
+
+#if defined(SCL_APPLE_MAC)
+	// On macOS, use _NSGetExecutablePath
+	uint32_t size = outlen;
+	if (_NSGetExecutablePath(out, &size) == 0) {
+		pstring s(out, outlen);
+		extract_path(s);
+	} else {
+		out[0] = '\0';
+	}
 #endif
 
 #if defined(SCL_ANDROID)
