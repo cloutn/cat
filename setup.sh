@@ -2,16 +2,20 @@
 
 echo "Linux Setup Script (Rocky Linux 9.6)"
 
-# 安装依赖
-sudo dnf install -y epel-release cmake p7zip p7zip-plugins
+# 1. 先装并启用 EPEL
+sudo dnf install -y epel-release
+
+# 2. 再刷新缓存（可选但推荐）
+sudo dnf makecache
+
+# 3. 安装真正的包
+sudo dnf install -y cmake p7zip p7zip-plugins python
 
 cd "tool"
 
-# 解压并运行
-7z x "../archive/python.7z" "-o../tool/python" -aoa -bso0 -bd
-chmod +x "./python/python"
-"./python/python" "script/setup_linux.py" all -arch=64
-"./python/python" "script/find_gbk.py" ./
+python "script/setup_linux.py" all -arch=64
+
+python "script/find_gbk.py" ./
 
 cd ..
 

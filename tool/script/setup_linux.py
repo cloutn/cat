@@ -219,7 +219,7 @@ if missing_commands:
     print(f"Error: Missing required commands: {', '.join(missing_commands)}")
     print("Please install them using:")
     print("sudo dnf install epel-release")
-    print("sudo dnf install cmake p7zip p7zip-plugins")
+    print("sudo dnf install cmake p7zip p7zip-plugins python")
     sys.exit(1)
 
 if op in all_funcs:
