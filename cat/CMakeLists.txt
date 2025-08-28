@@ -37,14 +37,18 @@ set(header_files
 	transform.h
 	uiRenderOpenGL.h
 	wstring.h
-	yaml.h
-	win32Window.h
+
 	eglWindow.h
 	color.h
 	vertex.h
 	terrain.h
 	AABB.h
 )
+
+# Add Windows-specific files only on Windows
+if(WIN32)
+	list(APPEND header_files win32window.h)
+endif()
 
 set(src_files
 	cgltf.c
@@ -68,18 +72,21 @@ set(src_files
 	shaderCache.cpp
 	shaderMacro.cpp
 	skin.cpp
-	string.cpp
 	transform.cpp
 	uiRenderOpenGL.cpp
 	wstring.cpp
-	yaml.cpp
-	win32Window.cpp
+
 	eglWindow.cpp
 	color.cpp
 	vertex.cpp
 	terrain.cpp
 	AABB.cpp
 )
+
+# Add Windows-specific source files only on Windows
+if(WIN32)
+	list(APPEND src_files win32Window.cpp)
+endif()
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})
@@ -104,15 +111,14 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	${PROJECT_SOURCE_DIR}/../free/
-	${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
 	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
+	${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
 	)
 
-add_definitions(-DUNICODE -D_UNICODE)
 add_definitions(-DOPENGL_ES -DGFX_ENABLE_IMAGE)
 
-
 if(WIN32)
+  add_definitions(-DUNICODE -D_UNICODE)
   #add_definitions("/wd4819") 
   add_definitions("/source-charset:utf-8")
 endif(WIN32)

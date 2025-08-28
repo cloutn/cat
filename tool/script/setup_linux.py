@@ -9,6 +9,7 @@ import argparse
 
 class G:
     arch64 = False
+    build_type = "Debug"  # Default to Debug build
 
 
 def unzip_cmake():
@@ -18,76 +19,13 @@ def unzip_cmake():
 def unzip_free():
     cmd(['7z', 'x', '../archive/free.7z', '-o../free/', '-aoa', '-bso0', '-bd'])
 
-def unzip_bin():
-    cmd(['7z', 'x', '../archive/bin.7z', '-o../testCat/bin', '-aoa', '-bso0', '-bd'])
-
-def unzip_bin64():
-    cmd(['7z', 'x', '../archive/bin64.7z', '-o../testCat/bin64', '-aoa', '-bso0', '-bd'])
-
-def unzip_art():
-    cmd(['7z', 'x', '../archive/art.7z', '-o../testCat/art', '-aoa', '-bso0', '-bd'])
 
 
-def build_shaderc():
-    arch = "64" if G.arch64 else ""
-    src_path = "../free/shaderc/"
-    build_path = f"../free/shaderc/build{arch}_linux/"
-    
-    if not os.path.exists(build_path):
-        os.makedirs(build_path, exist_ok=True)
-    
-    # Linux下使用Unix Makefiles生成器，不需要指定架构
-    cmake_cmd = [
-        'cmake', 
-        "-G", "Unix Makefiles",
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DSHADERC_SKIP_TESTS=ON", 
-        "-DSHADERC_SKIP_INSTALL=ON", 
-        "-DPYTHON_EXECUTABLE=python3",
-        "-Wno-dev", 
-        "-S", src_path, 
-        "-B", build_path
-    ]
-    
-    cmd(cmake_cmd)
-    print(f"CMake command: {' '.join(cmake_cmd)}")
-
-    # 构建Debug和Release版本
-    cmd(['cmake', "--build", build_path, "--config", "Debug"])
-    cmd(['cmake', "--build", build_path, "--config", "Release"])
-
-    # 创建lib目录
-    lib_path = f"../free/lib{arch}/"
-    if not os.path.exists(lib_path):
-        os.makedirs(lib_path, exist_ok=True)
-    
-    # 复制生成的静态库文件（Linux下是.a文件）
-    shaderc_lib_debug = os.path.join(build_path, "libshaderc", "libshaderc_combined.a")
-    shaderc_lib_release = os.path.join(build_path, "libshaderc", "libshaderc_combined.a")
-    
-    if os.path.exists(shaderc_lib_debug):
-        shutil.copy(shaderc_lib_debug, f"../free/lib{arch}/libshaderc_combined.a")
-    if os.path.exists(shaderc_lib_release):
-        shutil.copy(shaderc_lib_release, f"../free/lib{arch}/libshaderc_combined.a")
 
 
-def generate_testCat():
-    arch = "64" if G.arch64 else ""
-    src_path = "../testCat/"
-    build_path = f"../testCat/build{arch}_linux/"
-    
-    if not os.path.exists(build_path):
-        os.makedirs(build_path, exist_ok=True)
-    
-    cmake_cmd = [
-        'cmake', 
-        "-G", "Unix Makefiles",
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-Wno-dev", 
-        "-S", src_path, 
-        "-B", build_path
-    ]
-    cmd(cmake_cmd)
+
+
+
 
 def generate_tests():
     arch = "64" if G.arch64 else ""
@@ -113,7 +51,7 @@ def generate_tests():
         cmake_cmd = [
             'cmake', 
             "-G", "Unix Makefiles",
-            "-DCMAKE_BUILD_TYPE=Release",
+            f"-DCMAKE_BUILD_TYPE={G.build_type}",
             "-Wno-dev", 
             "-S", src_path, 
             "-B", build_path
@@ -135,7 +73,7 @@ def build_scl():
     cmake_cmd = [
         'cmake', 
         "-G", "Unix Makefiles",
-        "-DCMAKE_BUILD_TYPE=Release",
+        f"-DCMAKE_BUILD_TYPE={G.build_type}",
         "-Wno-dev", 
         "-S", src_path, 
         "-B", build_path
@@ -158,7 +96,6 @@ def all():
     build_all()
     build_all_libs()  # 构建必需的库
     generate_tests()
-    generate_testCat()
 
 def build_all():
     funcs = []
@@ -200,12 +137,14 @@ for func in all_locals:
 parser = argparse.ArgumentParser(description = "Execute functions in Linux tool script.\nIf you want to build project fast, use 'all'")
 parser.add_argument('operation', help=f'Execute operation function in setup_linux.py. All functions = {all_funcs}')
 parser.add_argument("-arch", default=64, type=int, choices=[32, 64], help='Architecture: -arch=32 means 32-bit, -arch=64 means 64-bit (default)')
+parser.add_argument("-build", default="Debug", choices=["Debug", "Release"], help='Build type: Debug (default) or Release')
 args = parser.parse_args()
 
 
 op = args.operation
 G.arch64 = (args.arch==64)
-print("operation function = %s, arch64 = %r" % (op, G.arch64))
+G.build_type = args.build
+print("operation function = %s, arch64 = %r, build_type = %s" % (op, G.arch64, G.build_type))
 
 # 检查必要的命令是否存在
 required_commands = ['cmake', '7z']

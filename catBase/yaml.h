@@ -1,9 +1,9 @@
 #pragma once
 
-#include "cat/string.h"
+#include "scl/vstring.h"
 
 #include "rapidyaml/ryml.hpp"
-#include "c4/format.hpp"
+#include "rapidyaml/c4/format.hpp"
 
 #include "scl/vector.h"
 #include "scl/assert.h"
@@ -152,7 +152,7 @@ public:
 private:
 	c4::yml::NodeRef	m_node;
 	yaml::document		m_document;
-	mutable cat::String m_value;
+	mutable scl::vstring m_value;
 
 }; // class node
 

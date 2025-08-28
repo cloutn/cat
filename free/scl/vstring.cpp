@@ -1,104 +1,115 @@
+////////////////////////////////////////////////////////////////////////////////
+//	vstring (variable length string) implementation
+//	Moved from cat/string.cpp and adapted to scl naming conventions
+//	2024.01.xx 
+////////////////////////////////////////////////////////////////////////////////
 
-#include "cat/string.h"
-
+#include "scl/vstring.h"
 #include "scl/wstring.h"
 #include "scl/hash_table.h"
+#include <cstring>
+#include <cwchar>
 
-namespace cat {
+// Basic type definitions for standalone compilation
+namespace scl {
+	typedef unsigned int uint;
+}
+
+namespace scl {
 
 #define countof(s) (sizeof(s)/sizeof(s[0]))
 static const int g_level_size[] = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536,  262144, 1048576 };
 static const int MAX_LENGTH = g_level_size[countof(g_level_size) - 1];	
 
-String::String() : 
+vstring::vstring() : 
 	m_level		(0), 
 	m_autofree	(1)
 {
 
 }
 
-String::String(const char* s) : 
+vstring::vstring(const char* s) : 
 	m_level		(0), 
 	m_autofree	(1)
 {
 	_assign(s);
 }
 
-String::String(const char* s, const int len) : 
+vstring::vstring(const char* s, const int len) : 
 	m_level		(0), 
 	m_autofree	(1)
 {
 	_assign(s, len);
 }
 
-String::String(const String& s) : 
+vstring::vstring(const vstring& s) : 
 	m_level		(0), 
 	m_autofree	(s.m_autofree)
 {
 	_assign(s.c_str());
 }
 
-String::~String()
+vstring::~vstring()
 {
 	if (m_autofree)
 		m_long.free();
 }
 
-void String::copy(const char* const s, const int len)
+void vstring::copy(const char* const s, const int len)
 {
 	_assign(s, len);
 }
 
-String& String::operator+=(const char* s)
+vstring& vstring::operator+=(const char* s)
 {
 	_grow(static_cast<int>(::strnlen(s, MAX_LENGTH)));
 	pstring().append(s);
 	return *this;
 }
 
-String& String::operator+=(const char c)
+vstring& vstring::operator+=(const char c)
 {
 	_grow(1);
 	pstring().append(c);
 	return *this;
 }
 
-String& String::operator=(const char* s)
+vstring& vstring::operator=(const char* s)
 {
 	_assign(s);
 	return *this;
 }
 
-String& String::operator=(const String& s)
+vstring& vstring::operator=(const vstring& s)
 {
 	_assign(s.c_str());
 	m_autofree = s.m_autofree;		//auto call pstring::free() in destructor.
 	return *this;
 }
 
-void String::insert(const int positionIndex, const char c)
+void vstring::insert(const int position_index, const char c)
 {
 	_grow(1);
-	pstring().insert(positionIndex, c);
+	pstring().insert(position_index, c);
 }
 
-void String::insert(const int positionIndex, const char* const s)
+void vstring::insert(const int position_index, const char* const s)
 {
 	_grow(static_cast<int>(::strnlen(s, MAX_LENGTH)));
-	pstring().insert(positionIndex, s);
+	pstring().insert(position_index, s);
 }
 
-void String::from_wchar(const wchar* s)
+void vstring::from_wchar(const wchar_t* s)
 {
-	_grow(static_cast<int>(::wcsnlen(s, MAX_LENGTH) * 4));
+	_grow(static_cast<int>(::wcslen(s) * 4));
     
     scl::pstring self = pstring();
     self.clear();
     
-	pwstring(const_cast<wchar*>(s)).to_ansi(self.c_str(), self.capacity());
+	pwstring(const_cast<wchar_t*>(s)).to_ansi(self.c_str(), self.capacity());
 }
 
-void String::_grow(const int append_len, int cur_len)
+void vstring::_grow(const int append_len, int cur_len)
 {
 	int len = cur_len;
 	if (len < 0)
@@ -106,7 +117,7 @@ void String::_grow(const int append_len, int cur_len)
 	if (len + append_len <= capacity())
 		return;
 
-	//create new WString
+	//create new vstring
 	int lv = m_level;
 	while (g_level_size[lv] <= len + append_len)
 		++lv;
@@ -126,29 +137,29 @@ void String::_grow(const int append_len, int cur_len)
 	m_level = lv;
 }
 
-void String::_assign(const char* s)
+void vstring::_assign(const char* s)
 {
 	_grow(static_cast<int>(::strnlen(s, MAX_LENGTH)));
 	pstring().copy(s);
 }
 
-void String::_assign(const char* s, const int len)
+void vstring::_assign(const char* s, const int len)
 {
 	_grow(len);
 	pstring().copy(s, len);
 }
 
-int String::length() const
+int vstring::length() const
 {
 	return static_cast<int>(::strnlen(c_str(), capacity()));
 }
 
-bool String::operator!=(const char* s) const
+bool vstring::operator!=(const char* s) const
 {
 	return pstring() != s;
 }
 
-void String::clear()
+void vstring::clear()
 {
 	if (m_level)
 	{
@@ -158,13 +169,9 @@ void String::clear()
 	m_short.clear();
 }
 
-} //namespace ui
-
-namespace cat {
-    uint hash_function(const String& key)
-    {
-        return scl::hash_function(key.pstring());
-    }
+uint hash_function(const vstring& key)
+{
+    return hash_function(key.pstring());
 }
 
-
+} //namespace scl

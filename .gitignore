@@ -78,3 +78,6 @@ error.log
 /test/testYaml/build64_linux/
 /testCat/build64_linux/
 
+/catBase/build64
+/catBase/lib64
+/test/testYaml/bin64

@@ -1,7 +1,7 @@
 #include "./config.h"
 
 #include "cat/color.h"
-#include "cat/yaml.h"
+#include "catBase/yaml.h"
 
 #include "scl/file.h"
 

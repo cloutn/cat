@@ -65,6 +65,7 @@ set(header_files
 	vbitset.h
 	vector.h
 	vring_queue.h
+	vstring.h
 	wstring.h
 	zip_int.h
 	function.h
@@ -100,7 +101,8 @@ set(src_files
 	thread_log.cpp
 	time.cpp
 	vbitset.cpp
-	vector.cpp)
+	vector.cpp
+	vstring.cpp)
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})
