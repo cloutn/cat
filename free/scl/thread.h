@@ -94,6 +94,7 @@ public:
 		bool					auto_detach;		//线程函数推出后，线程资源是否自动释放，注意，如果该值为false，那么创建线程（thread::start）和释放线程(thread::start)的线程必须是同一个线程
 		void*					exit_code;			//线程函数退出代码
 		volatile bool			is_running;			//线程函数是否正在运行
+		volatile bool			has_started;		//线程是否已经启动过（避免竞态条件）
 
 		void clear()
 		{
@@ -111,6 +112,7 @@ public:
 			exit_code	= NULL;
 			auto_detach = false;
 			is_running	= false;
+			has_started = false;
 		}
 	};
 

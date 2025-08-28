@@ -29,11 +29,7 @@ file_reader::file_reader(const int maxBufferSize, const int maxLineCacheSize) :
 
 file_reader::~file_reader()
 {
-	if (NULL != m_file)
-	{
-		::fclose(static_cast<FILE*>(m_file));
-	}
-	clear();
+	clear();  // clear() 会处理文件关闭
 	delete m_buffer;
 	delete m_line;	
 }

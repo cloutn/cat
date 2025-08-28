@@ -136,6 +136,7 @@ uint __stdcall PlatformThreadFunction(void* p)
 	pinfo->process_id	= ::GetCurrentProcessId();
 
 	//开始执行
+	pinfo->has_started 	= true;		// 标记线程已启动
 	pinfo->is_running 	= true;
 	assert(pinfo->function);
 	pinfo->exit_code 	= pinfo->function(pinfo->param, &(pinfo->signal));
@@ -168,6 +169,7 @@ void* PlatformThreadFunction(void* p)
 		scl::sleep(1);
 
 	//开始执行
+	pinfo->has_started = true;		// 标记线程已启动
 	pinfo->is_running = true;
 	assert(pinfo->function);
 	pinfo->exit_code = pinfo->function(pinfo->param, &(pinfo->signal));
@@ -264,8 +266,8 @@ int thread::start(ThreadFunction function, void* param, bool start_at_once, bool
 	}
 #endif
 
-	//这里必须等待线程启动并设置is_running后才能返回
-	if (start_at_once) while(!m_info.is_running);
+	//这里必须等待线程启动并设置 has_started 后才能返回
+	if (start_at_once) while(!m_info.has_started);
 	
 	return 0;
 }
