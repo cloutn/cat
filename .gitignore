@@ -81,3 +81,4 @@ error.log
 /catBase/build64
 /catBase/lib64
 /test/testYaml/bin64
+/test/testScl/test/memoryLog.txt

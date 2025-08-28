@@ -22,5 +22,5 @@ void testLog()
 	//测试memory log
 	log_file lf(1983);
 	lf.open("memoryLog.txt");
-	lf.write("my year is %d", 1983);
+	lf.write("my year is %d\n", 1983);
 }
