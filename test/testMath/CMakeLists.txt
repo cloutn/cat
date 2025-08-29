@@ -34,8 +34,11 @@ add_executable(${target} ${src_files} ${header_files})
 
 add_dependencies(${target} scl glm)
 
-set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
-set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
+if(WIN32)
+	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin${ARCH})
+else()
+	set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/)
+endif()
 
 target_include_directories(
 	${target}
@@ -43,15 +46,27 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../../free/
 	)
 
-set(debug_links 	
-	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/glm_d.lib
-)
-
-set(release_links 	
-	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl.lib
-	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/glm.lib
-)
+if(WIN32)
+	set(debug_links 	
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl_d.lib
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/glm_d.lib
+	)
+	
+	set(release_links 	
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl.lib
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/glm.lib
+	)
+else() # Linux/Unix systems
+	set(debug_links 	
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libscl_d.a
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libglm_d.a
+	)
+	
+	set(release_links 	
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libscl.a
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libglm.a
+	)
+endif()
 
 
 set_target_properties(${target} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
@@ -61,9 +76,15 @@ target_link_libraries(${target}
 	${debug_links}
 	${release_links})
 
+if(UNIX AND NOT APPLE)
+	target_link_libraries(${target} pthread dl)
+elseif(APPLE)
+	target_link_libraries(${target} pthread dl)
+endif()
+
 if(WIN32)
 	add_definitions("/source-charset:utf-8")
-endif(WIN32)
+endif()
 
 add_definitions(-DUNICODE -D_UNICODE)
 
