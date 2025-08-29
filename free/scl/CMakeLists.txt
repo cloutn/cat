@@ -131,9 +131,7 @@ set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LI
 set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
 
 # 在Windows上使用_d后缀区分Debug版本，Linux上通常不区分
-if(WIN32)
-	set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
-endif()
+set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
 
 target_include_directories(
 	${target}
