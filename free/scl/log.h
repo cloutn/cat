@@ -68,7 +68,7 @@ class log_stream;
 
 #define log_warning log_warn
 
-class ini_file;
+class ini_parser;
 class log
 {
 	friend class log_stream;
@@ -133,7 +133,7 @@ public:
 
 private:
 	void			_init				();
-	void			_init_level			(ini_file& cfg, LOG_LEVEL level, const char* const name);
+	void			_init_level			(ini_parser& cfg, LOG_LEVEL level, const char* const name);
 
 	static void		_log_handler		(const log_header& header, const char* const s, int thread_id);
 	static void*	_flush_thread_func	(void* p, int* s);

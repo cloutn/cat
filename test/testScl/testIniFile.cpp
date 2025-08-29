@@ -7,13 +7,13 @@
 
 #include <stdio.h>
 
-using scl::ini_file;
+using scl::ini_parser;
 using scl::string;
 using scl::wstring;
 
 void testIniFile()
 {
-	ini_file ini;
+	ini_parser ini;
 	ini.open("a.ini", "rb");
 	string32 netIp;
 	ini.get_string("db", "ip", netIp.c_str(), netIp.capacity());
@@ -62,5 +62,82 @@ void testIniFile()
 	delete content2.c_str();
 
 	printf("test ini file \t\tOK!\n");
+}
+
+void testIniWriter()
+{
+	const char* test_file = "test_writer.ini";
+	
+	// Write test data using ini_writer
+	{
+		scl::ini_writer writer(test_file);
+		assert(writer.open());
+		
+		// Write global section values
+		writer.write("global_int", 42);
+		writer.write("global_uint", 123u);
+		writer.write("global_float", 3.14159f);
+		writer.write("global_int64", 9223372036854775807LL);
+		writer.write("global_uint64", 18446744073709551615ULL);
+		writer.write("global_bool_true", true);
+		writer.write("global_bool_false", false);
+		
+		// Write a section
+		writer.write_section("TestSection");
+		writer.write("section_int", -999);
+		writer.write("section_uint", 456u);
+		writer.write("section_float", -2.718f);
+		writer.write("section_int64", -1234567890123456789LL);
+		writer.write("section_uint64", 9876543210987654321ULL);
+		writer.write("section_bool_true", true);
+		writer.write("section_bool_false", false);
+		writer.write_key("section_string", "Hello World");
+		
+		// Write another section
+		writer.write_section("Numbers");
+		writer.write("zero", 0);
+		writer.write("negative", -1);
+		writer.write("positive", 1);
+		
+		writer.close();
+	}
+	
+	// Read and verify the data using ini_parser
+	{
+		scl::ini_parser reader;
+		assert(reader.open(test_file, "rb"));
+		
+		// Verify global section values
+		assert(reader.get_int("", "global_int") == 42);
+		assert(reader.get_uint("", "global_uint") == 123u);
+		assert(reader.get_float("", "global_float") - 3.14159f < 0.001f);
+		assert(reader.get_int64("", "global_int64") == 9223372036854775807LL);
+		assert(reader.get_uint64("", "global_uint64") == 18446744073709551615ULL);
+		assert(reader.get_bool("", "global_bool_true") == true);
+		assert(reader.get_bool("", "global_bool_false") == false);
+		
+		// Verify TestSection values
+		assert(reader.get_int("TestSection", "section_int") == -999);
+		assert(reader.get_uint("TestSection", "section_uint") == 456u);
+		assert(reader.get_float("TestSection", "section_float") + 2.718f < 0.001f);
+		assert(reader.get_int64("TestSection", "section_int64") == -1234567890123456789LL);
+		assert(reader.get_uint64("TestSection", "section_uint64") == 9876543210987654321ULL);
+		assert(reader.get_bool("TestSection", "section_bool_true") == true);
+		assert(reader.get_bool("TestSection", "section_bool_false") == false);
+		
+		scl::string<32> str;
+		reader.get_string("TestSection", "section_string", str.c_str(), str.max_sizeof());
+		assert(str == "Hello World");
+		
+		// Verify Numbers section
+		assert(reader.get_int("Numbers", "zero") == 0);
+		assert(reader.get_int("Numbers", "negative") == -1);
+		assert(reader.get_int("Numbers", "positive") == 1);
+	}
+	
+	// Clean up test file
+	remove(test_file);
+	
+	printf("test ini writer \tOK!\n");
 }
 

@@ -519,7 +519,7 @@ void log::_init()
 
 	//m_flush_thread.start(_flush_thread_func);
 
-	ini_file cfg;
+	ini_parser cfg;
     const char* const filename = _get_cfg_filename();
 
 #ifdef SCL_ANDROID
@@ -552,7 +552,7 @@ void log::_init()
 	}
 }
 
-void log::_init_level(ini_file& cfg, LOG_LEVEL level, const char* const name)
+void log::_init_level(ini_parser& cfg, LOG_LEVEL level, const char* const name)
 {
 	bool prevent_frequent_log	= cfg.get_int(name, "prevent_frequent", 1)	!= 0;
 	bool enable					= cfg.get_int(name, "enable",			1)	!= 0;

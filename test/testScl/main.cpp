@@ -75,6 +75,7 @@ int main(int argc, char* argv[])
 	testExtractFileName();
 	testBigInt();
 	testIniFile();
+	testIniWriter();
 	testPath();
 	testTypeTraits();
 	//

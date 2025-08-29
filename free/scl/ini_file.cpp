@@ -45,7 +45,7 @@ inline bool	_is_key_end(char c)
 ////////////////////////////////////
 //	class key_value define
 ////////////////////////////////////
-class ini_file::key_value
+class ini_parser::key_value
 {
 public:
 	const char*		key;
@@ -61,7 +61,7 @@ private:
 	bool _is_value_end(const int i) const;
 };
 
-bool ini_file::key_value::_is_value_end(const int i) const
+bool ini_parser::key_value::_is_value_end(const int i) const
 {
 	char c = value[i];
 	if (valueEndMode == INI_VALUE_END_MODE_EMAIL_AT)
@@ -79,7 +79,7 @@ bool ini_file::key_value::_is_value_end(const int i) const
 	}
 }
 
-bool ini_file::key_value::operator==(const key_value& other) const
+bool ini_parser::key_value::operator==(const key_value& other) const
 {
 	if (NULL == key || NULL == other.key)
 		return false;
@@ -96,7 +96,7 @@ bool ini_file::key_value::operator==(const key_value& other) const
 	return _is_key_end(*pSelf) && _is_key_end(*pOther);
 }
 
-void ini_file::key_value::copy_to_string(char* dest, const int maxSize) const
+void ini_parser::key_value::copy_to_string(char* dest, const int maxSize) const
 {
 	if (NULL == value)
 		return;
@@ -122,7 +122,7 @@ void ini_file::key_value::copy_to_string(char* dest, const int maxSize) const
 ////////////////////////////////////
 //	class Section define
 ////////////////////////////////////
-class ini_file::section
+class ini_parser::section
 {
 public:
 	static const int MAX_KEY_VALUE_COUNT = 1024; //TODO 自动确定keyValue的数量
@@ -151,9 +151,9 @@ public:
 };
 
 ////////////////////////////////////
-//	ini_file member functions
+//	ini_parser member functions
 ////////////////////////////////////
-const char* const ini_file::GLOBAL_SECTION_NAME = "";
+const char* const ini_parser::GLOBAL_SECTION_NAME = "";
 
 enum INI_PARSE_STATE
 {
@@ -166,19 +166,19 @@ enum INI_PARSE_STATE
 };
 
 
-ini_file::ini_file() : m_string(NULL)
+ini_parser::ini_parser() : m_string(NULL)
 {
 
 }
 
-ini_file::~ini_file()
+ini_parser::~ini_parser()
 {
 	delete[] m_string;
 	m_string = NULL;
 }
 
 
-bool ini_file::open(const char* const fileName, const char* mode)
+bool ini_parser::open(const char* const fileName, const char* mode)
 {	
 	if (NULL != m_string)
 	{
@@ -212,7 +212,7 @@ bool ini_file::open(const char* const fileName, const char* mode)
 }
 
 
-bool ini_file::open_buffer(const char* const buffer, const int len)
+bool ini_parser::open_buffer(const char* const buffer, const int len)
 {
 	if (NULL != m_string)
 	{
@@ -235,7 +235,7 @@ bool ini_file::open_buffer(const char* const buffer, const int len)
 	return true;
 }
 
-void ini_file::get_string(
+void ini_parser::get_string(
 	const char* sectionName, const char* keyName, char* output, const int outputMaxSize)
 {
 	const key_value*	pFrom	=  _get_key_value_position(sectionName, keyName);
@@ -245,7 +245,7 @@ void ini_file::get_string(
 }
 
 
-int ini_file::get_int(const char* sectionName, const char* keyName, const int defaultvalue)
+int ini_parser::get_int(const char* sectionName, const char* keyName, const int defaultvalue)
 {
 	string<32> value;
 	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
@@ -256,7 +256,7 @@ int ini_file::get_int(const char* sectionName, const char* keyName, const int de
 }
 
 
-uint ini_file::get_uint(const char* sectionName, const char* keyName, const uint defaultvalue)
+uint ini_parser::get_uint(const char* sectionName, const char* keyName, const uint defaultvalue)
 {
 	string<32> value;
 	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
@@ -267,7 +267,7 @@ uint ini_file::get_uint(const char* sectionName, const char* keyName, const uint
 }
 
 
-float ini_file::get_float(const char* sectionName, const char* keyName, const float defaultvalue)
+float ini_parser::get_float(const char* sectionName, const char* keyName, const float defaultvalue)
 {
 	string<32> value;
 	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
@@ -279,7 +279,7 @@ float ini_file::get_float(const char* sectionName, const char* keyName, const fl
 
 
 
-int64 ini_file::get_int64(const char* sectionName, const char* keyName, const int64 defaultvalue)
+int64 ini_parser::get_int64(const char* sectionName, const char* keyName, const int64 defaultvalue)
 {
 	string<32> value;
 	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
@@ -290,7 +290,7 @@ int64 ini_file::get_int64(const char* sectionName, const char* keyName, const in
 }
 
 
-uint64 ini_file::get_uint64(const char* sectionName, const char* keyName, const uint64 defaultvalue)
+uint64 ini_parser::get_uint64(const char* sectionName, const char* keyName, const uint64 defaultvalue)
 {
 	string<32> value;
 	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
@@ -301,7 +301,23 @@ uint64 ini_file::get_uint64(const char* sectionName, const char* keyName, const 
 }
 
 
-const ini_file::key_value* ini_file::_get_key_value_position(const char* const sectionName, const char* const keyName)
+bool ini_parser::get_bool(const char* sectionName, const char* keyName, const bool defaultvalue)
+{
+	string<32> value;
+	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
+	if (NULL == pFrom)
+		return defaultvalue;
+	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
+	bool r = defaultvalue;
+	if (value.length() > 0)
+	{
+		if (value[0] == 't' || value[0] == 'T' || value[0] == '1') // "true, TRUE, 1" all is true
+			r = true;
+	}
+	return r;
+}
+
+const ini_parser::key_value* ini_parser::_get_key_value_position(const char* const sectionName, const char* const keyName)
 {
 	int sectionIndex = m_sections.find(section(sectionName));
 	if (-1 == sectionIndex)
@@ -314,7 +330,7 @@ const ini_file::key_value* ini_file::_get_key_value_position(const char* const s
 	return &(m_sections[sectionIndex].elems[keyIndex]);
 }
 
-//void ini_file<char>::_copyValueString(const wchar* pFrom, wchar* dest, const int maxSize)
+//void ini_parser<char>::_copyValueString(const wchar* pFrom, wchar* dest, const int maxSize)
 //{
 //	if (NULL == pFrom)
 //		return;
@@ -334,7 +350,7 @@ const ini_file::key_value* ini_file::_get_key_value_position(const char* const s
 //}
 
 
-void ini_file::_parse(const char* buffer, const int bufferSize)
+void ini_parser::_parse(const char* buffer, const int bufferSize)
 {
 	//TODO，这里可以先统计section数量，然后再reserve
 	m_sections.reserve(MAX_SECTION_COUNT);
@@ -489,6 +505,99 @@ void ini_file::_parse(const char* buffer, const int bufferSize)
 			break;
 		}
 	}
+}
+
+ini_writer::~ini_writer()
+{
+	if (m_file != nullptr)
+		fclose(m_file);
+}
+
+bool ini_writer::open()
+{
+	if (m_file != nullptr)
+		return true;
+
+	m_file = fopen(m_path, "w");
+	return m_file != nullptr;
+}
+
+void ini_writer::close()
+{
+	if (m_file != nullptr)
+	{
+		fclose(m_file);
+		m_file = nullptr;
+	}
+}
+
+bool ini_writer::write_section(const char* section)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "[%s]\n", section);
+	return true;
+}
+
+bool ini_writer::write_key(const char* key, const char* value)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "%s = %s\n", key, value);
+	return true;
+}
+
+bool ini_writer::write(const char* key, const int value)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "%s = %d\n", key, value);
+	return true;
+}
+
+bool ini_writer::write(const char* key, const uint value)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "%s = %u\n", key, value);
+	return true;
+}
+
+bool ini_writer::write(const char* key, const float value)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "%s = %f\n", key, value);
+	return true;
+}
+
+bool ini_writer::write(const char* key, const int64 value)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "%s = %lld\n", key, value);
+	return true;
+}
+
+bool ini_writer::write(const char* key, const uint64 value)
+{
+	if (!m_file)
+		return false;
+
+	fprintf(m_file, "%s = %llu\n", key, value);
+	return true;
+}
+
+
+bool ini_writer::write(const char* key, const bool value)
+{
+	return write_key(key, value ? "true" : "false");
 }
 
 } //namespace scl
