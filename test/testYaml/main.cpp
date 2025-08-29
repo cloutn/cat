@@ -66,7 +66,7 @@ void test_write_raw()
 
 	FILE* fp = fopen(g_filename_raw, "wb");
 
-	size_t len = ryml::emit(t, t.root_id(), fp);
+	size_t len = ryml::emit_yaml(t, t.root_id(), fp);
 
 	fclose(fp);
 	std::cout << t;

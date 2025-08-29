@@ -51,17 +51,32 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../../free/rapidyaml/
 	)
 
-set(debug_links 	
-	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/catBase_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/rapidyaml_d.lib
-)
-
-set(release_links 	
-	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl.lib
-	optimized ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/catBase.lib
-	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/rapidyaml.lib
-)
+# 跨平台库文件配置
+if(WIN32)
+	set(debug_links 	
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl_d.lib
+		debug ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/catBase_d.lib
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/rapidyaml_d.lib
+	)
+	
+	set(release_links 	
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl.lib
+		optimized ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/catBase.lib
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/rapidyaml.lib
+	)
+else() # Linux/Unix systems
+	set(debug_links 	
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libscl.a
+		debug ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/libcatBase_d.a
+		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/librapidyaml_d.a
+	)
+	
+	set(release_links 	
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libscl.a
+		optimized ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/libcatBase.a
+		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/librapidyaml.a
+	)
+endif()
 
 
 set_target_properties(${target} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
@@ -71,10 +86,18 @@ target_link_libraries(${target}
 	${debug_links}
 	${release_links})
 
+# Linux系统库依赖
+if(UNIX AND NOT APPLE)
+	target_link_libraries(${target} pthread dl)
+elseif(APPLE)
+	target_link_libraries(${target} pthread dl)
+endif()
+
+# 平台特定设置
 if(WIN32)
 	#add_definitions("/wd4819")
 	add_definitions("/source-charset:utf-8")
-endif(WIN32)
+endif()
 
 add_definitions(-DUNICODE -D_UNICODE)
 #add_definitions(-DGFX_WIN32)

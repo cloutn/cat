@@ -6,7 +6,7 @@
 
 namespace yaml {
 
-document::document() : m_tree(NULL)
+document::document() : m_tree()
 {
 
 }
@@ -40,7 +40,7 @@ void document::save(const char* const filename)
 	if (NULL == fp)
 		return;
 
-	ryml::emit(m_tree, m_tree.root_id(), fp);
+	ryml::emit_yaml(m_tree, m_tree.root_id(), fp);
 
 	fclose(fp);
 }
@@ -77,7 +77,7 @@ node::node(yaml::document* doc, const int id)
 
 bool node::is_valid() const
 {
-	return m_node.valid();
+	return !m_node.invalid();
 }
 
 int node::child_count() const
