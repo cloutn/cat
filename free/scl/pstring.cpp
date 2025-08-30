@@ -610,65 +610,135 @@ void pstring::from_uint64(const uint64 value)
 }
 
 
-int pstring::to_int() const
-{
-	return static_cast<int>(::strtol(m_string, NULL, 10));
-}
 
-
-uint pstring::to_uint() const
-{
-	return static_cast<int>(::strtoul(m_string, NULL, 10));
-}
-
-
-double pstring::to_double() const
-{
-	return ::strtod(m_string, NULL);
-}
-
-
-float pstring::to_float() const
-{
-	return static_cast<float>(::strtod(m_string, NULL));
-}
-
-
-int64 pstring::to_int64() const
-{
-	return scl_strtoi64(m_string, NULL, 10);
-}
-
-
-uint64 pstring::to_uint64() const
-{
-	return scl_strtoui64(m_string, NULL, 10);
-}
-
-
-uint pstring::to_hex() const
-{
-	return static_cast<uint>(::strtoul(m_string, NULL, 16));
-}
 
 int pstring::length() const
 {
 	return static_cast<int>(::strnlen(m_string, max_size()));
 }
 
-bool pstring::to_bool() const
-{
-	if (NULL == m_string)
-		return false;
-	const char c = m_string[0];
-	if (c == 0)
-		return false;
 
-	if (c == 'f' || c == 'F' || c == '0')
+
+// Safe conversion functions with default values for conversion failure
+int pstring::to_int(const int default_value, const int base) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	long result = ::strtol(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return static_cast<int>(result);
+}
+
+uint pstring::to_uint(const uint default_value, const int base) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	unsigned long result = ::strtoul(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return static_cast<uint>(result);
+}
+
+double pstring::to_double(const double default_value) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	double result = ::strtod(m_string, &endptr);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return result;
+}
+
+float pstring::to_float(const float default_value) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	double result = ::strtod(m_string, &endptr);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return static_cast<float>(result);
+}
+
+int64 pstring::to_int64(const int64 default_value, const int base) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	int64 result = scl_strtoi64(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return result;
+}
+
+uint64 pstring::to_uint64(const uint64 default_value, const int base) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	uint64 result = scl_strtoui64(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return result;
+}
+
+uint pstring::to_hex(const uint default_value) const
+{
+	if (empty())
+		return default_value;
+	char* endptr;
+	unsigned long result = ::strtoul(m_string, &endptr, 16);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-hex characters found
+		return default_value;
+	}
+	return static_cast<uint>(result);
+}
+
+bool pstring::to_bool(const bool default_value) const
+{
+	if (empty())
+		return default_value;
+	
+	// Check for common false values
+	if (compare("false", true) == 0 || compare("0") == 0 || 
+	    compare("f", true) == 0 || compare("no", true) == 0)
+	{
 		return false;
-	//if (c == 't' || c == 'T' || c == '1')
-	//	return true;
-	return true;
+	}
+	
+	// Check for common true values    
+	if (compare("true", true) == 0 || compare("1") == 0 || 
+	    compare("t", true) == 0 || compare("yes", true) == 0)
+	{
+		return true;
+	}
+	
+	// If not recognizable, return default
+	return default_value;
 }
 
 

@@ -48,17 +48,19 @@ inline bool	_is_key_end(char c)
 class ini_parser::key_value
 {
 public:
-	const char*		key;
-	const char*		value;
-	INI_VALUE_END_MODE valueEndMode;
+	const char*				key;
+	const char*				value;
+	INI_VALUE_END_MODE		valueEndMode;
 
-	key_value			() : key(NULL), value(NULL), valueEndMode(INI_VALUE_END_MODE_NEW_LINE) {}
-	key_value			(const char* const keyName) : key (keyName), value(NULL), valueEndMode(INI_VALUE_END_MODE_NEW_LINE) {}
+	key_value				() : key(NULL), value(NULL), valueEndMode(INI_VALUE_END_MODE_NEW_LINE) {}
+	key_value				(const char* const key_name) : key (key_name), value(NULL), valueEndMode(INI_VALUE_END_MODE_NEW_LINE) {}
 
-	void copy_to_string	(char* dest, const int maxSize) const;
-	bool operator==		(const key_value& other) const;
+	void	copy_value		(char* dest, const int maxSize) const;
+	int		value_length	() const;
+	bool	operator==		(const key_value& other) const;
+
 private:
-	bool _is_value_end(const int i) const;
+	bool	_is_value_end	(const int i) const;
 };
 
 bool ini_parser::key_value::_is_value_end(const int i) const
@@ -96,7 +98,7 @@ bool ini_parser::key_value::operator==(const key_value& other) const
 	return _is_key_end(*pSelf) && _is_key_end(*pOther);
 }
 
-void ini_parser::key_value::copy_to_string(char* dest, const int maxSize) const
+void ini_parser::key_value::copy_value(char* dest, const int maxSize) const
 {
 	if (NULL == value)
 		return;
@@ -106,17 +108,33 @@ void ini_parser::key_value::copy_to_string(char* dest, const int maxSize) const
 		return;
 
 	int i = 0;
-	while (!_is_value_end(i) && i < maxSize)
+	while (!_is_value_end(i) && i < maxSize - 1)  // Reserve space for '\0'
 	{
 		dest[i] = value[i];
 		++i;
 	}
+	
+	// Always null-terminate the string
+	dest[i] = '\0';
+	
 	if (valueEndMode != INI_VALUE_END_MODE_EMAIL_AT)
 	{
-		pstring(dest).trim();
+		pstring(dest, maxSize).trim();  // Pass maxSize to ensure bounds
 	}
 }
 
+int ini_parser::key_value::value_length() const
+{
+	if (NULL == value)
+		return 0;
+
+	int i = 0;
+	while (!_is_value_end(i))
+	{
+		++i;
+	}
+	return i;
+}
 
 
 ////////////////////////////////////
@@ -131,7 +149,7 @@ public:
 	array<key_value, MAX_KEY_VALUE_COUNT> elems;
 
 	section() : name (NULL) {}
-	section(const char* const sectionName) : name (sectionName) {}
+	section(const char* const section_name) : name (section_name) {}
 	bool operator==(const section& other) const
 	{
 		if (NULL == name || NULL == other.name)
@@ -235,80 +253,79 @@ bool ini_parser::open_buffer(const char* const buffer, const int len)
 	return true;
 }
 
-void ini_parser::get_string(
-	const char* sectionName, const char* keyName, char* output, const int outputMaxSize)
+void ini_parser::get_string(const char* section_name, const char* key_name, char* output, const int outputMaxSize)
 {
-	const key_value*	pFrom	=  _get_key_value_position(sectionName, keyName);
+	const key_value*	pFrom	=  _get_key_value(section_name, key_name);
 	if (NULL == pFrom)
 		return;
-	pFrom->copy_to_string(output, outputMaxSize);
+	pFrom->copy_value(output, outputMaxSize);
 }
 
-
-int ini_parser::get_int(const char* sectionName, const char* keyName, const int defaultvalue)
+scl::vstring ini_parser::_get_value_string(const char* section_name, const char* key_name) const
 {
-	string<32> value;
-	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
-	if (NULL == pFrom)
-		return defaultvalue;
-	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
-	return value.to_int();
+	const key_value* kv =  _get_key_value(section_name, key_name);
+	if (NULL == kv)
+		return "";
+	const int value_len = kv->value_length();
+	vstring r;
+	r.reserve(value_len + 1);
+	kv->copy_value(r.c_str(), r.capacity());
+	return r;
 }
 
+//uint ini_parser::get_uint(const char* section_name, const char* key_name, const uint _default)
+//{
+//	string<32> value;
+//	const key_value*	pFrom	= _get_key_value(section_name, key_name);
+//	if (NULL == pFrom)
+//		return _default;
+//	pFrom->copy_value(value.c_str(), value.max_sizeof());
+//	return value.to_uint();
+//}
 
-uint ini_parser::get_uint(const char* sectionName, const char* keyName, const uint defaultvalue)
+
+//float ini_parser::get_float(const char* section_name, const char* key_name, const float _default)
+//{
+//	string<32> value;
+//	const key_value*	pFrom	= _get_key_value(section_name, key_name);
+//	if (NULL == pFrom)
+//		return _default;
+//	pFrom->copy_value(value.c_str(), value.max_sizeof());
+//	return static_cast<float>(value.to_double());
+//}
+
+
+
+//int64 ini_parser::get_int64(const char* section_name, const char* key_name, const int64 _default)
+//{
+//	string<32> value;
+//	const key_value*	pFrom	= _get_key_value(section_name, key_name);
+//	if (NULL == pFrom)
+//		return _default;
+//	pFrom->copy_value(value.c_str(), value.max_sizeof());
+//	return value.to_int64();
+//}
+//
+//
+//uint64 ini_parser::get_uint64(const char* section_name, const char* key_name, const uint64 _default)
+//{
+//	string<32> value;
+//	const key_value*	pFrom	= _get_key_value(section_name, key_name);
+//	if (NULL == pFrom)
+//		return _default;
+//	pFrom->copy_value(value.c_str(), value.max_sizeof());
+//	return value.to_uint64();
+//}
+
+
+bool ini_parser::get_bool(const char* section_name, const char* key_name, const bool _default)
 {
 	string<32> value;
-	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
+	const key_value*	pFrom	= _get_key_value(section_name, key_name);
 	if (NULL == pFrom)
-		return defaultvalue;
-	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
-	return value.to_uint();
-}
-
-
-float ini_parser::get_float(const char* sectionName, const char* keyName, const float defaultvalue)
-{
-	string<32> value;
-	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
-	if (NULL == pFrom)
-		return defaultvalue;
-	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
-	return static_cast<float>(value.to_double());
-}
-
-
-
-int64 ini_parser::get_int64(const char* sectionName, const char* keyName, const int64 defaultvalue)
-{
-	string<32> value;
-	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
-	if (NULL == pFrom)
-		return defaultvalue;
-	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
-	return value.to_int64();
-}
-
-
-uint64 ini_parser::get_uint64(const char* sectionName, const char* keyName, const uint64 defaultvalue)
-{
-	string<32> value;
-	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
-	if (NULL == pFrom)
-		return defaultvalue;
-	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
-	return value.to_uint64();
-}
-
-
-bool ini_parser::get_bool(const char* sectionName, const char* keyName, const bool defaultvalue)
-{
-	string<32> value;
-	const key_value*	pFrom	= _get_key_value_position(sectionName, keyName);
-	if (NULL == pFrom)
-		return defaultvalue;
-	pFrom->copy_to_string(value.c_str(), value.max_sizeof());
-	bool r = defaultvalue;
+		return _default;
+	pFrom->copy_value(value.c_str(), value.max_sizeof());
+	bool r = _default;
 	if (value.length() > 0)
 	{
 		if (value[0] == 't' || value[0] == 'T' || value[0] == '1') // "true, TRUE, 1" all is true
@@ -317,13 +334,14 @@ bool ini_parser::get_bool(const char* sectionName, const char* keyName, const bo
 	return r;
 }
 
-const ini_parser::key_value* ini_parser::_get_key_value_position(const char* const sectionName, const char* const keyName)
+
+const ini_parser::key_value* ini_parser::_get_key_value(const char* const section_name, const char* const key_name) const
 {
-	int sectionIndex = m_sections.find(section(sectionName));
+	int sectionIndex = m_sections.find(section(section_name));
 	if (-1 == sectionIndex)
 		return NULL;
 
-	int keyIndex = m_sections[sectionIndex].elems.find(key_value(keyName));
+	int keyIndex = m_sections[sectionIndex].elems.find(key_value(key_name));
 	if (-1 == keyIndex)
 		return NULL;
 
@@ -599,6 +617,7 @@ bool ini_writer::write(const char* key, const bool value)
 {
 	return write_key(key, value ? "true" : "false");
 }
+
 
 } //namespace scl
 

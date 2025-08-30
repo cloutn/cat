@@ -54,14 +54,15 @@ public:
 	void 		from_double	(const double	value) { pstring().from_double(value); }
 	void 		from_int64	(const int64	value) { pstring().from_int64(value); }
 	void 		from_uint64	(const uint64	value) { pstring().from_uint64(value); }
-	int			to_int		() const { return pstring().to_int(); }
-	uint		to_uint		() const { return pstring().to_uint(); }
-	double		to_double	() const { return pstring().to_double(); }
-	float		to_float	() const { return pstring().to_float(); }
-	int64		to_int64	() const { return pstring().to_int64(); }
-	uint64		to_uint64	() const { return pstring().to_uint64(); }
-	uint		to_hex		() const { return pstring().to_hex(); }
-	bool		to_bool		() const { return pstring().to_bool(); }
+	// Safe conversion functions with default values for conversion failure
+	int			to_int		(const int default_value = 0, const int base = 0) const { return pstring().to_int(default_value, base); }
+	uint		to_uint		(const uint default_value = 0, const int base = 0) const { return pstring().to_uint(default_value, base); }
+	double		to_double	(const double default_value = 0.0) const { return pstring().to_double(default_value); }
+	float		to_float	(const float default_value = 0.0f) const { return pstring().to_float(default_value); }
+	int64		to_int64	(const int64 default_value = 0, const int base = 0) const { return pstring().to_int64(default_value, base); }
+	uint64		to_uint64	(const uint64 default_value = 0, const int base = 0) const { return pstring().to_uint64(default_value, base); }
+	uint		to_hex		(const uint default_value = 0) const { return pstring().to_hex(default_value); }
+	bool		to_bool		(const bool default_value = false) const { return pstring().to_bool(default_value); }
 
 	vstring&	operator+=	(const char* s);
 	vstring&	operator+=	(const char c);

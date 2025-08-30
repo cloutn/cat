@@ -69,14 +69,15 @@ public:
 	void 	from_double	(const double	value);
 	void 	from_int64	(const int64	value);
 	void 	from_uint64	(const uint64	value);
-	int		to_int		() const;
-	uint	to_uint		() const;
-	double	to_double	() const;
-	float	to_float	() const;
-	int64	to_int64	() const;
-	uint64	to_uint64	() const;
-	uint	to_hex		() const;
-	bool	to_bool		() const;
+	// Safe conversion functions with default values for conversion failure
+	int		to_int		(const int default_value = 0, const int base = 0) const;
+	uint	to_uint		(const uint default_value = 0, const int base = 0) const;
+	double	to_double	(const double default_value = 0.0) const;
+	float	to_float	(const float default_value = 0.0f) const;
+	int64	to_int64	(const int64 default_value = 0, const int base = 0) const;
+	uint64	to_uint64	(const uint64 default_value = 0, const int base = 0) const;
+	uint	to_hex		(const uint default_value = 0) const;
+	bool	to_bool		(const bool default_value = false) const;
 	
 	//other property
 	char*		c_str		()			{ return m_string; }
@@ -721,57 +722,136 @@ void string<MAX_COUNT>::from_uint64(const uint64 value)
 	format(SCL_STR_FORMAT_UI64, value);
 }
 
+
+
+// Safe conversion functions with default values for conversion failure
 template<int MAX_COUNT>
-int string<MAX_COUNT>::to_int() const
+int string<MAX_COUNT>::to_int(const int default_value, const int base) const
 {
-	return static_cast<int>(::strtol(m_string, NULL, 0));
+	if (empty())
+		return default_value;
+	char* endptr;
+	long result = ::strtol(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return static_cast<int>(result);
 }
 
 template<int MAX_COUNT>
-uint string<MAX_COUNT>::to_uint() const
+uint string<MAX_COUNT>::to_uint(const uint default_value, const int base) const
 {
-	return static_cast<uint>(::strtoul(m_string, NULL, 0));
+	if (empty())
+		return default_value;
+	char* endptr;
+	unsigned long result = ::strtoul(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return static_cast<uint>(result);
 }
 
 template<int MAX_COUNT>
-double string<MAX_COUNT>::to_double() const
+double string<MAX_COUNT>::to_double(const double default_value) const
 {
-	return ::strtod(m_string, NULL);
+	if (empty())
+		return default_value;
+	char* endptr;
+	double result = ::strtod(m_string, &endptr);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return result;
 }
 
 template<int MAX_COUNT>
-float string<MAX_COUNT>::to_float() const
+float string<MAX_COUNT>::to_float(const float default_value) const
 {
-	return static_cast<float>(::strtod(m_string, NULL));
+	if (empty())
+		return default_value;
+	char* endptr;
+	double result = ::strtod(m_string, &endptr);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return static_cast<float>(result);
 }
 
 template<int MAX_COUNT>
-int64 string<MAX_COUNT>::to_int64() const
+int64 string<MAX_COUNT>::to_int64(const int64 default_value, const int base) const
 {
-	return scl_strtoi64(m_string, NULL, 0);
+	if (empty())
+		return default_value;
+	char* endptr;
+	int64 result = scl_strtoi64(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return result;
 }
 
 template<int MAX_COUNT>
-uint64 string<MAX_COUNT>::to_uint64() const
+uint64 string<MAX_COUNT>::to_uint64(const uint64 default_value, const int base) const
 {
-	return scl_strtoui64(m_string, NULL, 0);
+	if (empty())
+		return default_value;
+	char* endptr;
+	uint64 result = scl_strtoui64(m_string, &endptr, base);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-numeric characters found
+		return default_value;
+	}
+	return result;
 }
 
 template<int MAX_COUNT>
-uint string<MAX_COUNT>::to_hex() const
+uint string<MAX_COUNT>::to_hex(const uint default_value) const
 {
-	return ::strtoul(m_string, NULL, 16);
+	if (empty())
+		return default_value;
+	char* endptr;
+	unsigned long result = ::strtoul(m_string, &endptr, 16);
+	if (*endptr != '\0')
+	{
+		// Conversion failed - non-hex characters found
+		return default_value;
+	}
+	return static_cast<uint>(result);
 }
 
 template<int MAX_COUNT>
-bool string<MAX_COUNT>::to_bool() const
+bool string<MAX_COUNT>::to_bool(const bool default_value) const
 {
-	const char c = m_string[0];
-	if (c == 'f' || c == 'F' || c == '0')
+	if (empty())
+		return default_value;
+	
+	// Check for common false values
+	if (compare("false", true) == 0 || compare("0") == 0 || 
+	    compare("f", true) == 0 || compare("no", true) == 0)
+	{
 		return false;
-	//if (c == 't' || c == 'T' || c == '1')
-	//	return true;
-	return true;
+	}
+	
+	// Check for common true values    
+	if (compare("true", true) == 0 || compare("1") == 0 || 
+	    compare("t", true) == 0 || compare("yes", true) == 0)
+	{
+		return true;
+	}
+	
+	// If not recognizable, return default
+	return default_value;
 }
 
 

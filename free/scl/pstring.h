@@ -70,14 +70,15 @@ public:
 	void 	from_double	(const double	value);
 	void 	from_int64	(const int64	value);
 	void 	from_uint64	(const uint64	value);
-	int		to_int		() const;
-	uint	to_uint		() const;
-	double	to_double	() const;
-	float	to_float	() const;
-	int64	to_int64	() const;
-	uint64	to_uint64	() const;
-	uint	to_hex		() const;
-	bool	to_bool		() const;
+	// Safe conversion functions with default values for conversion failure
+	int		to_int		(const int default_value = 0, const int base = 0) const;
+	uint	to_uint		(const uint default_value = 0, const int base = 0) const;
+	double	to_double	(const double default_value = 0.0) const;
+	float	to_float	(const float default_value = 0.0f) const;
+	int64	to_int64	(const int64 default_value = 0, const int base = 0) const;
+	uint64	to_uint64	(const uint64 default_value = 0, const int base = 0) const;
+	uint	to_hex		(const uint default_value = 0) const;
+	bool	to_bool		(const bool default_value = false) const;
 	
 	//other property
 	char*		c_str		()			{ return m_string; }
