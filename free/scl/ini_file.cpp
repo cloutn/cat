@@ -558,65 +558,65 @@ bool ini_writer::write_section(const char* section)
 	return true;
 }
 
-bool ini_writer::write_key(const char* key, const char* value)
-{
-	if (!m_file)
-		return false;
+//bool ini_writer::write_key(const char* key, const char* value)
+//{
+//	if (!m_file)
+//		return false;
+//
+//	fprintf(m_file, "%s = %s\n", key, value);
+//	return true;
+//}
 
-	fprintf(m_file, "%s = %s\n", key, value);
-	return true;
-}
+//bool ini_writer::write(const char* key, const int value)
+//{
+//	if (!m_file)
+//		return false;
+//
+//	fprintf(m_file, "%s = %d\n", key, value);
+//	return true;
+//}
 
-bool ini_writer::write(const char* key, const int value)
-{
-	if (!m_file)
-		return false;
-
-	fprintf(m_file, "%s = %d\n", key, value);
-	return true;
-}
-
-bool ini_writer::write(const char* key, const uint value)
-{
-	if (!m_file)
-		return false;
-
-	fprintf(m_file, "%s = %u\n", key, value);
-	return true;
-}
-
-bool ini_writer::write(const char* key, const float value)
-{
-	if (!m_file)
-		return false;
-
-	fprintf(m_file, "%s = %f\n", key, value);
-	return true;
-}
-
-bool ini_writer::write(const char* key, const int64 value)
-{
-	if (!m_file)
-		return false;
-
-	fprintf(m_file, "%s = %lld\n", key, value);
-	return true;
-}
-
-bool ini_writer::write(const char* key, const uint64 value)
-{
-	if (!m_file)
-		return false;
-
-	fprintf(m_file, "%s = %llu\n", key, value);
-	return true;
-}
+//bool ini_writer::write(const char* key, const uint value)
+//{
+//	if (!m_file)
+//		return false;
+//
+//	fprintf(m_file, "%s = %u\n", key, value);
+//	return true;
+//}
+//
+//bool ini_writer::write(const char* key, const float value)
+//{
+//	if (!m_file)
+//		return false;
+//
+//	fprintf(m_file, "%s = %f\n", key, value);
+//	return true;
+//}
+//
+//bool ini_writer::write(const char* key, const int64 value)
+//{
+//	if (!m_file)
+//		return false;
+//
+//	fprintf(m_file, "%s = %lld\n", key, value);
+//	return true;
+//}
+//
+//bool ini_writer::write(const char* key, const uint64 value)
+//{
+//	if (!m_file)
+//		return false;
+//
+//	fprintf(m_file, "%s = %llu\n", key, value);
+//	return true;
+//}
 
 
-bool ini_writer::write(const char* key, const bool value)
-{
-	return write_key(key, value ? "true" : "false");
-}
+//bool ini_writer::write(const char* key, const bool value)
+//{
+//	return write_key(key, value ? "true" : "false");
+//}
 
 
 } //namespace scl

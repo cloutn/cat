@@ -579,6 +579,7 @@ void pstring::from_int(const int value)
 { 
 	clear();
 	format("%d", value);
+	safe_terminate();
 }
 
 
@@ -586,6 +587,7 @@ void pstring::from_uint(const uint value)
 { 	
 	clear();
 	format("%u", value);
+	safe_terminate();
 }
 
 
@@ -593,6 +595,7 @@ void pstring::from_double(const double value)
 {
 	clear();
 	format("%f", value);
+	safe_terminate();
 }
 
 
@@ -600,6 +603,7 @@ void pstring::from_int64(const int64 value)
 {
 	clear();
 	format(SCL_STR_FORMAT_I64, value);
+	safe_terminate();
 }
 
 
@@ -607,17 +611,13 @@ void pstring::from_uint64(const uint64 value)
 {
 	clear();
 	format(SCL_STR_FORMAT_UI64, value);
+	safe_terminate();
 }
-
-
-
 
 int pstring::length() const
 {
 	return static_cast<int>(::strnlen(m_string, max_size()));
 }
-
-
 
 // Safe conversion functions with default values for conversion failure
 int pstring::to_int(const int default_value, const int base) const

@@ -91,7 +91,7 @@ void testIniWriter()
 		writer.write("section_uint64", 9876543210987654321ULL);
 		writer.write("section_bool_true", true);
 		writer.write("section_bool_false", false);
-		writer.write_key("section_string", "Hello World");
+		writer.write("section_string", "Hello World");
 		
 		// Write another section
 		writer.write_section("Numbers");

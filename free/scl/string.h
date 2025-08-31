@@ -692,6 +692,7 @@ void string<MAX_COUNT>::from_int(const int value)
 { 
 	clear();
 	format("%d", value);
+	safe_terminate();
 }
 
 template<int MAX_COUNT>
@@ -699,6 +700,7 @@ void string<MAX_COUNT>::from_uint(const uint value)
 { 	
 	clear();
 	format("%u", value);
+	safe_terminate();
 }
 
 template<int MAX_COUNT>
@@ -706,6 +708,7 @@ void string<MAX_COUNT>::from_double(const double value)
 {
 	clear();
 	format("%f", value);
+	safe_terminate();
 }
 
 template<int MAX_COUNT>
@@ -713,6 +716,7 @@ void string<MAX_COUNT>::from_int64(const int64 value)
 {
 	clear();
 	format(SCL_STR_FORMAT_I64, value);
+	safe_terminate();
 }
 
 template<int MAX_COUNT>
@@ -720,6 +724,7 @@ void string<MAX_COUNT>::from_uint64(const uint64 value)
 {
 	clear();
 	format(SCL_STR_FORMAT_UI64, value);
+	safe_terminate();
 }
 
 

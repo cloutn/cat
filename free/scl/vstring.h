@@ -49,11 +49,11 @@ public:
 	void		reserve		(const int len) { _grow(len); }
 	int			find		(const char c, const int start_index = 0) const	{ return pstring().find(c, start_index); }
 	int			find		(const char* const s, const int start_index = 0)	const { return pstring().find(s, start_index); }
-	void		from_int	(const int		value) { pstring().from_int(value); }
-	void 		from_uint	(const uint		value) { pstring().from_uint(value); }
-	void 		from_double	(const double	value) { pstring().from_double(value); }
-	void 		from_int64	(const int64	value) { pstring().from_int64(value); }
-	void 		from_uint64	(const uint64	value) { pstring().from_uint64(value); }
+	void		from_int	(const int		value);
+	void 		from_uint	(const uint		value);
+	void 		from_double	(const double	value);
+	void 		from_int64	(const int64	value);
+	void 		from_uint64	(const uint64	value);
 	// Safe conversion functions with default values for conversion failure
 	int			to_int		(const int default_value = 0, const int base = 0) const { return pstring().to_int(default_value, base); }
 	uint		to_uint		(const uint default_value = 0, const int base = 0) const { return pstring().to_uint(default_value, base); }

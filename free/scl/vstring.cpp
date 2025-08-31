@@ -169,6 +169,45 @@ void vstring::clear()
 	m_short.clear();
 }
 
+void vstring::from_int(const int value)
+{
+	pstring().from_int(value);
+}
+
+void vstring::from_uint(const uint value)
+{
+	pstring().from_uint(value);
+}
+
+void vstring::from_int64(const int64 value)
+{
+	if (value >= 1e15 || value <= -1e14)
+		_grow(32);
+	pstring().from_int64(value);
+}
+
+void vstring::from_uint64(const uint64 value)
+{
+	if (value >= 1e15)
+		_grow(32);
+	pstring().from_uint64(value);
+}
+
+void vstring::from_double(const double value)
+{
+	int needed_length = ::snprintf(nullptr, 0, "%f", value);
+	if (needed_length > 0) 
+	{
+		_grow(needed_length); 
+	} 
+	else 
+	{
+		_grow(64);
+	}
+	
+	pstring().from_double(value);  // Use standard %f format
+}
+
 uint hash_function(const vstring& key)
 {
     return hash_function(key.pstring());
