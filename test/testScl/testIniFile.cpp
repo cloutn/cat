@@ -3,6 +3,7 @@
 
 #include "scl/ini_file.h"
 #include "scl/string.h"
+#include "scl/vstring.h"
 #include "scl/encoding.h"
 
 #include <stdio.h>
@@ -10,16 +11,15 @@
 using scl::ini_parser;
 using scl::string;
 using scl::wstring;
+using scl::vstring;
 
 void testIniFile()
 {
 	ini_parser ini;
 	ini.open("a.ini", "rb");
-	string32 netIp;
-	ini.get_string("db", "ip", netIp.c_str(), netIp.capacity());
+	vstring netIp = ini.get_string("db", "ip");
 	assert(netIp == "127.0.0.1");
-	string64 s;
-	ini.get_string(_ANSI("窗口布局"), _ANSI("高度"), s.c_str(), s.max_sizeof());
+	vstring s = ini.get_string(_ANSI("窗口布局"), _ANSI("高度"));
 	assert(s == "472");
 
 	const int position	= ini.get_int(_ANSI("窗口布局"), _ANSI("位置"));
@@ -33,16 +33,11 @@ void testIniFile()
 
 	const int fake = ini.get_int(_ANSI("窗口布局"), "fake");
 
-	string<128> title;
-	ini.get_string(_ANSI("窗口布局"), "title", title.c_str(), title.max_sizeof());
+	vstring title = ini.get_string(_ANSI("窗口布局"), "title");
 
-	string<256> content1;
-	ini.get_string(_ANSI("窗口布局"), "content1", content1.c_str(), content1.max_sizeof());
+	vstring content1 = ini.get_string(_ANSI("窗口布局"), "content1");
 
-	pstring content2;
-	content2.init(new char[1024 * 1024], 1024 * 1024);
-	content2.clear();
-	ini.get_string(_ANSI("窗口布局"), "content2", content2.c_str(), content2.max_sizeof());
+	vstring content2 = ini.get_string(_ANSI("窗口布局"), "content2");
 
 	assert(position == 0);
 	assert(left == 265);
@@ -58,8 +53,6 @@ void testIniFile()
 	wstring128 wcontent1;
 	wcontent1.from_ansi(content1.c_str());
 	assert(wcontent1 == L"\n \t我a!@#$%^&*\n()@@_+}{\":<>?\\|\"\"");
-
-	delete content2.c_str();
 
 	printf("test ini file \t\tOK!\n");
 }
@@ -125,8 +118,7 @@ void testIniWriter()
 		assert(reader.get_bool("TestSection", "section_bool_true") == true);
 		assert(reader.get_bool("TestSection", "section_bool_false") == false);
 		
-		scl::string<32> str;
-		reader.get_string("TestSection", "section_string", str.c_str(), str.max_sizeof());
+		vstring str = reader.get_string("TestSection", "section_string");
 		assert(str == "Hello World");
 		
 		// Verify Numbers section

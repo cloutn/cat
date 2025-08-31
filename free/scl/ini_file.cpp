@@ -253,13 +253,13 @@ bool ini_parser::open_buffer(const char* const buffer, const int len)
 	return true;
 }
 
-void ini_parser::get_string(const char* section_name, const char* key_name, char* output, const int outputMaxSize)
-{
-	const key_value*	pFrom	=  _get_key_value(section_name, key_name);
-	if (NULL == pFrom)
-		return;
-	pFrom->copy_value(output, outputMaxSize);
-}
+//void ini_parser::get_string(const char* section_name, const char* key_name, char* output, const int outputMaxSize)
+//{
+//	const key_value*	pFrom	=  _get_key_value(section_name, key_name);
+//	if (NULL == pFrom)
+//		return;
+//	pFrom->copy_value(output, outputMaxSize);
+//}
 
 scl::vstring ini_parser::_get_value_string(const char* section_name, const char* key_name) const
 {
@@ -318,21 +318,21 @@ scl::vstring ini_parser::_get_value_string(const char* section_name, const char*
 //}
 
 
-bool ini_parser::get_bool(const char* section_name, const char* key_name, const bool _default)
-{
-	string<32> value;
-	const key_value*	pFrom	= _get_key_value(section_name, key_name);
-	if (NULL == pFrom)
-		return _default;
-	pFrom->copy_value(value.c_str(), value.max_sizeof());
-	bool r = _default;
-	if (value.length() > 0)
-	{
-		if (value[0] == 't' || value[0] == 'T' || value[0] == '1') // "true, TRUE, 1" all is true
-			r = true;
-	}
-	return r;
-}
+//bool ini_parser::get_bool(const char* section_name, const char* key_name, const bool _default)
+//{
+//	string<32> value;
+//	const key_value*	pFrom	= _get_key_value(section_name, key_name);
+//	if (NULL == pFrom)
+//		return _default;
+//	pFrom->copy_value(value.c_str(), value.max_sizeof());
+//	bool r = _default;
+//	if (value.length() > 0)
+//	{
+//		if (value[0] == 't' || value[0] == 'T' || value[0] == '1') // "true, TRUE, 1" all is true
+//			r = true;
+//	}
+//	return r;
+//}
 
 
 const ini_parser::key_value* ini_parser::_get_key_value(const char* const section_name, const char* const key_name) const

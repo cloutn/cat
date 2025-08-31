@@ -585,8 +585,7 @@ void log::_init_level(ini_parser& cfg, LOG_LEVEL level, const char* const name)
 	//string32 remote;
 	//cfg.get_string(name, "remote", remote.c_str(), remote.capacity());
 
-	string64 filename;
-	cfg.get_string(name, "filename", filename.c_str(), filename.capacity());
+	vstring filename = cfg.get_string(name, "filename");
 
 	//TODO 多个level使用同名文件怎么办？
 	if (!filename.empty())
