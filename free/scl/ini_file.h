@@ -4,6 +4,7 @@
 #include "scl/varray.h"
 #include "scl/vstring.h"
 #include "scl/file.h"
+#include "scl/vector.h"
 
 namespace scl {
 
@@ -70,18 +71,9 @@ public:
     bool	open				();
     void	close				();
     bool	write_section		(const char* section);
-    //bool	write_key			(const char* key, const char* value);
-	//bool	write				(const char* key, const int value);
-	//bool	write				(const char* key, const int value) { _write(key, value); }
-	//bool	write				(const char* key, const uint value);
-	//bool	write				(const char* key, const float value);
-	//bool	write				(const char* key, const int64 value);
-	//bool	write				(const char* key, const uint64 value);
-	//bool	write				(const char* key, const bool value);
 
-public:
 	template <typename T>
-	bool	write(const char* key, const T& value)
+	bool	write				(const char* key, const T& value)
 	{
 		if (!m_file)
 			return false;
@@ -133,6 +125,17 @@ template <> inline scl::vstring				ini_from_value	(const char* const& v) { retur
 template <> inline scl::vstring				ini_from_value	(const scl::vstring& v) { return v; }
 template <int N> inline scl::vstring		ini_from_value	(const char (&v)[N]) { return scl::vstring(v); }
 
+//vector2i
+//inline size_t	to_chars	(ryml::substr	buf, scl::vector3	v) { return ryml::format(buf, "{x : {}, y : {}, z : {}}", v.x, v.y, v.z); }
+//inline bool		from_chars	(ryml::csubstr	buf, scl::vector3*	v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}, z : {}}", v->x, v->y, v->z); return ret != ryml::yml::npos; }
+//
+//inline size_t	to_chars	(ryml::substr	buf, scl::vector2i	v) { return ryml::format(buf, ); }
+//inline bool		from_chars	(ryml::csubstr	buf, scl::vector2i*	v) { size_t ret = ryml::unformat(buf, "{x : {}, y : {}}", v->x, v->y); return ret != ryml::yml::npos; }
+template <> inline scl::vector3				ini_to_value	(const scl::vstring& str, const scl::vector3& _default) { scl::vector3 v = _default; str.scanf("{x : %f, y : %f, z : %f}", &v.x, &v.y, &v.z); return v; }
+template <> inline scl::vstring				ini_from_value	(const scl::vector3& v) { scl::vstring r; r.format("{x : %f, y : %f, z : %f}", v.x, v.y, v.z); return r; }
+
+template <> inline scl::vector2i			ini_to_value	(const scl::vstring& str, const scl::vector2i& _default) { scl::vector2i v = _default; str.scanf("{x : %d, y : %d}", &v.x, &v.y); return v; }
+template <> inline scl::vstring				ini_from_value	(const scl::vector2i& v) { scl::vstring r; r.format("{x : %d, y : %d}", v.x, v.y); return r; }
 
 } //namespace scl
 

@@ -5,6 +5,7 @@
 #include "scl/string.h"
 #include "scl/vstring.h"
 #include "scl/encoding.h"
+#include "scl/vector.h"
 
 #include <stdio.h>
 
@@ -92,6 +93,35 @@ void testIniWriter()
 		writer.write("negative", -1);
 		writer.write("positive", 1);
 		
+		// Write vector tests
+		writer.write_section("VectorTests");
+		
+		// Test scl::vector3
+		scl::vector3 test_vector3;
+		test_vector3.set(1.5f, 2.5f, 3.5f);
+		writer.write("test_vector3", test_vector3);
+		
+		scl::vector3 zero_vector3;
+		zero_vector3.clear();
+		writer.write("zero_vector3", zero_vector3);
+		
+		scl::vector3 negative_vector3;
+		negative_vector3.set(-1.2f, -2.3f, -3.4f);
+		writer.write("negative_vector3", negative_vector3);
+		
+		// Test scl::vector2i
+		scl::vector2i test_vector2i;
+		test_vector2i.set(10, 20);
+		writer.write("test_vector2i", test_vector2i);
+		
+		scl::vector2i zero_vector2i;
+		zero_vector2i.clear();
+		writer.write("zero_vector2i", zero_vector2i);
+		
+		scl::vector2i negative_vector2i;
+		negative_vector2i.set(-5, -10);
+		writer.write("negative_vector2i", negative_vector2i);
+		
 		writer.close();
 	}
 	
@@ -125,11 +155,39 @@ void testIniWriter()
 		assert(reader.get_int("Numbers", "zero") == 0);
 		assert(reader.get_int("Numbers", "negative") == -1);
 		assert(reader.get_int("Numbers", "positive") == 1);
+		
+		// Verify vector tests
+		// Test scl::vector3
+		scl::vector3 default_vector3;
+		default_vector3.clear();
+		
+		scl::vector3 read_vector3 = reader.get<scl::vector3>("VectorTests", "test_vector3", default_vector3);
+		assert(read_vector3.equal(1.5f, 2.5f, 3.5f));
+		
+		scl::vector3 read_zero_vector3 = reader.get<scl::vector3>("VectorTests", "zero_vector3", default_vector3);
+		assert(read_zero_vector3.equal(0.0f, 0.0f, 0.0f));
+		
+		scl::vector3 read_negative_vector3 = reader.get<scl::vector3>("VectorTests", "negative_vector3", default_vector3);
+		assert(read_negative_vector3.equal(-1.2f, -2.3f, -3.4f));
+		
+		// Test scl::vector2i
+		scl::vector2i default_vector2i;
+		default_vector2i.clear();
+		
+		scl::vector2i read_vector2i = reader.get<scl::vector2i>("VectorTests", "test_vector2i", default_vector2i);
+		assert(read_vector2i.is(10, 20));
+		
+		scl::vector2i read_zero_vector2i = reader.get<scl::vector2i>("VectorTests", "zero_vector2i", default_vector2i);
+		assert(read_zero_vector2i.is(0, 0));
+		
+		scl::vector2i read_negative_vector2i = reader.get<scl::vector2i>("VectorTests", "negative_vector2i", default_vector2i);
+		assert(read_negative_vector2i.is(-5, -10));
 	}
 	
 	// Clean up test file
 	remove(test_file);
 	
 	printf("test ini writer \tOK!\n");
+	printf("test vector3 & vector2i \tOK!\n");
 }
 

@@ -99,6 +99,7 @@ double			strtod			(const char* const s);
 float			strtof			(const char* const s, float _default = 0);
 unsigned long	strtoul			(const char* s, char** end, int base);
 long			strtol			(const char* s, char** end, int base);
+int				sscanf			(const char* str, const char* format, ...);
 
 ////////////////////////////////////
 //	Encoding function

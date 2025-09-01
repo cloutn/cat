@@ -49,6 +49,7 @@ public:
 	void		reserve		(const int len) { _grow(len); }
 	int			find		(const char c, const int start_index = 0) const	{ return pstring().find(c, start_index); }
 	int			find		(const char* const s, const int start_index = 0)	const { return pstring().find(s, start_index); }
+	int			format		(const char* const format, ...);
 	void		from_int	(const int		value);
 	void 		from_uint	(const uint		value);
 	void 		from_double	(const double	value);
@@ -63,6 +64,7 @@ public:
 	uint64		to_uint64	(const uint64 default_value = 0, const int base = 0) const { return pstring().to_uint64(default_value, base); }
 	uint		to_hex		(const uint default_value = 0) const { return pstring().to_hex(default_value); }
 	bool		to_bool		(const bool default_value = false) const { return pstring().to_bool(default_value); }
+	int			scanf		(const char* format, ...) const;
 
 	vstring&	operator+=	(const char* s);
 	vstring&	operator+=	(const char c);
@@ -91,3 +93,5 @@ private:
 uint hash_function(const vstring& key);
 
 } //namespace scl
+
+

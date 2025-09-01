@@ -688,6 +688,14 @@ long strtol(const char* s, char** end, int base)
 	return n;
 }
 
+int sscanf(const char* str, const char* format, ...)
+{
+	va_list ap;
+    va_start(ap, format);
+    int ret = vsscanf(str, format, ap);
+    va_end(ap);
+    return ret;
+}
 
 void string_to_uint_array(char* s, int base, unsigned int* out, const int out_max)
 {

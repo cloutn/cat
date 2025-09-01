@@ -9,6 +9,7 @@
 #include "scl/hash_table.h"
 #include <cstring>
 #include <cwchar>
+#include <cstdarg>
 
 // Basic type definitions for standalone compilation
 namespace scl {
@@ -169,6 +170,27 @@ void vstring::clear()
 	m_short.clear();
 }
 
+int vstring::format(const char* const format, ...)
+{
+	va_list SFA_arg;
+	va_start(SFA_arg, format);
+	
+	va_list SFA_arg_copy;
+	va_copy(SFA_arg_copy, SFA_arg);
+	int needed_length = ::vsnprintf(nullptr, 0, format, SFA_arg_copy);
+	va_end(SFA_arg_copy);
+	
+	if (needed_length > 0)
+		_grow(needed_length);
+	else
+		assert(false);
+	
+	// Now format into the properly sized buffer
+	int writeCount = ::vsnprintf(c_str(), capacity(), format, SFA_arg);
+	va_end(SFA_arg);
+	return writeCount;
+}
+
 void vstring::from_int(const int value)
 {
 	pstring().from_int(value);
@@ -191,6 +213,15 @@ void vstring::from_uint64(const uint64 value)
 	if (value >= 1e15)
 		_grow(32);
 	pstring().from_uint64(value);
+}
+
+int vstring::scanf(const char* format, ...) const
+{
+	va_list ap;
+    va_start(ap, format);
+    int ret = vsscanf(c_str(), format, ap);
+    va_end(ap);
+    return ret;
 }
 
 void vstring::from_double(const double value)
