@@ -82,3 +82,7 @@ error.log
 /catBase/lib64
 /test/testYaml/bin64
 /test/testScl/test/memoryLog.txt
+/build
+build64_ninja
+build64_visualstudio
+/tool/bin

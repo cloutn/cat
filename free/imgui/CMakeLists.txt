@@ -7,6 +7,7 @@ project(${target})
 
 set(CMAKE_DEBUG_POSTFIX _d)
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB src_files *.h *.cpp)
 

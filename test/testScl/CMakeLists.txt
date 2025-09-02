@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(target testScl)
 
@@ -96,7 +97,6 @@ target_include_directories(
 	#${PROJECT_SOURCE_DIR}/../../free/rapidyaml/
 	)
 
-# 跨平台库文件配置
 if(WIN32)
 	set(debug_links 	
 		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl_d.lib
@@ -129,14 +129,12 @@ target_link_libraries(${target}
 	${debug_links}
 	${release_links})
 
-# Linux系统库依赖
 if(UNIX AND NOT APPLE)
 	target_link_libraries(${target} pthread dl)
 elseif(APPLE)
 	target_link_libraries(${target} pthread dl)
 endif()
 
-# 平台特定设置
 if(WIN32)
 	#add_definitions("/wd4819")
 	add_definitions("/source-charset:utf-8")

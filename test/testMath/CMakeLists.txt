@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(target testMath)
 

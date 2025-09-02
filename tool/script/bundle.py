@@ -13,7 +13,7 @@ dir = "../archive/%s/" % datetime_str
 
 os.mkdir(dir)
 
-#print("compressing %sfree.7z" % dir)
+#print("compressing free.7z" % dir)
 cmd([
     './7z/7z.exe',
     'a',
@@ -67,7 +67,7 @@ cmd([
 #    "-bd",
 #    ])
 
-#print("compressing %sbin.7z" % dir)
+#print("compressing bin.7z" % dir)
 cmd([
     './7z/7z.exe',
     'a',
@@ -81,7 +81,7 @@ cmd([
     ])
 
 
-#print("compressing %sbin64.7z" % dir)
+#print("compressing bin64.7z" % dir)
 cmd([
     './7z/7z.exe',
     'a',
@@ -94,7 +94,7 @@ cmd([
     "-bd",
     ])
 
-#print("compressing %sart.7z" % dir)
+#print("compressing art.7z" % dir)
 cmd([
     './7z/7z.exe',
     'a',
@@ -106,4 +106,15 @@ cmd([
     "-bd",
     ])
 
+#print("compressing tool_bin.7z" % dir)
+cmd([
+    './7z/7z.exe',
+    'a',
+    dir + "tool_bin.7z",
+    "../tool/bin/*",
+    "-x!*.7z",
+    "-aoa",
+    "-bso0",
+    "-bd",
+    ])
 

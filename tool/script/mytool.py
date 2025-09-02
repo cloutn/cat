@@ -29,10 +29,14 @@ def clear_dir(path, target_dirs, target_exts, recursive=True):
                     break;
             #file_handler(filename, ext, filepath)
 
-def cmd(cmd, print_cmd = True):
-    if print_cmd: 
-        print(" ".join(cmd))
+def cmd(cmd, print_cmd=True, shell=False, check=True):
+    if print_cmd:
+        if isinstance(cmd, list):
+            print(" ".join(cmd))
+        else:
+            print(cmd)
+
     try:
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, shell=shell, check=check)
     except subprocess.CalledProcessError:
         print("Execute failed. %s" % cmd)
