@@ -6,6 +6,7 @@ import shutil
 import io
 from mytool import clear_dir, exec_cmd
 from datetime import datetime
+from pathlib import Path
 
 datetime_str = datetime.now().strftime("%Y_%m%d_%H%M%S")
 
@@ -13,9 +14,13 @@ dir = "../archive/%s/" % datetime_str
 
 os.mkdir(dir)
 
+extra_path = Path("./7z").resolve()
+print(extra_path)
+os.environ['PATH'] = f"{extra_path}{os.pathsep}{os.environ['PATH']}"
+
 #print("compressing free.7z" % dir)
 exec_cmd([
-    './7z/7z.exe',
+    '7z',
     'a',
     dir + "free.7z" ,
     "../free/cgltf",
@@ -53,23 +58,9 @@ exec_cmd([
     ])
 
 
-#print("compressing ../../testCat/bin/bin_%s.7z" % datetime_str)
-#exec_cmd([
-#    'bin/7z.exe',
-#    'a',
-#    "../testCat/bin/bin_%s.7z" % datetime_str,
-#    "../testCat/bin/art",
-#    "../testCat/bin/driver",
-#    "../testCat/bin/*.dll",
-#    "-x!*.7z",
-#    "-aoa",
-#    "-bso0",
-#    "-bd",
-#    ])
-
 #print("compressing bin.7z" % dir)
 exec_cmd([
-    './7z/7z.exe',
+    '7z',
     'a',
     dir + "/bin.7z",
     "../testCat/bin/driver",
@@ -83,7 +74,7 @@ exec_cmd([
 
 #print("compressing bin64.7z" % dir)
 exec_cmd([
-    './7z/7z.exe',
+    '7z',
     'a',
     dir + "bin64.7z",
     "../testCat/bin64/driver",
@@ -96,7 +87,7 @@ exec_cmd([
 
 #print("compressing art.7z" % dir)
 exec_cmd([
-    './7z/7z.exe',
+    '7z',
     'a',
     dir + "art.7z",
     "../testCat/art/*",
@@ -108,7 +99,7 @@ exec_cmd([
 
 #print("compressing tool_bin.7z" % dir)
 exec_cmd([
-    './7z/7z.exe',
+    '7z',
     'a',
     dir + "tool_bin.7z",
     "../tool/bin/*",
