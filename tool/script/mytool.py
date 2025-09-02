@@ -29,7 +29,7 @@ def clear_dir(path, target_dirs, target_exts, recursive=True):
                     break;
             #file_handler(filename, ext, filepath)
 
-def cmd(cmd, print_cmd=True, shell=False, check=True):
+def exec_cmd(cmd, print_cmd=True, shell=False, check=True):
     if print_cmd:
         if isinstance(cmd, list):
             print(" ".join(cmd))

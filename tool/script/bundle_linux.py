@@ -4,7 +4,7 @@ sys.path.append("./script")
 import os
 import shutil
 import io
-from mytool import clear_dir, cmd
+from mytool import clear_dir, exec_cmd
 from datetime import datetime
 
 datetime_str = datetime.now().strftime("%Y_%m%d_%H%M%S")
@@ -15,7 +15,7 @@ os.makedirs(dir, exist_ok=True)
 
 # 使用Linux系统的7z命令而不是Windows的7z.exe
 print("compressing %sfree.7z" % dir)
-cmd([
+exec_cmd([
     '7z',  # Linux系统命令
     'a',
     dir + "free.7z" ,
@@ -56,7 +56,7 @@ cmd([
 
 print("compressing %sbin.7z" % dir)
 # Linux下可能没有.dll文件，改为查找.so或其他文件
-cmd([
+exec_cmd([
     '7z',
     'a',
     dir + "/bin.7z",
@@ -70,7 +70,7 @@ cmd([
     ])
 
 print("compressing %sbin64.7z" % dir)
-cmd([
+exec_cmd([
     '7z',
     'a',
     dir + "bin64.7z",
@@ -84,7 +84,7 @@ cmd([
     ])
 
 print("compressing %sart.7z" % dir)
-cmd([
+exec_cmd([
     '7z',
     'a', 
     dir + "art.7z",

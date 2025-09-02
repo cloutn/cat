@@ -4,7 +4,7 @@ sys.path.append("./script")
 import subprocess
 import os
 import shutil
-from mytool import cmd
+from mytool import exec_cmd
 import argparse
 
 class G:
@@ -17,7 +17,7 @@ def unzip_cmake():
     print("Using system cmake (no extraction needed)")
 
 def unzip_free():
-    cmd(['7z', 'x', '../archive/free.7z', '-o../free/', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['7z', 'x', '../archive/free.7z', '-o../free/', '-aoa', '-bso0', '-bd'])
 
 
 
@@ -56,7 +56,7 @@ def generate_tests():
             "-S", src_path, 
             "-B", build_path
         ]
-        cmd(cmake_cmd)
+        exec_cmd(cmake_cmd)
 
 def generate_test1():
     print("generate_test1")
@@ -78,10 +78,10 @@ def build_scl():
         "-S", src_path, 
         "-B", build_path
     ]
-    cmd(cmake_cmd)
+    exec_cmd(cmake_cmd)
     
     # 构建库
-    cmd(['cmake', "--build", build_path])
+    exec_cmd(['cmake', "--build", build_path])
 
 def build_all_libs():
     """构建所有必需的库"""

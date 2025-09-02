@@ -4,7 +4,7 @@ sys.path.append("./script")
 import os
 import shutil
 import io
-from mytool import clear_dir, cmd
+from mytool import clear_dir, exec_cmd
 from datetime import datetime
 
 datetime_str = datetime.now().strftime("%Y_%m%d_%H%M%S")
@@ -14,7 +14,7 @@ dir = "../archive/%s/" % datetime_str
 os.mkdir(dir)
 
 #print("compressing free.7z" % dir)
-cmd([
+exec_cmd([
     './7z/7z.exe',
     'a',
     dir + "free.7z" ,
@@ -54,7 +54,7 @@ cmd([
 
 
 #print("compressing ../../testCat/bin/bin_%s.7z" % datetime_str)
-#cmd([
+#exec_cmd([
 #    'bin/7z.exe',
 #    'a',
 #    "../testCat/bin/bin_%s.7z" % datetime_str,
@@ -68,7 +68,7 @@ cmd([
 #    ])
 
 #print("compressing bin.7z" % dir)
-cmd([
+exec_cmd([
     './7z/7z.exe',
     'a',
     dir + "/bin.7z",
@@ -82,7 +82,7 @@ cmd([
 
 
 #print("compressing bin64.7z" % dir)
-cmd([
+exec_cmd([
     './7z/7z.exe',
     'a',
     dir + "bin64.7z",
@@ -95,7 +95,7 @@ cmd([
     ])
 
 #print("compressing art.7z" % dir)
-cmd([
+exec_cmd([
     './7z/7z.exe',
     'a',
     dir + "art.7z",
@@ -107,7 +107,7 @@ cmd([
     ])
 
 #print("compressing tool_bin.7z" % dir)
-cmd([
+exec_cmd([
     './7z/7z.exe',
     'a',
     dir + "tool_bin.7z",

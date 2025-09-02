@@ -4,8 +4,9 @@ sys.path.append("./script")
 import subprocess
 import os
 import shutil
-from mytool import cmd
+from mytool import exec_cmd
 import argparse
+from pathlib import Path
 
 class G:
     arch64 = False
@@ -17,22 +18,22 @@ class G:
 
 def unzip_cmake():
     # "-aoa"  # ask overwrite mode = all #   "-bso0"  # stadard output stream disabled #   "-bd"   # disable progress indicator
-    cmd(['./7z/7z.exe', 'x', '../archive/cmake.7z', '-o../tool/cmake', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/cmake.7z', '-o../tool/cmake', '-aoa', '-bso0', '-bd'])
 
 def unzip_free():
-    cmd(['./7z/7z.exe', 'x', '../archive/free.7z', '-o../free/', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/free.7z', '-o../free/', '-aoa', '-bso0', '-bd'])
 
 def unzip_bin():
-    cmd(['./7z/7z.exe', 'x', '../archive/bin.7z', '-o../testCat/bin', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/bin.7z', '-o../testCat/bin', '-aoa', '-bso0', '-bd'])
 
 def unzip_bin64():
-    cmd(['./7z/7z.exe', 'x', '../archive/bin64.7z', '-o../testCat/bin64', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/bin64.7z', '-o../testCat/bin64', '-aoa', '-bso0', '-bd'])
 
 def unzip_art():
-    cmd(['./7z/7z.exe', 'x', '../archive/art.7z', '-o../testCat/art', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/art.7z', '-o../testCat/art', '-aoa', '-bso0', '-bd'])
 
 def unzip_tool_bin():
-    cmd(['./7z/7z.exe', 'x', '../archive/tool_bin.7z', '-o../tool/bin', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/tool_bin.7z', '-o../tool/bin', '-aoa', '-bso0', '-bd'])
 
 
 def build_shaderc():
@@ -41,10 +42,10 @@ def build_shaderc():
     build_path = f"../free/shaderc/build{arch}_{G.buld_suffix}/"
     if not os.path.exists(build_path):
         os.mkdir(build_path)
-    cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
+    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
 
-    cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
-    cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Release"])
+    exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
+    exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Release"])
 
     lib_path = f"../free/lib{arch}/"
     if not os.path.exists(lib_path):
@@ -57,7 +58,7 @@ def generate_testCat():
     arch = "64" if G.arch64 else ""
     src_path = "../testCat/"
     build_path = f"../testCat/build{arch}_{G.build_suffix}/"
-    cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
 
 def generate_tests():
     arch = "64" if G.arch64 else ""
@@ -68,21 +69,25 @@ def generate_tests():
         src_path = "../test/" + filename
         build_path = f"../test/{filename}/build{arch}_{G.build_suffix}/"
 
-        cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G {G.generator} {G.arch_param} -Wno-dev -S {src_path}, -B {build_path}'
-        cmd(cmd_str, shell=True)
-        #cmd([G.call_vcvars, '.\\cmake\\bin\\cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path], shell=True)
+        extra_path = Path("./bin").resolve()
+        print(extra_path)
+        os.environ['PATH'] = f"{extra_path}{os.pathsep}{os.environ['PATH']}"
+
+        cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G {G.generator} {G.arch_param} -Wno-dev -S {src_path} -B {build_path}'
+        exec_cmd(cmd_str, shell=True)
+        #exec_cmd([G.call_vcvars, '.\\cmake\\bin\\cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path], shell=True)
         #if G.build_suffix == "ninja":
         #    vcvars = find_vcvars()
-        #    #cmd(vcvars)
+        #    #exec_cmd(vcvars)
         #    mycmd = f'call "{vcvars}" && ' \
         #          f'.\\cmake\\bin\\cmake.exe -G {G.generator} {G.arch_param} -Wno-dev -S "{src_path}" -B {build_path}'
 
-        #    cmd(mycmd, shell=True)
+        #    exec_cmd(mycmd, shell=True)
 
-        #    #cmd(["call", vcvars, "&&", './cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
-        #    cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+        #    #exec_cmd(["call", vcvars, "&&", './cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+        #    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
         #else:
-        #    cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+        #    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
 
 ####################################################
 # composite functions for convenient
