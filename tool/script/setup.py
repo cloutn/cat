@@ -39,7 +39,7 @@ def unzip_tool_bin():
 def build_shaderc():
     arch = "64" if G.arch64 else ""
     src_path = "../free/shaderc/"
-    build_path = f"../free/shaderc/build{arch}_{G.buld_suffix}/"
+    build_path = f"../free/shaderc/build{arch}_{G.build_suffix}/"
     if not os.path.exists(build_path):
         os.mkdir(build_path)
     exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
