@@ -1,0 +1,1737 @@
+[
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testMath\\..\\..\\free -MD   /source-charset:utf-8 /FoCMakeFiles\\testMath.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testMath\\main.cpp",
+    "file": "E:\\cat\\test\\testMath\\main.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testMath\\..\\..\\free -MD   /source-charset:utf-8 /FoCMakeFiles\\testMath.dir\\util.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testMath\\util.cpp",
+    "file": "E:\\cat\\test\\testMath\\util.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testMath\\..\\..\\free -MD   /source-charset:utf-8 /FoCMakeFiles\\testMath.dir\\test.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testMath\\test.cpp",
+    "file": "E:\\cat\\test\\testMath\\test.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\android.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\android.cpp",
+    "file": "E:\\cat\\free\\scl\\android.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\assert.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\assert.cpp",
+    "file": "E:\\cat\\free\\scl\\assert.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\backtrace.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\backtrace.cpp",
+    "file": "E:\\cat\\free\\scl\\backtrace.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\directory.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\directory.cpp",
+    "file": "E:\\cat\\free\\scl\\directory.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\dump.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\dump.cpp",
+    "file": "E:\\cat\\free\\scl\\dump.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file.cpp",
+    "file": "E:\\cat\\free\\scl\\file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_mapping.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_mapping.cpp",
+    "file": "E:\\cat\\free\\scl\\file_mapping.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_reader.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_reader.cpp",
+    "file": "E:\\cat\\free\\scl\\file_reader.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\frame_lock.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\frame_lock.cpp",
+    "file": "E:\\cat\\free\\scl\\frame_lock.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ini_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ini_file.cpp",
+    "file": "E:\\cat\\free\\scl\\ini_file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log.cpp",
+    "file": "E:\\cat\\free\\scl\\log.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log_file.cpp",
+    "file": "E:\\cat\\free\\scl\\log_file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\math.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\math.cpp",
+    "file": "E:\\cat\\free\\scl\\math.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\matrix.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\matrix.cpp",
+    "file": "E:\\cat\\free\\scl\\matrix.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\path.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\path.cpp",
+    "file": "E:\\cat\\free\\scl\\path.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pwstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pwstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pwstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\quaternion.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\quaternion.cpp",
+    "file": "E:\\cat\\free\\scl\\quaternion.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\rect.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\rect.cpp",
+    "file": "E:\\cat\\free\\scl\\rect.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ring_buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ring_buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\ring_buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\stringdef.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\stringdef.cpp",
+    "file": "E:\\cat\\free\\scl\\stringdef.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread_pool.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread_pool.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread_pool.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread.cpp",
+    "file": "E:\\cat\\free\\scl\\thread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread_log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread_log.cpp",
+    "file": "E:\\cat\\free\\scl\\thread_log.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\time.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\time.cpp",
+    "file": "E:\\cat\\free\\scl\\time.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vbitset.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vbitset.cpp",
+    "file": "E:\\cat\\free\\scl\\vbitset.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vector.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vector.cpp",
+    "file": "E:\\cat\\free\\scl\\vector.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vstring.cpp",
+    "file": "E:\\cat\\free\\scl\\vstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testMath/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\glm\\..\\..\\free -MD /FoE:\\cat\\free\\glm\\build64\\CMakeFiles\\glm.dir\\detail\\glm.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\glm\\detail\\glm.cpp",
+    "file": "E:\\cat\\free\\glm\\detail\\glm.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\main.cpp",
+    "file": "E:\\cat\\test\\testScl\\main.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testArray.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testArray.cpp",
+    "file": "E:\\cat\\test\\testScl\\testArray.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testBigInt.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testBigInt.cpp",
+    "file": "E:\\cat\\test\\testScl\\testBigInt.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testBitset.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testBitset.cpp",
+    "file": "E:\\cat\\test\\testScl\\testBitset.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testFile.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testFile.cpp",
+    "file": "E:\\cat\\test\\testScl\\testFile.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testHashTable.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testHashTable.cpp",
+    "file": "E:\\cat\\test\\testScl\\testHashTable.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testHeap.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testHeap.cpp",
+    "file": "E:\\cat\\test\\testScl\\testHeap.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testIniFile.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testIniFile.cpp",
+    "file": "E:\\cat\\test\\testScl\\testIniFile.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testList.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testList.cpp",
+    "file": "E:\\cat\\test\\testScl\\testList.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testLog.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testLog.cpp",
+    "file": "E:\\cat\\test\\testScl\\testLog.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testMemory.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testMemory.cpp",
+    "file": "E:\\cat\\test\\testScl\\testMemory.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testPath.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testPath.cpp",
+    "file": "E:\\cat\\test\\testScl\\testPath.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testPString.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testPString.cpp",
+    "file": "E:\\cat\\test\\testScl\\testPString.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testPWString.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testPWString.cpp",
+    "file": "E:\\cat\\test\\testScl\\testPWString.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testRingBuffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testRingBuffer.cpp",
+    "file": "E:\\cat\\test\\testScl\\testRingBuffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testRingQueue.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testRingQueue.cpp",
+    "file": "E:\\cat\\test\\testScl\\testRingQueue.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testStack.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testStack.cpp",
+    "file": "E:\\cat\\test\\testScl\\testStack.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testString.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testString.cpp",
+    "file": "E:\\cat\\test\\testScl\\testString.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testStringFunction.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testStringFunction.cpp",
+    "file": "E:\\cat\\test\\testScl\\testStringFunction.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testThread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testThread.cpp",
+    "file": "E:\\cat\\test\\testScl\\testThread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testTime.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testTime.cpp",
+    "file": "E:\\cat\\test\\testScl\\testTime.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testTree.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testTree.cpp",
+    "file": "E:\\cat\\test\\testScl\\testTree.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testWString.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testWString.cpp",
+    "file": "E:\\cat\\test\\testScl\\testWString.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testScl\\..\\.. -IE:\\cat\\test\\testScl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoCMakeFiles\\testScl.dir\\testTypeTraits.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testScl\\testTypeTraits.cpp",
+    "file": "E:\\cat\\test\\testScl\\testTypeTraits.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\android.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\android.cpp",
+    "file": "E:\\cat\\free\\scl\\android.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\assert.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\assert.cpp",
+    "file": "E:\\cat\\free\\scl\\assert.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\backtrace.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\backtrace.cpp",
+    "file": "E:\\cat\\free\\scl\\backtrace.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\directory.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\directory.cpp",
+    "file": "E:\\cat\\free\\scl\\directory.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\dump.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\dump.cpp",
+    "file": "E:\\cat\\free\\scl\\dump.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file.cpp",
+    "file": "E:\\cat\\free\\scl\\file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_mapping.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_mapping.cpp",
+    "file": "E:\\cat\\free\\scl\\file_mapping.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_reader.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_reader.cpp",
+    "file": "E:\\cat\\free\\scl\\file_reader.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\frame_lock.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\frame_lock.cpp",
+    "file": "E:\\cat\\free\\scl\\frame_lock.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ini_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ini_file.cpp",
+    "file": "E:\\cat\\free\\scl\\ini_file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log.cpp",
+    "file": "E:\\cat\\free\\scl\\log.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log_file.cpp",
+    "file": "E:\\cat\\free\\scl\\log_file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\math.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\math.cpp",
+    "file": "E:\\cat\\free\\scl\\math.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\matrix.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\matrix.cpp",
+    "file": "E:\\cat\\free\\scl\\matrix.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\path.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\path.cpp",
+    "file": "E:\\cat\\free\\scl\\path.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pwstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pwstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pwstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\quaternion.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\quaternion.cpp",
+    "file": "E:\\cat\\free\\scl\\quaternion.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\rect.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\rect.cpp",
+    "file": "E:\\cat\\free\\scl\\rect.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ring_buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ring_buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\ring_buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\stringdef.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\stringdef.cpp",
+    "file": "E:\\cat\\free\\scl\\stringdef.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread_pool.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread_pool.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread_pool.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread.cpp",
+    "file": "E:\\cat\\free\\scl\\thread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread_log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread_log.cpp",
+    "file": "E:\\cat\\free\\scl\\thread_log.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\time.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\time.cpp",
+    "file": "E:\\cat\\free\\scl\\time.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vbitset.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vbitset.cpp",
+    "file": "E:\\cat\\free\\scl\\vbitset.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vector.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vector.cpp",
+    "file": "E:\\cat\\free\\scl\\vector.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testScl/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -MDd   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vstring.cpp",
+    "file": "E:\\cat\\free\\scl\\vstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\test\\testYaml\\..\\.. -IE:\\cat\\test\\testYaml\\..\\..\\free -IE:\\cat\\test\\testYaml\\..\\..\\free\\rapidyaml -MD   /source-charset:utf-8 /FoCMakeFiles\\testYaml.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\test\\testYaml\\main.cpp",
+    "file": "E:\\cat\\test\\testYaml\\main.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\android.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\android.cpp",
+    "file": "E:\\cat\\free\\scl\\android.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\assert.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\assert.cpp",
+    "file": "E:\\cat\\free\\scl\\assert.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\backtrace.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\backtrace.cpp",
+    "file": "E:\\cat\\free\\scl\\backtrace.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\directory.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\directory.cpp",
+    "file": "E:\\cat\\free\\scl\\directory.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\dump.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\dump.cpp",
+    "file": "E:\\cat\\free\\scl\\dump.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file.cpp",
+    "file": "E:\\cat\\free\\scl\\file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_mapping.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_mapping.cpp",
+    "file": "E:\\cat\\free\\scl\\file_mapping.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_reader.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_reader.cpp",
+    "file": "E:\\cat\\free\\scl\\file_reader.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\frame_lock.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\frame_lock.cpp",
+    "file": "E:\\cat\\free\\scl\\frame_lock.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ini_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ini_file.cpp",
+    "file": "E:\\cat\\free\\scl\\ini_file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log.cpp",
+    "file": "E:\\cat\\free\\scl\\log.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log_file.cpp",
+    "file": "E:\\cat\\free\\scl\\log_file.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\math.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\math.cpp",
+    "file": "E:\\cat\\free\\scl\\math.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\matrix.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\matrix.cpp",
+    "file": "E:\\cat\\free\\scl\\matrix.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\path.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\path.cpp",
+    "file": "E:\\cat\\free\\scl\\path.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pwstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pwstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pwstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\quaternion.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\quaternion.cpp",
+    "file": "E:\\cat\\free\\scl\\quaternion.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\rect.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\rect.cpp",
+    "file": "E:\\cat\\free\\scl\\rect.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ring_buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ring_buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\ring_buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\stringdef.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\stringdef.cpp",
+    "file": "E:\\cat\\free\\scl\\stringdef.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread_pool.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread_pool.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread_pool.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread.cpp",
+    "file": "E:\\cat\\free\\scl\\thread.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread_log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread_log.cpp",
+    "file": "E:\\cat\\free\\scl\\thread_log.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\time.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\time.cpp",
+    "file": "E:\\cat\\free\\scl\\time.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vbitset.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vbitset.cpp",
+    "file": "E:\\cat\\free\\scl\\vbitset.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vector.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vector.cpp",
+    "file": "E:\\cat\\free\\scl\\vector.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vstring.cpp",
+    "file": "E:\\cat\\free\\scl\\vstring.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\catBase\\.. -IE:\\cat\\catBase\\..\\free -IE:\\cat\\catBase\\..\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\catBase\\build64\\CMakeFiles\\catBase.dir\\yaml.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catBase\\yaml.cpp",
+    "file": "E:\\cat\\catBase\\yaml.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\common.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\common.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\common.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\node.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\node.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\node.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\node_type.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\node_type.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\node_type.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\parse.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\parse.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\parse.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\preprocess.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\preprocess.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\preprocess.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\reference_resolver.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\reference_resolver.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\reference_resolver.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\tag.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\tag.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\tag.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\tree.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\tree.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\tree.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\version.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\version.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\version.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\base64.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\base64.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\base64.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\char_traits.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\char_traits.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\char_traits.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\error.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\error.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\error.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\format.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\format.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\format.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\language.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\language.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\language.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\memory_resource.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\memory_resource.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\memory_resource.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\memory_util.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\memory_util.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\memory_util.cpp"
+  },
+  {
+    "directory": "E:/cat/test/testYaml/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\utf.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\utf.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\utf.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\client.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\client.cpp",
+    "file": "E:\\cat\\testCat\\client.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\imgui_impl_win32.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\imgui_impl_win32.cpp",
+    "file": "E:\\cat\\testCat\\imgui_impl_win32.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\main.cpp",
+    "file": "E:\\cat\\testCat\\main.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\mainGUI.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\mainGUI.cpp",
+    "file": "E:\\cat\\testCat\\mainGUI.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\testPrimitive.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\testPrimitive.cpp",
+    "file": "E:\\cat\\testCat\\testPrimitive.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\config.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\config.cpp",
+    "file": "E:\\cat\\testCat\\config.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\imguiex.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\imguiex.cpp",
+    "file": "E:\\cat\\testCat\\imguiex.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\ImGuizmo.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\ImGuizmo.cpp",
+    "file": "E:\\cat\\testCat\\ImGuizmo.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_WIN32 -DUNICODE -D_UNICODE -IE:\\cat\\testCat\\.. -IE:\\cat\\testCat\\..\\free -IE:\\cat\\testCat\\..\\free\\imgui -IE:\\cat\\testCat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\testCat\\..\\free\\vulkan\\Include -IE:\\cat\\testCat\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoCMakeFiles\\testCat.dir\\simpleShape.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\testCat\\simpleShape.cpp",
+    "file": "E:\\cat\\testCat\\simpleShape.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\android.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\android.cpp",
+    "file": "E:\\cat\\free\\scl\\android.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\assert.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\assert.cpp",
+    "file": "E:\\cat\\free\\scl\\assert.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\backtrace.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\backtrace.cpp",
+    "file": "E:\\cat\\free\\scl\\backtrace.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\directory.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\directory.cpp",
+    "file": "E:\\cat\\free\\scl\\directory.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\dump.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\dump.cpp",
+    "file": "E:\\cat\\free\\scl\\dump.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file.cpp",
+    "file": "E:\\cat\\free\\scl\\file.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_mapping.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_mapping.cpp",
+    "file": "E:\\cat\\free\\scl\\file_mapping.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\file_reader.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\file_reader.cpp",
+    "file": "E:\\cat\\free\\scl\\file_reader.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\frame_lock.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\frame_lock.cpp",
+    "file": "E:\\cat\\free\\scl\\frame_lock.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ini_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ini_file.cpp",
+    "file": "E:\\cat\\free\\scl\\ini_file.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log.cpp",
+    "file": "E:\\cat\\free\\scl\\log.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\log_file.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\log_file.cpp",
+    "file": "E:\\cat\\free\\scl\\log_file.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\math.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\math.cpp",
+    "file": "E:\\cat\\free\\scl\\math.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\matrix.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\matrix.cpp",
+    "file": "E:\\cat\\free\\scl\\matrix.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\path.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\path.cpp",
+    "file": "E:\\cat\\free\\scl\\path.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pstring.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\pwstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\pwstring.cpp",
+    "file": "E:\\cat\\free\\scl\\pwstring.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\quaternion.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\quaternion.cpp",
+    "file": "E:\\cat\\free\\scl\\quaternion.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\rect.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\rect.cpp",
+    "file": "E:\\cat\\free\\scl\\rect.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\ring_buffer.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\ring_buffer.cpp",
+    "file": "E:\\cat\\free\\scl\\ring_buffer.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\stringdef.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\stringdef.cpp",
+    "file": "E:\\cat\\free\\scl\\stringdef.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\task_thread_pool.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\task_thread_pool.cpp",
+    "file": "E:\\cat\\free\\scl\\task_thread_pool.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread.cpp",
+    "file": "E:\\cat\\free\\scl\\thread.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\thread_log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\thread_log.cpp",
+    "file": "E:\\cat\\free\\scl\\thread_log.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\time.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\time.cpp",
+    "file": "E:\\cat\\free\\scl\\time.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vbitset.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vbitset.cpp",
+    "file": "E:\\cat\\free\\scl\\vbitset.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vector.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vector.cpp",
+    "file": "E:\\cat\\free\\scl\\vector.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSCL_FORCE_SLEEP -DUNICODE -D_UNICODE -IE:\\cat\\free\\scl\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\scl\\build64\\CMakeFiles\\scl.dir\\vstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\scl\\vstring.cpp",
+    "file": "E:\\cat\\free\\scl\\vstring.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\catBase\\.. -IE:\\cat\\catBase\\..\\free -IE:\\cat\\catBase\\..\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catBase\\build64\\CMakeFiles\\catBase.dir\\yaml.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catBase\\yaml.cpp",
+    "file": "E:\\cat\\catBase\\yaml.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DKTX_OPENGL_ES3 -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\free\\libimg\\..\\..\\free -IE:\\cat\\free\\libimg\\..\\..\\free\\jpeg_turbo -IE:\\cat\\free\\libimg\\..\\..\\free\\gles\\qualcomm\\include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\libimg\\build64\\CMakeFiles\\libimg.dir\\image.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libimg\\image.cpp",
+    "file": "E:\\cat\\free\\libimg\\image.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\imgui\\build64\\CMakeFiles\\imgui.dir\\imgui.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\imgui\\imgui.cpp",
+    "file": "E:\\cat\\free\\imgui\\imgui.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\imgui\\build64\\CMakeFiles\\imgui.dir\\imgui_demo.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\imgui\\imgui_demo.cpp",
+    "file": "E:\\cat\\free\\imgui\\imgui_demo.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\imgui\\build64\\CMakeFiles\\imgui.dir\\imgui_draw.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\imgui\\imgui_draw.cpp",
+    "file": "E:\\cat\\free\\imgui\\imgui_draw.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\imgui\\build64\\CMakeFiles\\imgui.dir\\imgui_tables.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\imgui\\imgui_tables.cpp",
+    "file": "E:\\cat\\free\\imgui\\imgui_tables.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\imgui\\build64\\CMakeFiles\\imgui.dir\\imgui_widgets.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\imgui\\imgui_widgets.cpp",
+    "file": "E:\\cat\\free\\imgui\\imgui_widgets.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jaricom.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jaricom.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jaricom.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcapimin.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcapimin.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcapimin.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcapistd.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcapistd.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcapistd.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcarith.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcarith.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcarith.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jccoefct.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jccoefct.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jccoefct.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jccolor.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jccolor.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jccolor.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcdctmgr.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcdctmgr.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcdctmgr.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jchuff.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jchuff.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jchuff.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcicc.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcicc.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcicc.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcinit.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcinit.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcinit.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcmainct.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcmainct.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcmainct.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcmarker.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcmarker.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcmarker.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcmaster.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcmaster.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcmaster.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcomapi.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcomapi.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcomapi.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcparam.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcparam.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcparam.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcphuff.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcphuff.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcphuff.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcprepct.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcprepct.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcprepct.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jcsample.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jcsample.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jcsample.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jctrans.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jctrans.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jctrans.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdapimin.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdapimin.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdapimin.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdapistd.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdapistd.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdapistd.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdarith.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdarith.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdarith.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdatadst.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdatadst.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdatadst.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdatasrc.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdatasrc.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdatasrc.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdcoefct.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdcoefct.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdcoefct.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdcolor.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdcolor.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdcolor.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jddctmgr.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jddctmgr.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jddctmgr.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdhuff.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdhuff.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdhuff.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdicc.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdicc.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdicc.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdinput.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdinput.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdinput.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdmainct.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdmainct.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdmainct.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdmarker.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdmarker.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdmarker.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdmaster.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdmaster.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdmaster.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdmerge.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdmerge.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdmerge.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdphuff.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdphuff.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdphuff.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdpostct.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdpostct.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdpostct.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdsample.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdsample.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdsample.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jdtrans.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jdtrans.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jdtrans.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jerror.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jerror.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jerror.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jfdctflt.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jfdctflt.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jfdctflt.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jfdctfst.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jfdctfst.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jfdctfst.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jfdctint.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jfdctint.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jfdctint.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jidctflt.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jidctflt.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jidctflt.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jidctfst.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jidctfst.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jidctfst.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jidctint.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jidctint.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jidctint.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jidctred.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jidctred.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jidctred.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jmemmgr.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jmemmgr.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jmemmgr.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jmemnobs.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jmemnobs.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jmemnobs.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jquant1.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jquant1.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jquant1.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jquant2.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jquant2.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jquant2.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jsimd_none.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jsimd_none.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jsimd_none.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\jpeg_turbo\\build64\\CMakeFiles\\jpeg_turbo.dir\\jutils.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\jpeg_turbo\\jutils.c",
+    "file": "E:\\cat\\free\\jpeg_turbo\\jutils.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\checkheader.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\checkheader.c",
+    "file": "E:\\cat\\free\\libktx\\checkheader.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\errstr.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\errstr.c",
+    "file": "E:\\cat\\free\\libktx\\errstr.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\etcdec.cxx.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\etcdec.cxx",
+    "file": "E:\\cat\\free\\libktx\\etcdec.cxx"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\etcunpack.cxx.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\etcunpack.cxx",
+    "file": "E:\\cat\\free\\libktx\\etcunpack.cxx"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\hashtable.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\hashtable.c",
+    "file": "E:\\cat\\free\\libktx\\hashtable.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\ktxfilestream.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\ktxfilestream.c",
+    "file": "E:\\cat\\free\\libktx\\ktxfilestream.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\ktxmemstream.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\ktxmemstream.c",
+    "file": "E:\\cat\\free\\libktx\\ktxmemstream.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\loader.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\loader.c",
+    "file": "E:\\cat\\free\\libktx\\loader.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\swap.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\swap.c",
+    "file": "E:\\cat\\free\\libktx\\swap.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DKTX_OPENGL_ES3 -DUNICODE -D_UNICODE -IE:\\cat\\free\\libktx\\..\\..\\free\\gles\\qualcomm\\include -MD /FoE:\\cat\\free\\libktx\\build64\\CMakeFiles\\libktx.dir\\writer.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libktx\\writer.c",
+    "file": "E:\\cat\\free\\libktx\\writer.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\png.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\png.c",
+    "file": "E:\\cat\\free\\libpng\\png.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngerror.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngerror.c",
+    "file": "E:\\cat\\free\\libpng\\pngerror.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngget.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngget.c",
+    "file": "E:\\cat\\free\\libpng\\pngget.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngmem.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngmem.c",
+    "file": "E:\\cat\\free\\libpng\\pngmem.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngpread.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngpread.c",
+    "file": "E:\\cat\\free\\libpng\\pngpread.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngread.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngread.c",
+    "file": "E:\\cat\\free\\libpng\\pngread.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngrio.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngrio.c",
+    "file": "E:\\cat\\free\\libpng\\pngrio.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngrtran.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngrtran.c",
+    "file": "E:\\cat\\free\\libpng\\pngrtran.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngrutil.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngrutil.c",
+    "file": "E:\\cat\\free\\libpng\\pngrutil.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngset.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngset.c",
+    "file": "E:\\cat\\free\\libpng\\pngset.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngtest.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngtest.c",
+    "file": "E:\\cat\\free\\libpng\\pngtest.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngtrans.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngtrans.c",
+    "file": "E:\\cat\\free\\libpng\\pngtrans.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngwio.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngwio.c",
+    "file": "E:\\cat\\free\\libpng\\pngwio.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngwrite.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngwrite.c",
+    "file": "E:\\cat\\free\\libpng\\pngwrite.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngwtran.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngwtran.c",
+    "file": "E:\\cat\\free\\libpng\\pngwtran.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -IE:\\cat\\free\\libpng\\..\\..\\free\\zlib -MD /FoE:\\cat\\free\\libpng\\build64\\CMakeFiles\\libpng.dir\\pngwutil.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libpng\\pngwutil.c",
+    "file": "E:\\cat\\free\\libpng\\pngwutil.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\libtga\\build64\\CMakeFiles\\libtga.dir\\src\\tga.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libtga\\src\\tga.c",
+    "file": "E:\\cat\\free\\libtga\\src\\tga.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\libtga\\build64\\CMakeFiles\\libtga.dir\\src\\tgaread.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libtga\\src\\tgaread.c",
+    "file": "E:\\cat\\free\\libtga\\src\\tgaread.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\libtga\\build64\\CMakeFiles\\libtga.dir\\src\\tgawrite.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\libtga\\src\\tgawrite.c",
+    "file": "E:\\cat\\free\\libtga\\src\\tgawrite.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\adler32.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\adler32.c",
+    "file": "E:\\cat\\free\\zlib\\adler32.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\compress.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\compress.c",
+    "file": "E:\\cat\\free\\zlib\\compress.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\crc32.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\crc32.c",
+    "file": "E:\\cat\\free\\zlib\\crc32.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\deflate.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\deflate.c",
+    "file": "E:\\cat\\free\\zlib\\deflate.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\gzclose.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\gzclose.c",
+    "file": "E:\\cat\\free\\zlib\\gzclose.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\gzlib.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\gzlib.c",
+    "file": "E:\\cat\\free\\zlib\\gzlib.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\gzread.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\gzread.c",
+    "file": "E:\\cat\\free\\zlib\\gzread.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\gzwrite.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\gzwrite.c",
+    "file": "E:\\cat\\free\\zlib\\gzwrite.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\infback.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\infback.c",
+    "file": "E:\\cat\\free\\zlib\\infback.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\inffast.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\inffast.c",
+    "file": "E:\\cat\\free\\zlib\\inffast.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\inflate.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\inflate.c",
+    "file": "E:\\cat\\free\\zlib\\inflate.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\inftrees.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\inftrees.c",
+    "file": "E:\\cat\\free\\zlib\\inftrees.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\trees.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\trees.c",
+    "file": "E:\\cat\\free\\zlib\\trees.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\uncompr.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\uncompr.c",
+    "file": "E:\\cat\\free\\zlib\\uncompr.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_UNICODE -MD /FoE:\\cat\\free\\zlib\\build64\\CMakeFiles\\zlib.dir\\zutil.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\zlib\\zutil.c",
+    "file": "E:\\cat\\free\\zlib\\zutil.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_cfg.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_cfg.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_cfg.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_cpp.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_cpp.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_cpp.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_cross.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_cross.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_cross.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_cross_c.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_cross_c.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_cross_c.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_cross_parsed_ir.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_cross_parsed_ir.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_cross_parsed_ir.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_cross_util.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_cross_util.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_cross_util.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_glsl.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_glsl.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_glsl.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_hlsl.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_hlsl.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_hlsl.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_msl.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_msl.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_msl.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_parser.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_parser.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_parser.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DSPIRV_CROSS_C_API_CPP=1 -DSPIRV_CROSS_C_API_GLSL=1 -DSPIRV_CROSS_C_API_HLSL=1 -DSPIRV_CROSS_C_API_MSL=1 -DSPIRV_CROSS_C_API_REFLECT=1 -DUNICODE -D_UNICODE /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\spirv_cross\\build64\\CMakeFiles\\spirv_cross.dir\\spirv_reflect.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\spirv_cross\\spirv_reflect.cpp",
+    "file": "E:\\cat\\free\\spirv_cross\\spirv_reflect.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\cgltf.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\cgltf.c",
+    "file": "E:\\cat\\cat\\cgltf.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\cgltf_util.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\cgltf_util.c",
+    "file": "E:\\cat\\cat\\cgltf_util.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\animation.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\animation.cpp",
+    "file": "E:\\cat\\cat\\animation.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\animationChannel.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\animationChannel.cpp",
+    "file": "E:\\cat\\cat\\animationChannel.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\camera.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\camera.cpp",
+    "file": "E:\\cat\\cat\\camera.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\env.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\env.cpp",
+    "file": "E:\\cat\\cat\\env.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\gltf_raw_render.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\gltf_raw_render.cpp",
+    "file": "E:\\cat\\cat\\gltf_raw_render.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\grid.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\grid.cpp",
+    "file": "E:\\cat\\cat\\grid.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\keyFrame.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\keyFrame.cpp",
+    "file": "E:\\cat\\cat\\keyFrame.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\material.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\material.cpp",
+    "file": "E:\\cat\\cat\\material.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\mesh.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\mesh.cpp",
+    "file": "E:\\cat\\cat\\mesh.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\names.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\names.cpp",
+    "file": "E:\\cat\\cat\\names.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\object.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\object.cpp",
+    "file": "E:\\cat\\cat\\object.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\primitive.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\primitive.cpp",
+    "file": "E:\\cat\\cat\\primitive.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\resources.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\resources.cpp",
+    "file": "E:\\cat\\cat\\resources.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\scene.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\scene.cpp",
+    "file": "E:\\cat\\cat\\scene.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\shader.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\shader.cpp",
+    "file": "E:\\cat\\cat\\shader.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\shader_gles.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\shader_gles.cpp",
+    "file": "E:\\cat\\cat\\shader_gles.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\shaderCache.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\shaderCache.cpp",
+    "file": "E:\\cat\\cat\\shaderCache.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\shaderMacro.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\shaderMacro.cpp",
+    "file": "E:\\cat\\cat\\shaderMacro.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\skin.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\skin.cpp",
+    "file": "E:\\cat\\cat\\skin.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\transform.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\transform.cpp",
+    "file": "E:\\cat\\cat\\transform.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\uiRenderOpenGL.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\uiRenderOpenGL.cpp",
+    "file": "E:\\cat\\cat\\uiRenderOpenGL.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\wstring.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\wstring.cpp",
+    "file": "E:\\cat\\cat\\wstring.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\eglWindow.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\eglWindow.cpp",
+    "file": "E:\\cat\\cat\\eglWindow.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\color.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\color.cpp",
+    "file": "E:\\cat\\cat\\color.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\vertex.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\vertex.cpp",
+    "file": "E:\\cat\\cat\\vertex.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\terrain.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\terrain.cpp",
+    "file": "E:\\cat\\cat\\terrain.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\AABB.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\AABB.cpp",
+    "file": "E:\\cat\\cat\\AABB.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DOPENGL_ES -DUNICODE -D_UNICODE -IE:\\cat\\cat\\.. -IE:\\cat\\cat\\..\\free\\gles\\qualcomm\\include -IE:\\cat\\cat\\..\\free -IE:\\cat\\cat\\..\\free\\rapidyaml -IE:\\cat\\cat\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\cat\\build64\\CMakeFiles\\cat.dir\\win32Window.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\cat\\win32Window.cpp",
+    "file": "E:\\cat\\cat\\win32Window.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\xxhash.c.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\xxhash.c",
+    "file": "E:\\cat\\catVulkanRender\\xxhash.c"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\commandAllocator.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\commandAllocator.cpp",
+    "file": "E:\\cat\\catVulkanRender\\commandAllocator.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\descriptorAllocator.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\descriptorAllocator.cpp",
+    "file": "E:\\cat\\catVulkanRender\\descriptorAllocator.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\imgui_impl_vulkan.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\imgui_impl_vulkan.cpp",
+    "file": "E:\\cat\\catVulkanRender\\imgui_impl_vulkan.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\load_png.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\load_png.cpp",
+    "file": "E:\\cat\\catVulkanRender\\load_png.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\pipelineKey.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\pipelineKey.cpp",
+    "file": "E:\\cat\\catVulkanRender\\pipelineKey.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\simplevulkan.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\simplevulkan.cpp",
+    "file": "E:\\cat\\catVulkanRender\\simplevulkan.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\DescriptorDataKey.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\DescriptorDataKey.cpp",
+    "file": "E:\\cat\\catVulkanRender\\DescriptorDataKey.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGFX_ENABLE_IMAGE -DUNICODE -DVK_USE_PLATFORM_WIN32_KHR -D_UNICODE -IE:\\cat\\catVulkanRender\\.. -IE:\\cat\\catVulkanRender\\..\\free -IE:\\cat\\catVulkanRender\\..\\free\\imgui -IE:\\cat\\catVulkanRender\\..\\free\\vulkan\\Include /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\catVulkanRender\\build64\\CMakeFiles\\catVulkanRender.dir\\vulkanRender.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\catVulkanRender\\vulkanRender.cpp",
+    "file": "E:\\cat\\catVulkanRender\\vulkanRender.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\common.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\common.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\common.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\node.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\node.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\node.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\node_type.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\node_type.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\node_type.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\parse.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\parse.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\parse.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\preprocess.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\preprocess.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\preprocess.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\reference_resolver.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\reference_resolver.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\reference_resolver.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\tag.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\tag.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\tag.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\tree.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\tree.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\tree.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\yml\\version.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\yml\\version.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\yml\\version.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\base64.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\base64.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\base64.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\char_traits.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\char_traits.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\char_traits.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\error.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\error.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\error.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\format.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\format.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\format.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\language.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\language.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\language.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\memory_resource.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\memory_resource.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\memory_resource.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\memory_util.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\memory_util.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\memory_util.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\rapidyaml /DWIN32 /D_WINDOWS /EHsc -MD   /source-charset:utf-8 /FoE:\\cat\\free\\rapidyaml\\build64\\CMakeFiles\\rapidyaml.dir\\c4\\utf.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\rapidyaml\\c4\\utf.cpp",
+    "file": "E:\\cat\\free\\rapidyaml\\c4\\utf.cpp"
+  },
+  {
+    "directory": "E:/cat/testCat/build64_ninja",
+    "command": "C:\\PROGRA~1\\MICROS~1\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DUNICODE -D_UNICODE -IE:\\cat\\free\\glm\\..\\..\\free /DWIN32 /D_WINDOWS /EHsc -MD /FoE:\\cat\\free\\glm\\build64\\CMakeFiles\\glm.dir\\detail\\glm.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\cat\\free\\glm\\detail\\glm.cpp",
+    "file": "E:\\cat\\free\\glm\\detail\\glm.cpp"
+  }
+]

@@ -58,36 +58,17 @@ def generate_testCat():
     arch = "64" if G.arch64 else ""
     src_path = "../testCat/"
     build_path = f"../testCat/build{arch}_{G.build_suffix}/"
-    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+    cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G "{G.generator}" {G.arch_param} -Wno-dev -S {src_path} -B {build_path}'
+    exec_cmd(cmd_str, shell=True)
 
 def generate_tests():
     arch = "64" if G.arch64 else ""
-
     filelist = os.listdir("../test")
     for filename in filelist:
-        print("generating : %s" % (filename))
         src_path = "../test/" + filename
         build_path = f"../test/{filename}/build{arch}_{G.build_suffix}/"
-
-        extra_path = Path("./bin").resolve()
-        print(extra_path)
-        os.environ['PATH'] = f"{extra_path}{os.pathsep}{os.environ['PATH']}"
-
-        cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G {G.generator} {G.arch_param} -Wno-dev -S {src_path} -B {build_path}'
+        cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G "{G.generator}" {G.arch_param} -Wno-dev -S {src_path} -B {build_path}'
         exec_cmd(cmd_str, shell=True)
-        #exec_cmd([G.call_vcvars, '.\\cmake\\bin\\cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path], shell=True)
-        #if G.build_suffix == "ninja":
-        #    vcvars = find_vcvars()
-        #    #exec_cmd(vcvars)
-        #    mycmd = f'call "{vcvars}" && ' \
-        #          f'.\\cmake\\bin\\cmake.exe -G {G.generator} {G.arch_param} -Wno-dev -S "{src_path}" -B {build_path}'
-
-        #    exec_cmd(mycmd, shell=True)
-
-        #    #exec_cmd(["call", vcvars, "&&", './cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
-        #    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
-        #else:
-        #    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
 
 ####################################################
 # composite functions for convenient
@@ -96,6 +77,14 @@ def all():
     unzip_all()
     build_all()
     generate_testCat()
+
+def generate_all():
+    funcs = []
+    funcs.extend(globals())
+    for f in funcs:
+        if not f.startswith("generate_") or f == "generate_all":
+            continue
+        globals()[f]()
 
 def build_all():
     funcs = []
@@ -154,10 +143,12 @@ if args.generator == "vs":
     G.arch_param = "-A " + ("x64" if G.arch64 else "Win32")
 elif args.generator == "ninja":
     G.vcvars = find_vcvars()
-    print(f"vcvars = {G.vcvars}")
     G.call_vcvars = f'call "{G.vcvars}" &&';
     G.generator = "Ninja"
     G.build_suffix = "ninja"
+    extra_path = Path("./bin").resolve()
+    os.environ['PATH'] = f"{extra_path}{os.pathsep}{os.environ['PATH']}"
+
 
 print("operation function = %s, arch64 = %r" % (op, G.arch64))
 if op in all_funcs:
