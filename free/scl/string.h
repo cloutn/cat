@@ -1,3 +1,9 @@
+////////////////////////////////////
+//
+//	new string implementation
+//	2025.09.26 	caolei
+//
+////////////////////////////////////
 #pragma once
 
 #include "scl/stringdef.h"
@@ -43,7 +49,6 @@ public:
 		ct::strncpy(str, src, copy_len);
 		safe_terminate(); 
 	}
-
 	
 	inline const char_t*	c_str			() const	{ return str; }
 	inline char_t*			c_str			()			{ return str; }
@@ -128,15 +133,7 @@ public:
 
 	variable_storage_policy(const char_t* src, const int len = -1) : m_level(0), m_autofree(0) 
 	{
-		int copy_len = len;
-		if (copy_len == -1)
-			copy_len = ct::strlen(src);
-
-		ensure_len(copy_len);
-		clear(); // after ensure, we must clear again
-
-		ct::strncpy(c_str(), src, copy_len);
-		safe_terminate();
+		_copy(src, len);
 	}
 
 	~variable_storage_policy()
@@ -156,6 +153,12 @@ public:
 	inline void				init			(char_t* buffer, int _max_size = -1, const char_t* init_string = NULL) {}
 	inline void				alloc			(const int max_count, const char_t* init_string = NULL) {  }
 	inline void				free			()			{ delete[] _long; _long = NULL; }
+	inline variable_storage_policy& operator=(const variable_storage_policy& other) 
+	{
+		_copy(other.c_str(), other.length());
+		m_autofree = other.m_autofree;
+		return *this;
+	}
 
 	inline void				ensure_len		(const int target_len) 
 	{ 
@@ -165,7 +168,7 @@ public:
 		int lv = m_level;
 		while (g_level_size[lv] <= target_len)
 			++lv;
-		assert(lv < countof(g_level_size));
+		assert(lv < s_countof(g_level_size));
 
 		int new_max = g_level_size[lv];
 		char_t*	new_buf = new char_t[new_max];
@@ -193,6 +196,21 @@ public:
 	}
 
 private:
+
+	void _copy(const char_t* src, const int len = -1)
+	{
+		int copy_len = len;
+		if (copy_len == -1)
+			copy_len = ct::strlen(src);
+
+		ensure_len(copy_len);
+		clear(); // after ensure, we must clear again
+
+		ct::strncpy(c_str(), src, copy_len);
+		safe_terminate();
+	}
+
+private:
 	char_t			_short[N];
 	char_t*			_long;
 	int				m_long_max_size;
@@ -201,10 +219,10 @@ private:
 
 private:
 	template <typename T, size_t N> 
-	static constexpr size_t countof(T (&)[N]) { return N; }
+	static constexpr size_t s_countof(T (&)[N]) { return N; }
 
 	static constexpr int g_level_size[] = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536,  262144, 1048576, 8388608, 134217728, 2147483646 };
-	static constexpr int MAX_LENGTH = g_level_size[countof(g_level_size) - 1];
+	static constexpr int MAX_LENGTH = g_level_size[s_countof(g_level_size) - 1];
 };
 
 template <>
@@ -350,6 +368,11 @@ public:
 	void				reserve			(const int len) { d.ensure_len(len); }
 
 	//operators
+	string_base& 		operator=	(const string_base&	str	)		
+	{  
+		d = str.d;
+		return *this;
+	}
 	string_base& 		operator=	(const char_t* s		)		{ copy(s); return *this; }
 	string_base& 		operator=	(const int value		)		{ from_int(value); return *this; }
 	string_base& 		operator=	(const uint value		)		{ from_uint(value); return *this; }

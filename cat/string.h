@@ -1,6 +1,6 @@
 #pragma once
 
-#include "scl/vstring.h"
+#include "scl/string.h"
 
 namespace cat {
 
