@@ -6,7 +6,7 @@
 
 #include "scl/type.h"
 #include "scl/file.h"
-#include "scl/pstring.h"
+#include "scl/string.h"
 
 namespace scl {
 

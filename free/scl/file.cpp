@@ -6,7 +6,6 @@
 #include "scl/file.h"
 #include "scl/assert.h"
 #include "scl/string.h"
-#include "scl/wstring.h"
 #include "scl/path.h"
 #include <stdio.h>
 

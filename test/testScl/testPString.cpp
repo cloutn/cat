@@ -1,6 +1,6 @@
 #include "./testPString.h"
 
-#include "scl/pstring.h"
+#include "scl/string.h"
 #include "scl/math.h"
 #include "scl/assert.h"
 //#include "scl/string.h"

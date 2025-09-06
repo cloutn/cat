@@ -1,7 +1,7 @@
 #include "./testPWString.h"
 
 
-#include "scl/pwstring.h"
+#include "scl/string.h"
 #include "scl/math.h"
 #include "scl/assert.h"
 

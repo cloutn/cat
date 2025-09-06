@@ -3,7 +3,6 @@
 
 #include "scl/ini_file.h"
 #include "scl/string.h"
-#include "scl/vstring.h"
 #include "scl/encoding.h"
 #include "scl/vector.h"
 

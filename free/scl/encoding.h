@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "scl/string.h"
-#include "scl/wstring.h"
 #include "scl/stringdef.h"
 
 namespace scl {

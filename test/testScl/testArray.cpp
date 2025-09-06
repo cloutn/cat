@@ -4,7 +4,6 @@
 #include "scl/array.h"
 #include "scl/varray.h"
 #include "scl/string.h"
-#include "scl/wstring.h"
 #include "scl/assert.h"
 #include "scl/page_array.h"
 #include "scl/vector.h"

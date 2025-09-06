@@ -125,5 +125,9 @@ struct is_class : bool_constant<false> {};
 template<class T>
 struct is_class<T, void_t<int T::*> > : bool_constant<true> {};
 
+template<typename, typename>		struct is_same_      { enum { value = 0 }; };
+template<typename T>				struct is_same_<T,T> { enum { value = 1 }; };
+template<typename T, typename U>	constexpr bool is_same_v = is_same_<T,U>::value;
+
 } // namespace scl
 

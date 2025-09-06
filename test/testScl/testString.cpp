@@ -2,7 +2,6 @@
 
 #include "scl/math.h"
 #include "scl/string.h"
-#include "scl/wstring.h"
 #include "scl/assert.h"
 #include "scl/string.h"
 #include "scl/math.h"

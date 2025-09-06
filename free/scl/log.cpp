@@ -10,7 +10,6 @@
 #include "scl/time.h"
 #include "scl/assert.h"
 #include "scl/string.h"
-#include "scl/wstring.h"
 #include "scl/thread.h"
 #include "scl/ini_file.h"
 #include "scl/backtrace.h"

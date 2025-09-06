@@ -2,8 +2,6 @@
 
 #include "scl/string.h"
 #include "scl/file.h"
-#include "scl/pwstring.h"
-#include "scl/wstring.h"
 #include "scl/encoding.h"
 
 #include <sys/stat.h>

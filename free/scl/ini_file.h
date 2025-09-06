@@ -2,7 +2,7 @@
 
 #include "scl/type.h"
 #include "scl/varray.h"
-#include "scl/vstring.h"
+#include "scl/string.h"
 #include "scl/file.h"
 #include "scl/vector.h"
 

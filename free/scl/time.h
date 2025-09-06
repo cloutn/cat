@@ -6,7 +6,6 @@
 
 #include "scl/type.h"
 #include "scl/assert.h"
-#include "scl/pstring.h"
 #include "scl/string.h"
 
 #include "scl/thread.h"

@@ -43,9 +43,7 @@ set(header_files
 	path.h
 	point.h
 	pool.h
-	pstring.h
 	ptr.h
-	pwstring.h
 	quaternion.h
 	rect.h
 	ring_buffer.h
@@ -66,8 +64,6 @@ set(header_files
 	vbitset.h
 	vector.h
 	vring_queue.h
-	vstring.h
-	wstring.h
 	zip_int.h
 	function.h
 	plane.h
@@ -90,8 +86,6 @@ set(src_files
 	math.cpp
 	matrix.cpp
 	path.cpp
-	pstring.cpp
-	pwstring.cpp
 	quaternion.cpp
 	rect.cpp
 	ring_buffer.cpp
@@ -102,8 +96,7 @@ set(src_files
 	thread_log.cpp
 	time.cpp
 	vbitset.cpp
-	vector.cpp
-	vstring.cpp)
+	vector.cpp)
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${src_files})
@@ -116,7 +109,7 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(ARCH 64) 
 endif()
 
-# 设置库输出目录
+# 设置库输出目�?
 set(LIB_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH})
 
 # 输出调试信息
@@ -131,7 +124,7 @@ set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${LIB_
 set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LIB_OUTPUT_DIR})
 set_target_properties(${target} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIB_OUTPUT_DIR})
 
-# 在Windows上使用_d后缀区分Debug版本，Linux上通常不区分
+# 在Windows上使用_d后缀区分Debug版本，Linux上通常不区�?
 set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
 
 target_include_directories(
@@ -152,7 +145,7 @@ elseif(APPLE)
   add_definitions(-DSCL_APPLE)
 endif()
 
-# 添加自定义命令，确保库文件被复制到正确位置
+# 添加自定义命令，确保库文件被复制到正确位�?
 add_custom_command(TARGET ${target} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different 
     $<TARGET_FILE:${target}> ${LIB_OUTPUT_DIR}/$<TARGET_FILE_NAME:${target}>
