@@ -43,12 +43,12 @@ int _snprintf(
 	const char*	format,
 	...);
 
-#define SCL_STR_FORMAT_I64	"%I64d"
-#define SCL_STR_FORMAT_UI64	"%I64u"
-#define SCL_STR_NEW_LINE	"\r\n"
-#define SCL_WCS_FORMAT_I64	L"%I64d"
-#define SCL_WCS_FORMAT_UI64	L"%I64u"
-#define SCL_WCS_NEW_LINE	L"\r\n"
+//#define SCL_STR_FORMAT_I64	"%I64d"
+//#define SCL_STR_FORMAT_UI64	"%I64u"
+//#define SCL_STR_NEW_LINE	"\r\n"
+//#define SCL_WCS_FORMAT_I64	L"%I64d"
+//#define SCL_WCS_FORMAT_UI64	L"%I64u"
+//#define SCL_WCS_NEW_LINE	L"\r\n"
 
 #endif
 
@@ -68,12 +68,12 @@ long long			wcstoll		(const wchar_t* s, wchar_t** end, int base);
 #define scl_wcstok			wcstok
 #define scl_snprintf		snprintf
 
-#define SCL_STR_FORMAT_I64	"%lld"
-#define SCL_STR_FORMAT_UI64 "%llu"
-#define SCL_STR_NEW_LINE	"\n"
-#define SCL_WCS_FORMAT_I64	L"%lld"
-#define SCL_WCS_FORMAT_UI64	L"%llu"
-#define SCL_WCS_NEW_LINE	L"\n"
+//#define SCL_STR_FORMAT_I64	"%lld"
+//#define SCL_STR_FORMAT_UI64 "%llu"
+//#define SCL_STR_NEW_LINE	"\n"
+//#define SCL_WCS_FORMAT_I64	L"%lld"
+//#define SCL_WCS_FORMAT_UI64	L"%llu"
+//#define SCL_WCS_NEW_LINE	L"\n"
 
 #endif
 
@@ -89,7 +89,7 @@ long long			wcstoll		(const wchar_t* s, wchar_t** end, int base);
 #define scl_wcstoui64		scl::wcstoull
 #endif
 
-#define scl_strtohex(s) ::strtoul(s, NULL, 16)
+//#define scl_strtohex(s) ::strtoul(s, NULL, 16)
 
 void			strcpy			(char* dest, const int max_size, const char* const src);
 void			strncpy			(char* dest, const int max_size, const char* const src, const int copy_count);

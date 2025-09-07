@@ -22,22 +22,22 @@ namespace scl {
 template <typename char_t>
 class char_traits;
 
-struct fixed_storage_policy_tag {};
-struct ptr_wrapper_storage_policy_tag {};
-struct variable_storage_policy_tag {};
+struct fixed_storage_tag {};
+struct ptr_storage_tag {};
+struct dynamic_storage_tag {};
 
-template <typename CharType, typename StoragePolicy>
+template <typename char_t, typename storage>
 class string_base;
 
 template <typename char_t, int N>
-class fix_storage_policy
+class fixed_storage
 {
 public:
 	using ct = char_traits<char_t>;
-	using tag = fixed_storage_policy_tag;
+	using tag = fixed_storage_tag;
 
-	fix_storage_policy				() { clear(); }
-	fix_storage_policy				(const char_t* src, const int len = -1) 
+	fixed_storage				() { clear(); }
+	fixed_storage				(const char_t* src, const int len = -1) 
 	{
 		clear();
 		if (NULL == src)
@@ -68,14 +68,14 @@ private:
 };
 
 template <typename char_t>
-class ptr_wrapper_storage_policy
+class ptr_storage
 {
 public:
 	using ct = char_traits<char_t>;
-	using tag = ptr_wrapper_storage_policy_tag;
+	using tag = ptr_storage_tag;
 
-	ptr_wrapper_storage_policy				() : str(nullptr), m_max_size(0) {}
-	ptr_wrapper_storage_policy				(char_t* buffer, int _max_size = -1, const char_t* init_string = NULL) { init(buffer, _max_size, init_string); }
+	ptr_storage				() : str(nullptr), m_max_size(0) {}
+	ptr_storage				(char_t* buffer, int _max_size = -1, const char_t* init_string = NULL) { init(buffer, _max_size, init_string); }
 	
 	inline const char_t*	c_str			() const	{ return str; }
 	inline char_t*			c_str			()			{ return str; }
@@ -123,20 +123,20 @@ private:
 };
 
 template <typename char_t, int N>
-class variable_storage_policy
+class dynamic_storage
 {
 public:
 	using ct = char_traits<char_t>;
-	using tag = variable_storage_policy_tag;
+	using tag = dynamic_storage_tag;
 
-	variable_storage_policy() : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) { clear(); }
+	dynamic_storage() : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) { clear(); }
 
-	variable_storage_policy(const char_t* src, const int len = -1) : m_level(0), m_autofree(0) 
+	dynamic_storage(const char_t* src, const int len = -1) : m_level(0), m_autofree(0) 
 	{
 		_copy(src, len);
 	}
 
-	~variable_storage_policy()
+	~dynamic_storage()
 	{
 		if (m_autofree)
 			this->free();
@@ -153,7 +153,7 @@ public:
 	inline void				init			(char_t* buffer, int _max_size = -1, const char_t* init_string = NULL) {}
 	inline void				alloc			(const int max_count, const char_t* init_string = NULL) {  }
 	inline void				free			()			{ delete[] _long; _long = NULL; }
-	inline variable_storage_policy& operator=(const variable_storage_policy& other) 
+	inline dynamic_storage& operator=(const dynamic_storage& other) 
 	{
 		_copy(other.c_str(), other.length());
 		m_autofree = other.m_autofree;
@@ -321,13 +321,12 @@ public:
 	static constexpr const wchar_t* format_uint64	= L"%I64u";
 };
 
-template <typename CharType, typename StoragePolicy>
+template <typename char_t, typename storage>
 class string_base
 {
 public:
-	using char_t = CharType;
 	using ct = char_traits<char_t>;
-	using pstring_t = string_base<char_t, ptr_wrapper_storage_policy<char_t> >;
+	using pstring_t = string_base<char_t, ptr_storage<char_t> >;
 
 	string_base() : d()						{ }
 	string_base(const char_t* s, const int len = -1) : d(s, len)		{ }
@@ -338,7 +337,7 @@ public:
 	// copy constructor
 	string_base(const string_base& other) : d()
 	{ 
-		is_same_v<StoragePolicy::tag, ptr_wrapper_storage_policy_tag> ? d.init(const_cast<char_t*>(other.c_str()), other.max_size(), nullptr) : copy(other.c_str());
+		is_same_v<storage::tag, ptr_storage_tag> ? d.init(const_cast<char_t*>(other.c_str()), other.max_size(), nullptr) : copy(other.c_str());
 	}
 
 public:
@@ -409,7 +408,7 @@ public:
 		if (NULL == src)
 			return;
 	
-		d.ensure_len(is_same_v<StoragePolicy::tag, variable_storage_policy_tag> ? static_cast<int>(ct::strlen(src)) : 0);
+		d.ensure_len(is_same_v<storage::tag, dynamic_storage_tag> ? static_cast<int>(ct::strlen(src)) : 0);
 
 		ct::strncpy(_str(), src, capacity());
 	
@@ -458,9 +457,9 @@ public:
 	{
 		const int len = length();
 
-		//if constexpr (is_same_v<StoragePolicy::tag, variable_storage_policy_tag>)
+		//if constexpr (is_same_v<storage::tag, dynamic_storage_tag>)
 
-		d.ensure_len(is_same_v<StoragePolicy::tag, variable_storage_policy_tag> ? static_cast<int>(ct::strlen(src)) + len : 0);
+		d.ensure_len(is_same_v<storage::tag, dynamic_storage_tag> ? static_cast<int>(ct::strlen(src)) + len : 0);
 
 		int free_length = capacity() - len;
 		if (free_length <= 0)
@@ -1223,23 +1222,23 @@ private:
 	inline const char_t*	_str() const	{ return c_str(); }
 
 private:
-	StoragePolicy d;
+	storage d;
 };
 
 // string and wstring
 template <int N>
-using string = string_base<char, fix_storage_policy<char, N> >;
+using string = string_base<char, fixed_storage<char, N> >;
 template <int N>
-using wstring = string_base<wchar_t, fix_storage_policy<wchar_t, N> >;
+using wstring = string_base<wchar_t, fixed_storage<wchar_t, N> >;
 
 
 // pstring and pwstring
-typedef string_base<char, ptr_wrapper_storage_policy<char> > pstring;
-typedef string_base<wchar_t, ptr_wrapper_storage_policy<wchar_t> > pwstring;
+typedef string_base<char, ptr_storage<char> > pstring;
+typedef string_base<wchar_t, ptr_storage<wchar_t> > pwstring;
 
 // vstring and vwstring
-typedef string_base<char, variable_storage_policy<char, 16> > vstring;
-typedef string_base<wchar_t, variable_storage_policy<wchar_t, 16> > vwstring;
+typedef string_base<char, dynamic_storage<char, 16> > vstring;
+typedef string_base<wchar_t, dynamic_storage<wchar_t, 16> > vwstring;
 
 
 ////////////////////////////////////
