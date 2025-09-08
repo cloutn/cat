@@ -86,3 +86,4 @@ error.log
 build64_ninja
 build64_visualstudio
 /tool/bin
+/.cache/clangd/index

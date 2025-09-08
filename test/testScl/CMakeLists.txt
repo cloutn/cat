@@ -44,6 +44,7 @@ set(header_files
 	testTree.h
 	testWString.h
 	testTypeTraits.h
+	testString2025.h
 )
 
 set(src_files
@@ -71,6 +72,7 @@ set(src_files
 	testTree.cpp
 	testWString.cpp
 	testTypeTraits.cpp
+	testString2025.cpp
 )
 
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${header_files})

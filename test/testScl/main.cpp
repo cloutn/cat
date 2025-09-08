@@ -22,6 +22,7 @@
 #include "testHeap.h"
 #include "testPath.h"
 #include "testTypeTraits.h"
+#include "testString2025.h"
 
 #include "scl/allocator.h"
 #include "scl/list.h"
@@ -64,12 +65,15 @@ int main(int argc, char* argv[])
 	testVRingQueue();
 	testBitset();
 
+	// string
 	old_testString();
 	testString();
 	testPString();
 	testWString();
 	testPWString();
 	testStringFunction();
+	testString2025();
+
 	testFile();
 	testDirectory();
 	testExtractFileName();

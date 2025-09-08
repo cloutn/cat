@@ -40,6 +40,10 @@ typedef tree_int::node_T IntTreeNode;
 //测试stl相关接口
  void testTree10();
 
+void testTree11();
+void testTree12();
+void testTree_removeBug();
+
  void testTree()
 {
 	//测试插入一个不会发生旋转的序列
