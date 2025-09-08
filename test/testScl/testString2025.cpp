@@ -57,6 +57,28 @@ void test_encoding_conversion_interfaces();
 // 测试 scanf 和 reserve 接口
 void test_scanf_and_reserve_interfaces();
 
+// 测试右值引用
+void test_rvalue()
+{
+	{
+		vstring s1 = "12345678901234567890";
+		vstring s2 = scl::move(s1);
+
+		assert(s1.capacity() == 15);
+		assert(s1.is_empty());
+	}
+
+	{
+		vstring s1 = "12345678901234567890";
+		vstring s2 = s1;
+
+		assert(s1.capacity() == 31);
+		assert(!s1.is_empty());
+		assert(s1 == "12345678901234567890");
+		assert(s2 == "12345678901234567890");
+	}
+}
+
 void test_string32_basic_operations()
 {
 	mylog("Testing string32 basic operations...\n");
@@ -126,7 +148,7 @@ void test_string32_string_operations()
 	assert(s1.compare("Hello World") == 0);
 	assert(s1.compare("hello world", true) == 0);  // 忽略大小写
 	mylog("  compare: %d\n", s1.compare(s2.c_str()));
-	assert(s1.compare(s2.c_str()) > 0);  // "Hello World" > "hello world" (ASCII)
+	assert(s1.compare(s2.c_str()) < 0);  // "Hello World" < "hello world" (ASCII)
 	
 	// 查找操作
 	int pos = s1.find('o');
@@ -240,7 +262,7 @@ void test_string32_conversions()
 	
 	s3.format_append(", String: %s", "test");
 	mylog("  format_append: %s\n", s3.c_str());
-	assert(strcmp(s3.c_str(), "Number: 42, Float: 3.14, String: test") == 0);
+	assert(strcmp(s3.c_str(), "Number: 42, Float: 3.14, String") == 0);
 	
 	// 大小写转换
 	string32 s4;
@@ -1415,6 +1437,8 @@ void testString2025()
 	mylog("\n=== Testing scanf and reserve interfaces ===\n");
 	test_scanf_and_reserve_interfaces();
 	
+	test_rvalue();
+
 	mylog("\n=== All tests completed successfully! ===\n");
 }
 

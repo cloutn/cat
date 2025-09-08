@@ -129,5 +129,13 @@ template<typename, typename>		struct is_same_      { enum { value = 0 }; };
 template<typename T>				struct is_same_<T,T> { enum { value = 1 }; };
 template<typename T, typename U>	constexpr bool is_same_v = is_same_<T,U>::value;
 
+
+template <typename T>
+inline T&& move(T& arg) noexcept { return static_cast<T&&>(arg); }
+
+template <typename T>
+inline T&& move(T&& arg) noexcept { return static_cast<T&&>(arg); }
+
+
 } // namespace scl
 

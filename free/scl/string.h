@@ -131,9 +131,19 @@ public:
 
 	dynamic_storage() : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) { clear(); }
 
-	dynamic_storage(const char_t* src, const int len = -1) : m_level(0), m_autofree(0) 
+	dynamic_storage(const char_t* src, const int len = -1) : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) 
 	{
 		_copy(src, len);
+	}
+
+	dynamic_storage(const dynamic_storage& other) : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) 
+	{
+		_copy(other.c_str());
+	}
+
+	dynamic_storage(dynamic_storage&& other) noexcept : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) 
+	{
+		_copy_rvalue(other);
 	}
 
 	~dynamic_storage()
@@ -153,6 +163,13 @@ public:
 	inline void				init			(char_t* buffer, int _max_size = -1, const char_t* init_string = NULL) {}
 	inline void				alloc			(const int max_count, const char_t* init_string = NULL) {  }
 	inline void				free			()			{ delete[] _long; _long = NULL; }
+
+	inline dynamic_storage& operator=(dynamic_storage&& other) 
+	{
+		_copy_rvalue(other);
+		return *this;
+	}
+
 	inline dynamic_storage& operator=(const dynamic_storage& other) 
 	{
 		_copy(other.c_str(), other.length());
@@ -208,6 +225,28 @@ private:
 
 		ct::strncpy(c_str(), src, copy_len);
 		safe_terminate();
+	}
+
+	void _copy_rvalue(dynamic_storage& other)
+	{
+		m_level = other.m_level;
+		m_autofree = other.m_autofree;
+		if (other.m_level == 0)
+		{
+			_copy(other.c_str(), other.length());
+			free();
+			m_long_max_size = 0;
+		}
+		else
+		{
+			_long = other._long;
+			m_long_max_size = other.m_long_max_size;
+
+			other._long = NULL;
+			other.m_long_max_size = 0;
+			other.m_level = 0;
+			other.clear();
+		}
 	}
 
 private:
@@ -339,6 +378,8 @@ public:
 	{ 
 		is_same_v<storage::tag, ptr_storage_tag> ? d.init(const_cast<char_t*>(other.c_str()), other.max_size(), nullptr) : copy(other.c_str());
 	}
+
+	string_base(string_base&& other) : d(scl::move(other.d)) {}
 
 public:
 
