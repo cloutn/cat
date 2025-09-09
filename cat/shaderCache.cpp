@@ -3,12 +3,12 @@
 #include "cat/shader.h"
 #include "cat/cgltf_util.h"
 
-#include "scl/string.h"
 
 #include "cgltf/cgltf.h"
 
 namespace cat {
 
+using scl::string256;
 
 // BKDR Hash Function
 //unsigned int BKDRHash(const char* str)

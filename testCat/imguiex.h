@@ -28,7 +28,7 @@ void inputHex		(const char* const label, uint32& v);
 void inputColorFloat(const char* const label, scl::vector4& v);
 void inputColorInt	(const char* const label, uint32& v);
 
-string256 leftLable(const char* const name);
+scl::string256 leftLable(const char* const name);
 #define LEFT_LABEL(s) leftLable(s).c_str()
 
 

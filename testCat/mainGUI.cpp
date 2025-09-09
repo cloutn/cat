@@ -39,6 +39,11 @@ using scl::file;
 using scl::matrix;
 using scl::vector3;
 using scl::quaternion;
+using scl::string256;
+using scl::string64;
+using scl::string16;
+using scl::string128;
+using scl::string512;
 
 namespace ui = imguiex;
 namespace imgui = ImGui;

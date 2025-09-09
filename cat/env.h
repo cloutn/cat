@@ -20,6 +20,8 @@ class Primitive;
 class IRender;
 //class VertexAttrMapper;
 
+using scl::string256;
+
 class Env
 {
 public:

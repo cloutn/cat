@@ -84,6 +84,15 @@ void test_rvalue()
 	}
 }
 
+void test_vstring()
+{
+	vstring s1 = "1234567890";
+	s1 += "1234567890";
+	assert(s1.capacity() == 31);
+	assert(s1 == "12345678901234567890");
+
+}
+
 void test_string32_basic_operations()
 {
 	mylog("Testing string32 basic operations...\n");
@@ -1443,6 +1452,8 @@ void testString2025()
 	test_scanf_and_reserve_interfaces();
 	
 	test_rvalue();
+
+	test_vstring();
 
 	mylog("\n=== All tests completed successfully! ===\n");
 }

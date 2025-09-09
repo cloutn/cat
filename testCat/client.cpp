@@ -34,6 +34,7 @@ using scl::matrix;
 using scl::vector2;
 using scl::vector3;
 using scl::vector4;
+using scl::string64;
 
 
 inline bool Keydown	(int vKey) { return (GetAsyncKeyState(vKey) & 0x8000) ? 1 : 0; }

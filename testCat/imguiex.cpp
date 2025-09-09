@@ -10,6 +10,9 @@
 
 namespace imguiex {
 
+using scl::string128;
+using scl::string256;
+
 static string256 _label(const char* const label, const char* const id = NULL)
 {
 	float width = ImGui::CalcItemWidth();
@@ -111,7 +114,7 @@ void inputColorInt(const char* const label, uint32& v)
 }
 
 
-string256 leftLable(const char* const name)
+scl::string256 leftLable(const char* const name)
 {
 	return _label(name);
 }
