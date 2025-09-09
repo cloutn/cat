@@ -37,7 +37,6 @@ set(header_files
 	textureFile.h
 	transform.h
 	uiRenderOpenGL.h
-	wstring.h
 	eglWindow.h
 	color.h
 	vertex.h
@@ -74,7 +73,6 @@ set(src_files
 	skin.cpp
 	transform.cpp
 	uiRenderOpenGL.cpp
-	wstring.cpp
 	eglWindow.cpp
 	color.cpp
 	vertex.cpp
