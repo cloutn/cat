@@ -73,7 +73,7 @@ typedef unsigned long long	uint64;
 #endif
 
 template <typename T, size_t N> 
-static constexpr size_t countof(T (&)[N]) { return N; }
+static constexpr size_t array_count(T (&)[N]) { return N; }
 
 } // namespace scl
 

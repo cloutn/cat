@@ -8,8 +8,8 @@
 
 #include "scl/stringdef.h"
 #include "scl/type_traits.h"
+#include "scl/assert.h"
 
-#include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -188,7 +188,7 @@ public:
 		int lv = m_level;
 		while (_const::level_size[lv] <= target_len)
 			++lv;
-		assert(lv < countof(_const::level_size));
+		assert(lv < scl::array_count(_const::level_size));
 
 		int new_max = _const::level_size[lv];
 		char_t*	new_buf = new char_t[new_max];
@@ -1325,41 +1325,5 @@ typedef 	wstring<1024>	wstring1024;
 
 } // namespace scl
 
-//using scl::string8;
-//using scl::string16;
-//using scl::string32;
-//using scl::string64;
-//using scl::string128;
-//using scl::string256;
-//using scl::string260;
-//using scl::stringPath;
-//using scl::string512;
-//using scl::string1024;
-//using scl::string2048;
-//using scl::string4096;
-//using scl::string8192;
-//using scl::string16384;
-//using scl::string1k;
-//using scl::string2k;
-//using scl::string4k;
-//using scl::string8k;
-//using scl::string16k;
-//using scl::string64k;
-//
-//
-//using scl::wstring8;
-//using scl::wstring16;
-//using scl::wstring32;
-//using scl::wstring64;
-//using scl::wstring128;
-//using scl::wstring256;
-//using scl::wstring260;
-//using scl::wstringPath;
-//using scl::wstring512;
-//using scl::wstring1024;
-//
-//
-//using scl::pstring;
-//using scl::pwstring;
 
 
