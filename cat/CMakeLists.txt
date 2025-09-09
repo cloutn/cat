@@ -38,12 +38,11 @@ set(header_files
 	transform.h
 	uiRenderOpenGL.h
 	wstring.h
-
 	eglWindow.h
 	color.h
 	vertex.h
 	terrain.h
-	AABB.h
+	box.h
 )
 
 # Add Windows-specific files only on Windows
@@ -76,12 +75,11 @@ set(src_files
 	transform.cpp
 	uiRenderOpenGL.cpp
 	wstring.cpp
-
 	eglWindow.cpp
 	color.cpp
 	vertex.cpp
 	terrain.cpp
-	AABB.cpp
+	box.cpp
 )
 
 # Add Windows-specific source files only on Windows
