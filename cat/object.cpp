@@ -7,7 +7,7 @@
 #include "cat/env.h"
 #include "cat/mesh.h"
 #include "cat/skin.h"
-#include "catBase/yaml.h"
+#include "cat/yaml.h"
 
 #include "scl/type.h"
 #include "scl/assert.h"

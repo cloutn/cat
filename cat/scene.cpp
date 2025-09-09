@@ -2,7 +2,7 @@
 
 #include "cat/object.h"
 #include "cat/env.h"
-#include "catBase/yaml.h"
+#include "cat/yaml.h"
 
 //#include "scl/ring_queue.h"
 

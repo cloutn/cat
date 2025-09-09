@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${target})
 
 set(header_files
-	yaml.h
+	cat/yaml.h
 )
 
 set(src_files
@@ -34,6 +34,7 @@ target_include_directories(
 	${target}
 	PRIVATE
 	${PROJECT_SOURCE_DIR}/../
+	${PROJECT_SOURCE_DIR}/../catBase
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
 	)
