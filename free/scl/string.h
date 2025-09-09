@@ -22,9 +22,9 @@ namespace scl {
 template <typename char_t>
 class char_traits;
 
-struct fixed_storage_tag {};
-struct ptr_storage_tag {};
-struct dynamic_storage_tag {};
+struct fixed_storage_tag	{};
+struct ptr_storage_tag		{};
+struct dynamic_storage_tag	{};
 
 template <typename char_t, typename storage>
 class string_base;
@@ -33,11 +33,11 @@ template <typename char_t, int N>
 class fixed_storage
 {
 public:
-	using ct = char_traits<char_t>;
-	using tag = fixed_storage_tag;
+	using ct	= char_traits<char_t>;
+	using tag	= fixed_storage_tag;
 
-	fixed_storage				() { clear(); }
-	fixed_storage				(const char_t* src, const int len = -1) 
+	fixed_storage() { clear(); }
+	fixed_storage(const char_t* src, const int len = -1) 
 	{
 		clear();
 		if (NULL == src)
@@ -71,8 +71,8 @@ template <typename char_t>
 class ptr_storage
 {
 public:
-	using ct = char_traits<char_t>;
-	using tag = ptr_storage_tag;
+	using ct	= char_traits<char_t>;
+	using tag	= ptr_storage_tag;
 
 	ptr_storage				() : str(nullptr), m_max_size(0) {}
 	ptr_storage				(char_t* buffer, int _max_size = -1, const char_t* init_string = NULL) { init(buffer, _max_size, init_string); }
@@ -122,12 +122,15 @@ private:
 	int		m_max_size;
 };
 
+struct dynamic_storage_const { static constexpr int level_size[] = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536,  262144, 1048576, 8388608, 134217728, 2147483646 }; };
+
 template <typename char_t, int N>
 class dynamic_storage
 {
 public:
 	using ct = char_traits<char_t>;
 	using tag = dynamic_storage_tag;
+	using _const = dynamic_storage_const;
 
 	dynamic_storage() : _long(NULL), m_long_max_size(0), m_level(0), m_autofree(1) { clear(); }
 
@@ -183,11 +186,11 @@ public:
 			return;
 
 		int lv = m_level;
-		while (g_level_size[lv] <= target_len)
+		while (_const::level_size[lv] <= target_len)
 			++lv;
-		assert(lv < s_countof(g_level_size));
+		assert(lv < countof(_const::level_size));
 
-		int new_max = g_level_size[lv];
+		int new_max = _const::level_size[lv];
 		char_t*	new_buf = new char_t[new_max];
 		memset(new_buf, 0, new_max * sizeof(char_t));
 		memcpy(new_buf, c_str(), (length() + 1) * sizeof(char_t));
@@ -255,13 +258,6 @@ private:
 	int				m_long_max_size;
 	char			m_level;		//defined in g_level_size in vstring.cpp
 	char			m_autofree;		//auto call pstring::free() in destructor.
-
-private:
-	template <typename T, size_t N> 
-	static constexpr size_t s_countof(T (&)[N]) { return N; }
-
-	static constexpr int g_level_size[] = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 65536,  262144, 1048576, 8388608, 134217728, 2147483646 };
-	static constexpr int MAX_LENGTH = g_level_size[s_countof(g_level_size) - 1];
 };
 
 template <>
@@ -1329,41 +1325,41 @@ typedef 	wstring<1024>	wstring1024;
 
 } // namespace scl
 
-using scl::string8;
-using scl::string16;
-using scl::string32;
-using scl::string64;
-using scl::string128;
-using scl::string256;
-using scl::string260;
-using scl::stringPath;
-using scl::string512;
-using scl::string1024;
-using scl::string2048;
-using scl::string4096;
-using scl::string8192;
-using scl::string16384;
-using scl::string1k;
-using scl::string2k;
-using scl::string4k;
-using scl::string8k;
-using scl::string16k;
-using scl::string64k;
-
-
-using scl::wstring8;
-using scl::wstring16;
-using scl::wstring32;
-using scl::wstring64;
-using scl::wstring128;
-using scl::wstring256;
-using scl::wstring260;
-using scl::wstringPath;
-using scl::wstring512;
-using scl::wstring1024;
-
-
-using scl::pstring;
-using scl::pwstring;
+//using scl::string8;
+//using scl::string16;
+//using scl::string32;
+//using scl::string64;
+//using scl::string128;
+//using scl::string256;
+//using scl::string260;
+//using scl::stringPath;
+//using scl::string512;
+//using scl::string1024;
+//using scl::string2048;
+//using scl::string4096;
+//using scl::string8192;
+//using scl::string16384;
+//using scl::string1k;
+//using scl::string2k;
+//using scl::string4k;
+//using scl::string8k;
+//using scl::string16k;
+//using scl::string64k;
+//
+//
+//using scl::wstring8;
+//using scl::wstring16;
+//using scl::wstring32;
+//using scl::wstring64;
+//using scl::wstring128;
+//using scl::wstring256;
+//using scl::wstring260;
+//using scl::wstringPath;
+//using scl::wstring512;
+//using scl::wstring1024;
+//
+//
+//using scl::pstring;
+//using scl::pwstring;
 
 

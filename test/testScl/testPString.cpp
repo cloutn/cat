@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+using scl::pstring;
+
 //char池，保证在一次测试过程中只调用一次系统的new
 struct char_pool
 {

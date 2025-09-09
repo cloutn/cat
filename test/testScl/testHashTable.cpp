@@ -7,6 +7,8 @@
 
 using scl::hash_table;
 using scl::array;
+using scl::pstring;
+using scl::string32;
 
  void testHashTable1()
 {

@@ -72,6 +72,9 @@ typedef long long			int64;
 typedef unsigned long long	uint64;
 #endif
 
+template <typename T, size_t N> 
+static constexpr size_t countof(T (&)[N]) { return N; }
+
 } // namespace scl
 
 #define USING_SCL_TYPE using scl::int8; using scl::uchar; using scl::uint8; using scl::byte; using scl::int16; using scl::uint16; using scl::int32; using scl::uint; using scl::uint32; using scl::wchar; using scl::int64; using scl::uint64;

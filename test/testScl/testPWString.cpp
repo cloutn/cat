@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <memory.h>
 
+using scl::pwstring;
+
 //wchar池，保证在一次测试过程中只调用一次系统的new
 struct wchar_pool
 {

@@ -13,6 +13,9 @@ using scl::string;
 using scl::ring_queue;
 using scl::tree_node;
 using scl::single_allocator;
+using scl::string256;
+using scl::string16;
+using scl::pstring;
 
 typedef single_allocator<tree_node<int, int> > allocator_tree_node;
 

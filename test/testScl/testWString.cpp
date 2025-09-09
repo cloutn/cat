@@ -8,6 +8,9 @@
 #include <stdio.h>
 
 using scl::wstring;
+using scl::wstring16;
+using scl::wstring32;
+using scl::wstring128;
 
 void testWString_copy()
 {

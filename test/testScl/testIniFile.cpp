@@ -12,6 +12,7 @@ using scl::ini_parser;
 using scl::string;
 using scl::wstring;
 using scl::vstring;
+using scl::wstring128;
 
 void testIniFile()
 {

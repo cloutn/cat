@@ -14,6 +14,9 @@
 using scl::file;
 using scl::directory;
 using scl::file_reader;
+using scl::string16;
+using scl::string32;
+using scl::string128;
 
  void testFile1()
 {

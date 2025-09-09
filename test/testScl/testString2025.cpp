@@ -7,6 +7,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+using scl::string32;
+using scl::wstring32;
+using scl::pstring;
+using scl::pwstring;
+
 // 日志输出函数实现
 void mylog(const char* format, ...) {
 	va_list args;

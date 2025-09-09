@@ -10,6 +10,12 @@
 
 using scl::string;
 using scl::wstring;
+using scl::wstring16;
+using scl::wstring32;
+using scl::wstring128;
+using scl::string32;
+using scl::string16;
+using scl::string128;
 using scl::wchar_to_ansi;
 using scl::ansi_to_wchar;
 using scl::Encoding_UTF8;
