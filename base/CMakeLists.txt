@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-set(target catBase)
+set(target base)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -12,7 +12,7 @@ set(header_files
 )
 
 set(src_files
-	yaml.cpp
+	cat/yaml.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
@@ -34,7 +34,7 @@ target_include_directories(
 	${target}
 	PRIVATE
 	${PROJECT_SOURCE_DIR}/../
-	${PROJECT_SOURCE_DIR}/../catBase
+	${PROJECT_SOURCE_DIR}/../base
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
 	)

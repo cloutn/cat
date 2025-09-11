@@ -80,6 +80,8 @@ error.log
 
 /catBase/build64
 /catBase/lib64
+/base/build64
+/base/lib64
 /test/testYaml/bin64
 /test/testScl/test/memoryLog.txt
 /build
@@ -87,3 +89,4 @@ build64_ninja
 build64_visualstudio
 /tool/bin
 /.cache/clangd/index
+/base/cat/yaml.cpp
