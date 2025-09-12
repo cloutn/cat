@@ -19,7 +19,7 @@ endif()
 
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build${ARCH})
-add_subdirectory(${PROJECT_SOURCE_DIR}/../catBase ${PROJECT_SOURCE_DIR}/../catBase/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../catbase ${PROJECT_SOURCE_DIR}/../catbase/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../catui ${PROJECT_SOURCE_DIR}/../catui/build${ARCH})
 #add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libimg ${PROJECT_SOURCE_DIR}/../free/libimg/build${ARCH})
@@ -66,7 +66,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
 add_executable(${target} ${src_files} ${header_files})
 
-add_dependencies(${target} scl catBase catui libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender rapidyaml glm)
+add_dependencies(${target} scl catbase catui libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender rapidyaml glm)
 
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
@@ -75,7 +75,7 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR}/../
-	${PROJECT_SOURCE_DIR}/../catBase/
+	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../catui/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/imgui/
@@ -86,7 +86,7 @@ target_include_directories(
 
 set(debug_links 	
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../catBase/lib${ARCH}/catBase_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../catbase/lib${ARCH}/catbase_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../catui/lib${ARCH}/catui_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat_d.lib
 	#debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
@@ -109,7 +109,7 @@ set(debug_links
 
 set(release_links 	
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl.lib
-	optimized ${PROJECT_SOURCE_DIR}/../catBase/lib${ARCH}/catBase.lib
+	optimized ${PROJECT_SOURCE_DIR}/../catbase/lib${ARCH}/catbase.lib
 	optimized ${PROJECT_SOURCE_DIR}/../catui/lib${ARCH}/catui.lib
 	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat.lib
 	#optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib

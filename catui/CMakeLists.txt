@@ -39,7 +39,7 @@ target_include_directories(
 	PRIVATE
 	${PROJECT_SOURCE_DIR}/../
 	${PROJECT_SOURCE_DIR}/../catui/
-	${PROJECT_SOURCE_DIR}/../catBase/
+	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../free/imgui/
 	${PROJECT_SOURCE_DIR}/../free/
 	)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-set(target catBase)
+set(target catbase)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -46,7 +46,7 @@ target_include_directories(
 	${target}
 	PRIVATE
 	${PROJECT_SOURCE_DIR}/../
-	${PROJECT_SOURCE_DIR}/../catBase/
+	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
 	)

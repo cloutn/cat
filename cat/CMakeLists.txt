@@ -94,7 +94,7 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR}/../
-	${PROJECT_SOURCE_DIR}/../catBase/
+	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/rapidyaml/

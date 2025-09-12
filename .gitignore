@@ -92,3 +92,5 @@ build64_visualstudio
 /base/cat/yaml.cpp
 /catui/build64
 /catui/lib64
+/test/testImgui/bin64
+/test/testImgui/imgui.ini

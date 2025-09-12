@@ -20,7 +20,7 @@
 #include <vulkan/vulkan.h>
 #include <Windows.h>
 #include "catVulkanRender/simpleVulkan.h"
-#include "scl/time.h"
+#include "scl/time.h"  // 改用Windows的Sleep函数
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -46,6 +46,10 @@ static VkDescriptorPool         g_DescriptorPool = VK_NULL_HANDLE;
 svkDevice		g_svkDevice;
 svkSwapchain	g_svkSwapchain;
 svkSurface		g_svkSurface;
+svkFrame		g_svkFrames[4];
+int				g_frameCount = 0;
+VkRenderPass	g_renderPass = VK_NULL_HANDLE;
+svkImage		g_depthImage;
 HINSTANCE g_instance;
 HWND g_hwnd;
 
@@ -67,8 +71,12 @@ static void check_vk_result(VkResult err)
 void recreate_swapchain()
 {
 	vkDeviceWaitIdle(g_svkDevice.device); // FIXME: We could wait on the Queue if we had the queue in wd-> (otherwise VulkanH functions can't use globals)
-										  //ImGui_ImplVulkan_SetMinImageCount(g_MinImageCount);
-										  //ImGui_ImplVulkanH_CreateOrResizeWindow(g_Instance, g_PhysicalDevice, g_Device, &g_MainWindowData, g_QueueFamily, g_Allocator, width, height, g_MinImageCount);
+														  //ImGui_ImplVulkan_SetMinImageCount(g_MinImageCount);
+														  //ImGui_ImplVulkanH_CreateOrResizeWindow(g_Instance, g_PhysicalDevice, g_Device, &g_MainWindowData, g_QueueFamily, g_Allocator, width, height, g_MinImageCount);
+	
+	// Destroy old frames
+	svkDestroyFrames(g_svkDevice, g_svkFrames, g_frameCount);
+	
 	svkDestroySwapchain(g_svkDevice, g_svkSwapchain);
 	svkSwapchain oldswapchain = { NULL };
 	svkRefreshSurfaceSize(g_svkDevice, g_svkSurface);
@@ -77,7 +85,16 @@ void recreate_swapchain()
 	//sprintf(log, "wm_size.width = %d, height = %d, surface.width = %d, height = %d\n", width, height, g_svkSurface.width, g_svkSurface.height);
 	//OutputDebugStringA(log);
 
-	g_svkSwapchain = svkCreateSwapchain(g_svkDevice, g_svkSurface, oldswapchain, false);
+	// Recreate depth image with new size
+	svkDestroyImage(g_svkDevice, g_depthImage);
+	VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
+	g_depthImage = svkCreateAttachmentDepthImage(g_svkDevice, depthFormat, g_svkSurface.width, g_svkSurface.height);
+
+	g_svkSwapchain = svkCreateSwapchain(g_svkDevice, g_svkSurface, oldswapchain);
+	
+	// Recreate frames
+	g_frameCount = svkCreateFrames(g_svkDevice, g_svkSwapchain, g_depthImage.imageView, g_renderPass, g_svkSurface.width, g_svkSurface.height, g_svkFrames, 4);
+	
 	copySwapchainToMainWindowData(&g_MainWindowData, g_svkSwapchain, g_svkSurface);
 
 	g_MainWindowData.FrameIndex = 0;
@@ -122,43 +139,52 @@ static void CleanupVulkan()
 
 static void CleanupVulkanWindow()
 {
+	// Cleanup our frames
+	svkDestroyFrames(g_svkDevice, g_svkFrames, g_frameCount);
+	
+	// Cleanup depth image
+	svkDestroyImage(g_svkDevice, g_depthImage);
+	
+	// Cleanup render pass
+	if (g_renderPass != VK_NULL_HANDLE)
+		svkDestroyRenderPass(g_svkDevice, g_renderPass);
+	
+	// Cleanup swapchain
+	svkDestroySwapchain(g_svkDevice, g_svkSwapchain);
+	
+	// Cleanup surface
+	svkDestroySurface(g_Instance, g_svkDevice, g_svkSurface);
+	
     ImGui_ImplVulkanH_DestroyWindow(g_Instance, g_Device, &g_MainWindowData, g_Allocator);
 }
 
-static void My_FrameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data, svkSurface& surface, svkSwapchain& swapchain)
+static void My_FrameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data, int frameIndex)
 {
-	svkWaitSurface(g_svkDevice, surface);
-	for (unsigned int i = 0; i < swapchain.imageCount; ++i)
-	{
-		VkCommandBuffer cmd_buf = wd->Frames[i].CommandBuffer;
-		svkBeginCommandBuffer(cmd_buf);
-		svkCmdBeginRenderPass(cmd_buf, 0.2f, 0.2f, 0.2f, 0.2f, 1.0f, 0, wd->RenderPass, swapchain.framebuffers[i], surface.width, surface.height);
-	}
-
-	for (unsigned int i = 0; i < swapchain.imageCount; ++i)
-	{
-		VkCommandBuffer cmd_buf = wd->Frames[i].CommandBuffer;
-		// Record dear imgui primitives into command buffer
-		ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buf);
-	}
-
-	for (unsigned int i = 0; i < swapchain.imageCount; ++i)
-	{
-		VkCommandBuffer cmd_buf = wd->Frames[i].CommandBuffer;
-		VkResult err;
-		vkCmdEndRenderPass(cmd_buf);
-		err = vkEndCommandBuffer(cmd_buf);
-	}
-
+	svkFrame& frame = g_svkFrames[frameIndex];
+	VkCommandBuffer cmd_buf = frame.commandBuffer;
+	
+	svkBeginCommandBuffer(cmd_buf);
+	svkCmdBeginRenderPass(cmd_buf, 0.2f, 0.2f, 0.2f, 0.2f, 1.0f, 0, g_renderPass, frame.framebuffer, g_svkSurface.width, g_svkSurface.height, false);
+	
+	// Record dear imgui primitives into command buffer
+	ImGui_ImplVulkan_RenderDrawData(draw_data, cmd_buf);
+	
+	vkCmdEndRenderPass(cmd_buf);
+	VkResult err = svkEndCommandBuffer(cmd_buf);
+	check_vk_result(err);
 }
 
 int g_frame_index = 0;
 
-static void My_FramePresent(ImGui_ImplVulkanH_Window* wd, svkSurface& surface, svkSwapchain& swapchain)
+static void My_FramePresent(ImGui_ImplVulkanH_Window* wd, int frameIndex)
 {
-	svkPresent(g_svkDevice, surface, swapchain, g_frame_index, NULL, on_present_failed);
-	g_frame_index++;
-	g_frame_index %= 2;
+	svkFrame& frame = g_svkFrames[frameIndex];
+	
+	// Submit command buffer
+	svkQueueSubmit(g_svkDevice, &frame.commandBuffer, 1, &frame.imageAcquireSemaphore, &frame.drawCompleteSemaphore, frame.fence);
+	
+	// Present frame
+	svkPresent(g_svkDevice, g_svkSwapchain, g_svkFrames, frameIndex, NULL, on_present_failed);
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -175,29 +201,33 @@ void copySwapchainToMainWindowData(ImGui_ImplVulkanH_Window* wd, svkSwapchain& s
 	wd->SurfaceFormat.format = swapchain.format;
 	wd->SurfaceFormat.colorSpace = swapchain.colorSpace;
 	wd->PresentMode = VK_PRESENT_MODE_FIFO_KHR;
-	wd->RenderPass = swapchain.renderPass;
-	wd->ImageCount = swapchain.imageCount;
+	wd->RenderPass = g_renderPass;
+	wd->ImageCount = g_frameCount;
 	wd->Frames = (ImGui_ImplVulkanH_Frame*)IM_ALLOC(sizeof(ImGui_ImplVulkanH_Frame) * wd->ImageCount);
 	wd->FrameSemaphores = (ImGui_ImplVulkanH_FrameSemaphores*)IM_ALLOC(sizeof(ImGui_ImplVulkanH_FrameSemaphores) * wd->ImageCount);
-	for (int i = 0; i < (int)swapchain.imageCount; ++i)
+	for (int i = 0; i < g_frameCount; ++i)
 	{
-		wd->Frames[i].BackbufferView = swapchain.imageViews[i];
+		wd->Frames[i].BackbufferView = g_svkFrames[i].imageView;
 		wd->Frames[i].Backbuffer = NULL;
-		wd->Frames[i].CommandBuffer = swapchain.commandBuffers[i];
+		wd->Frames[i].CommandBuffer = g_svkFrames[i].commandBuffer;
 		wd->Frames[i].CommandPool = g_svkDevice.commandPool;
-		wd->Frames[i].Framebuffer = swapchain.framebuffers[i];;
-		wd->Frames[i].Fence = surface.fences[i % svkSurface::FRAME_LAG];
-		wd->FrameSemaphores[i].ImageAcquiredSemaphore = surface.imageAcquireSemaphores[i % svkSurface::FRAME_LAG];
-		wd->FrameSemaphores[i].RenderCompleteSemaphore = surface.drawCompleteSemaphores[i % svkSurface::FRAME_LAG];
+		wd->Frames[i].Framebuffer = g_svkFrames[i].framebuffer;
+		wd->Frames[i].Fence = g_svkFrames[i].fence;
+		wd->FrameSemaphores[i].ImageAcquiredSemaphore = g_svkFrames[i].imageAcquireSemaphore;
+		wd->FrameSemaphores[i].RenderCompleteSemaphore = g_svkFrames[i].drawCompleteSemaphore;
 	}
 }
 
-int main_imgui()
+int main()
 {
 	VkResult err;
 	memset(&g_svkDevice, 0, sizeof(g_svkDevice));
 	memset(&g_svkSurface, 0, sizeof(g_svkSurface));
 	memset(&g_svkSwapchain, 0, sizeof(g_svkSwapchain));
+	memset(&g_svkFrames, 0, sizeof(g_svkFrames));
+	memset(&g_depthImage, 0, sizeof(g_depthImage));
+	g_frameCount = 0;
+	g_renderPass = VK_NULL_HANDLE;
 
 	ImGui_ImplWin32_EnableDpiAwareness();
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L"ImGui Example", NULL };
@@ -229,9 +259,21 @@ int main_imgui()
     ImGui_ImplVulkanH_Window* wd = &g_MainWindowData;
 	wd->Surface = g_svkSurface.surface;
 
+	// Create render pass
+	VkFormat colorFormat = g_svkSurface.capabilities.currentExtent.width > 0 ? VK_FORMAT_B8G8R8A8_UNORM : VK_FORMAT_B8G8R8A8_UNORM;
+	VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
+	g_renderPass = svkCreateRenderPass(g_svkDevice, colorFormat, depthFormat, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+	// Create depth image
+	g_depthImage = svkCreateAttachmentDepthImage(g_svkDevice, depthFormat, w, h);
+
 	svkSwapchain oldSwapchain;
 	oldSwapchain.swapchain = NULL;
 	g_svkSwapchain = svkCreateSwapchain(g_svkDevice, g_svkSurface, oldSwapchain);
+	
+	// Create frames
+	g_frameCount = svkCreateFrames(g_svkDevice, g_svkSwapchain, g_depthImage.imageView, g_renderPass, w, h, g_svkFrames, 4);
+	
 	copySwapchainToMainWindowData(wd, g_svkSwapchain, g_svkSurface);
 
 
@@ -263,14 +305,14 @@ int main_imgui()
     ImGui_ImplVulkan_Init(&init_info, wd->RenderPass);
 
     io.Fonts->AddFontDefault();
-    io.Fonts->AddFontFromFileTTF("d:/imgui/misc/fonts/msyh.ttc", 24.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+    //io.Fonts->AddFontFromFileTTF("d:/imgui/misc/fonts/msyh.ttc", 24.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
     ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
     IM_ASSERT(font != NULL);
 
     // Upload Fonts
     {
-		VkCommandBuffer commandBuffer = svkCreateCommandBuffer(g_svkDevice);
-		svkBeginCommandBuffer(commandBuffer);;
+		VkCommandBuffer commandBuffer = svkAllocCommandBuffer(g_svkDevice);
+		svkBeginCommandBuffer(commandBuffer, true);
 
         //// Use any command queue
         //VkCommandPool command_pool = wd->Frames[wd->FrameIndex].CommandPool;
@@ -285,7 +327,7 @@ int main_imgui()
         //check_vk_result(err);
 
         ImGui_ImplVulkan_CreateFontsTexture(commandBuffer);
-		svkEndCommandBuffer(g_svkDevice, commandBuffer);
+		svkEndCommandBufferAndSubmit(g_svkDevice, commandBuffer);
 
         //VkSubmitInfo end_info = {};
         //end_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -310,7 +352,7 @@ int main_imgui()
     //while (!glfwWindowShouldClose(window))
 	// Main loop
 	bool done = false;
-	int frame_index = 0;
+	int current_frame_index = 0;
 	while (!done)
     {
 		MSG msg;
@@ -376,14 +418,20 @@ int main_imgui()
             wd->ClearValue.color.float32[1] = clear_color.y * clear_color.w;
             wd->ClearValue.color.float32[2] = clear_color.z * clear_color.w;
             wd->ClearValue.color.float32[3] = clear_color.w;
+            
+            // Acquire next frame
+            int frame_index = svkAcquireNextImage(g_svkDevice, g_svkSwapchain, g_svkFrames, current_frame_index, NULL, on_present_failed);
+            
             //FrameRender(wd, draw_data);
-            My_FrameRender(wd, draw_data, g_svkSurface, g_svkSwapchain);
+            My_FrameRender(wd, draw_data, frame_index);
 
             //FramePresent(wd);
-			My_FramePresent(wd, g_svkSurface, g_svkSwapchain);
+			My_FramePresent(wd, frame_index);
+            
+            current_frame_index = (current_frame_index + 1) % g_frameCount;
 
         }
-		scl::sleep(1);
+		Sleep(1);  // Windows Sleep函数，参数为毫秒
     }
 
     // Cleanup
