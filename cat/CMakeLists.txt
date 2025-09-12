@@ -13,12 +13,9 @@ set(header_files
 	animationChannel.h
 	camera.h
 	cgltf_util.h
-	def.h
 	env.h
 	gltf_raw_render.h
 	grid.h
-	IFileProvider.h
-	IRender.h
 	keyFrame.h
 	material.h
 	mesh.h
@@ -33,15 +30,10 @@ set(header_files
 	shaderCache.h
 	shaderMacro.h
 	skin.h
-	string.h
 	textureFile.h
-	transform.h
 	uiRenderOpenGL.h
 	eglWindow.h
-	color.h
-	vertex.h
 	terrain.h
-	box.h
 )
 
 # Add Windows-specific files only on Windows
@@ -71,13 +63,9 @@ set(src_files
 	shaderCache.cpp
 	shaderMacro.cpp
 	skin.cpp
-	transform.cpp
 	uiRenderOpenGL.cpp
 	eglWindow.cpp
-	color.cpp
-	vertex.cpp
 	terrain.cpp
-	box.cpp
 )
 
 # Add Windows-specific source files only on Windows
@@ -106,7 +94,7 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR}/../
-	${PROJECT_SOURCE_DIR}/../base/
+	${PROJECT_SOURCE_DIR}/../catBase/
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/rapidyaml/

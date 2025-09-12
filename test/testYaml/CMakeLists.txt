@@ -16,7 +16,7 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 endif()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/../../free/scl ${PROJECT_SOURCE_DIR}/../../free/scl/build${ARCH})
-add_subdirectory(${PROJECT_SOURCE_DIR}/../../base ${PROJECT_SOURCE_DIR}/../../base/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../../catBase ${PROJECT_SOURCE_DIR}/../../catBase/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../../free/rapidyaml ${PROJECT_SOURCE_DIR}/../../free/rapidyaml/build${ARCH})
 
 
@@ -36,7 +36,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 add_executable(${target} ${src_files} ${header_files})
 
 #add_dependencies(${target} scl gfx imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender)
-add_dependencies(${target} scl base rapidyaml)
+add_dependencies(${target} scl catBase rapidyaml)
 
 #set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
 #set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
@@ -61,25 +61,25 @@ target_include_directories(
 if(WIN32)
 	set(debug_links 	
 		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl_d.lib
-		debug ${PROJECT_SOURCE_DIR}/../../base/lib${ARCH}/base_d.lib
+		debug ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/catBase_d.lib
 		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/rapidyaml_d.lib
 	)
 	
 	set(release_links 	
 		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/scl.lib
-		optimized ${PROJECT_SOURCE_DIR}/../../base/lib${ARCH}/base.lib
+		optimized ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/catBase.lib
 		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/rapidyaml.lib
 	)
 else() # Linux/Unix systems
 	set(debug_links 	
 		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libscl.a
-		debug ${PROJECT_SOURCE_DIR}/../../base/lib${ARCH}/libbase_d.a
+		debug ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/libcatBase_d.a
 		debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/librapidyaml_d.a
 	)
 	
 	set(release_links 	
 		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libscl.a
-		optimized ${PROJECT_SOURCE_DIR}/../../base/lib${ARCH}/libbase.a
+		optimized ${PROJECT_SOURCE_DIR}/../../catBase/lib${ARCH}/libcatBase.a
 		optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/librapidyaml.a
 	)
 endif()
