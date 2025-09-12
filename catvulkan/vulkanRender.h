@@ -3,11 +3,11 @@
 ////////////////////////////////////
 #pragma once
 
-#include "catVulkanRender/simplevulkan.h"
-#include "catVulkanRender/pipelineKey.h"
-#include "catVulkanRender/DescriptorDataKey.h"
-#include "catVulkanRender/descriptorAllocator.h"
-#include "catVulkanRender/deviceInfo.h"
+#include "catvulkan/simplevulkan.h"
+#include "catvulkan/pipelineKey.h"
+#include "catvulkan/DescriptorDataKey.h"
+#include "catvulkan/descriptorAllocator.h"
+#include "catvulkan/deviceInfo.h"
 
 #include "cat/IRender.h"
 #include "cat/color.h"

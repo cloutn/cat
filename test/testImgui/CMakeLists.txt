@@ -25,7 +25,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../../free/libpng ${PROJECT_SOURCE_DIR}/.
 add_subdirectory(${PROJECT_SOURCE_DIR}/../../free/libtga ${PROJECT_SOURCE_DIR}/../../free/libtga/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../../free/zlib ${PROJECT_SOURCE_DIR}/../../free/zlib/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../../catui ${PROJECT_SOURCE_DIR}/../../catui/build${ARCH})
-add_subdirectory(${PROJECT_SOURCE_DIR}/../../catVulkanRender ${PROJECT_SOURCE_DIR}/../../catVulkanRender/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../../catvulkan ${PROJECT_SOURCE_DIR}/../../catvulkan/build${ARCH})
 
 
 set(header_files
@@ -43,7 +43,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
 add_executable(${target} ${src_files} ${header_files})
 
-add_dependencies(${target} scl imgui libimg spirv_cross jpeg_turbo libktx libpng libtga zlib catui catVulkanRender)
+add_dependencies(${target} scl imgui libimg spirv_cross jpeg_turbo libktx libpng libtga zlib catui catvulkan)
 
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
@@ -52,7 +52,7 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR}/../../
-	${PROJECT_SOURCE_DIR}/../../catVulkanRender
+	${PROJECT_SOURCE_DIR}/../../catvulkan
 	${PROJECT_SOURCE_DIR}/../../catui
 	${PROJECT_SOURCE_DIR}/../../catui/cat
 	${PROJECT_SOURCE_DIR}/../../free/
@@ -71,7 +71,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libtga_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/zlib_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../catui/lib${ARCH}/catui_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../../lib${ARCH}/catVulkanRender_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../../lib${ARCH}/catvulkan_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/shaderc_combined_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/gles/qualcomm/lib${ARCH}/libEGL.lib
@@ -90,7 +90,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libtga.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/zlib.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../catui/lib${ARCH}/catui.lib
-	optimized ${PROJECT_SOURCE_DIR}/../../lib${ARCH}/catVulkanRender.lib
+	optimized ${PROJECT_SOURCE_DIR}/../../lib${ARCH}/catvulkan.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/shaderc_combined.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/gles/qualcomm/lib${ARCH}/libEGL.lib

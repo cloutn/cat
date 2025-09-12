@@ -17,8 +17,8 @@
 /testCat/bin/bin_*.7z
 /cat/build
 /cat/build64
-/catVulkanRender/build
-/catVulkanRender/build64
+/catvulkan/build
+/catvulkan/build64
 /testCat/art
 /testCat/build64
 /testCat/build32
@@ -29,9 +29,9 @@
 /cat/build64
 /cat/build32
 /cat/build
-/catVulkanRender/build64
-/catVulkanRender/build32
-/catVulkanRender/build
+/catvulkan/build64
+/catvulkan/build32
+/catvulkan/build
 /.vscode
 /testCat/logger.txt
 /free/gfx/build

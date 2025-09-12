@@ -31,7 +31,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libtga ${PROJECT_SOURCE_DIR}/../f
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/zlib ${PROJECT_SOURCE_DIR}/../free/zlib/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/spirv_cross ${PROJECT_SOURCE_DIR}/../free/spirv_cross/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build${ARCH})
-add_subdirectory(${PROJECT_SOURCE_DIR}/../catVulkanRender ${PROJECT_SOURCE_DIR}/../catVulkanRender/build${ARCH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../catvulkan ${PROJECT_SOURCE_DIR}/../catvulkan/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/rapidyaml ${PROJECT_SOURCE_DIR}/../free/rapidyaml/build${ARCH})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/glm ${PROJECT_SOURCE_DIR}/../free/glm/build${ARCH})
 
@@ -66,7 +66,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
 add_executable(${target} ${src_files} ${header_files})
 
-add_dependencies(${target} scl catbase catui libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catVulkanRender rapidyaml glm)
+add_dependencies(${target} scl catbase catui libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catvulkan rapidyaml glm)
 
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
@@ -92,7 +92,7 @@ set(debug_links
 	#debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catvulkan_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross_d.lib
@@ -115,7 +115,7 @@ set(release_links
 	#optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui.lib
-	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catVulkanRender.lib
+	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catvulkan.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross.lib

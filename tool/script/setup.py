@@ -25,9 +25,11 @@ def unzip_free():
 
 def unzip_bin():
     exec_cmd(['./7z/7z.exe', 'x', '../archive/bin.7z', '-o../testCat/bin', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/bin.7z', '-o../test/testImgui/bin', '-aoa', '-bso0', '-bd'])
 
 def unzip_bin64():
     exec_cmd(['./7z/7z.exe', 'x', '../archive/bin64.7z', '-o../testCat/bin64', '-aoa', '-bso0', '-bd'])
+    exec_cmd(['./7z/7z.exe', 'x', '../archive/bin64.7z', '-o../test/testImgui/bin64', '-aoa', '-bso0', '-bd'])
 
 def unzip_art():
     exec_cmd(['./7z/7z.exe', 'x', '../archive/art.7z', '-o../testCat/art', '-aoa', '-bso0', '-bd'])
