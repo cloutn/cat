@@ -13,10 +13,10 @@
 #include "scl/quaternion.h"
 #include "scl/log.h"
 
-#include "imgui_impl_win32.h"
+#include "cat/imgui_impl_win32.h"
 
-#include "./imguiex.h"
-#include "./ImGuizmo.h"
+#include "cat/imguiex.h"
+#include "cat/ImGuizmo.h"
 
 
 #ifdef SCL_WIN

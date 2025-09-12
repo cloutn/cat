@@ -90,3 +90,5 @@ build64_visualstudio
 /tool/bin
 /.cache/clangd/index
 /base/cat/yaml.cpp
+/catui/build64
+/catui/lib64
