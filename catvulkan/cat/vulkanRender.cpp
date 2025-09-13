@@ -406,7 +406,7 @@ void* VulkanRender::createTexture(const char* const filename, int* width, int* h
 
 	//创建纹理   
 	svkTexture* tex = new svkTexture; 
-	*tex = svkCreateTexture(m_device, filename, NULL, img::get_img_size, img::load_img_to_buffer); 
+	*tex = svkCreateTexture(m_device, filename, NULL, img::load_img_to_buffer_or_get_size); 
 
 	return reinterpret_cast<void*>(tex);
 }

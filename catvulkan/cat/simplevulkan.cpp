@@ -247,18 +247,20 @@ static void _createTextureImageWithSize(svkDevice& device, const int width, cons
 	_createTextureImage(device, texObj, width, height, texFormat, tiling, usage, requiredProps, VK_IMAGE_LAYOUT_PREINITIALIZED, NULL);
 }
 
-static void _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps, svkGetImageSizeCallback getSizeCallback, svkLoadImageDataCallback loadDataCallback) 
+static void _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps, svkLoadImageDataCallback loadDataCallback) 
 {
 	int32_t texWidth	= 0;
 	int32_t texHeight	= 0;
 	int		pixel		= 0;
+	int		pitch		= 0;
 
 #pragma warning(push)
 #pragma warning(disable:4996)
 	FILE* f = fopen(filename, "rb");
 #pragma warning(pop)
 
-	getSizeCallback(f, &texWidth, &texHeight, &pixel);
+	// Call with out_rgba = NULL to get size info only
+	loadDataCallback(f, NULL, &texWidth, &texHeight, &pitch, &pixel);
 
 	texObj->width	= texWidth;
 	texObj->height	= texHeight;
@@ -1528,7 +1530,7 @@ void _createSamplerAndImageView(svkDevice& device, svkTexture& _svkTexture, cons
 	_svkTexture.view = _CreateColorImageView(device, _svkTexture.image, texFormat);
 }
 
-svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCommandBuffer outCommandBuffer, svkGetImageSizeCallback getSizeCallback, svkLoadImageDataCallback loadDataCallback)
+svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCommandBuffer outCommandBuffer, svkLoadImageDataCallback loadDataCallback)
 {
 	const VkFormat texFormat = VK_FORMAT_R8G8B8A8_UNORM;
 
@@ -1536,7 +1538,7 @@ svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCom
 	memclr(_svkTexture);
 	//VkResult err;
 
-	_createTextureImageFromFile(device, filename, &_svkTexture, VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, getSizeCallback, loadDataCallback);
+	_createTextureImageFromFile(device, filename, &_svkTexture, VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, loadDataCallback);
 
 	// Nothing in the pipeline needs to be complete to start, and don't allow fragment // shader to run until layout transition completes
 	VkCommandBuffer commandBuffer = outCommandBuffer;

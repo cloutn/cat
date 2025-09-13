@@ -11,6 +11,7 @@ namespace img {
 uint			load_img			(const char* filename);
 uint			load_img			(const char* filename, int* width, int* height, int* pitch, int* pixel);
 unsigned char*	load_img_to_buffer	(_iobuf* fp, unsigned char* out_rgba, int* _width, int* _height, int* _pitch, int* _pixel);
+unsigned char*	load_img_to_buffer_or_get_size(_iobuf* fp, unsigned char* out_rgba, int* _width, int* _height, int* _pitch, int* _pixel);
 void			get_img_size		(const char* filename, int* width, int* height, int* pixel);
 void			get_img_size		(_iobuf* fp, int* width, int* height, int* pixel);
 #endif

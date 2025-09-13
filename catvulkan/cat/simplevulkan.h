@@ -157,12 +157,13 @@ VkResult				svkEndCommandBuffer				(VkCommandBuffer cb);
 
 // texture
 //		TODO png支持使用 gfx 代码接入引擎
-// Image loading callback function types
-typedef void (*svkGetImageSizeCallback)(FILE* fp, int* width, int* height, int* pixel);
+// Image loading callback function type
+// If out_rgba is null, only get image size info (width, height, pixel)
+// Otherwise, load the actual image data into out_rgba buffer
 typedef unsigned char* (*svkLoadImageDataCallback)(FILE* fp, unsigned char* out_rgba, int* width, int* height, int* pitch, int* pixel);
 
 //		TODO 当文件的 pitch 和 vulkan createImage 的 pitch 不一致的时候，需要手动重新拷贝一次，而不能直接使用 map memory 返回的指针来创建。
-svkTexture				svkCreateTexture				(svkDevice&, const char* const filename, VkCommandBuffer commandBuffer, svkGetImageSizeCallback getSizeCallback, svkLoadImageDataCallback loadDataCallback);
+svkTexture				svkCreateTexture				(svkDevice&, const char* const filename, VkCommandBuffer commandBuffer, svkLoadImageDataCallback loadDataCallback);
 svkTexture				svkCreateTexture				(svkDevice& device, const int width, const int height, VkCommandBuffer outCommandBuffer);
 //		TODO 没有检查目标 texutrre 的大小和是否可以写入
 void					svkCopyTexture					(svkDevice& device, svkTexture& texture, const void* const data, const int sizeofData);

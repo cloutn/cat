@@ -179,6 +179,19 @@ unsigned char* load_img_to_buffer(_iobuf* fp, unsigned char* out_rgba, int* _wid
 	return rgba;
 }
 
+unsigned char* load_img_to_buffer_or_get_size(_iobuf* fp, unsigned char* out_rgba, int* _width, int* _height, int* _pitch, int* _pixel)
+{
+	if (NULL == out_rgba)
+	{
+		get_img_size(fp, _width, _height, _pixel);
+		return NULL;
+	}
+	else
+	{
+		return load_img_to_buffer(fp, out_rgba, _width, _height, _pitch, _pixel);
+	}
+}
+
 uint load_img(const char* filename, int* _width, int* _height, int* _pitch, int* _pixel)  
 {  
 	int				width		= 0;
