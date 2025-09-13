@@ -8,26 +8,35 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${target})
 
 set(header_files
-	cat/yaml.h
+	cat/box.h
+	cat/cgltf_util.h
+	cat/color.h
 	cat/def.h
-	cat/string.h
 	cat/IFileProvider.h
 	cat/IRender.h
-	cat/color.h
-	cat/box.h
+	cat/keyFrame.h
+	cat/names.h
+	cat/objectIDMap.h
+	cat/string.h
+	cat/textureFile.h
 	cat/transform.h
 	cat/vertex.h
 	cat/xxh3.h
 	cat/xxhash.h
+	cat/yaml.h
 )
 
 set(src_files
-	cat/yaml.cpp
-	cat/color.cpp
 	cat/box.cpp
+	cat/cgltf.c
+	cat/cgltf_util.c
+	cat/color.cpp
+	cat/keyFrame.cpp
+	cat/names.cpp
 	cat/transform.cpp
 	cat/vertex.cpp
 	cat/xxhash.c
+	cat/yaml.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})

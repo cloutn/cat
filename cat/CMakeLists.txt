@@ -12,16 +12,12 @@ set(header_files
 	animation.h
 	animationChannel.h
 	camera.h
-	cgltf_util.h
 	env.h
 	gltf_raw_render.h
 	grid.h
-	keyFrame.h
 	material.h
 	mesh.h
-	names.h
 	object.h
-	objectIDMap.h
 	primitive.h
 	resources.h
 	scene.h
@@ -30,7 +26,6 @@ set(header_files
 	shaderCache.h
 	shaderMacro.h
 	skin.h
-	textureFile.h
 	#uiRenderOpenGL.h
 	eglWindow.h
 	terrain.h
@@ -42,18 +37,14 @@ if(WIN32)
 endif()
 
 set(src_files
-	cgltf.c
-	cgltf_util.c
 	animation.cpp
 	animationChannel.cpp
 	camera.cpp
 	env.cpp
 	gltf_raw_render.cpp
 	grid.cpp
-	keyFrame.cpp
 	material.cpp
 	mesh.cpp
-	names.cpp
 	object.cpp
 	primitive.cpp
 	resources.cpp
