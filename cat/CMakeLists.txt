@@ -31,7 +31,7 @@ set(header_files
 	shaderMacro.h
 	skin.h
 	textureFile.h
-	uiRenderOpenGL.h
+	#uiRenderOpenGL.h
 	eglWindow.h
 	terrain.h
 )
@@ -63,7 +63,7 @@ set(src_files
 	shaderCache.cpp
 	shaderMacro.cpp
 	skin.cpp
-	uiRenderOpenGL.cpp
+	#uiRenderOpenGL.cpp
 	eglWindow.cpp
 	terrain.cpp
 )
@@ -101,7 +101,8 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
 	)
 
-add_definitions(-DOPENGL_ES -DGFX_ENABLE_IMAGE)
+#add_definitions(-DOPENGL_ES -DGFX_ENABLE_IMAGE)
+add_definitions(-DGFX_ENABLE_IMAGE)
 
 if(WIN32)
   add_definitions(-DUNICODE -D_UNICODE)

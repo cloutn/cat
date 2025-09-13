@@ -12,7 +12,6 @@ set(header_files
 	cat/commandAllocator.h
 	cat/descriptorAllocator.h
 	cat/imgui_impl_vulkan.h
-	cat/load_png.h
 	cat/pipelineKey.h
 	cat/simplevulkan.h
 	cat/descriptorDataKey.h
@@ -24,7 +23,6 @@ set(src_files
 	cat/commandAllocator.cpp
 	cat/descriptorAllocator.cpp
 	cat/imgui_impl_vulkan.cpp
-	cat/load_png.cpp
 	cat/pipelineKey.cpp
 	cat/simplevulkan.cpp
 	cat/descriptorDataKey.cpp
