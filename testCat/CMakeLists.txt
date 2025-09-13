@@ -87,13 +87,13 @@ target_include_directories(
 
 set(debug_links 	
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../cat/lib${ARCH}/cat_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../catbase/lib${ARCH}/catbase_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../catui/lib${ARCH}/catui_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../catvulkan/lib${ARCH}/catvulkan_d.lib
 	#debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catvulkan_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross_d.lib
@@ -110,13 +110,13 @@ set(debug_links
 
 set(release_links 	
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/scl.lib
+	optimized ${PROJECT_SOURCE_DIR}/../cat/lib${ARCH}/cat.lib
 	optimized ${PROJECT_SOURCE_DIR}/../catbase/lib${ARCH}/catbase.lib
 	optimized ${PROJECT_SOURCE_DIR}/../catui/lib${ARCH}/catui.lib
-	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/cat.lib
+	optimized ${PROJECT_SOURCE_DIR}/../catvulkan/lib${ARCH}/catvulkan.lib
 	#optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui.lib
-	optimized ${PROJECT_SOURCE_DIR}/../lib${ARCH}/catvulkan.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/shaderc_combined.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/spirv_cross.lib

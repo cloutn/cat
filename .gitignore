@@ -94,3 +94,5 @@ build64_visualstudio
 /catui/lib64
 /test/testImgui/bin64
 /test/testImgui/imgui.ini
+/cat/lib64
+/catvulkan/lib64
