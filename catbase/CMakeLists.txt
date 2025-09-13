@@ -17,6 +17,8 @@ set(header_files
 	cat/box.h
 	cat/transform.h
 	cat/vertex.h
+	cat/xxh3.h
+	cat/xxhash.h
 )
 
 set(src_files
@@ -25,6 +27,7 @@ set(src_files
 	cat/box.cpp
 	cat/transform.cpp
 	cat/vertex.cpp
+	cat/xxhash.c
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})

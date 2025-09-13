@@ -17,13 +17,10 @@ set(header_files
 	cat/simplevulkan.h
 	cat/descriptorDataKey.h
 	cat/vulkanRender.h
-	cat/xxh3.h
-	cat/xxhash.h
 	cat/deviceInfo.h
 )
 
 set(src_files
-	cat/xxhash.c
 	cat/commandAllocator.cpp
 	cat/descriptorAllocator.cpp
 	cat/imgui_impl_vulkan.cpp
