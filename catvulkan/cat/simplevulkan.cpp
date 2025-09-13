@@ -1,7 +1,5 @@
 #include "./simplevulkan.h"
 
-#include "./load_png.h"
-
 #include "scl/math.h"
 
 #include <spirv_cross/spirv_glsl.hpp>
@@ -13,11 +11,7 @@
 #include <assert.h>
 #include <windows.h>
 
-#define USE_EXTERNAL_GFX_LIB
-
-#ifdef USE_EXTERNAL_GFX_LIB
-#include "libimg/image.h"
-#endif
+// Note: callback types are defined in simplevulkan.h
 
 #define memclr(s) memset(&s, 0, sizeof(s))
 #define countof(s) (sizeof(s)/sizeof(s[0]))
@@ -211,7 +205,7 @@ static void _createTextureImage(
 	texObj->memory	= image.memory;
 }
 
-static bool _copyFromFileToTexture(svkDevice& device, FILE* f, svkTexture* texObj, const VkFlags requiredProps, const VkDeviceSize memroyAllocationSize)
+static bool _copyFromFileToTexture(svkDevice& device, FILE* f, svkTexture* texObj, const VkFlags requiredProps, const VkDeviceSize memroyAllocationSize, svkLoadImageDataCallback loadDataCallback)
 {
 	VkResult err = VK_SUCCESS;
 	bool result = true;
@@ -230,11 +224,7 @@ static bool _copyFromFileToTexture(svkDevice& device, FILE* f, svkTexture* texOb
 		err = vkMapMemory(device.device, texObj->memory, 0, memroyAllocationSize, 0, &data);
 		assert(!err);
 
-#ifdef USE_EXTERNAL_GFX_LIB
-		if (NULL == img::load_img_to_buffer(f, (unsigned char*)data, NULL, NULL, NULL, NULL))
-#else
-		if (NULL == load_png_data_to_memory(f, (unsigned char*)data, NULL, NULL, NULL, NULL))
-#endif
+		if (NULL == loadDataCallback(f, (unsigned char*)data, NULL, NULL, NULL, NULL))
 		{
 			//printf("Error loading texture: %s\n", filename);
 			assert(false);
@@ -257,7 +247,7 @@ static void _createTextureImageWithSize(svkDevice& device, const int width, cons
 	_createTextureImage(device, texObj, width, height, texFormat, tiling, usage, requiredProps, VK_IMAGE_LAYOUT_PREINITIALIZED, NULL);
 }
 
-static void _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps) 
+static void _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps, svkGetImageSizeCallback getSizeCallback, svkLoadImageDataCallback loadDataCallback) 
 {
 	int32_t texWidth	= 0;
 	int32_t texHeight	= 0;
@@ -268,11 +258,7 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 	FILE* f = fopen(filename, "rb");
 #pragma warning(pop)
 
-#ifdef USE_EXTERNAL_GFX_LIB
-	img::get_img_size(f, &texWidth, &texHeight, &pixel);
-#else
-	load_png_data_to_memory(f, NULL, &texWidth, &texHeight, NULL, NULL);
-#endif
+	getSizeCallback(f, &texWidth, &texHeight, &pixel);
 
 	texObj->width	= texWidth;
 	texObj->height	= texHeight;
@@ -284,7 +270,7 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 	VkDeviceSize memroyAllocationSize = 0;
 	_createTextureImage(device, texObj, texWidth, texHeight, texFormat, tiling, usage, requiredProps, VK_IMAGE_LAYOUT_PREINITIALIZED, &memroyAllocationSize);
 
-	bool copyResult = _copyFromFileToTexture(device, f, texObj, requiredProps, memroyAllocationSize);
+	bool copyResult = _copyFromFileToTexture(device, f, texObj, requiredProps, memroyAllocationSize, loadDataCallback);
 	if (!copyResult)
 	{
 		printf("Error loading texture: %s\n", filename);
@@ -1542,7 +1528,7 @@ void _createSamplerAndImageView(svkDevice& device, svkTexture& _svkTexture, cons
 	_svkTexture.view = _CreateColorImageView(device, _svkTexture.image, texFormat);
 }
 
-svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCommandBuffer outCommandBuffer)
+svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCommandBuffer outCommandBuffer, svkGetImageSizeCallback getSizeCallback, svkLoadImageDataCallback loadDataCallback)
 {
 	const VkFormat texFormat = VK_FORMAT_R8G8B8A8_UNORM;
 
@@ -1550,7 +1536,7 @@ svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCom
 	memclr(_svkTexture);
 	//VkResult err;
 
-	_createTextureImageFromFile(device, filename, &_svkTexture, VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	_createTextureImageFromFile(device, filename, &_svkTexture, VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, getSizeCallback, loadDataCallback);
 
 	// Nothing in the pipeline needs to be complete to start, and don't allow fragment // shader to run until layout transition completes
 	VkCommandBuffer commandBuffer = outCommandBuffer;
