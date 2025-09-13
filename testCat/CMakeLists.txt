@@ -77,6 +77,7 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../
 	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../catui/
+	${PROJECT_SOURCE_DIR}/../catvulkan/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/imgui/
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/

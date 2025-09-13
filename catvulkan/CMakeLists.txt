@@ -9,29 +9,29 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${target})
 
 set(header_files
-	commandAllocator.h
-	descriptorAllocator.h
-	imgui_impl_vulkan.h
-	load_png.h
-	pipelineKey.h
-	simplevulkan.h
-	descriptorDataKey.h
-	vulkanRender.h
-	xxh3.h
-	xxhash.h
-	deviceInfo.h
+	cat/commandAllocator.h
+	cat/descriptorAllocator.h
+	cat/imgui_impl_vulkan.h
+	cat/load_png.h
+	cat/pipelineKey.h
+	cat/simplevulkan.h
+	cat/descriptorDataKey.h
+	cat/vulkanRender.h
+	cat/xxh3.h
+	cat/xxhash.h
+	cat/deviceInfo.h
 )
 
 set(src_files
-	xxhash.c
-	commandAllocator.cpp
-	descriptorAllocator.cpp
-	imgui_impl_vulkan.cpp
-	load_png.cpp
-	pipelineKey.cpp
-	simplevulkan.cpp
-	descriptorDataKey.cpp
-	vulkanRender.cpp
+	cat/xxhash.c
+	cat/commandAllocator.cpp
+	cat/descriptorAllocator.cpp
+	cat/imgui_impl_vulkan.cpp
+	cat/load_png.cpp
+	cat/pipelineKey.cpp
+	cat/simplevulkan.cpp
+	cat/descriptorDataKey.cpp
+	cat/vulkanRender.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
@@ -54,6 +54,7 @@ set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
 target_include_directories(
 	${target}
 	PRIVATE 
+	${PROJECT_SOURCE_DIR}/
 	${PROJECT_SOURCE_DIR}/../
 	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../free/

@@ -5,7 +5,7 @@
 #include "scl/vector.h"
 
 #include "cat/uiRenderOpenGL.h"
-#include "catvulkan/vulkanRender.h"
+#include "cat/vulkanRender.h"
 #include "cat/win32window.h"
 
 #include "cat/def.h"
