@@ -1,6 +1,6 @@
-#include "pipelineKey.h"
+#include "cat/pipelineKey.h"
 
-#include "xxhash.h"
+#include "cat/xxhash.h"
 
 #include <string.h>
 

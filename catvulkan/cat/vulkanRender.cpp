@@ -1,8 +1,8 @@
-#include "catvulkan/vulkanRender.h"
+#include "cat/vulkanRender.h"
 
-#include "catvulkan/descriptorAllocator.h"
-#include "catvulkan/commandAllocator.h"
-#include "catvulkan/xxhash.h"
+#include "cat/descriptorAllocator.h"
+#include "cat/commandAllocator.h"
+#include "cat/xxhash.h"
 
 #include "libimg/image.h"
 

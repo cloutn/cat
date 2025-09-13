@@ -1,5 +1,5 @@
 
-#include "./load_png.h"
+#include "cat/load_png.h"
 
 #include <libpng/png.h>  
 #include <stdio.h>

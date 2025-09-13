@@ -1,7 +1,7 @@
 
-#include "descriptorAllocator.h"
+#include "cat/descriptorAllocator.h"
 
-#include "xxhash.h"
+#include "cat/xxhash.h"
 
 namespace cat {
 
