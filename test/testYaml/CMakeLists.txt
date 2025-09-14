@@ -50,10 +50,8 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR}/../../
+	${PROJECT_SOURCE_DIR}/../../catbase/
 	${PROJECT_SOURCE_DIR}/../../free/
-	#${PROJECT_SOURCE_DIR}/../free/imgui/
-	#${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
-	#${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
 	${PROJECT_SOURCE_DIR}/../../free/rapidyaml/
 	)
 
@@ -92,7 +90,7 @@ target_link_libraries(${target}
 	${debug_links}
 	${release_links})
 
-# Linux系统库依赖
+# Linux系统库依�?
 if(UNIX AND NOT APPLE)
 	target_link_libraries(${target} pthread dl)
 elseif(APPLE)

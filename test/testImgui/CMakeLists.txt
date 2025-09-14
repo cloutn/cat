@@ -52,9 +52,9 @@ target_include_directories(
 	${target}
 	PRIVATE 
 	${PROJECT_SOURCE_DIR}/../../
-	${PROJECT_SOURCE_DIR}/../../catvulkan
-	${PROJECT_SOURCE_DIR}/../../catui
-	${PROJECT_SOURCE_DIR}/../../catui/cat
+	${PROJECT_SOURCE_DIR}/../../catvulkan/
+	${PROJECT_SOURCE_DIR}/../../catvulkan/cat/
+	${PROJECT_SOURCE_DIR}/../../catui/cat/
 	${PROJECT_SOURCE_DIR}/../../free/
 	${PROJECT_SOURCE_DIR}/../../free/imgui/
 	${PROJECT_SOURCE_DIR}/../../free/vulkan/Include/
@@ -71,7 +71,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libtga_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/zlib_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../catui/lib${ARCH}/catui_d.lib
-	debug ${PROJECT_SOURCE_DIR}/../../lib${ARCH}/catvulkan_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../../catvulkan/lib${ARCH}/catvulkan_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/shaderc_combined_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../../free/gles/qualcomm/lib${ARCH}/libEGL.lib
@@ -90,7 +90,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/libtga.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/zlib.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../catui/lib${ARCH}/catui.lib
-	optimized ${PROJECT_SOURCE_DIR}/../../lib${ARCH}/catvulkan.lib
+	optimized ${PROJECT_SOURCE_DIR}/../../catvulkan/lib${ARCH}/catvulkan.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/vulkan/Lib${ARCH}/vulkan-1.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/lib${ARCH}/shaderc_combined.lib
 	optimized ${PROJECT_SOURCE_DIR}/../../free/gles/qualcomm/lib${ARCH}/libEGL.lib
