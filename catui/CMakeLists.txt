@@ -8,13 +8,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${target})
 
 set(header_files
-	cat/imgui_impl_win32.h
 	cat/imguiex.h
 	cat/ImGuizmo.h
 )
 
 set(src_files
-	cat/imgui_impl_win32.cpp
 	cat/imguiex.cpp
 	cat/ImGuizmo.cpp
 )

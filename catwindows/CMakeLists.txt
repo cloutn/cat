@@ -10,11 +10,13 @@ project(${target})
 set(header_files
 	cat/eglWindow.h
 	cat/win32window.h
+	cat/imgui_impl_win32.h
 )
 
 set(src_files
 	cat/eglWindow.cpp
 	cat/win32Window.cpp
+	cat/imgui_impl_win32.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
@@ -39,6 +41,7 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../catwindows/
 	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../free/
+	${PROJECT_SOURCE_DIR}/../free/imgui/
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	)
 

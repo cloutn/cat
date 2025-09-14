@@ -9,7 +9,7 @@
 #include <vulkan/vulkan.h>
 
 #include <assert.h>
-#include <windows.h>
+//#include <windows.h>
 
 // Note: callback types are defined in simplevulkan.h
 
