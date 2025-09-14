@@ -9,6 +9,7 @@ project(${target})
 
 set(header_files
 	cat/box.h
+	cat/camera.h
 	cat/cgltf_util.h
 	cat/color.h
 	cat/def.h
@@ -28,6 +29,7 @@ set(header_files
 
 set(src_files
 	cat/box.cpp
+	cat/camera.cpp
 	cat/cgltf.c
 	cat/cgltf_util.c
 	cat/color.cpp

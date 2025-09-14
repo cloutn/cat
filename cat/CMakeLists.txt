@@ -11,7 +11,6 @@ project(${target})
 set(header_files
 	animation.h
 	animationChannel.h
-	camera.h
 	env.h
 	gltf_raw_render.h
 	grid.h
@@ -19,7 +18,7 @@ set(header_files
 	mesh.h
 	object.h
 	primitive.h
-	resources.h
+	#resources.h
 	scene.h
 	shader.h
 	shader_gles.h
@@ -39,7 +38,6 @@ endif()
 set(src_files
 	animation.cpp
 	animationChannel.cpp
-	camera.cpp
 	env.cpp
 	gltf_raw_render.cpp
 	grid.cpp
@@ -47,7 +45,7 @@ set(src_files
 	mesh.cpp
 	object.cpp
 	primitive.cpp
-	resources.cpp
+	#resources.cpp
 	scene.cpp
 	shader.cpp
 	shader_gles.cpp
