@@ -155,7 +155,24 @@ static void CleanupVulkanWindow()
 	// Cleanup surface
 	svkDestroySurface(g_Instance, g_svkDevice, g_svkSurface);
 	
-    ImGui_ImplVulkanH_DestroyWindow(g_Instance, g_Device, &g_MainWindowData, g_Allocator);
+    // CRITICAL: Cannot call ImGui_ImplVulkanH_DestroyWindow() here!
+    // Reason: All Vulkan resources (Fences, CommandBuffers, Semaphores) are managed by svk system
+    // and have already been destroyed by svkDestroyFrames() above.
+    // ImGui_ImplVulkanH_DestroyWindow() would attempt to destroy already-freed resources, causing crashes.
+    // The actual resource destruction occurs in svkDestroyFrames() at simplevulkan.cpp:1014-1021
+    // ImGui_ImplVulkanH_DestroyWindow(g_Instance, g_Device, &g_MainWindowData, g_Allocator);
+    
+    // Only free ImGui's allocated memory structures, do not touch any Vulkan resources
+    if (g_MainWindowData.Frames)
+    {
+        IM_FREE(g_MainWindowData.Frames);
+        g_MainWindowData.Frames = nullptr;
+    }
+    if (g_MainWindowData.FrameSemaphores)
+    {
+        IM_FREE(g_MainWindowData.FrameSemaphores);
+        g_MainWindowData.FrameSemaphores = nullptr;
+    }
 }
 
 static void My_FrameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data, int frameIndex)
