@@ -78,7 +78,7 @@ def generate_tests():
 def all():
     unzip_all()
     build_all()
-    generate_testCat()
+    generate_all()
 
 def generate_all():
     funcs = []
