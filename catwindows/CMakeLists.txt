@@ -1,7 +1,6 @@
-
 cmake_minimum_required(VERSION 3.22)
 
-set(target cat)
+set(target catwindows)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -9,47 +8,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(${target})
 
 set(header_files
-	animation.h
-	animationChannel.h
-	env.h
-	gltf_raw_render.h
-	grid.h
-	material.h
-	mesh.h
-	object.h
-	primitive.h
-	#resources.h
-	scene.h
-	shader.h
-	shader_gles.h
-	shaderCache.h
-	shaderMacro.h
-	skin.h
-	#uiRenderOpenGL.h
-	#eglWindow.h
-	terrain.h
+	cat/eglWindow.h
+	cat/win32window.h
 )
 
 set(src_files
-	animation.cpp
-	animationChannel.cpp
-	env.cpp
-	gltf_raw_render.cpp
-	grid.cpp
-	material.cpp
-	mesh.cpp
-	object.cpp
-	primitive.cpp
-	#resources.cpp
-	scene.cpp
-	shader.cpp
-	shader_gles.cpp
-	shaderCache.cpp
-	shaderMacro.cpp
-	skin.cpp
-	#uiRenderOpenGL.cpp
-	#eglWindow.cpp
-	terrain.cpp
+	cat/eglWindow.cpp
+	cat/win32Window.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
@@ -69,22 +34,19 @@ set_target_properties(${target} PROPERTIES DEBUG_POSTFIX _d)
 
 target_include_directories(
 	${target}
-	PRIVATE 
+	PRIVATE
 	${PROJECT_SOURCE_DIR}/../
+	${PROJECT_SOURCE_DIR}/../catwindows/
 	${PROJECT_SOURCE_DIR}/../catbase/
-	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	${PROJECT_SOURCE_DIR}/../free/
-	${PROJECT_SOURCE_DIR}/../free/rapidyaml/
-	${PROJECT_SOURCE_DIR}/../free/vulkan/Include/
+	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
 	)
 
-#add_definitions(-DOPENGL_ES -DGFX_ENABLE_IMAGE)
-add_definitions(-DGFX_ENABLE_IMAGE)
+add_definitions(-DOPENGL_ES)
 
 if(WIN32)
   add_definitions(-DUNICODE -D_UNICODE)
   #add_definitions("/wd4819") 
   add_definitions("/source-charset:utf-8")
 endif(WIN32)
-
 

@@ -98,3 +98,6 @@ build64_visualstudio
 /catvulkan/lib64
 /test/testImgui/bin
 /imgui.ini
+/catwindows/lib64
+/cpp-dependencies
+/*.dot

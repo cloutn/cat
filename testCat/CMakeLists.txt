@@ -37,7 +37,7 @@ endif()
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/scl ${PROJECT_SOURCE_DIR}/../free/scl/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../catbase ${PROJECT_SOURCE_DIR}/../catbase/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../catui ${PROJECT_SOURCE_DIR}/../catui/build${ARCH}${BUILD_SUFFIX})
-#add_subdirectory(${PROJECT_SOURCE_DIR}/../free/gfx ${PROJECT_SOURCE_DIR}/../free/gfx/build${ARCH}${BUILD_SUFFIX})
+add_subdirectory(${PROJECT_SOURCE_DIR}/../catwindows ${PROJECT_SOURCE_DIR}/../catwindows/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/libimg ${PROJECT_SOURCE_DIR}/../free/libimg/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/imgui ${PROJECT_SOURCE_DIR}/../free/imgui/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/jpeg_turbo ${PROJECT_SOURCE_DIR}/../free/jpeg_turbo/build${ARCH}${BUILD_SUFFIX})
@@ -82,7 +82,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
 add_executable(${target} ${src_files} ${header_files})
 
-add_dependencies(${target} scl catbase catui libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catvulkan rapidyaml glm)
+add_dependencies(${target} scl catbase catui catvulkan catwindows libimg imgui jpeg_turbo libktx libpng libtga zlib spirv_cross cat catvulkan rapidyaml glm)
 
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin${ARCH})
 set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin${ARCH})
@@ -94,6 +94,7 @@ target_include_directories(
 	${PROJECT_SOURCE_DIR}/../catbase/
 	${PROJECT_SOURCE_DIR}/../catui/
 	${PROJECT_SOURCE_DIR}/../catvulkan/
+	${PROJECT_SOURCE_DIR}/../catwindows/
 	${PROJECT_SOURCE_DIR}/../free/
 	${PROJECT_SOURCE_DIR}/../free/imgui/
 	${PROJECT_SOURCE_DIR}/../free/gles/qualcomm/include/
@@ -107,6 +108,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../catbase/lib${ARCH}/catbase_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../catui/lib${ARCH}/catui_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../catvulkan/lib${ARCH}/catvulkan_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../catwindows/lib${ARCH}/catwindows_d.lib
 	#debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui_d.lib
@@ -130,6 +132,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../catbase/lib${ARCH}/catbase.lib
 	optimized ${PROJECT_SOURCE_DIR}/../catui/lib${ARCH}/catui.lib
 	optimized ${PROJECT_SOURCE_DIR}/../catvulkan/lib${ARCH}/catvulkan.lib
+	optimized ${PROJECT_SOURCE_DIR}/../catwindows/lib${ARCH}/catwindows.lib
 	#optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/gfx.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/libimg.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/imgui.lib
