@@ -312,6 +312,14 @@ cat::Object* Object::skinRoot()
 	return (NULL == m_skin) ? NULL : m_skin->root();
 }
 
+cat::Box Object::boundingBox() const
+{
+	if (m_mesh != NULL)
+		return m_mesh->boundingBox();
+	else
+		return Box();
+}
+
 void Object::releaseObjectIDMap()
 {
 	if (NULL == s_objectIDMap)

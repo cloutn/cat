@@ -2,6 +2,7 @@
 
 #include "cat/objectIDMap.h"
 #include "cat/transform.h"
+#include "cat/box.h"
 
 #include "scl/type.h"
 #include "scl/matrix.h"
@@ -71,6 +72,7 @@ public:
 	bool						hasSkin						() const { return skin() != NULL; }
 	Object*						skinRoot					();
 	const Object*				skinRoot					() const { return skinRoot(); }
+	Box							boundingBox					() const;
 
 	// static 
 	static Object*				objectByID					(const int id) { return _objectIDMap().get(id); }

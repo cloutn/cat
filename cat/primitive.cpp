@@ -643,6 +643,19 @@ scl::varray<vector3> Primitive::vertexPositions()
 	return result;
 }
 
+
+Box Primitive::boundingBox()
+{
+	Box box;
+	scl::varray<vector3> positions = vertexPositions();
+	for (int i = 0; i < positions.size(); ++i)
+	{
+		vector3& v = positions[i];
+		box.encapsulate(v);
+	}
+	return box;
+}
+
 //const VertexAttrMapper* Primitive::vertexAttrMapper()
 //{
 //	if (m_vertexAttrMapperIndex == -1)

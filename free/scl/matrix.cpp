@@ -388,16 +388,16 @@ matrix matrix::rotate_zyx_radian(float x, float y, float z)
 	return m;
 }
 
-matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ, z_range nearFarMapping)
+matrix matrix::ortho(float fovy, float aspect, float nearZ, float farZ, float focus_z, z_range nearFarMapping)
 {
 	matrix m;
-	ortho(m, fovy, aspect, nearZ, farZ, nearFarMapping);
+	ortho(m, fovy, aspect, nearZ, farZ, focus_z, nearFarMapping);
 	return m;
 }
 
-void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ, z_range nearFarMapping)
+void matrix::ortho(matrix& m, float fovy, float aspect, float nearZ, float farZ, float focus_z, z_range nearFarMapping)
 {
-	float frustumHeight = tanf(fovy / 360.0f * PI) * nearZ;
+	float frustumHeight = tanf(fovy / 360.0f * PI) * focus_z;
 	float frustumWidth = frustumHeight * aspect;
 	matrix::volume(m, -frustumWidth, frustumWidth, -frustumHeight, frustumHeight, nearZ, farZ, nearFarMapping);
 }

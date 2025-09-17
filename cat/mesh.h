@@ -27,6 +27,7 @@ public:
 	void			setParent		(Object* p) { m_parent = p ;}
 	const String&	name			() const { return m_name; }
 	void			setEnableSkin	(bool enable);
+	Box				boundingBox		();
 
 private:
 	scl::varray<Primitive*>			m_primitives;

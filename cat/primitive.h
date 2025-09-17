@@ -3,6 +3,7 @@
 
 #include "cat/IRender.h"
 #include "cat/string.h"
+#include "cat/box.h"
 
 #include "scl/vector.h"
 #include "scl/varray.h"
@@ -82,6 +83,8 @@ public:
 	scl::vector3				vertexPosition		(const int vertexIndex);
 	void						vertexPositions		(scl::vector3* positions, int& vertexCount, int positionsCapacity);
 	scl::varray<scl::vector3>	vertexPositions		();
+
+	Box							boundingBox			();
 
 private:
 	void						_loadVertex			(const cgltf_primitive&	primitive, IRender* render);

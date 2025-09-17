@@ -354,6 +354,9 @@ void MainGUI::_processGizmo()
 	if (NULL == object)
 		return;
 
+	// TODO!!! 这个 skinRoot 没有 m_mesh，会影响后面计算 camera->setOrthoRefPosition
+	//	但是 m_client->getSelectObject() 如果是 skinMesh，又会导致拖动 gizmo 的 xyz 轴的的时候，视觉上没有发生位移，因为skinMesh位置是由 Skin 确定的，需要挪动 skinRoot
+	//	所以这里需要想想怎么办！
 	if (object->hasSkin())
 		object = object->skinRoot();
 
@@ -378,6 +381,7 @@ void MainGUI::_processGizmo()
 	bool ortho = camera->ortho();
 	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, 0.2f, ImVec2(100, 100), ImVec2(128, 128), 0x20A0A0A0, ortho);
 	camera->setOrtho(ortho);
+	camera->setOrthoRefPosition(m_client->getSelectObject()->boundingBox().center());
 
 	if (!(viewMatrixAfter == camera->viewMatrix()))
 	{

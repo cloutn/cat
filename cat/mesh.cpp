@@ -92,6 +92,22 @@ void Mesh::setEnableSkin(bool enable)
 }
 
 
+Box Mesh::boundingBox()
+{
+	Box allBox;
+	for (int i = 0; i < m_primitives.size(); ++i)
+	{
+		Primitive* prim = m_primitives[i];
+		if (NULL == prim)
+			continue;
+		Box b = prim->boundingBox();
+		if (b.is_empty())
+			continue;
+		allBox += b;
+	}
+	return allBox;
+}
+
 } // namespace cat
 
 

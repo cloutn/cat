@@ -51,6 +51,38 @@ Box Box::combine(const Box& a, const Box& b)
 	return r;
 }
 
+cat::Box& Box::encapsulate(const scl::vector3& p)
+{
+	ensureValid();
+
+	m_min.x = scl::min(m_min.x, p.x);
+	m_min.y = scl::min(m_min.y, p.y);
+	m_min.z = scl::min(m_min.z, p.z);
+
+	m_max.x = scl::max(m_max.x, p.x);
+	m_max.y = scl::max(m_max.y, p.y);
+	m_max.z = scl::max(m_max.z, p.z);
+	
+	return *this;
+}
+
+
+cat::Box& Box::encapsulate(const Box& other)
+{
+	ensureValid();
+
+	m_min.x = scl::min(m_min.x, other.m_min.x);
+	m_min.y = scl::min(m_min.y, other.m_min.y);
+	m_min.z = scl::min(m_min.z, other.m_min.z);
+
+	m_max.x = scl::max(m_max.x, other.m_max.x);
+	m_max.y = scl::max(m_max.y, other.m_max.y);
+	m_max.z = scl::max(m_max.z, other.m_max.z);
+	
+	return *this;
+}
+
+
 bool Box::intersect(const Box& other) const
 {
 	if ((m_min.x > other.m_max.x) || (other.m_min.x > m_max.x))

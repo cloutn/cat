@@ -136,8 +136,9 @@ public:
 	static void		frustum					(matrix& m, float l, float r, float b, float t, float n, float f, z_range _z_range);
 	static matrix	frustum					(float l, float r, float b, float t, float n, float f, z_range _z_range) { matrix m; frustum(m, l, r, b, t, n, f, _z_range); return m;}
 
-	static void		ortho					(scl::matrix& m, float fovy, float aspect, float near_z, float far_z, z_range _z_range = z_range::negative_one_to_one);
-	static matrix	ortho					(float fovy, float aspect, float near_z, float far_z, z_range _z_range = z_range::negative_one_to_one);
+	// focus_z is used to determine the Z distance to the camera in otho, if you dont' care it, set it to near_z.
+	static void		ortho					(scl::matrix& m, float fovy, float aspect, float near_z, float far_z, float focus_z, z_range _z_range = z_range::negative_one_to_one);
+	static matrix	ortho					(float fovy, float aspect, float near_z, float far_z, float focus_z, z_range _z_range = z_range::negative_one_to_one);
 	static void		volume					(scl::matrix& m, float left, float right, float bottom, float top, float near_z, float far_z, z_range _z_range);
 	static matrix	volume					(float left, float right, float bottom, float top, float near_z, float far_z, z_range _z_range) { matrix m; volume(m, left, right, bottom, top, near_z, far_z, _z_range); return m;}
 
