@@ -101,3 +101,4 @@ build64_visualstudio
 /catwindows/lib64
 /cpp-dependencies
 /*.dot
+/test/testCatbase/bin64/Debug

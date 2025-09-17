@@ -7,35 +7,31 @@ namespace cat {
 class Box
 {
 public:
-	const scl::vector3&		center		() const					{ return m_center; }
-	void					setCenter	(const scl::vector3& v)		{ m_center = v; }
-	const scl::vector3&		extend		() const					{ return m_extend; }
-	void					setExtend	(const scl::vector3& v)		{ m_extend = v; }
+	Box() : m_min(scl::vector3::zero()), m_max(scl::vector3::zero()) {}
+	Box(const scl::vector3& _min, const scl::vector3& _max) : m_min(_min), m_max(_max) { ensureValid(); }
 
-	enum class Type : uint8
-	{
-		MinMax,
-		CenterExtend,
-	};
+	void					set				(const scl::vector3& _min, const scl::vector3& _max) { m_min = _min; m_max = _max; ensureValid(); }
+	const scl::vector3&		min				() const					{ return m_min; }
+	const scl::vector3&		max				() const					{ return m_max; }
+	void					setMinDirect	(const scl::vector3& v)		{ m_min = v; }		
+	void					setMaxDirect	(const scl::vector3& v)		{ m_max = v; }	
+	
+	Box&					intersection	(const Box& box);		
+	Box&					combine			(const Box& box);	
+	static Box				intersection	(const Box& a, const Box& b);
+	static Box				combine			(const Box& a, const Box& b);
+
+	bool					intersect		(const Box& other) const;
+	void					ensureValid		();
 
 private:
-	union 
-	{
-		scl::vector3 m_center;
-		scl::vector3 m_min;
-
-	};
-	union
-	{
-		scl::vector3 m_extend;
-		scl::vector3 m_max;
-	};
-	Type m_type = Type::MinMax;
+	scl::vector3			m_min;
+	scl::vector3			m_max;
 }; 
 
 
 
-} // namesapce cat
+} // namespace cat
 
 
 
