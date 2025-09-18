@@ -27,6 +27,72 @@ const	int64	MIN_INT64	= 0x8000000000000000;
 const float MATH_FLOAT_EPSILON = 1e-6;
 const double MATH_DOUBLE_EPSILON = 1e-6;
 
+// ===============  Integer Limits  =============== 
+constexpr int32		SCL_INT8_MIN			= -128;											// -128
+constexpr int32		SCL_INT8_MAX			= 127;											//  127
+constexpr uint32	SCL_UINT8_MAX			= 255;											//  255
+constexpr int32		SCL_INT16_MIN			= -32768;										// -32768
+constexpr int32		SCL_INT16_MAX			= 32767;										//  32767
+constexpr uint32	SCL_UINT16_MAX			= 65535;										//  65535
+constexpr int32		SCL_INT32_MIN			= static_cast<int32>(0x80000000);				// -2147483648
+constexpr int32		SCL_INT32_MAX			= 0x7FFFFFFF;									//  2147483647
+constexpr uint32	SCL_UINT32_MAX			= 0xFFFFFFFFu;									//  4294967295
+constexpr int64		SCL_INT64_MIN			= static_cast<int64>(0x8000000000000000ULL);	// -9223372036854775808
+constexpr int64		SCL_INT64_MAX			= 0x7FFFFFFFFFFFFFFFLL;							//  9223372036854775807
+constexpr uint64	SCL_UINT64_MAX			= 0xFFFFFFFFFFFFFFFFuLL;						// 18446744073709551615
+
+
+// ===============  Floating-Point Limits  ===============
+constexpr float		SCL_FLOAT_MIN				= 1.1754943508222875e-38f;						// smallest positive normal
+constexpr float		SCL_FLOAT_MAX				= 3.4028234663852886e+38f;						// largest finite value
+constexpr float		SCL_FLOAT_EPSILON			= 1.1920928955078125e-7f;						// 1 ULP
+constexpr double	SCL_DOUBLE_MIN				= 2.2250738585072014e-308;
+constexpr double	SCL_DOUBLE_MAX				= 1.7976931348623157e+308;
+constexpr double	SCL_DOUBLE_EPSILON			= 2.2204460492503131e-16;
+
+// ===============  Floating-Point Special Values  =============== 
+// Bit patterns are IEEE-754 compliant
+union				FloatUnion				{ uint32 u; float f; };
+union				DoubleUnion				{ uint64 u; double f; };
+constexpr float		SCL_FLOAT_INFINITY		() noexcept { return FloatUnion{ 0x7F800000u }.f; }	// positive infinity
+constexpr float		SCL_FLOAT_NEG_INFINITY	() noexcept { return -SCL_FLOAT_INFINITY(); }
+constexpr float		SCL_FLOAT_QNAN			() noexcept { return FloatUnion{ 0x7FC00000u }.f; }	// quiet NaN: silent on use; 
+constexpr float		SCL_FLOAT_SNAN			() noexcept { return FloatUnion{ 0x7FA00000u }.f; }	// signaling NaN: raises exception when touched
+constexpr double	SCL_DOUBLE_INFINITY		() noexcept { return DoubleUnion{ 0x7FF0000000000000uLL }.f; }
+constexpr double	SCL_DOUBLE_NEG_INFINITY	() noexcept { return -SCL_DOUBLE_INFINITY(); }
+constexpr double	SCL_DOUBLE_QNAN			() noexcept { return DoubleUnion{ 0x7FF8000000000000uLL }.f; }	// quiet NaN: silent on use; 
+constexpr double	SCL_DOUBLE_SNAN			() noexcept { return DoubleUnion{ 0x7FF4000000000000uLL }.f; }	// signaling NaN: raises exception when touched
+
+// Helper functions for special float values (no std library dependency)
+inline bool is_nan(float x) 
+{
+	// NaN has the property that it's not equal to itself
+	return x != x;
+}
+
+inline bool is_inf(float x)
+{
+	// Use bit manipulation to detect infinity
+	FloatUnion u;
+	u.f = x;
+	// Infinity: exponent = 0x7F800000 (all 1s in exponent), mantissa = 0
+	return (u.u & 0x7F800000) == 0x7F800000 && (u.u & 0x007FFFFF) == 0;
+}
+
+inline bool is_nan(double x)
+{
+	return x != x;
+}
+
+inline bool is_inf(double x)
+{
+	DoubleUnion u;
+	u.f = x;
+	// Infinity: exponent = 0x7FF0000000000000 (all 1s in exponent), mantissa = 0
+	return (u.u & 0x7FF0000000000000ULL) == 0x7FF0000000000000ULL && (u.u & 0x000FFFFFFFFFFFFFULL) == 0;
+}
+
+
 //求绝对值
 template<typename T> 
 inline T absolute(T x)
@@ -102,6 +168,25 @@ inline T clamp(const T v, const T _min, const T _max)
 inline bool float_equal(const float a, const float b, const float precision = MATH_FLOAT_EPSILON)
 {
 	assert(precision < 0.1f);
+	
+	// Handle special cases first
+	// If both are NaN, consider them equal
+	if (is_nan(a) && is_nan(b))
+		return true;
+	
+	// If only one is NaN, they are not equal
+	if (is_nan(a) || is_nan(b))
+		return false;
+	
+	// If both are infinity with same sign, they are equal
+	if (is_inf(a) && is_inf(b))
+		return (a > 0) == (b > 0);  // Same sign check
+	
+	// If only one is infinity, they are not equal
+	if (is_inf(a) || is_inf(b))
+		return false;
+	
+	// Normal case: use precision comparison
 	return absolute(a - b) <= precision;
 }
 
@@ -109,6 +194,32 @@ inline bool float_equal(const float a, const float b, const float precision = MA
 inline bool float_is_zero(const float a, const float precision = MATH_FLOAT_EPSILON)
 {
 	return float_equal(a, 0, precision);
+}
+
+//判断双精度浮点数是否相等
+inline bool double_equal(const double a, const double b, const double precision = MATH_DOUBLE_EPSILON)
+{
+	assert(precision < 0.1);
+	
+	// Handle special cases first
+	// If both are NaN, consider them equal
+	if (is_nan(a) && is_nan(b))
+		return true;
+	
+	// If only one is NaN, they are not equal
+	if (is_nan(a) || is_nan(b))
+		return false;
+	
+	// If both are infinity with same sign, they are equal
+	if (is_inf(a) && is_inf(b))
+		return (a > 0) == (b > 0);  // Same sign check
+	
+	// If only one is infinity, they are not equal
+	if (is_inf(a) || is_inf(b))
+		return false;
+	
+	// Normal case: use precision comparison
+	return absolute(a - b) <= precision;
 }
 
 

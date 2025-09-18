@@ -159,6 +159,11 @@ float vector3::dot(const vector3& v) const
 	return r;
 }
 
+vector3 vector3::absolute() const
+{
+	return { scl::absolute(x), scl::absolute(y), scl::absolute(z) };
+}
+
 float vector3::cosa( const vector3& v1, const vector3& v2 )
 {
 	//计算叉积

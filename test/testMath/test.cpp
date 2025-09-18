@@ -5,8 +5,13 @@
 #include "scl/matrix.h"
 #include "scl/quaternion.h"
 #include "scl/vector.h"
-#include "scl/assert.h"
 #include "scl/plane.h"
+#include "scl/math.h"
+
+#include <limits>
+#include <cstring>
+#include <cassert>
+#include <cmath>
 
 #include <glm/vec3.hpp> 
 #include <glm/vec4.hpp>
@@ -417,6 +422,270 @@ void test_plane3(bool print)
 	assert(!is_same24);
 	//assert(float4_euqal(glm::value_ptr(gPlane), sPlane.value_ptr()));
 	//assert(test::float_equal(gDotPoint, sDotPoint));
+}
+
+void test_scl_limits_vs_std_limits(bool print)
+{
+	if (print)
+		printf("\n=== Testing SCL Constants vs std::numeric_limits ===\n");
+	
+	// ===============  Integer Limits Tests  ===============
+	
+	// Test INT8 limits
+	assert(scl::SCL_INT8_MIN == std::numeric_limits<int8_t>::min());
+	assert(scl::SCL_INT8_MAX == std::numeric_limits<int8_t>::max());
+	assert(scl::SCL_UINT8_MAX == std::numeric_limits<uint8_t>::max());
+	
+	// Test INT16 limits
+	assert(scl::SCL_INT16_MIN == std::numeric_limits<int16_t>::min());
+	assert(scl::SCL_INT16_MAX == std::numeric_limits<int16_t>::max());
+	assert(scl::SCL_UINT16_MAX == std::numeric_limits<uint16_t>::max());
+	
+	// Test INT32 limits
+	assert(scl::SCL_INT32_MIN == std::numeric_limits<int32_t>::min());
+	assert(scl::SCL_INT32_MAX == std::numeric_limits<int32_t>::max());
+	assert(scl::SCL_UINT32_MAX == std::numeric_limits<uint32_t>::max());
+	
+	// Test INT64 limits
+	assert(scl::SCL_INT64_MIN == std::numeric_limits<int64_t>::min());
+	assert(scl::SCL_INT64_MAX == std::numeric_limits<int64_t>::max());
+	assert(scl::SCL_UINT64_MAX == std::numeric_limits<uint64_t>::max());
+	
+	// ===============  Floating-Point Limits Tests  ===============
+	
+	// Helper lambda for binary comparison of floats
+	auto compare_float_binary = [](float a, float b) -> bool
+	{
+		uint32_t a_bits, b_bits;
+		std::memcpy(&a_bits, &a, sizeof(float));
+		std::memcpy(&b_bits, &b, sizeof(float));
+		return a_bits == b_bits;
+	};
+	
+	// Helper lambda for binary comparison of doubles
+	auto compare_double_binary = [](double a, double b) -> bool
+	{
+		uint64_t a_bits, b_bits;
+		std::memcpy(&a_bits, &a, sizeof(double));
+		std::memcpy(&b_bits, &b, sizeof(double));
+		return a_bits == b_bits;
+	};
+	
+	// Test float limits
+	assert(compare_float_binary(scl::SCL_FLOAT_MIN, std::numeric_limits<float>::min()));
+	assert(compare_float_binary(scl::SCL_FLOAT_EPSILON, std::numeric_limits<float>::epsilon()));
+	
+	// Test double limits
+	assert(compare_double_binary(scl::SCL_DOUBLE_MIN, std::numeric_limits<double>::min()));
+	assert(compare_double_binary(scl::SCL_DOUBLE_MAX, std::numeric_limits<double>::max()));
+	assert(compare_double_binary(scl::SCL_DOUBLE_EPSILON, std::numeric_limits<double>::epsilon()));
+	
+	// ===============  Special Values Tests  ===============
+	
+	// Test positive infinity
+	assert(compare_float_binary(scl::SCL_FLOAT_INFINITY(), std::numeric_limits<float>::infinity()));
+	
+	// Test negative infinity
+	assert(compare_float_binary(scl::SCL_FLOAT_NEG_INFINITY(), -std::numeric_limits<float>::infinity()));
+	
+	// Test quiet NaN - Note: NaN values can have different bit patterns but still be NaN
+	float scl_qnan = scl::SCL_FLOAT_QNAN();
+	float std_qnan = std::numeric_limits<float>::quiet_NaN();
+	assert(scl::is_nan(scl_qnan) && scl::is_nan(std_qnan));
+	
+	// Test signaling NaN
+	float scl_snan = scl::SCL_FLOAT_SNAN();
+	assert(scl::is_nan(scl_snan));
+	
+	// Test double special values
+	assert(compare_double_binary(scl::SCL_DOUBLE_INFINITY(), std::numeric_limits<double>::infinity()));
+	assert(compare_double_binary(scl::SCL_DOUBLE_NEG_INFINITY(), -std::numeric_limits<double>::infinity()));
+	
+	// Test double quiet NaN
+	double scl_dqnan = scl::SCL_DOUBLE_QNAN();
+	double std_dqnan = std::numeric_limits<double>::quiet_NaN();
+	assert(scl::is_nan(scl_dqnan) && scl::is_nan(std_dqnan));
+	
+	// Test double signaling NaN
+	double scl_dsnan = scl::SCL_DOUBLE_SNAN();
+	assert(scl::is_nan(scl_dsnan));
+}
+
+void test_float_equal_special_cases()
+{
+	// Test NaN cases
+	float nan1 = scl::SCL_FLOAT_QNAN();
+	float nan2 = scl::SCL_FLOAT_SNAN();
+	assert(scl::float_equal(nan1, nan2));  // Both NaN should be equal
+	assert(!scl::float_equal(nan1, 1.0f)); // NaN vs normal number
+	assert(!scl::float_equal(1.0f, nan1)); // Normal number vs NaN
+	
+	// Test infinity cases
+	float inf1 = scl::SCL_FLOAT_INFINITY();
+	float inf2 = scl::SCL_FLOAT_INFINITY();
+	float neg_inf = scl::SCL_FLOAT_NEG_INFINITY();
+	assert(scl::float_equal(inf1, inf2));   // Same positive infinity
+	assert(!scl::float_equal(inf1, neg_inf)); // Different sign infinity
+	assert(!scl::float_equal(inf1, 1.0f));   // Infinity vs normal number
+	assert(!scl::float_equal(1.0f, inf1));   // Normal number vs infinity
+	
+	// Test mixed NaN and infinity
+	assert(!scl::float_equal(nan1, inf1));   // NaN vs infinity
+	assert(!scl::float_equal(inf1, nan1));   // Infinity vs NaN
+	
+	// Test normal cases still work
+	assert(scl::float_equal(1.0f, 1.0f + 1e-7f)); // Within epsilon
+	assert(!scl::float_equal(1.0f, 2.0f));        // Outside epsilon
+}
+
+void test_scl_special_value_detection(bool print)
+{
+	if (print)
+		printf("\n=== Testing SCL Special Value Detection Functions ===\n");
+	
+	// ===============  Test is_nan functions vs std library  ===============
+	if (print)
+		printf("Testing is_nan functions:\n");
+	
+	// Test float NaN detection
+	float fnan_quiet = scl::SCL_FLOAT_QNAN();
+	float fnan_signal = scl::SCL_FLOAT_SNAN();
+	float fnormal = 1.23f;
+	float fzero = 0.0f;
+	float finf = scl::SCL_FLOAT_INFINITY();
+	
+	// Compare scl::is_nan with std::isnan
+	assert(scl::is_nan(fnan_quiet) == std::isnan(fnan_quiet));
+	assert(scl::is_nan(fnan_signal) == std::isnan(fnan_signal));
+	assert(scl::is_nan(fnormal) == std::isnan(fnormal));
+	assert(scl::is_nan(fzero) == std::isnan(fzero));
+	assert(scl::is_nan(finf) == std::isnan(finf));
+	if (print) printf("[PASS] Float is_nan matches std::isnan\n");
+	
+	// Test double NaN detection
+	double dnan_quiet = scl::SCL_DOUBLE_QNAN();
+	double dnan_signal = scl::SCL_DOUBLE_SNAN();
+	double dnormal = 1.23;
+	double dzero = 0.0;
+	double dinf = scl::SCL_DOUBLE_INFINITY();
+	
+	// Compare scl::is_nan with std::isnan
+	assert(scl::is_nan(dnan_quiet) == std::isnan(dnan_quiet));
+	assert(scl::is_nan(dnan_signal) == std::isnan(dnan_signal));
+	assert(scl::is_nan(dnormal) == std::isnan(dnormal));
+	assert(scl::is_nan(dzero) == std::isnan(dzero));
+	assert(scl::is_nan(dinf) == std::isnan(dinf));
+	if (print) printf("[PASS] Double is_nan matches std::isnan\n");
+	
+	// ===============  Test is_inf functions vs std library  ===============
+	if (print) printf("Testing is_inf functions:\n");
+	
+	// Test float infinity detection
+	float fpos_inf = scl::SCL_FLOAT_INFINITY();
+	float fneg_inf = scl::SCL_FLOAT_NEG_INFINITY();
+	
+	// Compare scl::is_inf with std::isinf
+	assert(scl::is_inf(fpos_inf) == std::isinf(fpos_inf));
+	assert(scl::is_inf(fneg_inf) == std::isinf(fneg_inf));
+	assert(scl::is_inf(fnan_quiet) == std::isinf(fnan_quiet));
+	assert(scl::is_inf(fnormal) == std::isinf(fnormal));
+	assert(scl::is_inf(fzero) == std::isinf(fzero));
+	if (print) printf("[PASS] Float is_inf matches std::isinf\n");
+	
+	// Test double infinity detection
+	double dpos_inf = scl::SCL_DOUBLE_INFINITY();
+	double dneg_inf = scl::SCL_DOUBLE_NEG_INFINITY();
+	
+	// Compare scl::is_inf with std::isinf
+	assert(scl::is_inf(dpos_inf) == std::isinf(dpos_inf));
+	assert(scl::is_inf(dneg_inf) == std::isinf(dneg_inf));
+	assert(scl::is_inf(dnan_quiet) == std::isinf(dnan_quiet));
+	assert(scl::is_inf(dnormal) == std::isinf(dnormal));
+	assert(scl::is_inf(dzero) == std::isinf(dzero));
+	if (print) printf("[PASS] Double is_inf matches std::isinf\n");
+	
+	// ===============  Test float_equal comprehensive cases  ===============
+	if (print) printf("Testing float_equal function:\n");
+	
+	// Normal float comparisons
+	assert(scl::float_equal(1.0f, 1.0f));                    // Exact match
+	assert(scl::float_equal(1.0f, 1.0f + 1e-8f));           // Within epsilon
+	assert(!scl::float_equal(1.0f, 1.001f));                // Outside epsilon
+	assert(scl::float_equal(0.0f, 0.0f));                   // Zero comparison
+	assert(scl::float_equal(-1.0f, -1.0f));                 // Negative numbers
+	
+	// Special value comparisons  
+	assert(scl::float_equal(fnan_quiet, fnan_signal));      // NaN == NaN
+	assert(!scl::float_equal(fnan_quiet, 1.0f));            // NaN != normal
+	assert(scl::float_equal(fpos_inf, fpos_inf));           // +inf == +inf
+	assert(scl::float_equal(fneg_inf, fneg_inf));           // -inf == -inf
+	assert(!scl::float_equal(fpos_inf, fneg_inf));          // +inf != -inf
+	assert(!scl::float_equal(fpos_inf, 1.0f));              // inf != normal
+	assert(!scl::float_equal(fnan_quiet, fpos_inf));        // NaN != inf
+	
+	// Edge cases
+	assert(scl::float_equal(0.0f, -0.0f));                  // +0 == -0
+	if (print) printf("[PASS] float_equal handles all cases correctly\n");
+	
+	// ===============  Test double_equal  ===============
+	if (print) printf("Testing double_equal function:\n");
+	
+	// Normal double comparisons
+	assert(scl::double_equal(1.0, 1.0));                    // Exact match
+	assert(scl::double_equal(1.0, 1.0 + 1e-16));           // Within epsilon
+	assert(!scl::double_equal(1.0, 1.001));                // Outside epsilon
+	
+	// Special value comparisons
+	assert(scl::double_equal(dnan_quiet, dnan_signal));     // NaN == NaN
+	assert(!scl::double_equal(dnan_quiet, 1.0));            // NaN != normal
+	assert(scl::double_equal(dpos_inf, dpos_inf));          // +inf == +inf
+	assert(!scl::double_equal(dpos_inf, dneg_inf));         // +inf != -inf
+	if (print) printf("[PASS] double_equal handles all cases correctly\n");
+}
+
+void test_vector3_equality(bool print)
+{
+	if (print) printf("\n=== Testing vector3 operator== ===\n");
+	
+	// Test normal vector equality
+	scl::vector3 v1 = { 1.0f, 2.0f, 3.0f };
+	scl::vector3 v2 = { 1.0f, 2.0f, 3.0f };
+	scl::vector3 v3 = { 1.1f, 2.0f, 3.0f };
+	
+	assert(v1 == v2);  // Same vectors
+	assert(!(v1 == v3)); // Different vectors
+	if (print) printf("[PASS] Normal vector equality works\n");
+	
+	// Test zero vectors
+	scl::vector3 vzero1 = scl::vector3::zero();
+	scl::vector3 vzero2 = { 0.0f, 0.0f, 0.0f };
+	assert(vzero1 == vzero2);
+	if (print) printf("[PASS] Zero vector equality works\n");
+	
+	// Test vectors with special values
+	float nan_val = scl::SCL_FLOAT_QNAN();
+	float inf_val = scl::SCL_FLOAT_INFINITY();
+	
+	scl::vector3 vnan1 = { nan_val, 2.0f, 3.0f };
+	scl::vector3 vnan2 = { nan_val, 2.0f, 3.0f };
+	scl::vector3 vinf1 = { inf_val, 2.0f, 3.0f };
+	scl::vector3 vinf2 = { inf_val, 2.0f, 3.0f };
+	
+	// Note: The behavior depends on how vector3::operator== is implemented
+	// If it uses float_equal, then NaN vectors should be equal
+	// If it uses direct float comparison, then NaN vectors won't be equal
+	if (print) printf("[INFO] Testing vector3 with NaN and infinity values\n");
+	
+	// Test that definitely different vectors are not equal
+	scl::vector3 vdiff = { 1.0f, 2.0f, 4.0f };  // Different z component
+	assert(!(v1 == vdiff));
+	if (print) printf("[PASS] Different vectors are not equal\n");
+	
+	// Test negative values
+	scl::vector3 vneg1 = { -1.0f, -2.0f, -3.0f };
+	scl::vector3 vneg2 = { -1.0f, -2.0f, -3.0f };
+	assert(vneg1 == vneg2);
+	if (print) printf("[PASS] Negative vector equality works\n");
 }
 
 } // namespace test

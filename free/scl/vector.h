@@ -55,6 +55,7 @@ public:
 	void	mul_matrix		(const matrix& m);
 	vector3	cross			(const vector3& v);	
 	float	dot				(const vector3& v) const;	
+	vector3 absolute		() const ;
 
 	vector3& 	operator-=	(const vector3& other);
 	vector3& 	operator+=	(const vector3& other);
@@ -89,8 +90,10 @@ public:
 	//线性插值
 	static void			lerp	(const vector3& v1, const vector3& v2, const float t, vector3& result);
 
-	static const vector3& zero() { static vector3 _zero = { 0, 0, 0}; return _zero; }
-	static const vector3& one() { static vector3 _one = { 1, 1, 1}; return _one; }
+	static const vector3& zero			() { static vector3 _zero = { 0, 0, 0}; return _zero; }
+	static const vector3& one			() { static vector3 _one = { 1, 1, 1}; return _one; }
+	static const vector3& infinity		() { static vector3 _infinity = { SCL_FLOAT_INFINITY(), SCL_FLOAT_INFINITY(), SCL_FLOAT_INFINITY() }; return _infinity; }
+	static const vector3& neg_infinity	() { static vector3 _neg_infinity = { SCL_FLOAT_NEG_INFINITY(), SCL_FLOAT_NEG_INFINITY(), SCL_FLOAT_NEG_INFINITY() }; return _neg_infinity; }
 
 	template <typename StreamerT>
 	void map(StreamerT& s)

@@ -7,7 +7,7 @@ namespace cat {
 class Box
 {
 public:
-	Box() : m_min(scl::vector3::zero()), m_max(scl::vector3::zero()) {}
+	Box() : m_min(scl::vector3::infinity()), m_max(scl::vector3::neg_infinity()) {}
 	Box(const scl::vector3& _min, const scl::vector3& _max) : m_min(_min), m_max(_max) { ensureValid(); }
 
 	const scl::vector3&		min				() const					{ return m_min; }
@@ -15,6 +15,7 @@ public:
 	scl::vector3			center			() const					{ return (m_min + m_max) * 0.5f; }
 	scl::vector3			size			() const					{ return m_max - m_min; }
 	bool					is_empty		() const					{ return m_max == m_min; }
+	bool					is_valid		() const					{ return (m_max.absolute() != scl::vector3::infinity()) && (m_min.absolute() != scl::vector3::infinity()); }
 
 	void					set				(const scl::vector3& _min, const scl::vector3& _max) { m_min = _min; m_max = _max; ensureValid(); }
 	void					setMinDirect	(const scl::vector3& v)		{ m_min = v; }		
