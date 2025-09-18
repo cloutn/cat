@@ -93,8 +93,8 @@ void testBox()
 		Box box2({2, 2, 2}, {3, 3, 3});
 		Box result = Box::intersection(box1, box2);
 		// 无交集时返回默认Box（min=max=0）
-		assert(result.min() == vector3::zero());
-		assert(result.max() == vector3::zero());
+		assert(result.min() == vector3::infinity());
+		assert(result.max() == vector3::neg_infinity());
 	}
 
 	// 测试成员交集函数
@@ -141,7 +141,7 @@ void testBox()
 		assert((box.max() == vector3{1, 1, 1}));
 		
 		// 需要手动调用ensureValid来修正
-		box.ensureValid();
+		box.ensureMinMax();
 		assert((box.min() == vector3{1, 1, 1}));
 		assert((box.max() == vector3{2, 2, 2}));
 	}
@@ -258,7 +258,7 @@ void testBox()
 	{
 		Box box;  // Default zero box
 		box.encapsulate({2, 3, 4});
-		assert((box.min() == vector3{0, 0, 0}));  // Zero box min stays
+		assert((box.min() == vector3{2, 3, 4}));  // Zero box min stays
 		assert((box.max() == vector3{2, 3, 4}));
 	}
 
@@ -401,88 +401,87 @@ void testBox()
 		assert((box1.max() == vector3{4, 5, 6}));
 	}
 
-	// Test is_empty() method - default constructor box
+	// Test isEmpty() method - default constructor box
 	{
 		Box box;
-		assert(box.is_empty());  // Default box with min=max=zero should be empty
+		assert(box.isEmpty());  // Default box with min=max=zero should be empty
 	}
 
-	// Test is_empty() method - single point box
+	// Test isEmpty() method - single point box
 	{
 		Box box({2, 3, 4}, {2, 3, 4});
-		assert(box.is_empty());  // Box with min=max should be empty
+		assert(box.isEmpty());  // Box with min=max should be empty
 	}
 
-	// Test is_empty() method - normal box
+	// Test isEmpty() method - normal box
 	{
 		Box box({0, 0, 0}, {1, 1, 1});
-		assert(!box.is_empty());  // Box with min!=max should not be empty
+		assert(!box.isEmpty());  // Box with min!=max should not be empty
 	}
 
-	// Test is_empty() method - negative coordinates single point
+	// Test isEmpty() method - negative coordinates single point
 	{
 		Box box({-5, -3, -1}, {-5, -3, -1});
-		assert(box.is_empty());  // Single point with negative coords should be empty
+		assert(box.isEmpty());  // Single point with negative coords should be empty
 	}
 
-	// Test is_empty() method - negative coordinates normal box
+	// Test isEmpty() method - negative coordinates normal box
 	{
 		Box box({-3, -3, -3}, {-1, -1, -1});
-		assert(!box.is_empty());  // Box with negative coords but min!=max should not be empty
+		assert(!box.isEmpty());  // Box with negative coords but min!=max should not be empty
 	}
 
-	// Test is_empty() method - box created with setMinDirect/setMaxDirect
+	// Test isEmpty() method - box created with setMinDirect/setMaxDirect
 	{
 		Box box;
 		box.setMinDirect({1, 1, 1});
 		box.setMaxDirect({1, 1, 1});
-		assert(box.is_empty());  // Box set to single point should be empty
+		assert(box.isEmpty());  // Box set to single point should be empty
 	}
 
-	// Test is_empty() method - box after intersection with no overlap
+	// Test isEmpty() method - box after intersection with no overlap
 	{
 		Box box1({0, 0, 0}, {1, 1, 1});
 		Box box2({2, 2, 2}, {3, 3, 3});
 		Box result = Box::intersection(box1, box2);
-		assert(result.is_empty());  // No intersection should result in empty box
+		assert(result.isEmpty());  // No intersection should result in empty box
 	}
 
-	// Test is_empty() method - tiny but not empty box
+	// Test isEmpty() method - tiny but not empty box
 	{
 		Box box({0, 0, 0}, {0.001f, 0.001f, 0.001f});
-		assert(!box.is_empty());  // Very small box but min!=max should not be empty
+		assert(!box.isEmpty());  // Very small box but min!=max should not be empty
 	}
 
-	// Test is_empty() method - box modified to be empty via set()
+	// Test isEmpty() method - box modified to be empty via set()
 	{
 		Box box({1, 2, 3}, {4, 5, 6});  // Start with non-empty box
-		assert(!box.is_empty());
+		assert(!box.isEmpty());
 		box.set({7, 7, 7}, {7, 7, 7});  // Set to single point
-		assert(box.is_empty());  // Should now be empty
+		assert(box.isEmpty());  // Should now be empty
 	}
 
-	// Test is_empty() method - box after encapsulating same point multiple times
+	// Test isEmpty() method - box after encapsulating same point multiple times
 	// Note: Current implementation includes default (0,0,0) point, so this creates a non-empty box
 	{
 		Box box;
 		box.encapsulate({1, 2, 3});
 		box.encapsulate({1, 2, 3});  // Encapsulate same point twice
-		// Current behavior: box contains (0,0,0) and (1,2,3), so it's not empty
-		assert(!box.is_empty());  // Current implementation behavior
-		assert((box.min() == vector3{0, 0, 0}));
+		assert(box.isEmpty());  
+		assert((box.min() == vector3{1, 2, 3}));
 		assert((box.max() == vector3{1, 2, 3}));
 	}
 
-	// Test is_empty() method - mixed coordinates single point
+	// Test isEmpty() method - mixed coordinates single point
 	{
 		Box box({-1, 0, 2}, {-1, 0, 2});
-		assert(box.is_empty());  // Mixed sign coordinates but same point should be empty
+		assert(box.isEmpty());  // Mixed sign coordinates but same point should be empty
 	}
 
-	// Test is_empty() method - box one dimension empty
+	// Test isEmpty() method - box one dimension empty
 	{
 		Box box({0, 0, 0}, {1, 1, 0});  // Zero thickness in Z dimension
-		assert(!box.is_empty());  // Still has area in XY plane, not empty
+		assert(!box.isEmpty());  // Still has area in XY plane, not empty
 	}
 
 	// Test demonstrating the "default point inclusion" behavior
@@ -490,16 +489,16 @@ void testBox()
 		Box box1;
 		Box box2({5, 5, 5}, {5, 5, 5});  // Single point box
 		
-		box1.encapsulate({5, 5, 5});  // Should this include (0,0,0)?
+		box1.encapsulate({5, 5, 5});  
 		box2.encapsulate({5, 5, 5});  // This should remain single point
 		
 		// Current behavior: box1 includes both (0,0,0) and (5,5,5)
-		assert(!box1.is_empty());
-		assert((box1.min() == vector3{0, 0, 0}));
+		assert(box1.isEmpty());
+		assert((box1.min() == vector3{5, 5, 5}));
 		assert((box1.max() == vector3{5, 5, 5}));
 		
 		// box2 remains a single point
-		assert(box2.is_empty());
+		assert(box2.isEmpty());
 		assert((box2.min() == vector3{5, 5, 5}));
 		assert((box2.max() == vector3{5, 5, 5}));
 	}

@@ -53,7 +53,7 @@ Box Box::combine(const Box& a, const Box& b)
 
 cat::Box& Box::encapsulate(const scl::vector3& p)
 {
-	ensureValid();
+	ensureMinMax();
 
 	m_min.x = scl::min(m_min.x, p.x);
 	m_min.y = scl::min(m_min.y, p.y);
@@ -69,7 +69,7 @@ cat::Box& Box::encapsulate(const scl::vector3& p)
 
 cat::Box& Box::encapsulate(const Box& other)
 {
-	ensureValid();
+	ensureMinMax();
 
 	m_min.x = scl::min(m_min.x, other.m_min.x);
 	m_min.y = scl::min(m_min.y, other.m_min.y);
@@ -97,8 +97,11 @@ bool Box::intersect(const Box& other) const
 	return true;
 }
 
-void Box::ensureValid()
+void Box::ensureMinMax()
 {
+	if (!isValid())
+		return;
+
 	if (m_min.x > m_max.x)
 		scl::swap(m_min.x, m_max.x);
 
