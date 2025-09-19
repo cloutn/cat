@@ -101,7 +101,7 @@ Box Mesh::boundingBox()
 		if (NULL == prim)
 			continue;
 		Box b = prim->boundingBox();
-		if (b.is_empty())
+		if (b.isEmpty())
 			continue;
 		allBox += b;
 	}

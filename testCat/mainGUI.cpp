@@ -350,15 +350,16 @@ void MainGUI::_fireEvent(GUI_EVENT event, GUIEvent& eventArg)
 
 void MainGUI::_processGizmo()
 {
-	Object* object = m_client->getSelectObject();
-	if (NULL == object)
+	Object* selectObject = m_client->getSelectObject();
+	if (NULL == selectObject)
 		return;
 
 	// TODO!!! 这个 skinRoot 没有 m_mesh，会影响后面计算 camera->setOrthoRefPosition
 	//	但是 m_client->getSelectObject() 如果是 skinMesh，又会导致拖动 gizmo 的 xyz 轴的的时候，视觉上没有发生位移，因为skinMesh位置是由 Skin 确定的，需要挪动 skinRoot
 	//	所以这里需要想想怎么办！
-	if (object->hasSkin())
-		object = object->skinRoot();
+	Object* moveRootObject = selectObject;
+	if (selectObject->hasSkin())
+		moveRootObject = selectObject->skinRoot();
 
 	gizmo::SetOrthographic	(false);	
 	gizmo::SetRect			(0, 0, m_client->getScreenWidth(), m_client->getScreenHeight());
@@ -381,7 +382,7 @@ void MainGUI::_processGizmo()
 	bool ortho = camera->ortho();
 	gizmo::ViewManipulateAxis(viewMatrixAfter.ptr(), projectionMatrix.ptr(), gizmoOperation, gizmo::WORLD, matrix.ptr(), 4.0f, 0.2f, ImVec2(100, 100), ImVec2(128, 128), 0x20A0A0A0, ortho);
 	camera->setOrtho(ortho);
-	camera->setOrthoRefPosition(m_client->getSelectObject()->boundingBox().center());
+	camera->setOrthoRefPosition(selectObject->boundingBox().center());
 
 	if (!(viewMatrixAfter == camera->viewMatrix()))
 	{
@@ -390,11 +391,11 @@ void MainGUI::_processGizmo()
 
 	if (TRANSFORM_TYPE_LOCAL == transformType)
 	{
-		_operateLocal(object, camera, m_client->operateType());
+		_operateLocal(moveRootObject, camera, m_client->operateType());
 	}
 	else if (TRANSFORM_TYPE_GLOBAL == transformType)
 	{
-		_operateGlobal(object, camera, m_client->operateType());
+		_operateGlobal(moveRootObject, camera, m_client->operateType());
 	}
 }
 
