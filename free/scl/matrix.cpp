@@ -631,6 +631,55 @@ void matrix::frustum(matrix& m, float l, float r, float b, float t, float n, flo
 		0,						0,						B,		0);
 }
 
+// Infinite perspective projection matrix
+// https://www.songho.ca/opengl/gl_projectionmatrix.html
+void matrix::frustum_infinite(matrix& m, float l, float r, float b, float t, float n, z_range nearFarMapping)
+{
+	if (r <= l || t <= b || n <= 0)
+		return;
+
+	float A = 0;
+	float B = 0;
+
+	// When far plane is set to infinity, the projection matrix can be simplified
+	switch (nearFarMapping)
+	{
+	case z_range::negative_one_to_one:
+		{
+			A = -1.0f;
+			B = -2.0f * n;
+		}
+		break;
+	case z_range::one_to_negative_one:
+		{
+			A = 1.0f;
+			B = 2.0f * n;
+		}
+		break;
+	case z_range::zero_to_one:
+		{
+			A = 0.0f;
+			B = -n;
+		}
+		break;
+	case z_range::one_to_zero:
+		{
+			A = 0.0f;
+			B = n;
+		}
+		break;
+	default:
+		assert(false);
+		break;
+	}
+
+	m.set(
+		2 * n / (r - l),		0,						0,		0,
+		0,						2 * n / (t - b),		0,		0,
+		(r + l) / (r - l),		(t + b) / (t - b),		A,		-1.0f,
+		0,						0,						B,		0);
+}
+
 //void matrix::frustum_one_to_zero(matrix& m, float l, float r, float b, float t, float n, float f)
 //{
 //	if (r <= l || t <= b || f <= n)

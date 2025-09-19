@@ -135,6 +135,8 @@ public:
 	static matrix	perspective				(float fovy, float aspect, float near_z, float far_z, z_range _z_range = z_range::negative_one_to_one);
 	static void		frustum					(matrix& m, float l, float r, float b, float t, float n, float f, z_range _z_range);
 	static matrix	frustum					(float l, float r, float b, float t, float n, float f, z_range _z_range) { matrix m; frustum(m, l, r, b, t, n, f, _z_range); return m;}
+	static void		frustum_infinite		(matrix& m, float l, float r, float b, float t, float n, z_range _z_range);
+	static matrix	frustum_infinite		(float l, float r, float b, float t, float n, z_range _z_range) { matrix m; frustum_infinite(m, l, r, b, t, n, _z_range); return m;}
 
 	// focus_z is used to determine the Z distance to the camera in otho, if you dont' care it, set it to near_z.
 	static void		ortho					(scl::matrix& m, float fovy, float aspect, float near_z, float far_z, float focus_z, z_range _z_range = z_range::negative_one_to_one);

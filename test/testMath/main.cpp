@@ -10,6 +10,7 @@ int main()
 	test::test_matrix_mul				(false);
 	test::test_camera					(false);
 	test::test_camera_look_at			(false);
+	test::test_frustum_infinite			(false);
 	test::test_decompose				(false);
 	test::test_quaternion				(false);
 	test::test_plane					(false);

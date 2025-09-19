@@ -131,6 +131,75 @@ void test_camera(bool print)
 	//scl::matrix::frustum(m_projection, -w/2, w/2, -h/2, h/2, -100, 100);
 }
 
+void test_frustum_infinite(bool print)
+{
+	// Test infinite frustum projection matrix
+	float w = 1280;
+	float h = 800;
+	float near_z = 0.1f;
+	float aspect = w / h;
+	float fovy = 45.0f; // degrees
+	
+	// Calculate frustum bounds
+	float frustumH = tanf(scl::radian(fovy) / 2.0f) * near_z;
+	float frustumW = frustumH * aspect;
+	
+	// Test different z_range mappings
+	scl::matrix sInfinite_neg1to1 = matrix::frustum_infinite(-frustumW, frustumW, -frustumH, frustumH, near_z, scl::z_range::negative_one_to_one);
+	scl::matrix sInfinite_0to1 = matrix::frustum_infinite(-frustumW, frustumW, -frustumH, frustumH, near_z, scl::z_range::zero_to_one);
+	
+	// Compare with regular frustum using a very large far value to simulate infinity
+	float very_far = 1000000.0f;
+	scl::matrix sRegular_neg1to1 = matrix::frustum(-frustumW, frustumW, -frustumH, frustumH, near_z, very_far, scl::z_range::negative_one_to_one);
+	scl::matrix sRegular_0to1 = matrix::frustum(-frustumW, frustumW, -frustumH, frustumH, near_z, very_far, scl::z_range::zero_to_one);
+	
+	if (print)
+	{
+		printf("Infinite frustum matrix (negative_one_to_one):\n");
+		for (int i = 0; i < 4; ++i)
+		{
+			printf("%.6f %.6f %.6f %.6f\n", 
+				sInfinite_neg1to1.m[i][0], sInfinite_neg1to1.m[i][1], 
+				sInfinite_neg1to1.m[i][2], sInfinite_neg1to1.m[i][3]);
+		}
+		printf("\nRegular frustum matrix with large far (negative_one_to_one):\n");
+		for (int i = 0; i < 4; ++i)
+		{
+			printf("%.6f %.6f %.6f %.6f\n", 
+				sRegular_neg1to1.m[i][0], sRegular_neg1to1.m[i][1], 
+				sRegular_neg1to1.m[i][2], sRegular_neg1to1.m[i][3]);
+		}
+	}
+	
+	// The matrices should be very similar, with the infinite version having exact values
+	// We expect the (2,2) element to be exactly -1.0 for negative_one_to_one mapping
+	// and the (3,2) element to be exactly -2*near for negative_one_to_one mapping
+	
+	float tolerance = 1e-5f;
+	
+	// Check negative_one_to_one mapping
+	assert(std::abs(sInfinite_neg1to1.m[2][2] - (-1.0f)) < tolerance);
+	assert(std::abs(sInfinite_neg1to1.m[3][2] - (-2.0f * near_z)) < tolerance);
+	
+	// Check zero_to_one mapping  
+	assert(std::abs(sInfinite_0to1.m[2][2] - 0.0f) < tolerance);
+	assert(std::abs(sInfinite_0to1.m[3][2] - (-near_z)) < tolerance);
+	
+	// The first two rows should be identical to regular frustum
+	for (int i = 0; i < 2; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			assert(std::abs(sInfinite_neg1to1.m[i][j] - sRegular_neg1to1.m[i][j]) < tolerance);
+		}
+	}
+	
+	if (print)
+	{
+		printf("test_frustum_infinite passed!\n");
+	}
+}
+
 
 void test_camera_look_at(bool print)
 {
