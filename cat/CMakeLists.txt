@@ -28,6 +28,8 @@ set(header_files
 	#uiRenderOpenGL.h
 	#eglWindow.h
 	terrain.h
+	skybox.h
+	light.h
 )
 
 set(src_files
@@ -50,6 +52,8 @@ set(src_files
 	#uiRenderOpenGL.cpp
 	#eglWindow.cpp
 	terrain.cpp
+	skybox.cpp
+	light.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})
