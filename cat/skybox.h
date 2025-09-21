@@ -18,12 +18,10 @@ public:
 	void			setStrength	(const float v) { m_strength = v; }
 
 private:
-	Transform*		_transform	();
 
 private:
 	scl::vector3	m_color;
 	float			m_strength;
-	Transform*		m_transform;
 };
 
 

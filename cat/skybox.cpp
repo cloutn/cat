@@ -2,18 +2,11 @@
 
 namespace cat {
 
-Skybox::Skybox() : 
-	m_transform(NULL)
+Skybox::Skybox() : m_color{1.0f, 1.0f, 1.0f}, m_strength(1.0f)
 {
 
 }
 
-Transform* Skybox::_transform()
-{
-	if (NULL == m_transform)	
-		m_transform = new Transform;
-	return m_transform;
-}
 
 } // namespace cat
 
