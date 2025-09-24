@@ -3,13 +3,10 @@
 #include "cat/objectIDMap.h"
 #include "cat/transform.h"
 #include "cat/box.h"
-#include "cat/component.h"
-#include "cat/def.h"
 
 #include "scl/type.h"
 #include "scl/matrix.h"
 #include "scl/varray.h"
-#include "scl/array.h"
 #include "cat/string.h"
 
 struct cgltf_data;
@@ -94,15 +91,12 @@ private:
 	Mesh*						m_mesh;
 	Skin*						m_skin;
 	scl::varray<Object*>		m_childs;
-	//scl::matrix*				m_matrixWithAnimation;
+	scl::matrix*				m_matrixWithAnimation;
 	Transform*					m_transform;
 	String						m_name;
 	bool						m_enableSkin;
 	int							m_gltfIndex;
 	bool						m_enableAnimation;
-
-	scl::array<Component*, FIX_COMPONENT_TYPE_COUNT>	m_fixComponents;
-	scl::varray<Component*>								m_components;
 
 };  // class Object 
 
