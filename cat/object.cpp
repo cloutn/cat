@@ -33,7 +33,7 @@ Object::Object(Object* parent) :
 	m_parent				(parent),
 	m_mesh					(NULL),
 	m_skin					(NULL),
-	m_matrixWithAnimation	(NULL),
+	//m_matrixWithAnimation	(NULL),
 	m_transform				(NULL),
 	m_enableSkin			(false),
 	m_gltfIndex				(-1),
@@ -47,7 +47,7 @@ Object::~Object()
 	safe_delete(m_skin);
 	safe_delete(m_mesh);
 	safe_delete(m_transform);
-	safe_delete(m_matrixWithAnimation);
+	//safe_delete(m_matrixWithAnimation);
 
 	for (int i = 0; i < m_childs.size(); ++i)
 		delete m_childs[i];
