@@ -30,6 +30,7 @@ set(header_files
 	terrain.h
 	skybox.h
 	light.h
+	component.h
 )
 
 set(src_files
@@ -54,6 +55,7 @@ set(src_files
 	terrain.cpp
 	skybox.cpp
 	light.cpp
+	component.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})

@@ -90,6 +90,14 @@ inline int elem_type_byte(const ELEM_TYPE& type)
 
 static const int MAX_OBJECT_COUNT				= 1024 * 128;
 
+enum FIX_COMPONENT_TYPE
+{
+	FIX_COMPONENT_TYPE_TRANSFORM = 0,
+
+
+	FIX_COMPONENT_TYPE_COUNT,
+};
+
 } // namespace cat 
 
 
