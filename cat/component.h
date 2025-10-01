@@ -25,10 +25,17 @@ public:
 	int a;
 };
 
-template <typename T>
-class ComponentArray
+class ComponentArrayBase
 {
 public:
+	virtual ~ComponentArrayBase() = default;
+};
+
+template <typename T>
+class ComponentArray : public ComponentArrayBase
+{
+public:
+
 	scl::varray<T>		m_components;
 	scl::varray<Entity>	m_entities;
 	

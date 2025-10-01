@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cat/def.h"
+//#include "cat/component.h"
 
 #include "scl/hash_table.h"
 
@@ -8,23 +9,23 @@
 namespace cat {
 
 class Component;
+class ComponentArrayBase;
 
 class World
 {
 public:
-	scl::hash_table<uint64, void*> m_componentArrayTable;
+	scl::hash_table<uint64, ComponentArrayBase*> m_componentArrayTable;
 	
 	int m_entityCounter;
 
 	World();
+	~World();
 
 	//void init();
 	Entity createEntity()
 	{
 		return m_entityCounter++;
 	}
-
-
 	
 	template <typename T>
 	void addComponent(Entity e, const T& c);
@@ -46,7 +47,7 @@ void cat::World::addComponent(Entity e, const T& c)
 	}
 	else
 	{
-		comps = reinterpret_cast<ComponentArray<T>*>(m_componentArrayTable.get_value(tableIndex));
+		comps = static_cast<ComponentArray<T>*>(m_componentArrayTable.get_value(tableIndex));
 	}
 	comps->add(e, c);
 }
