@@ -445,7 +445,8 @@ inline uint hash_function(const uint& key)
 
 inline uint hash_function(const int64& key)
 {
-	return static_cast<uint>(key);
+	uint64 x = static_cast<uint64>(key);
+	return hash_function(x);
 }
 
 inline uint hash_function(const uint64& key)
