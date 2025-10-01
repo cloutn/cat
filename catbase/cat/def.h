@@ -98,6 +98,8 @@ enum FIX_COMPONENT_TYPE
 	FIX_COMPONENT_TYPE_COUNT,
 };
 
+typedef unsigned int Entity;
+
 } // namespace cat 
 
 

@@ -60,6 +60,7 @@ public:
 	bool			count	(const key_T& key) const;
 	int				find_index(const key_T& key) const; //return -1 if find failed
 	const value_T&	get_value(const int index) const { return m_hashTable[index].value; }
+	value_T&		get_value(const int index) { return m_hashTable[index].value; }
 	bool			is_init	() { return m_hashTable.begin() != NULL; }
 
 	value_T&		operator[](const key_T& key)			{ return const_cast<value_T&>(find(key)); }

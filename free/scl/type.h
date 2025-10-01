@@ -75,6 +75,9 @@ typedef unsigned long long	uint64;
 template <typename T, size_t N> 
 static constexpr size_t array_count(T (&)[N]) { return N; }
 
+template<class T>
+uint64 type_id() noexcept { return reinterpret_cast<uint64>(&type_id<T>); }
+
 } // namespace scl
 
 #define USING_SCL_TYPE using scl::int8; using scl::uchar; using scl::uint8; using scl::byte; using scl::int16; using scl::uint16; using scl::int32; using scl::uint; using scl::uint32; using scl::wchar; using scl::int64; using scl::uint64;
@@ -85,3 +88,5 @@ static constexpr size_t array_count(T (&)[N]) { return N; }
 #ifndef DISABLE_SCL_TYPE
 USING_SCL_TYPE;
 #endif
+
+

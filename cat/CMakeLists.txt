@@ -31,6 +31,8 @@ set(header_files
 	skybox.h
 	light.h
 	component.h
+	gltfLoader.h
+	world.h
 )
 
 set(src_files
@@ -56,6 +58,8 @@ set(src_files
 	skybox.cpp
 	light.cpp
 	component.cpp
+	gltfLoader.cpp
+	world.cpp
 )
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${header_files})

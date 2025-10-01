@@ -2,6 +2,9 @@
 
 #include "./client.h"
 
+#include "cat/world.h"
+#include "cat/component.h"
+
 #include "scl/log.h"
 
 #ifdef _WIN32
@@ -19,7 +22,6 @@ void start_client()
 	delete c;
 }
 
-
 int main()
 {
 #ifdef _WIN32
@@ -27,6 +29,12 @@ int main()
 	//如果发生泄漏，请将泄漏的内存序号填写在下面
 	//_CrtSetBreakAlloc(1535);
 #endif
+
+	cat::World world;
+	cat::Entity e1 = world.createEntity();
+	world.addComponent(e1, cat::TestComponent(77)); 
+
+
 
 	start_client();
 
