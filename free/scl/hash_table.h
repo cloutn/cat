@@ -450,14 +450,21 @@ inline uint hash_function(const int64& key)
 
 inline uint hash_function(const uint64& key)
 {
-	return static_cast<uint>(key);
+	//return static_cast<uint32_t>(x) ^ static_cast<uint32_t>(x >> 32);
+
+    // 选择一个大质数作为乘数（扩散位信息），此处用 0x9E3779B97F4A7C15（黄金比例相关质数）
+    const uint64_t mul = 0x9E3779B97F4A7C15ULL;
+	uint64 x = key;
+    x *= mul; // 乘法扩散位
+    // 合并结果的高低32位
+    return static_cast<uint32_t>(x) ^ static_cast<uint32_t>(x >> 32);
 }
 
 inline uint hash_function(void* const& key)
 {
-	return static_cast<uint>(reinterpret_cast<uint64>(key));
+	uint64 x = reinterpret_cast<uint64>(key);
+	return hash_function(x);
 }
-
 
 template<int N>
 inline uint hash_function(const string<N>& s)

@@ -45,6 +45,93 @@ using scl::string32;
 	assert(ht[p3] == 35);
 }
 
+// Mock类用于测试，模拟ComponentArrayBase
+class MockComponent
+{
+public:
+	int value;
+	MockComponent(int v) : value(v) {}
+};
+
+void testHashTableUInt64()
+{
+	// 测试uint64作为key，指针作为value (模拟World::m_componentArrayTable的使用场景)
+	hash_table<uint64, MockComponent*> ht;
+	ht.init(32);
+	
+	// 创建一些测试用的MockComponent对象
+	MockComponent* comp1 = new MockComponent(100);
+	MockComponent* comp2 = new MockComponent(200);
+	MockComponent* comp3 = new MockComponent(300);
+	
+	// 测试一些典型的uint64值
+	uint64 key1 = 12345678901234567ULL;	// 大整数
+	uint64 key2 = 0x1234567890ABCDEFULL;	// 十六进制大数
+	uint64 key3 = 1;						// 小整数
+	uint64 key4 = 0;						// 零值
+	
+	// 添加键值对
+	ht.add(key1, comp1);
+	ht.add(key2, comp2);
+	ht.add(key3, comp3);
+	
+	// 测试查找
+	assert(ht[key1] == comp1);
+	assert(ht[key2] == comp2);  
+	assert(ht[key3] == comp3);
+	assert(ht[key1]->value == 100);
+	assert(ht[key2]->value == 200);
+	assert(ht[key3]->value == 300);
+	
+	// 测试find方法
+	MockComponent* found1 = ht.find(key1);
+	MockComponent* found2 = ht.find(key2);
+	assert(found1 == comp1);
+	assert(found2 == comp2);
+	
+	// 测试不存在的key
+	assert(ht.find_index(key4) == -1);
+	
+	// 测试count方法
+	assert(ht.count(key1) == true);
+	assert(ht.count(key2) == true);
+	assert(ht.count(key3) == true);
+	assert(ht.count(key4) == false);
+	
+	// 测试删除
+	ht.erase(key2);
+	assert(ht.count(key2) == false);
+	assert(ht.find_index(key2) == -1);
+	
+	// 验证其他键值对仍然存在
+	assert(ht.count(key1) == true);
+	assert(ht.count(key3) == true);
+	assert(ht[key1] == comp1);
+	assert(ht[key3] == comp3);
+	
+	// 测试get_values功能（模拟World析构函数的使用）
+	scl::varray<MockComponent*> values;
+	ht.get_values(values);
+	assert(values.size() == 2);  // key2被删除了，应该只剩2个
+	
+	// 验证values包含正确的指针
+	bool foundComp1 = false, foundComp3 = false;
+	for (int i = 0; i < values.size(); ++i)
+	{
+		if (values[i] == comp1) foundComp1 = true;
+		if (values[i] == comp3) foundComp3 = true;
+	}
+	assert(foundComp1);
+	assert(foundComp3);
+	
+	// 清理内存
+	delete comp1;
+	delete comp2;
+	delete comp3;
+	
+	printf("testHashTableUint64 passed!\n");
+}
+
  void testHashTable()
 {
 	//测试IsPrime函数
@@ -82,7 +169,8 @@ using scl::string32;
 	testHashTable1();
 
 	testHashTable2();
-
+	
+	testHashTableUInt64();
 
 	//printf("Pow = %d", Pow(2, 2));
 	printf("test hastTable \t\tOK!\n");
