@@ -1,0 +1,4 @@
+1.89-WIP
+upstream: https://github.com/ocornut/imgui
+license:  MIT
+note:     IMGUI_VERSION_NUM = 18833 (1.88.33, between 1.88 and 1.89 release)

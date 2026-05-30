@@ -56,6 +56,21 @@ def build_shaderc():
     shutil.copy(build_path + "/libshaderc/Release/shaderc_combined.lib", f"../free/lib{arch}/shaderc_combined.lib")
 
 
+def build_jolt():
+    # Jolt 600+ 文件，体积大，不入 testCat sln；走 shaderc 同款"独立预 build"路径。
+    # free/jolt/CMakeLists.txt 是 cat 写的薄壳，会转发到上游 free/jolt/Build/CMakeLists.txt，
+    # 并把 .lib 直接产出到 free/lib${arch}/jolt(_d).lib，所以这里不需要再 shutil.copy。
+    arch = "64" if G.arch64 else ""
+    src_path = "../free/jolt/"
+    build_path = f"../free/jolt/build{arch}_{G.build_suffix}/"
+    if not os.path.exists(build_path):
+        os.makedirs(build_path)
+    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+
+    exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
+    exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Release"])
+
+
 def generate_testCat():
     arch = "64" if G.arch64 else ""
     src_path = "../testCat/"

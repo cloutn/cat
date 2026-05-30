@@ -1,0 +1,3 @@
+0.9.9.9
+upstream: https://github.com/g-truc/glm
+license:  MIT (Happy Bunny License or MIT, dual)

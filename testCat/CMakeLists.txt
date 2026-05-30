@@ -50,6 +50,8 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/../cat ${PROJECT_SOURCE_DIR}/../cat/build
 add_subdirectory(${PROJECT_SOURCE_DIR}/../catvulkan ${PROJECT_SOURCE_DIR}/../catvulkan/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/rapidyaml ${PROJECT_SOURCE_DIR}/../free/rapidyaml/build${ARCH}${BUILD_SUFFIX})
 add_subdirectory(${PROJECT_SOURCE_DIR}/../free/glm ${PROJECT_SOURCE_DIR}/../free/glm/build${ARCH}${BUILD_SUFFIX})
+# jolt 走 build_jolt()（参见 tool/script/setup.py），独立预 build 产出 free/lib64/jolt(_d).lib，
+# 不在这里 add_subdirectory，避免 testCat sln 携带 600+ 文件。
 
 
 set(header_files
@@ -124,6 +126,7 @@ set(debug_links
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/rapidyaml_d.lib
 	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/glm_d.lib
+	debug ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/jolt_d.lib
 )
 
 set(release_links 	
@@ -148,6 +151,7 @@ set(release_links
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/zlib.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/rapidyaml.lib
 	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/glm.lib
+	optimized ${PROJECT_SOURCE_DIR}/../free/lib${ARCH}/jolt.lib
 )
 
 
