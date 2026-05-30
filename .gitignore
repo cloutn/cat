@@ -102,3 +102,15 @@ build64_visualstudio
 /cpp-dependencies
 /*.dot
 /test/testCatbase/bin64/Debug
+/AGENTS.override.md
+/CLAUDE.override.md
+/.cursor/rules/personal-override.mdc
+/.cursor/skills/multi-agent-code-review/SKILL.md
+/.cursor/skills/multi-agent-code-review/examples/cpp-examples.md
+/.cursor/skills/multi-agent-code-review/examples/shader-examples.md
+/.cursor/skills/multi-agent-code-review/prompts/conventions.md
+/.cursor/skills/multi-agent-code-review/prompts/crash-safety.md
+/.cursor/skills/multi-agent-code-review/prompts/cross-platform.md
+/.cursor/skills/multi-agent-code-review/prompts/logic.md
+/.cursor/skills/multi-agent-code-review/prompts/performance.md
+/.cursor/skills/multi-agent-code-review/prompts/shader.md
