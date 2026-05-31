@@ -219,6 +219,8 @@ void VulkanRender::initIMGUI()
 
 VulkanRender::~VulkanRender()
 {
+	waitIdle();
+
 	scl::varray<svkPipeline*> pipelines;
 	pipelines.reserve(64);
 	m_pipelines.get_values(pipelines);
