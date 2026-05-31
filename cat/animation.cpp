@@ -23,7 +23,6 @@ Animation::~Animation()
 	{
 		safe_delete(m_channels[i]);
 	}
-	m_channels.clear();
 }
 
 // 约定单线程调用：update 通过 channel->apply 写到 Object 的 transform，

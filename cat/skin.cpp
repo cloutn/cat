@@ -18,7 +18,6 @@ Skin::Skin() :
 	m_inverseBindMatrices		(NULL),
 	m_inverseBindMatrixCount	(0),
 	m_jointMatrices				(NULL),
-	m_jointMatricesCapacity		(0),
 	m_root						(NULL)
 {
 
@@ -28,15 +27,13 @@ Skin::~Skin()
 {
 	safe_delete_array(m_inverseBindMatrices);
 	safe_delete_array(m_jointMatrices);
-	m_jointMatricesCapacity = 0;
 }
 
 void Skin::setInverseBindMatrices(const scl::matrix* matrices, int count)
 {
 	safe_delete_array(m_inverseBindMatrices);
-	// IBM 变了，旧 jointMatrices 缓存可能尺寸不匹配，一并丢弃重建
+	// IBM 变了，旧 jointMatrices 缓存可能尺寸不匹配，一并丢弃，下次 generateJointMatrix lazy 重建
 	safe_delete_array(m_jointMatrices);
-	m_jointMatricesCapacity = 0;
 
 	if (NULL == matrices || count <= 0)
 	{
@@ -47,6 +44,14 @@ void Skin::setInverseBindMatrices(const scl::matrix* matrices, int count)
 	m_inverseBindMatrixCount = count;
 	m_inverseBindMatrices    = new matrix[count];
 	memcpy(m_inverseBindMatrices, matrices, sizeof(matrix) * count);
+}
+
+void Skin::addJoint(Object* j)
+{
+	// joints 数量变化会改变 generateJointMatrix 的 count，旧 jointMatrices 容量可能失配，
+	// 与 setInverseBindMatrices 对齐：丢弃后由 generateJointMatrix lazy 重建
+	safe_delete_array(m_jointMatrices);
+	m_joints.push_back(j);
 }
 
 scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform)
@@ -64,22 +69,26 @@ scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inve
 	// 取 IBM 与 joints 的最小长度，防止任一端越界
 	const int count = (jointCount < m_inverseBindMatrixCount) ? jointCount : m_inverseBindMatrixCount;
 
-	// hot-reload / IBM 变更后，仅靠 NULL 判断会复用旧容量数组，下面 i<count 的写
-	// 可能越过旧分配。容量真值显式存在 m_jointMatricesCapacity，不够就丢弃重建。
-	if (NULL == m_jointMatrices || m_jointMatricesCapacity < count)
+	// 任一 joint 为 NULL 说明 GLTF 加载链断了，整副骨架已经不可信；
+	// 退化到不蒙皮渲染（返回 NULL），不要用 bindpose 兜底导致画出半 bindpose / 半动画的扭曲姿态
+	for (int i = 0; i < count; ++i)
 	{
-		safe_delete_array(m_jointMatrices);
-		m_jointMatrices			= new matrix[count];
-		m_jointMatricesCapacity	= count;
+		if (NULL == m_joints[i])
+		{
+			log_error("Skin: joint[%d] is NULL, skin invalidated", i);
+			return NULL;
+		}
 	}
+
+	// setInverseBindMatrices / addJoint 已在变化时丢弃 m_jointMatrices，
+	// 这里只需按 NULL 判断 lazy 分配
+	if (NULL == m_jointMatrices)
+		m_jointMatrices = new matrix[count];
 
 	for (int i = 0; i < count; ++i)
 	{
-		Object* joint = m_joints[i];
 		m_jointMatrices[i] = m_inverseBindMatrices[i];
-		// NULL joint 用 IBM * inverseMesh 兜底（等价 bindpose），不让整帧崩
-		if (NULL != joint)
-			m_jointMatrices[i].mul(joint->globalMatrix());
+		m_jointMatrices[i].mul(m_joints[i]->globalMatrix());
 		m_jointMatrices[i].mul(inverseMeshGlobalTransform);
 	}
 	matrixCount = count;

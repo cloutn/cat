@@ -37,9 +37,8 @@ public:
 
 private:
 	uint					m_time;					//当前帧对应的时间，单位:毫秒
-	// 原本是 union，但 C++ 同一时刻只能有一个 active member，
-	// 而构造/clear 路径需要一次性把三个成员都置初值，依次操作非活跃成员严格 UB；
-	// 改成 struct 多用 24 字节但消除 UB，且 m_type 切换不再需要 placement new。
+	// 三个成员同时占内存：原本是 union，但 C++ union 同一时刻只能有一个 active
+	// member，而构造里要把三个都置初值，依次写非活跃成员是 UB；改 struct 多 24 字节但无 UB
 	scl::quaternion 		m_rotate;
 	scl::vector3			m_move;
 	scl::vector3			m_scale;

@@ -283,8 +283,9 @@ void VulkanRender::releaseVertexBuffer(void* vertexBuffer)
 		return;
 
 	//log_debug_unsafe("release buffer = %x", vertexBuffer);
-	svkDestroyBuffer(m_device, *static_cast<svkBuffer*>(vertexBuffer));
-	delete vertexBuffer;
+	svkBuffer* buf = static_cast<svkBuffer*>(vertexBuffer);
+	svkDestroyBuffer(m_device, *buf);
+	safe_delete(buf);
 }
 
 void VulkanRender::writeVertexBuffer(const void* src, void* dstVertexBuffer, const int sizeInByte)
@@ -347,8 +348,9 @@ void VulkanRender::releaseIndexBuffer(void* indexBuffer)
 	if (NULL == indexBuffer)
 		return;
 
-	svkDestroyBuffer(m_device, *static_cast<svkBuffer*>(indexBuffer));
-	delete indexBuffer;
+	svkBuffer* buf = static_cast<svkBuffer*>(indexBuffer);
+	svkDestroyBuffer(m_device, *buf);
+	safe_delete(buf);
 }
 
 
@@ -729,6 +731,10 @@ void VulkanRender::endScenePass()
 	if (_minimized())
 		return;
 
+	// 必须先 beginDraw 才能进入 endScenePass，否则下面 m_frames[m_prevFrameIndex].imageAcquireSemaphore 会拿到未 signal 的 semaphore 导致 GPU 死等
+	assert(m_prevFrameIndex >= 0 && m_prevFrameIndex < m_frameCount);
+	assert(m_frameIndex     >= 0 && m_frameIndex     < m_frameCount);
+
 	VkResult err;
 
 	VkCommandBuffer& primaryCb = m_frames[m_frameIndex].commandBuffer;
@@ -1028,6 +1034,7 @@ void VulkanRender::_createMainRenderTarget()
 	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
 	m_frameIndex		= 0;
+	m_prevFrameIndex	= 0;	// 与 m_frameIndex 同步复位，避免 recreateSwapchain 后保留旧 swapchain 的索引
 }
 
 void VulkanRender::_destroyMainRenderTarget()

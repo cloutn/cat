@@ -20,7 +20,7 @@ public:
 	const Object*			root				() const { return const_cast<Skin*>(this)->root(); }
 	Object*					root				();
 	void					setRoot				(Object* r) { m_root = r; }
-	void					addJoint			(Object* j) { m_joints.push_back(j); }
+	void					addJoint			(Object* j);
 	void					setInverseBindMatrices(const scl::matrix* matrices, int count);
 
 private:
@@ -28,7 +28,6 @@ private:
 	int						m_inverseBindMatrixCount;
 	scl::varray<Object*>	m_joints;
 	scl::matrix*			m_jointMatrices;
-	int						m_jointMatricesCapacity;	// m_jointMatrices 当前实际分配的元素数
 	mutable Object*			m_root;
 
 };

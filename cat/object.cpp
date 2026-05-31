@@ -21,8 +21,7 @@ using scl::vector3;
 
 namespace cat {
 
-ObjectIDMap<Object>* Object::s_objectIDMap			= NULL;
-bool				 Object::s_objectIDMapReleased	= false;
+ObjectIDMap<Object>* Object::s_objectIDMap = NULL;
 
 Object::Object() : Object(NULL)
 {
@@ -163,8 +162,6 @@ void Object::save(yaml::node& root)
 
 ObjectIDMap<Object>& Object::_objectIDMap()
 {
-	// release 是单向终点：再走到这里说明上层在 releaseObjectIDMap 之后还在 new/del Object，必须暴露
-	assert(!s_objectIDMapReleased);
 	if (NULL == s_objectIDMap)
 	{
 		s_objectIDMap = new ObjectIDMap<Object>;
@@ -279,7 +276,6 @@ cat::Box Object::boundingBox() const
 void Object::releaseObjectIDMap()
 {
 	safe_delete(s_objectIDMap);
-	s_objectIDMapReleased = true;
 }
 
 Object* Object::childByName(const char* const objectName, bool recursive)

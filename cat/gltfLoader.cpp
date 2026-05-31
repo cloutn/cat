@@ -29,8 +29,6 @@
 
 #include "cgltf/cgltf.h"
 
-#include <limits.h>
-
 #include <string.h>
 
 namespace cat {
@@ -386,11 +384,11 @@ bool GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 	const cgltf_accessor*			timeAccessor	= sampler->input;
 	const cgltf_accessor*			frameAccessor	= sampler->output;
 
-	// size_t → int 必须在 cast 之前比较，否则双侧截断可能歪打正着相等
-	if (timeAccessor->count > static_cast<size_t>(INT_MAX) ||
-		timeAccessor->count != frameAccessor->count)
+	// time / frame 两个 accessor 必须等长，否则后面 for(frameCount) 会越读 frameDatas
+	if (timeAccessor->count != frameAccessor->count)
 	{
-		log_error("AnimationChannel::loadKeyFrames invalid frame count: %zu", timeAccessor->count);
+		log_error("AnimationChannel::loadKeyFrames count mismatch: time=%zu, frame=%zu",
+			timeAccessor->count, frameAccessor->count);
 		assert(false);
 		return false;
 	}
@@ -491,14 +489,9 @@ byte* GltfLoader::_flattenVertexAttrs(cgltf_primitive* data,
 	if (NULL == data || data->attributes_count <= 0)
 		return NULL;
 
-	// 顶点数 / 属性数都来自 cgltf_size(=size_t)，赋给 int 前必须挡住截断
-	if (data->attributes_count > static_cast<size_t>(INT_MAX) ||
-		NULL == data->attributes[0].data ||
-		data->attributes[0].data->count > static_cast<size_t>(INT_MAX))
+	// attributes[0].data 是后面访问 vertexCount 的前置条件
+	if (NULL == data->attributes[0].data)
 	{
-		log_error("_flattenVertexAttrs invalid count: attr=%zu, vertex=%zu",
-			data->attributes_count,
-			(NULL != data->attributes[0].data) ? data->attributes[0].data->count : 0);
 		assert(false);
 		return NULL;
 	}
