@@ -16,9 +16,8 @@ AnimationChannel::AnimationChannel() :
 	m_target(-1), 
 	m_type(KEY_FRAME_TYPE_INVALID)
 {
+	// union 只 init 第一个成员；m_move / m_scale 在 _set / _lerp 被赋值时自动激活，避免 UB
 	m_rotate.clear();
-	m_scale.clear();
-	m_move.clear();
 }
 
 AnimationChannel::~AnimationChannel()

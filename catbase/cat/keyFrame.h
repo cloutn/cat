@@ -37,11 +37,14 @@ public:
 
 private:
 	uint					m_time;					//当前帧对应的时间，单位:毫秒
-	// 三个成员同时占内存：原本是 union，但 C++ union 同一时刻只能有一个 active
-	// member，而构造里要把三个都置初值，依次写非活跃成员是 UB；改 struct 多 24 字节但无 UB
-	scl::quaternion 		m_rotate;
-	scl::vector3			m_move;
-	scl::vector3			m_scale;
+	// union 节省内存；UB 仅在「构造时依次 clear 三个非活跃成员」时出现，
+	// 改为只 init 第一个成员 m_rotate，其它在 setMove/setScale/clear(type) 写入时通过赋值激活，well-defined
+	union
+	{
+		scl::quaternion 	m_rotate;
+		scl::vector3		m_move;
+		scl::vector3		m_scale;
+	};
 
 }; //class KeyFrame
 

@@ -12,9 +12,8 @@ using scl::vector3;
 KeyFrame::KeyFrame(const uint time) : 
 	m_time			(time)
 {
+	// union 只 init 第一个成员；m_move / m_scale 在被赋值时自动激活，避免依次 clear 非活跃成员的 UB
 	m_rotate.clear();
-	m_scale.clear();
-	m_move.clear();
 }
 
 
