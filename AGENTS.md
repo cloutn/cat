@@ -2,34 +2,33 @@
 
 ## 项目背景
 
-1. 这是 UE4.26 深度定制引擎。
-2. 主要平台是 Android，其次是 iOS 和 PC。
-3. 渲染管线是 Forward Rendering。
-4. 图形 API 主要涉及 OpenGL ES 3.1 和 DirectX 11。
-5. 目标设备跨度从 Snapdragon 660 到 Snapdragon 8 Gen 3。
-6. 主要语言是 C++ / HLSL / GLSL。
-7. Shader 目录是 `Engine/Shaders/`。
+1. cat 是一个面向学习与实验的轻量 3D 引擎，强调"小而清晰、每层职责可替换"。
+2. 主要平台是 Windows，渲染后端以 Vulkan 为主（`def.h` 默认开启 `TEST_VULKAN`），保留 OpenGL ES 代码痕迹但不再使用。
+3. 资源以 glTF 2.0 为唯一模型/动画交换格式（cgltf 解析）；自带极简编辑器（ImGui + ImGuizmo）含场景树 / 属性面板 / Gizmo / Pick Pass 拾取。
+4. 自带 `scl` 替代 STL（容器 / 数学 / IO / 线程 / log），上层模块统一使用 scl，**禁止 STL 容器穿透接口**。
+5. 模块分层（自底向上）：`free/scl` + 第三方 → `catbase`（基础类型）→ `cat` + `catvulkan`（引擎层 + Vulkan 后端）→ `catui` + `catwindows`（UI / 平台）→ `testCat`（应用层 / 编辑器）。依赖方向严格自上而下。
+6. 主要语言 C++ / HLSL / GLSL；shader 路径 `SHADER_PATH` 由 `TEST_VULKAN` 决定，分别指向 `shader/vulkan/` 或 `shader/opengles/`。
+7. 当前主线为**单线程**：游戏循环、渲染提交、资源加载都跑在主线程，cat 模块内不引入 mutex / atomic / thread。如未来引入多线程（RHI 线程 / async load），需要先在本节补完整的线程模型说明再动代码。
 
-## 线程模型
+## 接口与依赖约束
 
-1. 主要线程链路是 GameThread -> RenderThread -> RHIThread。
-2. RHIThread 已启用，RenderThread 会异步提交 RHI 命令。
-3. 修改渲染代码时，特别注意 RenderThread/RHIThread 访问 GameThread 数据导致的悬垂指针、生命周期和同步问题。
-
-## 性能目标
-
-1. 目标分辨率：1080p。
-2. 目标帧率：60 FPS。
-3. 典型 DrawCall：500+，其中 foliage 250+。
-4. 典型三角形：约 800K。
-5. 移动端性能优先关注内存分配、API flush、RenderTarget load/store、带宽和 DrawCall。
+1. 上层只通过 `cat::IRender` 与图形 API 交互，**`cat` 模块禁止直接 include `<vulkan/...>` / `<shaderc/...>` / `<spirv_cross/...>`**；Vulkan 句柄不暴露给 `cat`，`IRender` 中以 `void*` 表示设备资源句柄。
+2. `catvulkan` 是 `IRender` 的具体实现层，可见 Vulkan 全部头；`catbase` 不依赖 `cat` / `catvulkan` / `catui` / `catwindows`；`catwindows` 是平台层（Win32 / EGL）；`catui` 仅依赖 ImGui + scl。
+3. 命名空间：引擎代码 `namespace cat`；基础库 `namespace scl`；编辑器配置 `namespace game`；UI 扩展 `namespace imguiex`；YAML 包装 `namespace yaml`。
 
 ## 代码风格
 
-1. 遵循 UE idiom，不写脱离 UE 架构的泛 C++。
-2. 优先使用 UE 容器、UE 内存管理、UE delegate、UE 线程/RHI 模式。
-3. 日志使用当前模块或当前功能对应的 log category，不随便用泛用 category。
-4. invariant 检查优先考虑 `check()` / `ensure()`，但线上容错路径要能 fail closed。
+1. 权威来源是 `.cursor/rules/cat代码风格.mdc`（`alwaysApply: true`，自动加载）。**所有具体风格规则以该文件为准**，本节只做高频提醒，不复述细节。
+2. 关键硬规则速记：
+   - 用 `NULL`，不用 `nullptr`；空指针比较用 Yoda 风格 `if (NULL == ptr)`。
+   - 删除指针用宏 `safe_delete` / `safe_delete_array`，禁止裸 `delete ptr; ptr = NULL;`。
+   - 禁止 STL 容器 / `std::string` 出现在头文件接口或类成员；用 `scl::varray` / `scl::array` / `scl::tree` / `scl::hash_table` / `cat::String`。
+   - 不抛异常；用返回值（`bool` / `int` / NULL 指针）+ `assert()` 报错。
+   - 类成员声明、init list、头文件方法表保留**纵向对齐**风格。
+   - Tab 缩进，Allman 大括号风格。
+   - 用 `#pragma once`，不用 include guard 宏。
+3. 命名取舍：**简洁服从一致**。优先沿用仓库已有命名模式（如"按属性查找"统一走 `xxByY` 形式：`objectByID` / `childByID` / `objectByName` / `childByName`），不引入与已有模式同义但措辞冗余的新前缀（如 `findXxxByY` 与 `xxByY` 同义重复）。最短形式只在不与现有重载冲突、不引入歧义的前提下选择（参考 `child(int)` 与 `childByName(const char*)` 拆分的处理）。
+4. 详细规则（命名前缀、include 顺序、平台宏、12 节自检清单等）直接读 `cat代码风格.mdc`，不在此重述。
 
 ## 文件编码与 Windows 终端注意事项
 

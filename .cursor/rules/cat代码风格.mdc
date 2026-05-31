@@ -40,62 +40,64 @@ alwaysApply: true
     - 纯虚接口类用 `I` 前缀：`IRender`、`IFileProvider`
     - simplevulkan POD 结构体用 `svk` 前缀：`svkDevice`、`svkImage`、`svkBuffer`
 16. 命名空间：引擎代码全部位于 `namespace cat`；编辑器配置位于 `namespace game`；UI 扩展位于 `namespace imguiex`；YAML 包装位于 `namespace yaml`。
+17. **按属性查找统一用 `xxByY` 形式**，不要混用 `findXxxByY` / `getXxxByY` 等同义前缀。标准命名：`objectByID` / `objectByName` / `childByID` / `childByName`（见 `Scene::*` / `Object::*`）。新增同类查询沿用，不从第三方库（imgui 的 `FindWindowByName` 等）借形；第三方代码在 `free/` 下保留各自风格，不在本规则约束内。
+18. **简洁服从一致**：能复用已有命名模式时选最短形式（`objectByName` 优于 `findObjectByName`）；当且仅当短名字会与已有重载冲突或暗示错误代价（典型反例：`child(int)` O(1) 与 `child(const char*)` O(N×D) 撞名），才拆成更长的差异化名字（`child(int)` + `childByName(const char*)`）。
 
 ## 4. 缩进、对齐、大括号
 
-17. 用 **Tab** 缩进，不要用空格混入。
-18. 大括号 Allman / BSD 风：`{` 与 `}` 各自单独占一行。
-19. 单语句 if / for 可省略大括号：`if (NULL == ptr) return;`。多语句必须加大括号。
-20. **纵向对齐是 cat 的标志风格**，必须保留：
+19. 用 **Tab** 缩进，不要用空格混入。
+20. 大括号 Allman / BSD 风：`{` 与 `}` 各自单独占一行。
+21. 单语句 if / for 可省略大括号：`if (NULL == ptr) return;`。多语句必须加大括号。
+22. **纵向对齐是 cat 的标志风格**，必须保留：
     - 类成员声明列对齐（类型列 / 名字列 / 注释列）
     - 构造函数 init list 列对齐（成员名右侧用空格补齐到统一列）
     - 头文件中的方法列表列对齐（返回类型列 / 函数名列）
     - 参考样例：`object.h` 的成员函数声明、`camera.cpp` 的 init list、`primitive.cpp` 的 init list、`vulkanRender.h` 的 IRender 实现列。
-21. 简单 getter / setter 在头文件内联实现（一行）：
+23. 简单 getter / setter 在头文件内联实现（一行）：
     `int id() const { return m_id; }`
 
 ## 5. 头文件与包含
 
-22. 用 `#pragma once`，**不要**写 `#ifndef ... #define ... #endif` include guard。
-23. include 顺序：
+24. 用 `#pragma once`，**不要**写 `#ifndef ... #define ... #endif` include guard。
+25. include 顺序：
     1. 自身模块头（`#include "cat/xxx.h"`）
     2. `scl/*.h`
     3. 第三方（`vulkan/*.h`、`shaderc/*.h`、`cgltf/*.h`、`rapidyaml/*.h` 等）
     4. C/C++ 标准头（`<stdint.h>` 等）
     分组之间留空行。
-24. 头文件优先用前置声明（`struct cgltf_node;`、`namespace yaml { class node; }`），减少传染性 include。
-25. 头文件函数参数 `const char* const filename`（双 `const`）是普遍风格，新增字符串/路径参数沿用。
+26. 头文件优先用前置声明（`struct cgltf_node;`、`namespace yaml { class node; }`），减少传染性 include。
+27. 头文件函数参数 `const char* const filename`（双 `const`）是普遍风格，新增字符串/路径参数沿用。
 
 ## 6. 类与文件结构
 
-26. 类内顺序：`public:` 构造/析构在前 → 公共方法 → 简单 inline getter → `private:` 工具函数 → `private:` 数据成员。
-27. 构造函数 **必须**在 init list 里把所有指针成员显式置 `NULL`、所有标志位显式置默认值。析构函数顺序对称，统一用 `safe_delete`。
-28. ID 类对象用全局静态 `ObjectIDMap<T>` + `static T* objectByID(int)` 模式（参考 `Object::s_objectIDMap`）。
-29. 命名空间结尾必须带注释：`} // namespace cat`，并保留文件末尾的空行。
+28. 类内顺序：`public:` 构造/析构在前 → 公共方法 → 简单 inline getter → `private:` 工具函数 → `private:` 数据成员。
+29. 构造函数 **必须**在 init list 里把所有指针成员显式置 `NULL`、所有标志位显式置默认值。析构函数顺序对称，统一用 `safe_delete`。
+30. ID 类对象用全局静态 `ObjectIDMap<T>` + `static T* objectByID(int)` 模式（参考 `Object::s_objectIDMap`）。
+31. 命名空间结尾必须带注释：`} // namespace cat`，并保留文件末尾的空行。
 
 ## 7. 接口隔离（架构强约束）
 
-30. `cat` 模块**不允许** `#include <vulkan/...>` 或 `#include <shaderc/...>` 或 `#include <spirv_cross/...>`。GPU 相关一律走 `IRender*`，资源句柄用 `void*`。
-31. `catbase` 不依赖 `cat` / `catvulkan` / `catui` / `catwindows`。
-32. `catvulkan` 是 `IRender` 的具体实现层，可见 Vulkan 全部头。
-33. `catwindows` 是平台层，可见 Win32 / EGL；`catui` 仅依赖 ImGui + scl。
+32. `cat` 模块**不允许** `#include <vulkan/...>` 或 `#include <shaderc/...>` 或 `#include <spirv_cross/...>`。GPU 相关一律走 `IRender*`，资源句柄用 `void*`。
+33. `catbase` 不依赖 `cat` / `catvulkan` / `catui` / `catwindows`。
+34. `catvulkan` 是 `IRender` 的具体实现层，可见 Vulkan 全部头。
+35. `catwindows` 是平台层，可见 Win32 / EGL；`catui` 仅依赖 ImGui + scl。
 
 ## 8. EOF 空行（个人硬规则同步）
 
-34. 修改 `.cpp` / `.h` 时，**严禁增删**文件末尾的空行，必须保持文件原 EOF 状态。新建文件按现有同类文件的末尾空行数来写。
+36. 修改 `.cpp` / `.h` 时，**严禁增删**文件末尾的空行，必须保持文件原 EOF 状态。新建文件按现有同类文件的末尾空行数来写。
 
 ## 9. 注释
 
-35. 允许中文注释。
-36. 不强制 doxygen；普通函数加一行 `//` 说明意图即可。
-37. 既有的注释掉的死代码不要在无关 PR 里清理；只删除你这次 PR 真正应该删的。
-38. 不要添加无意义的"复述代码"注释（不要 `// increment counter` / `// return result` 这类）。
+37. 允许中文注释。
+38. 不强制 doxygen；普通函数加一行 `//` 说明意图即可。
+39. 既有的注释掉的死代码不要在无关 PR 里清理；只删除你这次 PR 真正应该删的。
+40. 不要添加无意义的"复述代码"注释（不要 `// increment counter` / `// return result` 这类）。
 
 ## 10. 平台与宏
 
-39. 平台分支用 `SCL_WIN` / `SCL_APPLE` / `SCL_ANDROID`（来自 `scl/type.h`）。
-40. Vulkan vs GLES 分支用 `TEST_VULKAN`（`def.h`），`SHADER_PATH` 等已经按它分发，不要在上层重复判断。
-41. 通用宏只用 `def.h` 提供的 `safe_delete` / `safe_delete_array` / `countof` / `OFFSET` / `arg_count`，不要再造同名宏。
+41. 平台分支用 `SCL_WIN` / `SCL_APPLE` / `SCL_ANDROID`（来自 `scl/type.h`）。
+42. Vulkan vs GLES 分支用 `TEST_VULKAN`（`def.h`），`SHADER_PATH` 等已经按它分发，不要在上层重复判断。
+43. 通用宏只用 `def.h` 提供的 `safe_delete` / `safe_delete_array` / `countof` / `OFFSET` / `arg_count`，不要再造同名宏。
 
 ## 11. 不要做
 
