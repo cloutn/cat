@@ -56,6 +56,8 @@ VulkanRender::VulkanRender()  :
 	m_matrixChanged				(false),
 	m_scale						(1.0f),
 	m_frameUniformBufferOffset	(0),
+	m_frameUniformBudget		(0),
+	m_frameDrawCount			(0),
 	m_reverseZ					(false),
 	m_windowInstance			(NULL),
 	m_windowHandle				(NULL),
@@ -66,11 +68,8 @@ VulkanRender::VulkanRender()  :
 	memclr(m_device);
 	memclr(m_surface);
 	memclr(m_swapchain);
-	memclr(m_device);
-	memclr(m_surface);
 	memclr(m_frameUniforms);
 	memclr(m_frameUniformBuffersMapped);
-	//memclr(m_clearColor);
 	memclr(m_frames);
 	memclr(m_drawContext);
 	memclr(m_pickRenderTarget);
@@ -78,8 +77,6 @@ VulkanRender::VulkanRender()  :
 	memclr(m_commandAllocator);
 	memclr(m_mainDepthImage);
 	memclr(m_pickPassImageCPUBuffer);
-	//m_pickImageSize.clear();
-	//m_pickImageOffset.clear();
 }
 
 
@@ -116,10 +113,8 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 	m_pickCommandAllocator->init(m_device);
 	m_pickFence					= svkCreateFence(m_device, true);
 	m_pickSemaphore				= svkCreateSemaphore(m_device);
-	//m_pickImageSize.set(10, 10);
-	//m_pickImageSize.set(m_surface.width, m_surface.height);
-	//m_pickImageOffset.set(m_surface.width / 2 - m_pickImageSize.x / 2, m_surface.height / 2 - m_pickImageSize.y / 2);
-	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
+	// pick 只取屏幕中心 1×1 像素，buffer 容量恒定 4 字节，与 surface 尺寸无关，recreateSwapchain 时也不需要重建
+	m_pickPassImageCPUBuffer	= svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, 4);
 
 	scl::matrix mvp = scl::matrix::identity();
 
@@ -131,10 +126,14 @@ bool VulkanRender::init(void* hInstance, void* hwnd)
 			svkDestroyBuffer	(m_device, m_frameUniforms[i]);
 		}
 
-		int minUniformBufferOffset		= static_cast<int>(m_device.gpuProperties.limits.minUniformBufferOffsetAlignment);
-		int maxBytesPerFrame			= minUniformBufferOffset * MAX_OBJECT_PER_FRAME * MAX_MATRIX_PER_FRAME;
+		// 每 draw 实际最多写两段：mvp 一段、骨骼数组（打包成一整段）一段，按 minUniformBufferOffsetAlignment 各自向上对齐
+		const int mvpStrideMax			= _alignUniformBufferOffset(sizeof(scl::matrix));
+		const int jointStrideMax		= _alignUniformBufferOffset(sizeof(scl::matrix) * MAX_JOINT_PER_OBJECT);
+		const int perDrawBytesMax		= mvpStrideMax + jointStrideMax;
+		const int maxBytesPerFrame		= perDrawBytesMax * MAX_DRAW_PER_FRAME;
 		m_frameUniforms[i]				= svkCreateUniformBuffer(m_device, NULL, maxBytesPerFrame);
 		m_frameUniformBuffersMapped[i]	= svkMapBuffer			(m_device, m_frameUniforms[i]);
+		m_frameUniformBudget			= static_cast<uint32_t>(maxBytesPerFrame);
 	}
 
 	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
@@ -219,8 +218,14 @@ void VulkanRender::initIMGUI()
 
 VulkanRender::~VulkanRender()
 {
+	// init 未调用过的话，hash_table 等未 init，迭代是 UB；直接短路
+	if (!m_isInit)
+		return;
+
 	waitIdle();
 
+	// hash_table::get_values 按 slot 一对一返回，每个 svkPipeline* 是 _preparePipeline 里 new 出来的独立指针，
+	// 不存在多个 slot 指向同一个 pipeline 的情况，因此不会 double-destroy
 	scl::varray<svkPipeline*> pipelines;
 	pipelines.reserve(64);
 	m_pipelines.get_values(pipelines);
@@ -229,7 +234,7 @@ VulkanRender::~VulkanRender()
 		if (NULL == pipelines[i])
 			continue;
 		svkDestroyPipeline(m_device, *pipelines[i], true);
-		delete pipelines[i];
+		safe_delete(pipelines[i]);
 	}
 	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
 	{
@@ -260,7 +265,6 @@ VulkanRender::~VulkanRender()
 	svkDestroySemaphore	(m_device, m_pickSemaphore);
 	svkDestroyBuffer	(m_device, m_pickPassImageCPUBuffer);
 
-	//_destroyPickRenderTarget();
 	_destroyRenderTarget(m_device, m_pickRenderTarget);
 	svkDestroyRenderPass(m_device, m_pickRenderPass);
 
@@ -496,8 +500,7 @@ void presentCallback(void* userdata, VkResult err)
 	else if (err == VK_ERROR_SURFACE_LOST_KHR) 
 	{
 		render->waitIdle();
-		render->recreateSurface();
-		render->recreateSwapchain();
+		render->recreateSurface();	// recreateSurface 内部已含 swapchain 重建，不再单独调 recreateSwapchain
 	}
 	else if (err == VK_SUBOPTIMAL_KHR) 
 	{
@@ -542,24 +545,6 @@ void VulkanRender::clear()
 	// in vulkan, clear is finished in render pass.
 }
 
-void* VulkanRender::createShader(int shaderType)
-{
-	// shader 
-	uint shader = 0;
-	svkPipeline* pipeline = new svkPipeline;
-	switch (shaderType)
-	{
-	case 0: 
-		{
-			assert(false);
-		}
-		break;
-	default : assert(false); break;
-	}
-	return reinterpret_cast<void*>(pipeline);
-}
-
-
 void* VulkanRender::createShader(const char* const vs_code, const char* const ps_code)
 {
 	//assert(false);
@@ -590,6 +575,7 @@ void VulkanRender::beginDraw()
 
 
 	m_frameUniformBufferOffset			= 0;
+	m_frameDrawCount					= 0;
 }
 
 void VulkanRender::endDraw()
@@ -680,6 +666,8 @@ scl::vector4 VulkanRender::endPickPass(int x, int y)
 
 scl::vector4 VulkanRender::savePickPass(int width, int height)
 {
+	// svkWaitFence 只 wait 不 reset (simplevulkan.cpp:1041)，依赖下一次 svkQueueSubmit (simplevulkan.cpp:2214) 在 submit 前 reset。
+	// 即使 endPickPass 中途 early-out 不 submit，fence 保持 signaled 也只会让下一次 beginPickPass 进入，逻辑安全
 	svkWaitFence(m_device, &m_pickFence, 1);
 
 	int			copied	= 0;
@@ -882,6 +870,8 @@ DescriptorSet VulkanRender::_prepareDescriptorSet(
 	{
 		descriptorSet = descriptorAllocator->alloc();
 		svkUpdateDescriptorSet(m_device, descriptorSet.set, layoutBinds, layoutBindCount, descriptorDatas, descriptorDataCount);
+		// 守门：cache 只增不减；一旦触发 hash_table::_grow（capacity ×16），说明 cache 已无界增长，需要按场景 boundary 做 evict
+		assert(m_descriptorSetCache.capacity() < MAX_DESCRIPTOR_SET_CACHE_SIZE * MAX_CONFLICT * 2);
 		m_descriptorSetCache.add(dataKey, descriptorSet);
 	}
 	if (NULL != descriptorAllocator)
@@ -937,18 +927,39 @@ uint32_t VulkanRender::_fillDynamicOffsets(
 		assert(false);
 		return 0;
 	}
+
+	if (m_frameDrawCount >= MAX_DRAW_PER_FRAME)
+	{
+		// 单帧 draw 数超过 MAX_DRAW_PER_FRAME，需调大上限或减少 draw call
+		assert(false);
+		return 0;
+	}
+
+	const bool			hasJoint	= (jointMatrixCount > 0 && NULL != jointMatrices);
+	const uint32_t		mvpStride	= static_cast<uint32_t>(_alignUniformBufferOffset(sizeof(mvp)));
+	const uint32_t		jointBytes	= hasJoint ? static_cast<uint32_t>(sizeof(scl::matrix) * jointMatrixCount) : 0;
+	const uint32_t		jointStride	= hasJoint ? static_cast<uint32_t>(_alignUniformBufferOffset(static_cast<int>(jointBytes))) : 0;
+	if (m_frameUniformBufferOffset + mvpStride + jointStride > m_frameUniformBudget)
+	{
+		// uniform buffer 预算耗尽：通常是单 draw 骨骼数超过 MAX_JOINT_PER_OBJECT，或公式与写入逻辑漂移
+		assert(false);
+		return 0;
+	}
+
+	++m_frameDrawCount;
+
 	uint32_t dynamicOffsetCount = 0;
 
 	memcpy((byte*)(m_drawContext.uniformBufferMapped) + m_frameUniformBufferOffset, &mvp, sizeof(mvp));
 	dynamicOffsets[0]			= m_frameUniformBufferOffset;
-	m_frameUniformBufferOffset	+= _alignUniformBufferOffset(sizeof(mvp));
+	m_frameUniformBufferOffset	+= mvpStride;
 	++dynamicOffsetCount;
 
-	if (jointMatrixCount > 0 && NULL != jointMatrices)
+	if (hasJoint)
 	{
-		memcpy((byte*)(m_drawContext.uniformBufferMapped) + m_frameUniformBufferOffset, jointMatrices, sizeof(scl::matrix) * jointMatrixCount);
+		memcpy((byte*)(m_drawContext.uniformBufferMapped) + m_frameUniformBufferOffset, jointMatrices, jointBytes);
 		dynamicOffsets[1]			= m_frameUniformBufferOffset;
-		m_frameUniformBufferOffset	+= _alignUniformBufferOffset(sizeof(scl::matrix) * jointMatrixCount);
+		m_frameUniformBufferOffset	+= jointStride;
 		++dynamicOffsetCount;
 	}
 	return dynamicOffsetCount;
@@ -1036,7 +1047,9 @@ void VulkanRender::_createMainRenderTarget()
 	m_mainRenderPass	= svkCreateRenderPass			(m_device, m_swapchain.format, m_mainDepthImage.format, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 	m_frameCount		= svkCreateFrames				(m_device, m_swapchain, m_mainDepthImage.imageView, m_mainRenderPass, m_surface.width, m_surface.height, m_frames, MAX_FRAME);
 	m_frameIndex		= 0;
-	m_prevFrameIndex	= 0;	// 与 m_frameIndex 同步复位，避免 recreateSwapchain 后保留旧 swapchain 的索引
+	// 与 m_frameIndex 同步复位为 0（不是 -1），避免 recreateSwapchain 后保留旧 swapchain 的索引导致 endScenePass 越界。
+	// 首帧 endScenePass 会等 m_frames[0].imageAcquireSemaphore，由 svkAcquireNextImage 内部保证 signaled
+	m_prevFrameIndex	= 0;
 }
 
 void VulkanRender::_destroyMainRenderTarget()
@@ -1235,7 +1248,9 @@ void VulkanRender::draw2(
 
 	svkBuffer* svkIndexBuffer = static_cast<svkBuffer*>(indexBuffer);
 
-	vkCmdBindIndexBuffer(cmd_buf, svkIndexBuffer->buffer, indexOffset, _toVkIndexType(indexComponentType));
+	// indexOffset 形参是 int，不能传负值：隐式转 VkDeviceSize 会变成 0xFFFFFFFFFFFFFFFF 让 GPU 越界 → device lost
+	assert(indexOffset >= 0);
+	vkCmdBindIndexBuffer(cmd_buf, svkIndexBuffer->buffer, static_cast<VkDeviceSize>(indexOffset), _toVkIndexType(indexComponentType));
 
 	_fillPushConst(cmd_buf, *pipeline, shader, pushConstBuffer, pushConstBufferSize);
 
@@ -1277,26 +1292,39 @@ void VulkanRender::recreateSwapchain()
 	if (_minimized())
 		return;
 
+	// 等待 GPU 完成所有 in-flight CB 后再销毁附件资源，避免被仍在使用的 framebuffer / imageView 被销毁
+	svkDeviceWaitIdle(m_device);
+
 	m_onSurfaceResize(m_surface.width, m_surface.height);
 
 	_destroyMainRenderTarget();
 	_createMainRenderTarget();
 
-	//_destroyPickRenderTarget();
-	//vkDestroyRenderPass(m_device.device, m_pickRenderPass, NULL);
-	//m_pickRenderPass = svkCreateRenderPass(m_device, m_colorFormat, m_depthFormat, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-
-	//svkDestroyBuffer(m_device, m_pickPassImageCPUBuffer);
-	//m_pickPassImageCPUBuffer = svkCreateBuffer(m_device, VK_BUFFER_USAGE_TRANSFER_DST_BIT, m_surface.width * m_surface.height * 4);
-
+	// pick buffer 是固定 4 字节（1×1 像素），不依赖 surface 尺寸，无需重建
 	_destroyRenderTarget(m_device, m_pickRenderTarget);
 	m_pickRenderTarget = _createRenderTarget(m_device, m_colorFormat, m_depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
 }
 
 void VulkanRender::recreateSurface()
 {
+	// Vulkan spec: 依附于 VkSurface 的 VkSwapchain / VkFramebuffer / VkImageView 必须先于 surface 销毁。
+	// 此函数把"销毁旧资源 → 重建 surface → 重建主渲染目标"做成原子序列，调用方不再单独 recreateSwapchain
+	svkDeviceWaitIdle(m_device);
+
+	_destroyMainRenderTarget();
+	_destroyRenderTarget(m_device, m_pickRenderTarget);
+
 	svkDestroySurface(m_inst, m_device, m_surface);
 	m_surface = svkCreateSurface(m_inst, m_device, m_windowInstance, m_windowHandle);
+	svkRefreshSurfaceSize(m_device, m_surface);
+
+	if (_minimized())
+		return;
+
+	m_onSurfaceResize(m_surface.width, m_surface.height);
+
+	_createMainRenderTarget();
+	m_pickRenderTarget = _createRenderTarget(m_device, m_colorFormat, m_depthFormat, m_pickRenderPass, m_surface.width, m_surface.height);
 }
 
 void VulkanRender::releaseIMGUI()
@@ -1309,6 +1337,9 @@ void VulkanRender::releaseIMGUI()
 void VulkanRender::drawIMGUI(ImDrawData* draw_data)
 {
 	if (_minimized())
+		return;
+
+	if (NULL == m_drawContext.renderPass)
 		return;
 
 	bool useBindCommandBuffer = m_bindCommandBuffer != NULL;

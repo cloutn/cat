@@ -68,7 +68,6 @@ public:
 	virtual unsigned char*	loadImage			(const char* const filename, int* width, int* height, int* pitch, PIXEL* pixel) = 0;
 
 	//shader
-	virtual void*			createShader		(int shader) = 0;
 	virtual void*			createShader		(const char* const vs_code, const char* const ps_code) = 0;
 	virtual void			releaseShader		(void* shader) = 0;
 
