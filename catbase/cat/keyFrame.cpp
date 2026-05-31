@@ -33,5 +33,5 @@ void KeyFrame::clear(const KEY_FRAME_TYPE type)
 	};
 }
 
-} // namespace ui
+} // namespace cat
 

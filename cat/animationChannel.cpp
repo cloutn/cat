@@ -24,7 +24,8 @@ AnimationChannel::AnimationChannel() :
 AnimationChannel::~AnimationChannel()
 {
 	for (int i = 0; i < m_frames.size(); ++i)
-		delete m_frames[i];
+		safe_delete(m_frames[i]);
+	m_frames.clear();
 }
 
 bool KeyFrame_compare_less2(KeyFrame* const& f1, KeyFrame* const& f2)

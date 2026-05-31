@@ -37,16 +37,16 @@ public:
 
 private:
 	uint					m_time;					//当前帧对应的时间，单位:毫秒
-	union
-	{
-		scl::quaternion 	m_rotate;		
-		scl::vector3		m_move;		
-		scl::vector3		m_scale;
-	};
+	// 原本是 union，但 C++ 同一时刻只能有一个 active member，
+	// 而构造/clear 路径需要一次性把三个成员都置初值，依次操作非活跃成员严格 UB；
+	// 改成 struct 多用 24 字节但消除 UB，且 m_type 切换不再需要 placement new。
+	scl::quaternion 		m_rotate;
+	scl::vector3			m_move;
+	scl::vector3			m_scale;
 
 }; //class KeyFrame
 
 
-} // namespace ui
+} // namespace cat
 
 

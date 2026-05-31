@@ -357,16 +357,22 @@ Animation* GltfLoader::_loadAnimation(cgltf_animation& animation)
 	for (cgltf_size i = 0; i < animation.channels_count; ++i)
 	{
 		AnimationChannel* channel = new AnimationChannel();
-		_loadAnimChannel(animation.channels[i], channel);
+		// 加载失败的 channel 必须丢弃，否则会作为半初始化对象残留在 m_channels，
+		// 即使后续 update/apply 不崩也是无效遍历项，潜在隐患
+		if (!_loadAnimChannel(animation.channels[i], channel))
+		{
+			safe_delete(channel);
+			continue;
+		}
 		anim->addChannel(channel);
 	}
 	return anim;
 }
 
-void GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, AnimationChannel* outChannel)
+bool GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, AnimationChannel* outChannel)
 {
 	if (NULL == outChannel)
-		return;
+		return false;
 
 	outChannel->setTarget(_objectIDByNode(channel.target_node));
 	outChannel->setType(_cgltfType2KeyFrameType(channel.target_path));
@@ -375,7 +381,7 @@ void GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 	if (NULL == sampler || NULL == sampler->input || NULL == sampler->output)
 	{
 		assert(false);
-		return;
+		return false;
 	}
 	const cgltf_accessor*			timeAccessor	= sampler->input;
 	const cgltf_accessor*			frameAccessor	= sampler->output;
@@ -386,7 +392,7 @@ void GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 	{
 		log_error("AnimationChannel::loadKeyFrames invalid frame count: %zu", timeAccessor->count);
 		assert(false);
-		return;
+		return false;
 	}
 	const int						frameCount		= static_cast<int>(timeAccessor->count);
 
@@ -394,24 +400,36 @@ void GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 		timeAccessor->type != cgltf_type_scalar)
 	{
 		assert(false);
-		return;
+		return false;
 	}
 	if (frameAccessor->component_type != cgltf_component_type_r_32f ||
 		(frameAccessor->type != cgltf_type_vec4 && frameAccessor->type != cgltf_type_vec3))
 	{
 		assert(false);
-		return;
+		return false;
 	}
 
 	const float*		times			= reinterpret_cast<const float*>(cgltf_get_accessor_buffer(timeAccessor));
 	const float*		frameDatas		= reinterpret_cast<const float*>(cgltf_get_accessor_buffer(frameAccessor));
+	// cgltf 不强制 buffer 已加载（外部 .bin 缺失 / cgltf_load_buffers 未调用都会返回 NULL），
+	// 直接解引用必段错误；这里显式拦截
+	if (NULL == times || NULL == frameDatas)
+	{
+		log_error("AnimationChannel::loadKeyFrames buffer not loaded (times=%p, frames=%p)", times, frameDatas);
+		assert(false);
+		return false;
+	}
+
 	const int			componentCount	= static_cast<int>(cgltf_num_components(frameAccessor->type));
 	const KEY_FRAME_TYPE	type		= _cgltfType2KeyFrameType(channel.target_path);
 
 	for (int i = 0; i < frameCount; ++i)
 	{
-		KeyFrame*		frame	= new KeyFrame(static_cast<uint>(times[i] * 1000));
-		const float*	f		= &frameDatas[i * componentCount];
+		// NaN 自比较为 false，负值也按 0 兜底；避免 float → uint 是 UB
+		const float		rawTime		= times[i];
+		const float		safeTime	= (rawTime > 0.0f) ? rawTime : 0.0f;
+		KeyFrame*		frame		= new KeyFrame(static_cast<uint>(safeTime * 1000));
+		const float*	f			= &frameDatas[i * componentCount];
 
 		switch (type)
 		{
@@ -431,6 +449,7 @@ void GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 		}
 		outChannel->addKeyFrame(frame);
 	}
+	return true;
 }
 
 Shader* GltfLoader::_selectShader(cgltf_primitive* primitive, int skinJointCount)

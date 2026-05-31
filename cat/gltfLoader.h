@@ -57,7 +57,9 @@ private:
 	void		_loadMaterial		(cgltf_material* material, Material* outMaterial);
 	void		_loadSkin			(cgltf_skin* skinData, Skin* outSkin);
 	Animation*	_loadAnimation		(cgltf_animation& animation);
-	void		_loadAnimChannel	(const cgltf_animation_channel& channel, AnimationChannel* outChannel);
+	// 返回 false 表示 channel 数据无效（缺失 sampler / buffer 未加载 / 类型不符），
+	// 调用方应丢弃 outChannel，避免半初始化对象残留在 Animation::m_channels 里。
+	bool		_loadAnimChannel	(const cgltf_animation_channel& channel, AnimationChannel* outChannel);
 
 	// helpers (从 ShaderCache / Primitive / AnimationChannel 内的 cgltf 私有函数搬入)
 	Shader*		_selectShader		(cgltf_primitive* src, int skinJointCount);

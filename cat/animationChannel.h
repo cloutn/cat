@@ -30,12 +30,11 @@ private:
 	int						m_target;
 	KEY_FRAME_TYPE			m_type;
 	scl::varray<KeyFrame*>	m_frames;
-	union
-	{
-		scl::quaternion		m_rotate;
-		scl::vector3		m_move;
-		scl::vector3		m_scale;
-	};
+	// 原本是 union（与 KeyFrame 同样的写法），但依次 clear 非活跃成员严格 UB，
+	// 改 struct 浪费 24 字节但消除 UB，channel 实例数远少于 KeyFrame，影响可忽略
+	scl::quaternion			m_rotate;
+	scl::vector3			m_move;
+	scl::vector3			m_scale;
 };
 
 } // namespace cat

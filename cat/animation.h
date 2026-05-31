@@ -16,7 +16,7 @@ public:
 	~Animation	();
 
 	void update		(double diff);
-	void addChannel	(AnimationChannel* c) { m_channels.push_back(c); }
+	void addChannel	(AnimationChannel* c) { if (NULL != c) m_channels.push_back(c); }
 
 private:
 	scl::varray<AnimationChannel*>	m_channels;
