@@ -3,6 +3,7 @@
 #include "cat/string.h"
 
 #include "scl/tree.h"
+#include "scl/varray.h"
 #include "scl/vector.h"
 
 namespace cat {
@@ -38,7 +39,7 @@ public:
 	void						releaseTextureFile			(const TextureFile* textureFile);
 
 	// pick primitive
-	void						clearPickPrimtives			();
+	void						clearPickPrimitives			();
 	scl::vector4				registerPickPrimitive		(Primitive* primitive);
 	Primitive*					getPickPrimitive			(scl::vector4& color);
 
@@ -55,7 +56,9 @@ private:
 	TextureFileMap											m_textureFiles;
 
 	//typedef scl::tree<uint32, Primitive*>					PickMap;
-	typedef scl::array<Primitive*, 1024>					PickPrimitiveArray;
+	// pick 表每次 _clickSelectObject 入口 clear 后重填，元素数 = 单次 pick 帧内可拾取 primitive 数。
+	// 用 varray 自动扩容，避免原 scl::array<T, 1024> 编译期定长在中大场景溢出。
+	typedef scl::varray<Primitive*>							PickPrimitiveArray;
 	PickPrimitiveArray										m_pickPrimitives;
 
 	//const static int										MAX_VERTEX_ATTR_MAPPER_COUNT = 32;

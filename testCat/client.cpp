@@ -227,7 +227,7 @@ void Client::_processKeydown()
 
 void Client::_clickSelectObject(int x, int y)
 {
-	m_env->clearPickPrimtives();
+	m_env->clearPickPrimitives();
 
 	m_render.beginPickPass(scl::vector4{1, 1, 1, 1});
 

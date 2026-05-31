@@ -110,7 +110,7 @@ void Env::releaseTextureFile(const TextureFile* pTextureFile)
 	m_textureFiles.erase(it);
 }
 
-void Env::clearPickPrimtives()
+void Env::clearPickPrimitives()
 {
 	m_pickPrimitives.clear();
 }
