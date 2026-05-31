@@ -258,6 +258,13 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 #pragma warning(disable:4996)
 	FILE* f = fopen(filename, "rb");
 #pragma warning(pop)
+	if (NULL == f)
+	{
+		// 资源文件缺失/路径错；上层 svkCreateTexture 会拿到 width=height=0 的 texObj，
+		// 不要继续解引用 f（callback 内部 stb_image / fclose(NULL) 都会崩）。
+		printf("Error opening texture file: %s\n", filename);
+		return;
+	}
 
 	// Call with out_rgba = NULL to get size info only
 	loadDataCallback(f, NULL, &texWidth, &texHeight, &pitch, &pixel);
@@ -622,8 +629,10 @@ static void _getLayoutBindsFromShader(
 		}
 
 		// push constant
+		// 每个 shader stage 至多 1 个 push constant block（SPIRV-Cross 约定），无需 for 循环遍历；
+		// 之前误写为 `for (i < count) if (count > 0) { ... list[0] ... }` 会在 count>1 时
+		// 用 list[0] 重复填入直至 capacity 溢出 + assert + 提前 return（同时漏掉 spvc 清理）。
 		spvc_resources_get_resource_list_for_type(resources, SPVC_RESOURCE_TYPE_PUSH_CONSTANT, &list, &count);
-		for (size_t i = 0; i < count; i++)
 		if (count > 0)
 		{
 			VkPushConstantRange pushConstRange = _getPushConstRangeFromShader(compiler, list[0], shaderType);
@@ -735,6 +744,14 @@ static VkShaderModule _createShaderFromFile(svkDevice& device, const char* const
 #pragma warning(disable:4996)
 	FILE* f = fopen(filename, "rb");
 #pragma warning(pop)
+	if (NULL == f)
+	{
+		// shader 文件缺失（部署目录错/资源未拷贝），fread(NULL) 在 MSVCRT 直接 abort；
+		// 在分配 buf 之前早退，避免泄漏。
+		printf("Error opening shader file: %s\n", filename);
+		return NULL;
+	}
+
 	const int	BUF_SIZE	= 1024 * 1024;
 	char*		buf			= new char[BUF_SIZE];
 	memset(buf, 0, BUF_SIZE);
@@ -2185,8 +2202,14 @@ void svkCmdSetScissor(VkCommandBuffer cb, uint32_t width, uint32_t height)
 
 int svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame, void* userData, presentResultCallback callback)
 {
-	VkResult	err;
-	uint32_t	nextFrame		= -1;
+	// 之前是 do-while(err != VK_SUCCESS) 无上限重试：当 err 是不可恢复码
+	// （DEVICE_LOST/OUT_OF_DEVICE_MEMORY）或 callback 内 recreateSwapchain 反复失败时主线程死循环。
+	// 现在加 MAX_RETRY 上限：可恢复路径（OUT_OF_DATE/SURFACE_LOST -> callback recreate -> 下次成功）
+	// 不受影响；持续失败时 fatal 退出（比 hang 更易诊断）。
+	const int	MAX_RETRY		= 5;
+	VkResult	err				= VK_SUCCESS;
+	uint32_t	nextFrame		= (uint32_t)-1;
+	int			retry			= 0;
 
 	do 
 	{
@@ -2201,6 +2224,12 @@ int svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* fr
 		{
 			if (NULL != callback)
 				callback(userData, err);
+			++retry;
+			if (retry >= MAX_RETRY)
+			{
+				printf("svkAcquireNextImage: unrecoverable failure after %d retries, err=%d\n", MAX_RETRY, (int)err);
+				abort();
+			}
 		}
 	} while (err != VK_SUCCESS);
 
