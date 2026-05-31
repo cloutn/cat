@@ -9,7 +9,7 @@
 #include "cat/animation.h"
 #include "cat/shader.h"
 #include "cat/primitive.h"
-#include "cat/gltf_raw_render.h"
+#include "cat/gltfLoader.h"
 #include "cat/scene.h"
 #include "cat/env.h"
 #include "cat/def.h"
@@ -21,8 +21,6 @@
 #include "scl/log.h"
 #include "scl/vector.h"
 #include "scl/file.h"
-
-#include "cgltf/cgltf.h"
 
 #ifdef SCL_WIN
 #include <Windows.h>
@@ -129,47 +127,9 @@ void Client::loadGltf(const char* const filename)
 		assert(false);
 		return;
 	}
-	m_env->clearGltfNodeMap();	
 
-	string256 path = filename;
-	scl::extract_path(path.pstring());
-
-	cgltf_data* data = gltf_load_from_file(filename);
-	if (NULL == data)
-		return;
-	if (NULL == data->scene && data->scenes_count == 0)
-		return;
-
-	for (int sceneIndex = 0; sceneIndex < static_cast<int>(data->scenes_count); ++sceneIndex)
-	{
-		cgltf_scene& sceneNode = data->scenes[sceneIndex];
-		Scene* scene = new Scene();
-		scene->load(sceneNode, path.c_str(), m_env);
-		m_scenes.push_back(scene);
-	}
-
-	for (int nodeIndex = 0; nodeIndex < data->nodes_count; ++nodeIndex)
-	{
-		cgltf_node&	node	= data->nodes[nodeIndex];
-		Object*		object	= m_env->getObjectByGltfNode(&node);
-		if (NULL == object)
-		{
-			assert(false);
-			continue;
-		}
-		object->setGltfIndex(nodeIndex);
-	}
-
-	m_animations.reserve(data->animations_count);
-	for (cgltf_size i = 0; i < data->animations_count; ++i)
-	{
-		cgltf_animation&	animationNode	= data->animations[i];
-		Animation*			animation		= new Animation();
-		animation->load(animationNode, m_env);
-		m_animations.push_back(animation);
-	}
-
-	cgltf_free(data);
+	GltfLoader loader;
+	loader.loadFile(filename, &m_render, m_env, m_scenes, m_animations);
 }
 
 Client::~Client()

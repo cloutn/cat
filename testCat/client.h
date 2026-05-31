@@ -16,8 +16,6 @@
 #ifdef SCL_WIN
 #endif
 
-struct cgltf_data;
-
 namespace cat {
 
 class Object;

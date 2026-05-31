@@ -5,8 +5,6 @@
 
 #include "scl/varray.h"
 
-struct cgltf_animation_channel;
-
 namespace cat {
 
 class Env;
@@ -17,9 +15,11 @@ public:
 	AnimationChannel();
 	~AnimationChannel();
 
-	void load				(const cgltf_animation_channel& channel, Env* env);
 	void update				(const uint timeConst);
 	void apply				();
+	void setTarget			(int objectID) { m_target = objectID; }
+	void setType			(KEY_FRAME_TYPE t) { m_type = t; }
+	void addKeyFrame		(KeyFrame* f) { m_frames.push_back(f); }
 
 private:
 	void _lerp				(const KeyFrame& before, const KeyFrame& after, const float delta);

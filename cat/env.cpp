@@ -7,7 +7,6 @@
 #include "cat/IRender.h"
 #include "cat/vertex.h"
 
-#include "cgltf/cgltf.h"
 
 namespace cat {
 
@@ -106,37 +105,6 @@ void Env::releaseTextureFile(const TextureFile* pTextureFile)
 	render()->releaseTexture(textureFile.texture);
 	m_textureFiles.erase(it);
 }
-
-void Env::addToGltfNodeMap(cgltf_node* node, int objectID)
-{
-	scl::tree<cgltf_node*, int>::iterator it = m_gltfNodeMap.find(node);
-	if (it != m_gltfNodeMap.end())
-	{
-		assert(false);
-		return;
-	}
-	m_gltfNodeMap.add(node, objectID);
-}
-
-int Env::getObjectIDByGltfNode(cgltf_node* node)
-{
-	scl::tree<cgltf_node*, int>::iterator it = m_gltfNodeMap.find(node);
-	if (it == m_gltfNodeMap.end())
-		return -1;
-	return (*it).second;
-}
-
-Object* Env::getObjectByGltfNode(cgltf_node* node)
-{
-	int id = getObjectIDByGltfNode(node);	
-	return Object::objectByID(id);
-}
-
-void Env::clearGltfNodeMap()
-{
-	m_gltfNodeMap.clear();
-}
-
 
 void Env::clearPickPrimtives()
 {

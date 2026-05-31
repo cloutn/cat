@@ -15,8 +15,6 @@
 #include "scl/file.h"
 #include "scl/quaternion.h"
 
-#include "cgltf/cgltf.h"
-
 using scl::matrix;
 using scl::vector3;
 
@@ -56,59 +54,6 @@ Object::~Object()
 
 	_objectIDMap().del(this);
 
-}
-
-void Object::loadNode(cgltf_node* node, const char* const path, IRender* render, Env* env)
-{
-	//m_env = env;
-	env->addToGltfNodeMap(node, id());
-
-	// create mesh
-	assert(NULL == m_mesh);
-	if (NULL != node->mesh)
-	{
-		m_mesh = new Mesh();
-		m_mesh->load(node->mesh, path, node->skin == NULL ? 0 : node->skin->joints_count,  this, render, env);
-	}
-	
-	if (NULL != node->name)
-	{
-		m_name = node->name;
-	}
-
-	if (node->has_translation)
-	{
-		_transform()->setMove({ node->translation[0], node->translation[1], node->translation[2] });
-	}
-	if (node->has_scale)
-	{
-		_transform()->setScale({ node->scale[0], node->scale[1], node->scale[2] });
-	}
-	if (node->has_rotation)
-	{
-		_transform()->setRotate({ node->rotation[0], node->rotation[1], node->rotation[2], node->rotation[3] });
-	}
-	if (node->has_matrix)
-	{
-		_transform()->setByMatrix(
-			{
-				node->matrix[0],	node->matrix[1],	node->matrix[2],	node->matrix[3],
-				node->matrix[4],	node->matrix[5],	node->matrix[6],	node->matrix[7],
-				node->matrix[8],	node->matrix[9],	node->matrix[10],	node->matrix[11],
-				node->matrix[12],	node->matrix[13],	node->matrix[14],	node->matrix[15],
-			});
-	}
-
-	// load childs
-	for (size_t i = 0; i < node->children_count; ++i)
-	{
-		if (NULL == node->children[i])
-			continue;
-
-		Object* c = new Object(this);
-		c->loadNode(node->children[i], path, render, env);
-		m_childs.push_back(c);
-	}
 }
 
 void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
@@ -174,21 +119,6 @@ scl::matrix Object::parentGlobalMatrixInverse()
 	return inverse;
 }
 
-void Object::loadSkin(cgltf_node* node, Env* env)
-{
-	if (NULL != node->skin)
-	{
-		assert(NULL == m_skin);
-		m_skin = new Skin;
-		m_skin->load(node->skin, env);
-		m_enableSkin = true;
-	}
-	for (int i = 0; i < m_childs.size(); ++i)
-	{
-		m_childs[i]->loadSkin(node->children[i], env);
-	}
-}
-
 void Object::save(yaml::node& root)
 {
 	//yaml::node root = parent["childs"].add_map();
@@ -251,6 +181,11 @@ void Object::setMove(const scl::vector3& v)
 	if (v == _transform()->move())
 		return;
 	_transform()->setMove(v);
+}
+
+void Object::setTransformByMatrix(const scl::matrix& m)
+{
+	_transform()->setByMatrix(m);
 }
 
 scl::vector3 Object::position()

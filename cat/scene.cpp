@@ -6,9 +6,6 @@
 
 //#include "scl/ring_queue.h"
 
-
-#include "cgltf/cgltf.h"
-
 #include <queue>
 
 namespace cat {
@@ -23,29 +20,6 @@ Scene::~Scene()
 {
 	for (int i = 0; i < m_objects.size(); ++i)
 		delete m_objects[i];
-}
-
-void Scene::load(cgltf_scene& scene, const char* const path, Env* env)
-{
-	m_env = env;
-
-	m_env->clearGltfNodeMap();
-
-	for (size_t i = 0; i < scene.nodes_count; ++i)
-	{
-		assert(NULL != scene.nodes);
-		Object*		object	= new Object(NULL);
-		cgltf_node*	node	= scene.nodes[i];
-		object->loadNode(node, path, m_env->render(), m_env);
-		m_objects.push_back(object);
-	}
-
-	for (size_t i = 0; i < scene.nodes_count; ++i)
-	{
-		cgltf_node*	node	= scene.nodes[i];
-		Object* object = m_env->getObjectByGltfNode(node);		
-		object->loadSkin(node, env);
-	}
 }
 
 void Scene::save(const char* const filename)

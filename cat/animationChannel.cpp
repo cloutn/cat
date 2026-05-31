@@ -2,30 +2,15 @@
 
 #include "cat/object.h"
 #include "cat/env.h"
-#include "cat/cgltf_util.h"
 
 #include "scl/quaternion.h"
 #include "scl/vector.h"
-
-#include "cgltf/cgltf.h"
 
 namespace cat {
 
 using scl::vector4;
 using scl::vector3;
 using scl::quaternion;
-
-KEY_FRAME_TYPE _cgltfType2KeyFrameType(cgltf_animation_path_type ctype)
-{
-	switch (ctype)
-	{
-	case cgltf_animation_path_type_rotation		: return KEY_FRAME_TYPE_ROTATE;
-	case cgltf_animation_path_type_scale		: return KEY_FRAME_TYPE_SCALE;
-	case cgltf_animation_path_type_translation	: return KEY_FRAME_TYPE_MOVE;
-	default: assert(false); break;
-	};
-	return KEY_FRAME_TYPE_INVALID;
-}
 
 AnimationChannel::AnimationChannel() : 
 	m_target(-1), 
@@ -40,64 +25,6 @@ AnimationChannel::~AnimationChannel()
 {
 	for (int i = 0; i < m_frames.size(); ++i)
 		delete m_frames[i];
-}
-
-void AnimationChannel::load(const cgltf_animation_channel& channel, Env* env)
-{
-	m_target	= env->getObjectIDByGltfNode(channel.target_node);
-	m_type		= _cgltfType2KeyFrameType(channel.target_path);
-
-	const cgltf_animation_sampler*		sampler			= channel.sampler;
-	const cgltf_accessor*				timeAccessor	= sampler->input;
-	const cgltf_accessor*				frameAccessor	= sampler->output;
-	const int							frameCount		= timeAccessor->count;
-
-	// time must be a float array.
-	if (timeAccessor->component_type != cgltf_component_type_r_32f || timeAccessor->type != cgltf_type_scalar)
-	{
-		assert(false);
-		return;
-	}
-
-	// frame must be a vec4 array.
-	if (frameAccessor->component_type != cgltf_component_type_r_32f || (frameAccessor->type != cgltf_type_vec4 && frameAccessor->type != cgltf_type_vec3) || frameCount != frameAccessor->count)
-	{
-		assert(false);
-		return;
-	}
-
-	const float*		times			= reinterpret_cast<const float*>	(cgltf_get_accessor_buffer(timeAccessor));
-	const float*		frameDatas		= reinterpret_cast<const float*>	(cgltf_get_accessor_buffer(frameAccessor));
-	const cgltf_type	type			= frameAccessor->type;
-	const int			componentCount	= cgltf_num_components(type);
-
-
-	scl::varray<KeyFrame*>&		frames			= m_frames;
-	for (int i = 0; i < frameCount; ++i)
-	{
-		KeyFrame*		frame	= new KeyFrame(static_cast<uint>(times[i] * 1000));
-		const float*	f		= &frameDatas[i * componentCount];
-
-		switch (m_type)
-		{
-		case KEY_FRAME_TYPE_ROTATE:
-			{
-				assert(componentCount >= 4);
-				frame->setRotate(quaternion{ f[0], f[1], f[2], f[3] });
-			}
-			break;
-		case KEY_FRAME_TYPE_SCALE:
-			frame->setScale(vector3 { f[0], f[1], f[2] });
-			break;
-		case KEY_FRAME_TYPE_MOVE:
-			frame->setMove(vector3 { f[0], f[1], f[2] });
-			break;
-		default:
-			assert(false);
-			break;
-		}
-		frames.push_back(frame);
-	}
 }
 
 bool KeyFrame_compare_less2(KeyFrame* const& f1, KeyFrame* const& f2)

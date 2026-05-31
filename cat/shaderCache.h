@@ -4,8 +4,6 @@
 
 #include "scl/tree.h"
 
-struct cgltf_primitive;
-
 namespace cat {
 
 class Shader;
@@ -18,7 +16,6 @@ public:
 	~ShaderCache();
 
 	Shader*			getShader					(const char* const vsFilename, const char* const fsFilename, const ShaderMacro* macros, int macroCount);
-	Shader*			getShader					(const char* const vsFilename, const char* const fsFilename, cgltf_primitive* data, const int skinJointCount);
 	Shader*			addMacro					(Shader* shader, const char* macro);
 	Shader*			addMacro					(Shader* shader, const char** macros, const int macroCount);
 	Shader*			removeMacro					(Shader* shader, const char* macro);
@@ -33,7 +30,6 @@ private:
 		MODIFY_TYPE_REMOVE,
 	};
 	Shader*			_modifyMacro				(Shader* shader, const char** macros, const int macroCount, const MODIFY_TYPE type);
-	static void		_getShacroFromGltfPrimitive	(cgltf_primitive* data, const int skinJointCount, ShaderMacroArray& macros);
 
 private:
 	typedef scl::tree<String, Shader*> ShaderTree;

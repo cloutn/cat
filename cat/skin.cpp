@@ -8,32 +8,11 @@
 #include "scl/matrix.h"
 #include "scl/log.h"
 
-#include "cgltf\cgltf.h"
-
 #include <string.h>
 
 using scl::matrix;
 
 namespace cat {
-
-matrix* _loadMatrices(cgltf_accessor* accessor, int outputMatrixCount)
-{
-	if (NULL == accessor)
-		return NULL;
-	// only read float matrix 4x4
-	if (accessor->component_type != cgltf_component_type_r_32f)
-		return NULL;
-	if (accessor->type != cgltf_type_mat4)
-		return NULL;
-
-	cgltf_buffer_view*	view		= accessor->buffer_view;
-	const byte*			pBuffer		= (byte*)view->buffer->data + view->offset;
-	if (view->size != sizeof(matrix) * outputMatrixCount)
-		return NULL;
-	matrix* output = new matrix[outputMatrixCount];
-	memcpy(output, pBuffer, view->size);
-	return output;
-}
 
 Skin::Skin() : m_inverseBindMatrices(NULL), m_inverseBindMatrixCount(0), m_jointMatrices(NULL), m_root(NULL)
 {
@@ -46,28 +25,17 @@ Skin::~Skin()
 	safe_delete_array(m_jointMatrices);
 }
 
-void Skin::load(cgltf_skin* skinData, Env* env)
+void Skin::setInverseBindMatrices(const scl::matrix* matrices, int count)
 {
-	if (NULL == skinData)
+	safe_delete_array(m_inverseBindMatrices);
+	m_inverseBindMatrixCount = count;
+	if (NULL == matrices || count <= 0)
+	{
+		m_inverseBindMatrices = NULL;
 		return;
-	m_inverseBindMatrixCount = skinData->joints_count;
-	m_inverseBindMatrices = _loadMatrices(skinData->inverse_bind_matrices, skinData->joints_count);
-
-	m_joints.reserve(skinData->joints_count);
-	for (int i = 0; i < static_cast<int>(skinData->joints_count); ++i)
-	{
-		cgltf_node* node = skinData->joints[i];
-		Object* obj = env->getObjectByGltfNode(node);
-		assert(NULL != obj);
-		m_joints.push_back(obj);
-
-
 	}
-
-	if (NULL != skinData->skeleton)
-	{
-		m_root = env->getObjectByGltfNode(skinData->skeleton);
-	}
+	m_inverseBindMatrices = new matrix[count];
+	memcpy(m_inverseBindMatrices, matrices, sizeof(matrix) * count);
 }
 
 scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform)

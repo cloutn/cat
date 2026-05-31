@@ -5,9 +5,6 @@
 #include "scl/tree.h"
 #include "scl/vector.h"
 
-struct cgltf_node;
-struct cgltf_buffer_view;
-
 namespace cat {
 
 class Shader;
@@ -40,11 +37,6 @@ public:
 	const TextureFile*			getTextureFile				(const char* const filename);
 	void						releaseTextureFile			(const TextureFile* textureFile);
 
-	void						addToGltfNodeMap			(cgltf_node* node, int objectID);
-	int							getObjectIDByGltfNode		(cgltf_node* node);
-	Object*						getObjectByGltfNode			(cgltf_node* node);
-	void						clearGltfNodeMap			();
-
 	// pick primitive
 	void						clearPickPrimtives			();
 	scl::vector4				registerPickPrimitive		(Primitive* primitive);
@@ -58,7 +50,6 @@ private:
 	Shader*													m_defaultShader;
 	IRender*												m_render;
 	String													m_defaultMaterialTextureName;
-	scl::tree<cgltf_node*, int>								m_gltfNodeMap;
 
 	typedef scl::tree<string256, TextureFile>				TextureFileMap;
 	TextureFileMap											m_textureFiles;

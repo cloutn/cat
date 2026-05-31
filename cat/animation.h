@@ -5,8 +5,6 @@
 
 #include "scl/varray.h"
 
-struct cgltf_animation;
-
 namespace cat {
 
 class Env;
@@ -17,8 +15,8 @@ public:
 	Animation	();
 	~Animation	();
 
-	void load	(cgltf_animation& animation, Env* env);
-	void update	(double diff);
+	void update		(double diff);
+	void addChannel	(AnimationChannel* c) { m_channels.push_back(c); }
 
 private:
 	scl::varray<AnimationChannel*>	m_channels;

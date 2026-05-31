@@ -1,10 +1,6 @@
 #include "cat/shaderCache.h"
 
 #include "cat/shader.h"
-#include "cat/cgltf_util.h"
-
-
-#include "cgltf/cgltf.h"
 
 namespace cat {
 
@@ -62,15 +58,6 @@ Shader* ShaderCache::getShader(const char* const vsFilename, const char* const p
 	}
 	m_shaders.add(key, shader);
 
-	return shader;
-}
-
-cat::Shader* ShaderCache::getShader(const char* const vsFilename, const char* const fsFilename, cgltf_primitive* data, const int skinJointCount)
-{
-	ShaderMacroArray macros;
-	_getShacroFromGltfPrimitive(data, skinJointCount, macros);
-
-	Shader* shader = getShader(vsFilename, fsFilename, macros.data(), macros.size());
 	return shader;
 }
 
@@ -132,44 +119,6 @@ cat::Shader* ShaderCache::_modifyMacro(Shader* shader, const char** macros, cons
 
 	Shader* newShader = getShader(shader->vsFilename(), shader->psFilename(), newMacros.data(), newMacros.size());
 	return newShader;
-}
-
-void ShaderCache::_getShacroFromGltfPrimitive(cgltf_primitive* primitive, const int skinJointCount, ShaderMacroArray& macros)
-{
-	macros.clear();
-
-	bool hasJoints	= cgltf_primitive_has_attr(primitive, "joints");
-	bool hasWeights	= cgltf_primitive_has_attr(primitive, "weights");
-	if (skinJointCount > 0 && hasJoints && hasWeights)
-	{
-		macros.add("SKIN");
-		macros.add("JOINT_MATRIX_COUNT", skinJointCount);
-	}
-	if (cgltf_primitive_has_attr(primitive, "NORMAL"))
-	{
-		macros.add("NORMAL");
-	}
-	if (cgltf_primitive_has_attr(primitive, "TANGENT"))
-	{
-		macros.add("TANGENT");
-	}
-	if (cgltf_primitive_has_attr(primitive, "TEXCOORD"))
-	{
-		//if (NULL != m_material && NULL != m_material->texture())
-		{
-			macros.add("TEXTURE");
-		}
-		//else
-		//{
-		//	const char* objectName = (NULL == m_parent || NULL == m_parent->parent()) ? "" : m_parent->parent()->name().c_str();
-		//	const char* meshName	= NULL == m_parent  ? "" : m_parent->name().c_str();
-		//	printf("warning : object [%s] mesh [%s]\n\tprimitive attribute has TEXCOORD, but material has NO texture.\n", objectName, meshName);
-		//}
-	}
-	if (cgltf_primitive_has_attr(primitive, "COLOR"))
-	{
-		macros.add("COLOR");
-	}
 }
 
 ShaderCache::~ShaderCache()

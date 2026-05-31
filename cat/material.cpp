@@ -5,8 +5,6 @@
 
 #include "scl/string.h"
 
-#include "cgltf/cgltf.h"
-
 namespace cat {
 
 //Material* Material::s_default = NULL;
@@ -19,36 +17,6 @@ Material::Material() : m_render(NULL), m_textureFile(NULL)
 Material::~Material()
 {
 	release();
-}
-
-void Material::load(cgltf_material* data, const char* const currentPath, IRender* render, Env* env)
-{
-	if (NULL == data)
-		return;
-
-	cgltf_texture* texture = NULL;
-	if (data->has_pbr_metallic_roughness)
-	{
-		cgltf_texture_view& textureView	= data->pbr_metallic_roughness.base_color_texture;
-		texture = textureView.texture;
-	}
-	else if (data->has_pbr_specular_glossiness)
-	{
-		cgltf_texture_view& textureView	= data->pbr_specular_glossiness.diffuse_texture;
-		texture = textureView.texture;
-	}
-	else
-	{
-		texture = data->normal_texture.texture;
-	}
-
-	if (NULL == texture || NULL == texture->image || NULL == texture->image->uri)
-		return;
-
-	string256 fullPath = currentPath;
-	fullPath += texture->image->uri;
-
-	init(render, fullPath.c_str(), env);
 }
 
 void Material::init(IRender* render, const char* const textureFilename, Env* env)

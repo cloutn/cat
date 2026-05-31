@@ -1,12 +1,9 @@
 #include "cat/animation.h"
 
-#include "cat/cgltf_util.h"
 #include "cat/env.h"
 #include "cat/object.h"
 
 #include "scl/vector.h"
-
-#include "cgltf/cgltf.h"
 
 namespace cat
 {
@@ -27,17 +24,6 @@ Animation::~Animation()
 		delete m_channels[i];
 	}
 }
-
-void Animation::load(cgltf_animation& animation, Env* env)
-{
-	for (cgltf_size i = 0; i < animation.channels_count; ++i)	
-	{
-		AnimationChannel* channel = new AnimationChannel();
-		channel->load(animation.channels[i], env);
-		m_channels.push_back(channel);
-	} 
-
-} // Animation::load
 
 void Animation::update(double diff)
 {

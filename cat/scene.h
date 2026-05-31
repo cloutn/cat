@@ -5,8 +5,6 @@
 
 #include "scl/varray.h"
 
-struct cgltf_scene;
-
 namespace scl {
 	class matrix;
 }
@@ -23,7 +21,6 @@ public:
 	Scene();
 	~Scene();
 	
-	void						load			(cgltf_scene& scene, const char* const path, Env* env);
 	void						save			(const char* const filename);
 
 	const scl::varray<Object*>&	objects			() const { return m_objects; }
@@ -32,6 +29,8 @@ public:
 	void						draw			(const scl::matrix& mvp, bool isPick, IRender* render);
 	Object*						findObject		(const char* const objectName);
 	Object*						objectByID		(const int id, bool recursive = false);
+	void						addObject		(Object* root) { m_objects.push_back(root); }
+	void						setEnv			(Env* env) { m_env = env; }
 
 private:
 	Env*						m_env;

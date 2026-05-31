@@ -12,10 +12,6 @@
 #include "scl/array.h"
 #include "cat/string.h"
 
-struct cgltf_data;
-struct cgltf_node;
-struct cgltf_mesh;
-
 namespace yaml { class node; }
 
 namespace cat {
@@ -35,8 +31,6 @@ public:
 	Object(Object* parent);
 	virtual ~Object();
 
-	void						loadNode					(cgltf_node* node, const char* const path, IRender* render, Env* env);
-	void						loadSkin					(cgltf_node* node, Env* env);
 	void						save						(yaml::node& parent);
 	void						draw						(const scl::matrix& mvp, bool isPick, IRender* render);
 	const scl::matrix&			matrix						();
@@ -52,6 +46,7 @@ public:
 	const Object*				child						(int index) const { return m_childs[index]; }
 	Object*						child						(const char* const objectName);
 	Object*						childByID					(const int id, bool recursive = false);
+	void						addChild					(Object* c) { m_childs.push_back(c); }
 	Object*						parent						() { return m_parent; }
 	const Object*				parent						() const { return m_parent; }
 	void						setRotate					(const scl::quaternion& v);
@@ -59,6 +54,7 @@ public:
 	void						setScale					(const scl::vector3& v);
 	void						setMove						(const scl::vector3& v);
 	void						setPosition					(const scl::vector3& v) { setMove(v); }
+	void						setTransformByMatrix		(const scl::matrix& m);
 	scl::vector3				position					();	
 	scl::vector3				scale						();
 	scl::quaternion				rotate						();
@@ -72,9 +68,10 @@ public:
 	void						setEnableAnimation			(const bool v) { m_enableAnimation = v; }
 	void						setMesh						(Mesh* mesh) { m_mesh = mesh; }
 	const Skin*					skin						() const { return m_skin; }
+	void						setSkin						(Skin* skin) { m_skin = skin; }
 	bool						hasSkin						() const { return skin() != NULL; }
 	Object*						skinRoot					();
-	const Object*				skinRoot					() const { return skinRoot(); }
+	const Object*				skinRoot					() const { return const_cast<Object*>(this)->skinRoot(); }
 	Box							boundingBox					() const;
 
 	// static 

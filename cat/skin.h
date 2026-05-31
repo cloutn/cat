@@ -3,8 +3,6 @@
 #include "scl/matrix.h"
 #include "scl/varray.h"
 
-struct cgltf_skin;
-
 namespace cat {
 
 class Env;
@@ -16,13 +14,14 @@ public:
 	Skin();
 	virtual ~Skin();
 
-	void					load				(cgltf_skin* skinData, Env* env);
-
 	// TODO use cache, don't generate every frame
 	scl::matrix*			generateJointMatrix	(int& matrixCount, const scl::matrix& inverseMeshGlobalTransform);
 
-	const Object*			root				() const { return root(); }
+	const Object*			root				() const { return const_cast<Skin*>(this)->root(); }
 	Object*					root				();
+	void					setRoot				(Object* r) { m_root = r; }
+	void					addJoint			(Object* j) { m_joints.push_back(j); }
+	void					setInverseBindMatrices(const scl::matrix* matrices, int count);
 
 private:
 	scl::matrix*			m_inverseBindMatrices;

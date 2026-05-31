@@ -8,9 +8,6 @@
 #include "scl/vector.h"
 #include "scl/varray.h"
 
-struct cgltf_primitive;
-struct cgltf_buffer_view;
-
 namespace cat {
 
 class IRender;
@@ -31,7 +28,6 @@ public:
 	Primitive();
 	virtual ~Primitive();
 
-	void				load				(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env);
 	void				draw				(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
 	void				release				();
 	Shader*				shader				() { return m_shader; }
@@ -56,6 +52,8 @@ public:
 	//	);
 	void						setRender			(IRender* render) { m_render = render; } 
 	void						setEnv				(Env* env) { m_env = env; } 
+	void						setParent			(Mesh* m) { m_parent = m; }
+	void						setMaterial			(Material* m) { m_material = m; }
 	void**						vertexBuffers		() { return m_deviceVertexBuffers;	}
 	void*						vertexBuffer		(const int bufferIndex);
 	void*						indexBuffer			() { return m_deviceIndexBuffer;	}
@@ -87,7 +85,6 @@ public:
 	Box							boundingBox			();
 
 private:
-	void						_loadVertex			(const cgltf_primitive&	primitive, IRender* render);
 	int							_attrLocationToIndex(const int attrLocation);
 
 private:

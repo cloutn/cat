@@ -2,7 +2,6 @@
 
 #include "cat/IRender.h"
 #include "cat/material.h"
-#include "cat/cgltf_util.h"
 #include "cat/shader.h"
 #include "cat/shaderCache.h"
 #include "cat/mesh.h"
@@ -12,12 +11,6 @@
 #include "cat/vertex.h"
 
 #include "scl/assert.h"
-
-#include "cgltf/cgltf.h"
-
-//#include <string.h>
-
-#include "gltf_raw_render.h"
 
 namespace cat {
 	
@@ -68,77 +61,6 @@ Primitive::~Primitive()
 //	return attrIndex;
 //}
 
-void Primitive::_loadVertex(const cgltf_primitive&	primitive, IRender* render)
-{
-	if (primitive.attributes_count <= 0)
-		return;
-	m_attrCount					= primitive.attributes_count;
-	m_deviceVertexBuffers		= new void*[m_attrCount];
-	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
-	m_attrs						= new VertexAttr[m_attrCount];
-	memset(m_attrs, 0, sizeof(m_attrs[0]) * m_attrCount);
-	int		attrOffsets[1024]	= { 0 };
-
-	// calculate sizeof(attr), calculate offset
-	int	sizeofVertex			= 0;
-	const int	vertexCount		= primitive.attributes[0].data->count;
-	m_vertexCount				= vertexCount;
-	for (int i = 0; i < m_attrCount; ++i)
-	{
-		cgltf_attribute&	attr		= primitive.attributes[i];
-		cgltf_accessor*		accessor	= attr.data;		
-		int					size		= cgltf_calc_size(accessor->type, accessor->component_type);
-		sizeofVertex += size;
-		attrOffsets[i + 1] = attrOffsets[i] + size;
-	}
-
-	int bufferSize = sizeofVertex * vertexCount;
-
-	//TODO don't new a big buffer!!!
-	byte* buffer = new byte[bufferSize];
-	memset(buffer, 0, bufferSize);
-
-	for (int i = 0; i < m_attrCount; ++i)
-	{
-		cgltf_attribute&	attr		= primitive.attributes[i];
-		cgltf_accessor*		accessor	= attr.data;	
-
-		//m_attrs[i].index = _attrNameToIndex(attr.name);
-		m_attrs[i].location = gltfAttrNameToLocation(attr.name);
-		if (m_attrs[i].location < 0)
-		{
-			printf("attr index = %s\n", attr.name);
-			continue;
-		}
-		m_attrs[i].size			= cgltf_num_components(accessor->type);
-		m_attrs[i].dataType		= static_cast<ELEM_TYPE>(gltf_type_to_attr_type(accessor->component_type));
-		m_attrs[i].normalize	= accessor->normalized;
-		m_attrs[i].stride		= sizeofVertex;
-		m_attrs[i].offset		= reinterpret_cast<void*>(static_cast<uintptr_t>(attrOffsets[i]));
-
-		int	elementSize = accessor->stride; 
-		if (elementSize == 0)
-			elementSize = cgltf_calc_size(accessor->type, accessor->component_type);;;
-
-		cgltf_buffer_view*		view		= accessor->buffer_view;
-		const byte*				viewBuffer	= cgltf_get_accessor_buffer(accessor); //(byte*)view->buffer->data + view->offset + accessor->offset;
-		for (int vi = 0; vi < vertexCount; ++vi)
-		{
-			assert(vi * sizeofVertex + attrOffsets[i] + elementSize <= bufferSize);
-			byte*		dst = buffer + vi * sizeofVertex + attrOffsets[i];
-			const byte* src = viewBuffer + vi * elementSize;
-			memcpy(dst, src, elementSize);
-		}
-	}
-
-	void* deviceBuffer = render->createVertexBuffer(-1);
-	render->writeVertexBuffer(buffer, deviceBuffer, bufferSize);
-	m_deviceVertexBuffers[0] = deviceBuffer; // if all attrs share one buffer, we only need to set the first element in array, the vulkanRender will try to use first element when meet a NULL ptr in array.
-
-	delete[] buffer;
-}
-
-
 int Primitive::_attrLocationToIndex(const int attrLocation)
 {
 	int attrIndex = -1;
@@ -150,42 +72,6 @@ int Primitive::_attrLocationToIndex(const int attrLocation)
 		break;
 	}
 	return attrIndex;
-}
-
-void Primitive::load(cgltf_primitive* data, const char* const path, int skinJointCount, Mesh* parent, IRender* render, Env* env)
-{
-	if (NULL == data)
-		return;
-
-	release();
-
-	m_env		= env;
-	m_render	= render;
-	m_parent	= parent;
-
-	const cgltf_primitive&	primitive		= *data;
-	const cgltf_accessor*	indices			= primitive.indices;
-
-	m_primitiveType			= static_cast<PRIMITIVE_TYPE>(primitive.type);
-
-	// index
-	const byte*	pBuffer		= cgltf_get_accessor_buffer(indices);	//(byte*)indices->buffer_view->buffer->data + indices->buffer_view->offset + indices->offset;
-	setIndices(pBuffer, indices->count, gltf_type_to_attr_type(indices->component_type));
-
-	//_loadVertexOriginal(primitive, bufferMap, render);
-	_loadVertex(primitive, render);
-
-	// material
-	if (NULL != primitive.material)
-	{
-		assert(NULL == m_material);
-		m_material = new Material();
-		m_material->load(primitive.material, path, render, env);
-	}
-	else
-	{
-		m_material	= m_env->getDefaultMaterial();
-	}
 }
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
