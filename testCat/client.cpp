@@ -134,6 +134,21 @@ void Client::loadGltf(const char* const filename)
 
 Client::~Client()
 {
+	// 这里就是 Client 的显式 shutdown。Client 在 main 内 new/delete，dtor 触发时机完全可控；
+	// 不再用 Meyer's singleton（已删除 inst()），避免 g_client 跨 main 边界静态析构与其它全局相互依赖。
+	//
+	// 清理顺序约束（一旦改动需同步更新这个注释）：
+	//   1. m_gui.release()          先关 UI，避免后续帧回调访问已析构的对象
+	//   2. m_animations / m_scenes  场景层：依赖 m_env 中的 Shader/Material 仍存活
+	//   3. m_terrain / m_grid / m_bonePrimitive / m_camera  渲染辅助对象，同样依赖 m_env + m_render
+	//   4. m_env                    内含 ShaderCache，其析构会通过 Shader::~Shader 调 m_render->releaseShader()
+	//                               所以必须在 m_render 真正销毁之前 delete m_env
+	//   5. Object::releaseObjectIDMap()  最后清全局 ID map（此时已无 Object 残留）
+	//   6. ~VulkanRender 在 Client 所有成员析构后由 m_render 自动析构（含 vkDeviceWaitIdle）
+	//
+	// 注意：m_render.release() 当前实现是空函数；真正的 GPU 资源清理在 ~VulkanRender，
+	// ShaderCache 必须在 m_env 析构内、~VulkanRender 之前完成 releaseShader 调用，靠的就是
+	// "先 delete m_env，最后才让 m_render 自然析构" 这个顺序，不要改。
 	m_config.save("config.yaml");
 
 	m_gui.release();
@@ -147,18 +162,13 @@ Client::~Client()
 	delete m_terrain;
 	delete m_camera;
 	m_render.release();	
-	scl::log::release();
 	delete m_grid;
 	//delete m_gridPrimitive;
 	delete m_bonePrimitive;
 	delete m_env;
 	Object::releaseObjectIDMap();
-}
 
-Client& Client::inst()
-{
-	static Client g_client;
-	return g_client;
+	// scl::log::release() 由 main() 末尾统一调用一次；这里不再 release，避免双重 release
 }
 
 void Client::_renderScene(bool isPick)

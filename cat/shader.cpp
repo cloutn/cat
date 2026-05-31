@@ -37,7 +37,11 @@ void* Shader::shader(IRender* render)
 		char* vs_code = _loadfile(m_vsFilename.c_str(), macros.c_str());
 		char* ps_code = _loadfile(m_psFilename.c_str(), macros.c_str());
 
-		m_deviceShader = render->createShader(vs_code, ps_code);
+		// 任一文件加载失败则跳过编译，避免把 NULL 传进 createShader 触发底层 svkCreateShaderProgramFromCode 崩溃
+		if (NULL != vs_code && NULL != ps_code)
+		{
+			m_deviceShader = render->createShader(vs_code, ps_code);
+		}
 
 		delete[] vs_code;
 		delete[] ps_code;
@@ -54,7 +58,7 @@ char* Shader::_loadfile(const char* const filename, const char* const macros)
 	if (!f.open(filename, "rb"))
 	{
 		assert(false);
-		return false;
+		return NULL;
 	}
 	const int	macrolen	= ::strlen(macros);
 	const int	filesize	= static_cast<int>(f.size());

@@ -2369,10 +2369,13 @@ void svkCopyImageToData(svkDevice& device, svkImage& image, void* const data, co
 	void*					imageData = NULL; 
 	VkMemoryRequirements	memReq;
 	memclr(memReq);
-	int dataSize = memReq.size;
 
+	// 必须先调 vkGetImageMemoryRequirements 把 memReq 填上，再读 memReq.size；之前的代码顺序反了导致 dataSize 永远是 0
 	vkGetImageMemoryRequirements(device.device, image.image, &memReq);
+	int dataSize = static_cast<int>(memReq.size);
+
 	VkResult err = vkMapMemory(device.device, image.memory, 0, memReq.size, 0, &imageData);
+	assert(!err);
 
 	if (dataSize > dataCapacity)
 		dataSize = dataCapacity;

@@ -68,8 +68,7 @@ void Terrain::init(IRender* render, Env* env)
 	m_primitive->setRender			(render);
 	m_primitive->setEnv				(env);
 	m_primitive->setPrimitiveType	(PRIMITIVE_TYPE_TRIANGLES);
-	//jm_primitive->setIndices			(m_indices, INDEX_COUNT, ELEM_TYPE_UINT32);
-	m_primitive->setIndices			(m_indices, 3, ELEM_TYPE_UINT32);
+	m_primitive->setIndices			(m_indices, INDEX_COUNT, ELEM_TYPE_UINT32);
 	m_primitive->setAttrs			(vertex_color_uv::get_attr(), vertex_color_uv::get_attr_count());
 	m_primitive->setVertices		(m_vertices, VERTEX_COUNT, sizeof(vertex_color_uv));
 

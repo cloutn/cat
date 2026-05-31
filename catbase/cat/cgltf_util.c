@@ -3,6 +3,9 @@
 
 const unsigned char* cgltf_get_accessor_buffer(const cgltf_accessor* accessor)
 {
+	// 链式三层解引用任意一层 NULL 都会崩；非规范 GLTF / 外部 .bin 缺失 / cgltf_load_buffers 未调用都可能命中
+	if (NULL == accessor || NULL == accessor->buffer_view || NULL == accessor->buffer_view->buffer || NULL == accessor->buffer_view->buffer->data)
+		return NULL;
 	const unsigned char* buf = (const unsigned char*)accessor->buffer_view->buffer->data + accessor->buffer_view->offset + accessor->offset;
 	return buf;
 }

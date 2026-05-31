@@ -87,39 +87,47 @@
 > **目标**：把代码审查发现的必崩级问题、跨平台编译陷阱、ownership 混乱清理干净，
 > 同时把后续所有 phase 都依赖的基础设施一次扎深。
 
+> **2026-05-31 现状盘点**：14 完成 / 1 部分 / 19 待办（共 34 项）。
+> M0.1 critical 13 项全清；M0.5 `.txt` 死代码已 `git rm`；M0.2 全段暂缓到 Phase 5 后；M0.3/M0.4 仍未开工。
+> 各项后括号注明了证据位置或缺失原因。
+
 ### M0.1  必崩级 Critical 修复（~1 周）
 
 对照 `doc/review/代码审查-崩溃安全.md` 中标红的 13 项：
 
-- [ ] `Object::skinRoot()` 自递归（栈溢出 → 必崩）
-- [ ] `ShaderMacroArray::assign` 变量名拼错（写错成员 → 行为错误）
-- [ ] `delete (void*)` —— 改为类型化 delete 或 deleter 回调
-- [ ] `_loadfile` 返回 `false` 给 `char*` —— 修返回类型与调用点
-- [ ] `svkCopyImageToData` dataSize 计算顺序 —— 修先 size 后 alloc
-- [ ] `releaseObjectIDMap` 未置 NULL —— 二次访问悬空指针
-- [ ] `~Object` 不解父引用 —— 父节点 children 列表悬空
-- [ ] `cgltf_util.c` 链式解引用无判空 —— 任意一段缺失即崩
-- [ ] terrain 硬编码 3 —— 明确含义，改成具名常量并加注释
-- [ ] Vulkan 退出时未 `vkDeviceWaitIdle` —— 进程退出偶发崩
-- [ ] 全局对象析构顺序未定（Env / Shader Cache / Render） —— 改为显式 shutdown
-- [ ] union 误用（POD vs 非 POD） —— 改 `std::variant` 或显式构造
+- [x] `Object::skinRoot()` 自递归（栈溢出 → 必崩）—— `object.h:74` 与 `skin.h:20` 用 `const_cast` 转调非 const 版本
+- [x] `ShaderMacroArray::assign` 变量名拼错（写错成员 → 行为错误）—— `shaderMacro.cpp:80` 已改为 `add(macros[i])`
+- [x] `delete (void*)` —— 改为类型化 delete 或 deleter 回调（`vulkanRender.cpp:294/359` 用 `safe_delete(svkBuffer*)`）
+- [x] `_loadfile` 返回 `false` 给 `char*` —— 修返回类型与调用点（`cat/shader.cpp:59` 改 `return NULL;`，`shader()` 调用点判空避免把 NULL 喂给 `createShader`）
+- [x] `svkCopyImageToData` dataSize 计算顺序 —— 修先 size 后 alloc（`simplevulkan.cpp:2367-2389` 把 `int dataSize = memReq.size;` 移到 `vkGetImageMemoryRequirements` 之后，附 `assert(!err)`）
+- [x] `releaseObjectIDMap` 未置 NULL —— 二次访问悬空指针（`safe_delete` 宏自动置 NULL）
+- [x] `~Object` 不解父引用 —— 父节点 children 列表悬空（`object.cpp:47-51` 调 `_removeChild`）
+- [x] `cgltf_util.c` 链式解引用无判空 —— 任意一段缺失即崩（`cgltf_util.c:7-8` 入口加 `accessor / buffer_view / buffer / data` 四级 NULL 检查，命中返回 NULL）
+- [x] terrain 硬编码 3 —— 明确含义，改成具名常量并加注释（`terrain.cpp:71` `3` 改 `INDEX_COUNT`，删除被 `//jm_` 废注释行）
+- [x] Vulkan 退出时未 `vkDeviceWaitIdle` —— 进程退出偶发崩（`~VulkanRender` 首行 `waitIdle()`）
+- [x] 全局对象析构顺序未定（Env / Shader Cache / Render） —— 改为显式 shutdown（`Client` 走 `new + delete` 模式，dtor 即显式 shutdown；删掉死代码 `Client::inst()` Meyer's singleton 后门；`~Client` 顶部加 6 步顺序约束注释，并把双重 `scl::log::release()` 收敛为 main 末尾一次）
+- [x] union 误用（POD vs 非 POD） —— 改 `std::variant` 或显式构造（`animationChannel.cpp:19-20` 仅 init `m_rotate`，最小修；`keyFrame.h:40` 同样处理）
 - [ ] `void*` 句柄类型不安全 —— 用 opaque handle struct（typed handle）
 
 **交付**：
 - 所有 critical 项以 PR 形式提交（即使单人也走 PR 形式，留 review 痕迹）
 - `doc/学习笔记/崩溃安全修复总结.md`：每条问题 = 根因 + 修复方案 + 类似坑的 UE 防御写法
 
-### M0.2  跨平台编译与构建清理（~3~5 天）
+### M0.2  跨平台编译与构建清理（~3~5 天） — **暂缓**
+
+> **2026-05-31 决策**：M0.2 推迟到 Phase 5「地形系统」跑通之后再做。
+> 理由：当前主线在 Windows + Vulkan，未来 Phase 1~4 主体仍按 Windows 验证；引入跨平台 lint / -Werror / Linux CI 现在收益小、噪声大，会拖慢主线学习节奏。
+> 跨平台所需的工具链 / `clang-format` / `.clang-tidy` / case-sensitive include 等收尾任务先记账，地形 phase 后开 Phase 0.6 集中做。
 
 对照 `doc/review/代码审查-跨平台编译.md`：
 
-- [ ] 所有 include 改为 case-sensitive（Linux/macOS 必崩根源）
-- [ ] 修复 ctor 初始化列表顺序（`-Wreorder`）
-- [ ] 启用 `-Wall -Wextra -Wreorder -Wshadow -Werror`（先逐模块开，避免一次爆 1000 个）
-- [ ] `clang-format` 配置入仓，pre-commit hook 强制
-- [ ] `clang-tidy` 至少开 `cppcoreguidelines / bugprone / performance / modernize` 子集
-- [ ] `setup.py` 完善：一键拉依赖 + 配 cmake + 装 hook
-- [ ] CI 草稿：本地 `act` 跑 `build_windows + build_linux`（GitHub Actions 形式）
+- [ ] 所有 include 改为 case-sensitive（Linux/macOS 必崩根源）（无自动检查；当前未确认）
+- [ ] 修复 ctor 初始化列表顺序（`-Wreorder`）（CMake 未开 -Wreorder，未跑过）
+- [ ] 启用 `-Wall -Wextra -Wreorder -Wshadow -Werror`（先逐模块开，避免一次爆 1000 个）（CMake 仅启 `/source-charset:utf-8`）
+- [ ] `clang-format` 配置入仓，pre-commit hook 强制（`.clang-format` 不存在）
+- [ ] `clang-tidy` 至少开 `cppcoreguidelines / bugprone / performance / modernize` 子集（`.clang-tidy` 不存在）
+- [ ] `setup.py` 完善：一键拉依赖 + 配 cmake + 装 hook（`tool/script/setup.py` 已有 unzip/build/generate 三段，但缺 hook 安装）
+- [ ] CI 草稿：本地 `act` 跑 `build_windows + build_linux`（GitHub Actions 形式）（`.github/workflows/` 不存在）
 
 **交付**：
 - `.clang-format` / `.clang-tidy` / `.editorconfig` 入仓
@@ -147,8 +155,8 @@ struct ShaderHandle  { uint32_t id; };
 
 `IRender` 接口的所有 `void*` 改为 typed handle。
 
-- [ ] Texture 共享：相同 path/hash 命中既有资源，引用计数；release 到 0 才真销毁。
-- [ ] Shader 模块缓存：用**结构化 key**（不再拼字符串），key 含 `{sourcePath, stage, macroSetHash, includeMtime}`。
+- [x] Texture 共享：相同 path/hash 命中既有资源，引用计数；release 到 0 才真销毁。（`env.cpp:62-107` 已实现：++counter / --counter / 归零销毁）
+- [ ] Shader 模块缓存：用**结构化 key**（不再拼字符串），key 含 `{sourcePath, stage, macroSetHash, includeMtime}`。（`shaderCache.h:35` 仍是 `tree<String, Shader*>` 字符串 key）
 - [ ] SPIR-V 磁盘缓存：以 key 哈希为文件名，落 `.cache/spv/`；命中即跳过 `shaderc`。
 
 **交付**：
@@ -163,19 +171,19 @@ struct ShaderHandle  { uint32_t id; };
 对照 `doc/review/代码审查-性能.md`：
 
 - [ ] **Transform dirty flag**
-  - `localMatrix` dirty
-  - `globalMatrix` dirty（父链 dirty 时下传）
-  - 替换现有"每次访问都乘一遍父链"的实现
+  - [x] `localMatrix` dirty（`transform.h:25/35` 已有 `m_changed` + `invalidate()`）
+  - [ ] `globalMatrix` dirty（父链 dirty 时下传）（`object.cpp:109-115` 仍每次重算父链，无 `m_globalMatrix` 缓存字段）
+  - [ ] 替换现有"每次访问都乘一遍父链"的实现
 - [ ] **BoundingBox CPU 缓存**
-  - `Mesh::getBoundingBox()` 改为读取首次构建期算好的 CPU 版本
-  - 严禁 readback GPU vertex buffer 做包围盒（CR 中明确点名）
+  - [ ] `Mesh::getBoundingBox()` 改为读取首次构建期算好的 CPU 版本（`primitive.cpp:533` 仍走 `vertexPositions()` → readback）
+  - [ ] 严禁 readback GPU vertex buffer 做包围盒（CR 中明确点名）
 - [ ] **视锥剔除**
-  - 提取 6 个 frustum plane
-  - 每个 `Primitive` 在 Render 之前做 AABB vs frustum 测试
-  - 输出统计：`drawn / culled`，挂 ImGui 调试面板
+  - [ ] 提取 6 个 frustum plane
+  - [ ] 每个 `Primitive` 在 Render 之前做 AABB vs frustum 测试
+  - [ ] 输出统计：`drawn / culled`，挂 ImGui 调试面板
 - [ ] **Uniform buffer 治理**
-  - 48MB 常驻 uniform buffer 调查并拆分（per-frame / per-object 分桶）
-  - 引入 ring buffer 的 dynamic uniform 写入路径（pre-step，为后续 GPU Driven 铺路）
+  - [ ] 48MB 常驻 uniform buffer 调查并拆分（per-frame / per-object 分桶）
+  - [ ] 引入 ring buffer 的 dynamic uniform 写入路径（pre-step，为后续 GPU Driven 铺路）
 
 **交付**：
 - ImGui 调试面板：`FrameStats`（draw count / culled / triangles / passes）
@@ -186,18 +194,18 @@ struct ShaderHandle  { uint32_t id; };
 
 ### M0.5  死代码与组织清理（~3 天）
 
-- [ ] 清掉散落的 `.txt` 残留代码片段（CR 中多处提到）
-- [ ] 统一文件命名规范（驼峰 vs snake_case 二选一，写进 `doc/review/代码审查-规范.md`）
-- [ ] `doc/` 下中文文件名乱码问题排查（Windows GBK vs UTF-8 兼容）
-- [ ] 把 `doc/` 中"实验性"标记的内容整理为 `doc/sketches/` 子目录
+- [x] 清掉散落的 `.txt` 残留代码片段（CR 中多处提到）（已 `git rm` 7 个：`cat/uiRenderOpenGL.{h,cpp}.txt` / `cat/resources.{h,cpp}.txt` / `cat/old_object_cpp.txt` / `catvulkan/cat/load_png.{h,cpp}.txt`）
+- [ ] 统一文件命名规范（驼峰 vs snake_case 二选一，写进 `doc/review/代码审查-规范.md`）（CR 报告记录但未拍板）
+- [ ] `doc/` 下中文文件名乱码问题排查（Windows GBK vs UTF-8 兼容）（Windows 端读起来正常，需要 Linux 检出确认）
+- [ ] 把 `doc/` 中"实验性"标记的内容整理为 `doc/sketches/` 子目录（目录不存在）
 
 ### Phase 0 出口准入条件
 
-- [ ] 13 项 critical 全部清掉
-- [ ] 三平台（Windows / Linux / Android stub）能编过
-- [ ] FrameStats 面板可用
-- [ ] 视锥剔除生效（场景外物体不进 draw call）
-- [ ] M0.1 / M0.2 / M0.3 / M0.4 四篇学习笔记齐
+- [x] 13 项 critical 全部清掉（M0.1 全段完成，2026-05-31）
+- [ ] ~~三平台（Windows / Linux / Android stub）能编过~~ → **暂缓到 Phase 5 后**（Windows + Vulkan 单平台为准入；M0.2 跨平台清理同步推迟）
+- [ ] FrameStats 面板可用（M0.4 待办）
+- [ ] 视锥剔除生效（场景外物体不进 draw call）（M0.4 待办）
+- [ ] M0.1 / M0.3 / M0.4 三篇学习笔记齐（M0.2 笔记延后；新增 M0.5 短笔记由清理性质，写不写自定）
 
 ---
 

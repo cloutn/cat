@@ -33,7 +33,6 @@ public:
 	Client();
 	virtual ~Client();
 
-	static Client&			inst				();
 	void					init				();
 
 	void					loadGltf			(const char* const filename);
