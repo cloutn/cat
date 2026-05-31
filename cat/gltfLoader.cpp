@@ -21,6 +21,7 @@
 
 #include "scl/assert.h"
 #include "scl/file.h"
+#include "scl/log.h"
 #include "scl/matrix.h"
 #include "scl/quaternion.h"
 #include "scl/string.h"
@@ -312,15 +313,28 @@ void GltfLoader::_loadSkin(cgltf_skin* skinData, Skin* outSkin)
 
 	// inverse bind matrices
 	matrix* ibm = _loadIBM(skinData->inverse_bind_matrices, jointCount);
-	outSkin->setInverseBindMatrices(ibm, jointCount);
-	safe_delete_array(ibm);
+	if (NULL == ibm)
+	{
+		// 不能传 (NULL, jointCount)，否则 Skin 内 count>0 / ptr==NULL 失配
+		log_warning("Skin: inverse bind matrices missing/invalid, skin will be unusable");
+		outSkin->setInverseBindMatrices(NULL, 0);
+	}
+	else
+	{
+		outSkin->setInverseBindMatrices(ibm, jointCount);
+		safe_delete_array(ibm);
+	}
 
 	// joints
 	for (int i = 0; i < jointCount; ++i)
 	{
 		cgltf_node* node = skinData->joints[i];
 		Object*		obj	 = _objectByNode(node);
-		assert(NULL != obj);
+		if (NULL == obj)
+		{
+			log_warning("Skin: joint[%d] not mapped to Object, skipped", i);
+			continue;
+		}
 		outSkin->addJoint(obj);
 	}
 
