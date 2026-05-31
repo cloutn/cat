@@ -66,10 +66,10 @@ void Scene::save(const char* const filename)
 	doc.save(filename);
 }
 
-void Scene::draw(const scl::matrix& mvp, bool isPick, IRender* render)
+void Scene::draw(const scl::matrix& mvp, bool isPick)
 {
 	for (int i = 0; i < m_objects.size(); ++i)
-		m_objects[i]->draw(mvp, isPick, render);
+		m_objects[i]->draw(mvp, isPick);
 }
 
 Object* Scene::objectByName(const char* const objectName, bool recursive)

@@ -18,7 +18,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	void			draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
+	void			draw			(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick);
 	void			addPrimitive	(Primitive*);
 	Object*			parent			() { return m_parent; }
 	void			setParent		(Object* p) { m_parent = p ;}

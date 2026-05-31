@@ -173,17 +173,17 @@ Client::~Client()
 
 void Client::_renderScene(bool isPick)
 {
-	m_terrain->draw(m_camera->matrix(), isPick, &m_render);
+	m_terrain->draw(m_camera->matrix(), isPick);
 
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
-		m_scenes[i]->draw(m_camera->matrix(), isPick, &m_render);
+		m_scenes[i]->draw(m_camera->matrix(), isPick);
 	}
 
 	//if (NULL != m_gridPrimitive)
-	//	m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
+	//	m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, isPick);
 	if (NULL != m_grid)
-		m_grid->draw(m_camera->matrix(), isPick, &m_render);
+		m_grid->draw(m_camera->matrix(), isPick);
 
 	if (NULL != m_bonePrimitive)
 	{
@@ -191,7 +191,7 @@ void Client::_renderScene(bool isPick)
 		scl::varray<uint16> indices;
 		collectBoneVertices(m_object, vertices, indices);
 		m_bonePrimitive->updateVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
-		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, isPick, &m_render);
+		m_bonePrimitive->draw(m_camera->matrix(), NULL, 0, isPick);
 	}
 }
 
@@ -287,9 +287,9 @@ void Client::run()
 
 		m_render.endDraw();
 #else
-		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, &m_render);
+		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, false);
 
-		//m_object->draw(m_camera->matrix(), &m_render);
+		//m_object->draw(m_camera->matrix(), false);
 #endif
 
 		m_render.swap();

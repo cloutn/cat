@@ -74,11 +74,11 @@ int Primitive::_attrLocationToIndex(const int attrLocation)
 	return attrIndex;
 }
 
-void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
+void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick)
 {
-	// caller 必须先 setShaderWithPick 才能 draw；契约违反 → debug 暴露，release 跳过本 primitive 避免崩到底层 driver。
+	// caller 必须先 setRender + setShaderWithPick 才能 draw；契约违反 → debug 暴露，release 跳过本 primitive 避免崩到底层 driver。
 	Shader* const targetShader = isPick ? m_pickShader : m_shader;
-	if (NULL == targetShader)
+	if (NULL == m_render || NULL == targetShader)
 	{
 		assert(false);
 		return;
@@ -94,12 +94,12 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 	void*				_indexBuffer	= indexBuffer();
 	int					_attrCount		= attrCount();
 	const VertexAttr*	_attrs			= attrs();
-	void*				_shader			= targetShader->shader(render);
+	void*				_shader			= targetShader->shader(m_render);
 	vector4				pickColor		= isPick ? m_env->registerPickPrimitive(this) : vector4();
 	void*				_pushConst		= isPick ? &pickColor : NULL;
 	int					_pushConstSize	= isPick ? sizeof(vector4) : 0;
 
-	render->draw2(
+	m_render->draw2(
 		texture,
 		_vertexBuffers,
 		m_primitiveType,

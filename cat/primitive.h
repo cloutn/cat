@@ -28,7 +28,7 @@ public:
 	Primitive();
 	virtual ~Primitive();
 
-	void				draw				(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render);
+	void				draw				(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick);
 	void				release				();
 	Shader*				shader				() { return m_shader; }
 	void				setShader			(Shader* shader) { m_shader = shader; }

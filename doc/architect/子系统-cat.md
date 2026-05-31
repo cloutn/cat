@@ -26,7 +26,7 @@
 `Scene`（`cat/scene.h`）是单个 glTF scene 的容器：
 
 - `load(cgltf_scene&, path, Env*)`：按 gltf_scene::nodes 创建顶级 `Object`，递归 `loadNode`，最后再走一遍 `loadSkin`（Skin 需要等所有节点创建完成才能解析关节引用）。
-- `draw(mvp, isPick, IRender*)`：遍历顶级 `Object::draw`。
+- `draw(mvp, isPick)`：遍历顶级 `Object::draw`。IRender 由各 Primitive 通过 `setRender` 单点持有，无需逐层传递。
 - `findObject` / `objectByID`：递归搜索；ID 走 `Object::objectByID`，全局唯一。
 - `save(filename)`：通过 `yaml::document` 序列化场景树（每个 `Object::save` 写自身 transform / 子节点）。
 
@@ -136,20 +136,20 @@
 ## 7. 单帧主循环（在 cat 视角）
 
 ```
-Scene::draw(mvp, isPick, render)
+Scene::draw(mvp, isPick)
  └─ for object in topLevel:
-      Object::draw(mvp, isPick, render)
+      Object::draw(mvp, isPick)
         ├─ // 累乘父矩阵 → modelMatrix
         ├─ if hasSkin: skin->generateJointMatrix(...)
-        ├─ if mesh:   mesh->draw(mvpModel, jointMatrices, jointCount, isPick, render)
+        ├─ if mesh:   mesh->draw(mvpModel, jointMatrices, jointCount, isPick)
         │     └─ for primitive in mesh.primitives:
         │           primitive->draw(...)
-        │             ├─ shader = (isPick ? m_pickShader : m_shader)->shader(render)
+        │             ├─ shader = (isPick ? m_pickShader : m_shader)->shader(m_render)
         │             ├─ texture = material ? material->texture() : null
-        │             └─ render->draw2(texture, vbs, type, ib, ic, ict, ioff,
-        │                              attrCount, attrs, shader, mvpModel,
-        │                              jointMatrices, jointMatrixCount,
-        │                              pushConst, pushConstSize)
+        │             └─ m_render->draw2(texture, vbs, type, ib, ic, ict, ioff,
+        │                                attrCount, attrs, shader, mvpModel,
+        │                                jointMatrices, jointMatrixCount,
+        │                                pushConst, pushConstSize)
         └─ for child in m_childs: child->draw(...)
 ```
 

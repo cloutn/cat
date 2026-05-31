@@ -32,7 +32,7 @@ public:
 	virtual ~Object();
 
 	void						save						(yaml::node& parent);
-	void						draw						(const scl::matrix& mvp, bool isPick, IRender* render);
+	void						draw						(const scl::matrix& mvp, bool isPick);
 	const scl::matrix&			matrix						();
 	scl::matrix					globalMatrix				();
 	scl::matrix					parentGlobalMatrix			();

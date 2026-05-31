@@ -15,7 +15,7 @@ Mesh::Mesh() : m_parent(NULL), m_env(NULL)
 
 }
 
-void Mesh::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
+void Mesh::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick)
 {
 	for (int i = 0; i < m_primitives.size(); ++i)
 	{
@@ -23,7 +23,7 @@ void Mesh::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const 
 		if (NULL == primitive)
 			continue;
 
-		primitive->draw(mvp, jointMatrices, jointMatrixCount, isPick, render);
+		primitive->draw(mvp, jointMatrices, jointMatrixCount, isPick);
 	}
 }
 

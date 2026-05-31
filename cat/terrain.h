@@ -17,7 +17,7 @@ public:
 	static const int INDEX_COUNT = (TERRAIN_SIZE - 1) * (TERRAIN_SIZE - 1) * 2 * 3; // QUAD_COUNT = (TERRAIN_SIZE-1)*(TERRAIN_SIZE-1), TRIANGLE_COUNT = QUAD_COUNT * 2;  INDEX_COUNT = TRIANGLE_COUNT * 3;
 
 	void init(IRender* render, Env* env);
-	void draw(const scl::matrix& mvp, bool isPick, IRender* render);
+	void draw(const scl::matrix& mvp, bool isPick);
 
 	Terrain();
 	virtual ~Terrain();

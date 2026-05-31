@@ -71,7 +71,7 @@ Object::~Object()
 
 }
 
-void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
+void Object::draw(const scl::matrix& mvp, bool isPick)
 {
 	scl::matrix*	jointMatrices		= NULL;
 	int				jointMatrixCount	= 0;
@@ -89,14 +89,14 @@ void Object::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 		scl::matrix mat = globalMatrix();
 		scl::matrix selfMvp = mat;
 		selfMvp.mul(mvp);
-		m_mesh->draw(selfMvp, jointMatrices, jointMatrixCount, isPick, render);
+		m_mesh->draw(selfMvp, jointMatrices, jointMatrixCount, isPick);
 	}
 
 	for (int i = 0; i < m_childs.size(); ++i)
 	{
 		if (NULL == m_childs[i])
 			continue;
-		m_childs[i]->draw(mvp, isPick, render);
+		m_childs[i]->draw(mvp, isPick);
 	}
 }
 

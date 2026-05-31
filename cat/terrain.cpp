@@ -78,11 +78,11 @@ void Terrain::init(IRender* render, Env* env)
 
 }
 
-void Terrain::draw(const scl::matrix& mvp, bool isPick, IRender* render)
+void Terrain::draw(const scl::matrix& mvp, bool isPick)
 {
 	if (NULL == m_primitive)
 		return;
-	m_primitive->draw(mvp, NULL, 0, isPick, render);
+	m_primitive->draw(mvp, NULL, 0, isPick);
 }
 
 Terrain::Terrain()
