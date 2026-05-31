@@ -66,7 +66,9 @@ private:
 									 int& outAttrCount,
 									 int& outVertexCount,
 									 int& outStride);
-	scl::matrix*_loadIBM				(cgltf_accessor* accessor, int outputCount);
+
+	// IBM = Inverse Bind Matrices，gltf skin 里每根骨头一份的"逆绑定矩阵"。
+	scl::matrix*_loadIBM			(cgltf_accessor* accessor, int outputCount);
 
 	// cgltf_node* -> Object ID 反查表（取代 Env::m_gltfNodeMap）。
 	int			_objectIDByNode		(cgltf_node* node) const;

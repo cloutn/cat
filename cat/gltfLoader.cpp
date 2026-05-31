@@ -506,6 +506,12 @@ byte* GltfLoader::_flattenVertexAttrs(cgltf_primitive* data,
 	return buffer;
 }
 
+// IBM = Inverse Bind Matrices，gltf skin 里每根骨头一份的"逆绑定矩阵"。
+// 作用：把顶点从模型空间搬到该骨头"绑定姿势(bind pose)下的局部空间"，
+// 之后再乘上骨头当前帧的 global 矩阵，就得到顶点在当前动画姿势下的位置。
+// 蒙皮最终矩阵：M_joint = inv(mesh.global) * joint.global * IBM
+// 见 Skin::generateJointMatrix。gltf 里以 mat4 数组存在 skin.inverseBindMatrices accessor。
+// 数量必须与 joints 数量一致，缺失/损坏时整个 skin 不可用。
 scl::matrix* GltfLoader::_loadIBM(cgltf_accessor* accessor, int outputCount)
 {
 	if (NULL == accessor || outputCount <= 0)
