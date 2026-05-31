@@ -43,6 +43,7 @@ const scl::matrix& Transform::matrix() const
 void Transform::setByMatrix(const scl::matrix& m)
 {
 	scl::matrix::decompose(m, &m_move, &m_scale, NULL, NULL, &m_rotate);
+	invalidate();
 }
 
 void Transform::setRotateAngle(const scl::vector3& v)

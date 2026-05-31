@@ -478,7 +478,7 @@ Object* Client::findObject(const char* const objectName)
 {
 	for (int i = 0; i < m_scenes.size(); ++i)
 	{
-		Object* object = m_scenes[i]->findObject(objectName);
+		Object* object = m_scenes[i]->objectByName(objectName);
 		if (NULL != object)
 			return object;
 	}

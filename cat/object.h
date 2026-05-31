@@ -44,9 +44,9 @@ public:
 	int							childCount					() const { return m_childs.size(); }
 	Object*						child						(int index) { return m_childs[index]; }
 	const Object*				child						(int index) const { return m_childs[index]; }
-	Object*						child						(const char* const objectName);
+	Object*						childByName					(const char* const objectName, bool recursive = true);
 	Object*						childByID					(const int id, bool recursive = false);
-	void						addChild					(Object* c) { m_childs.push_back(c); }
+	void						addChild					(Object* c) { if (NULL != c) { c->m_parent = this; m_childs.push_back(c); } }
 	Object*						parent						() { return m_parent; }
 	const Object*				parent						() const { return m_parent; }
 	void						setRotate					(const scl::quaternion& v);
@@ -80,9 +80,11 @@ public:
 
 private:
 	Transform*					_transform					();
+	void						_removeChild				(Object* c);
 
 private:
 	static ObjectIDMap<Object>*	s_objectIDMap;		//a map from object id to pointer. 
+	static bool					s_objectIDMapReleased;	// 一次性标志：releaseObjectIDMap 后禁止再用 Object 静态 API
 	static ObjectIDMap<Object>&	_objectIDMap();
 
 	int							m_id;

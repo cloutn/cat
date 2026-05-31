@@ -27,7 +27,7 @@ public:
 	int							objectCount		() const { return m_objects.size(); }
 	Object*						object			(const int index) { return m_objects[index]; }
 	void						draw			(const scl::matrix& mvp, bool isPick, IRender* render);
-	Object*						findObject		(const char* const objectName);
+	Object*						objectByName	(const char* const objectName, bool recursive = true);
 	Object*						objectByID		(const int id, bool recursive = false);
 	void						addObject		(Object* root) { m_objects.push_back(root); }
 	void						setEnv			(Env* env) { m_env = env; }

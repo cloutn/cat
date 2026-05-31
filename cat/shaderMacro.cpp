@@ -77,7 +77,7 @@ void ShaderMacroArray::assign(const ShaderMacro* macros, const int macroCount)
 	m_macros.clear();
 
 	for (int i = 0; i < macroCount; ++i)
-		add(m_macros[i]);
+		add(macros[i]);
 }
 
 void ShaderMacroArray::clear()

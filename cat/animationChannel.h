@@ -19,7 +19,7 @@ public:
 	void apply				();
 	void setTarget			(int objectID) { m_target = objectID; }
 	void setType			(KEY_FRAME_TYPE t) { m_type = t; }
-	void addKeyFrame		(KeyFrame* f) { m_frames.push_back(f); }
+	void addKeyFrame		(KeyFrame* f) { if (NULL != f) m_frames.push_back(f); }
 
 private:
 	void _lerp				(const KeyFrame& before, const KeyFrame& after, const float delta);

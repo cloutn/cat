@@ -14,13 +14,15 @@
 #include "scl/vector.h"
 #include "scl/file.h"
 #include "scl/quaternion.h"
+#include "scl/log.h"
 
 using scl::matrix;
 using scl::vector3;
 
 namespace cat {
 
-ObjectIDMap<Object>* Object::s_objectIDMap = NULL;
+ObjectIDMap<Object>* Object::s_objectIDMap			= NULL;
+bool				 Object::s_objectIDMapReleased	= false;
 
 Object::Object() : Object(NULL)
 {
@@ -42,13 +44,27 @@ Object::Object(Object* parent) :
 
 Object::~Object()
 {
+	// 先把自己从父节点的 m_childs 里摘掉，避免外部 delete 中间节点后留悬垂指针
+	if (NULL != m_parent)
+	{
+		m_parent->_removeChild(this);
+		m_parent = NULL;
+	}
+
 	safe_delete(m_skin);
 	safe_delete(m_mesh);
 	safe_delete(m_transform);
 	//safe_delete(m_matrixWithAnimation);
 
+	// 递归 delete 子节点前先把它们的 m_parent 置 NULL，
+	// 否则 child 析构时会反向去 erase 正在析构中的我，造成重复处理
 	for (int i = 0; i < m_childs.size(); ++i)
+	{
+		if (NULL == m_childs[i])
+			continue;
+		m_childs[i]->m_parent = NULL;
 		delete m_childs[i];
+	}
 
 	m_childs.clear();
 
@@ -113,6 +129,9 @@ scl::matrix Object::parentGlobalMatrixInverse()
 	bool success = matrix::inverse(parentGlobalMatrix(), inverse);
 	if (!success)
 	{
+		// 父链矩阵奇异（典型：某层 scale 含 0 / NaN），Release 下 assert 失效，
+		// 这里用 log_warning 代替静默，让拾取/Gizmo/编辑路径出问题时看得见
+		log_warning("Object[%d] parentGlobalMatrix is singular, fallback to identity", m_id);
 		assert(false);
 		return scl::matrix::identity();
 	}
@@ -144,6 +163,8 @@ void Object::save(yaml::node& root)
 
 ObjectIDMap<Object>& Object::_objectIDMap()
 {
+	// release 是单向终点：再走到这里说明上层在 releaseObjectIDMap 之后还在 new/del Object，必须暴露
+	assert(!s_objectIDMapReleased);
 	if (NULL == s_objectIDMap)
 	{
 		s_objectIDMap = new ObjectIDMap<Object>;
@@ -257,21 +278,23 @@ cat::Box Object::boundingBox() const
 
 void Object::releaseObjectIDMap()
 {
-	if (NULL == s_objectIDMap)
-		return;
-	delete s_objectIDMap;
+	safe_delete(s_objectIDMap);
+	s_objectIDMapReleased = true;
 }
 
-Object* Object::child(const char* const objectName)
+Object* Object::childByName(const char* const objectName, bool recursive)
 {
 	for (int i = 0; i < m_childs.size(); ++i)
 	{
 		Object* object = m_childs[i];
 		if (object->name() == objectName)
 			return object;
-		Object* child = object->child(objectName);
-		if (NULL != child)
-			return child;
+		if (recursive)
+		{
+			Object* child = object->childByName(objectName, true);
+			if (NULL != child)
+				return child;
+		}
 	}
 	return NULL;
 }
@@ -295,6 +318,21 @@ Object* Object::childByID(const int id, bool recursive)
 		}
 	}
 	return NULL;
+}
+
+void Object::_removeChild(Object* c)
+{
+	if (NULL == c)
+		return;
+
+	for (int i = 0; i < m_childs.size(); ++i)
+	{
+		if (m_childs[i] == c)
+		{
+			m_childs.erase_fast(i);
+			return;
+		}
+	}
 }
 
 

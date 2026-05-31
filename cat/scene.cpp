@@ -72,16 +72,19 @@ void Scene::draw(const scl::matrix& mvp, bool isPick, IRender* render)
 		m_objects[i]->draw(mvp, isPick, render);
 }
 
-Object* Scene::findObject(const char* const objectName)
+Object* Scene::objectByName(const char* const objectName, bool recursive)
 {
 	for (int i = 0; i < m_objects.size(); ++i)
 	{
 		Object* object = m_objects[i];
 		if (object->name() == objectName)
 			return object;
-		Object* child = object->child(objectName);
-		if (NULL != child)
-			return child;
+		if (recursive)
+		{
+			Object* child = object->childByName(objectName, true);
+			if (NULL != child)
+				return child;
+		}
 	}
 	return NULL;
 }

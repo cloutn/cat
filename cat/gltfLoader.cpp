@@ -340,7 +340,13 @@ void GltfLoader::_loadSkin(cgltf_skin* skinData, Skin* outSkin)
 
 	// optional explicit skeleton root
 	if (NULL != skinData->skeleton)
-		outSkin->setRoot(_objectByNode(skinData->skeleton));
+	{
+		Object* skeletonRoot = _objectByNode(skinData->skeleton);
+		if (NULL == skeletonRoot)
+			log_warning("Skin: skeleton root not mapped to Object, fallback to auto-resolve");
+		else
+			outSkin->setRoot(skeletonRoot);
+	}
 }
 
 Animation* GltfLoader::_loadAnimation(cgltf_animation& animation)
