@@ -9,7 +9,7 @@ namespace cat {
 
 //Material* Material::s_default = NULL;
 
-Material::Material() : m_render(NULL), m_textureFile(NULL)
+Material::Material() : m_render(NULL), m_env(NULL), m_textureFile(NULL)
 {
 
 }
@@ -34,11 +34,12 @@ void Material::init(IRender* render, const char* const textureFilename, Env* env
 
 void Material::release()
 {
-	if (NULL != m_textureFile)
-	{
+	// 双 NULL 守卫：避免 init 失败 / 未调用 init 时 m_env 仍为 NULL 还去解引用
+	if (NULL != m_env && NULL != m_textureFile)
 		m_env->releaseTextureFile(m_textureFile);
-		m_textureFile = NULL;
-	}
+	m_textureFile	= NULL;
+	m_env			= NULL;
+	m_render		= NULL;
 }
 
 void* Material::texture()

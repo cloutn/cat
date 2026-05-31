@@ -28,6 +28,7 @@ private:
 	int						m_inverseBindMatrixCount;
 	scl::varray<Object*>	m_joints;
 	scl::matrix*			m_jointMatrices;
+	int						m_jointMatricesCapacity;	// m_jointMatrices 当前实际分配的元素数
 	mutable Object*			m_root;
 
 };

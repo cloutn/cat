@@ -42,8 +42,8 @@ public:
 	int							id							() const { return m_id; }
 	const scl::varray<Object*>&	childs						() const { return m_childs; }
 	int							childCount					() const { return m_childs.size(); }
-	Object*						child						(int index) { return m_childs[index]; }
-	const Object*				child						(int index) const { return m_childs[index]; }
+	Object*						child						(int index)			{ return (index >= 0 && index < m_childs.size()) ? m_childs[index] : NULL; }
+	const Object*				child						(int index) const	{ return (index >= 0 && index < m_childs.size()) ? m_childs[index] : NULL; }
 	Object*						childByName					(const char* const objectName, bool recursive = true);
 	Object*						childByID					(const int id, bool recursive = false);
 	void						addChild					(Object* c) { if (NULL != c) { c->m_parent = this; m_childs.push_back(c); } }

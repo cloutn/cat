@@ -14,7 +14,12 @@ using scl::matrix;
 
 namespace cat {
 
-Skin::Skin() : m_inverseBindMatrices(NULL), m_inverseBindMatrixCount(0), m_jointMatrices(NULL), m_root(NULL)
+Skin::Skin() :
+	m_inverseBindMatrices		(NULL),
+	m_inverseBindMatrixCount	(0),
+	m_jointMatrices				(NULL),
+	m_jointMatricesCapacity		(0),
+	m_root						(NULL)
 {
 
 }
@@ -23,6 +28,7 @@ Skin::~Skin()
 {
 	safe_delete_array(m_inverseBindMatrices);
 	safe_delete_array(m_jointMatrices);
+	m_jointMatricesCapacity = 0;
 }
 
 void Skin::setInverseBindMatrices(const scl::matrix* matrices, int count)
@@ -30,6 +36,7 @@ void Skin::setInverseBindMatrices(const scl::matrix* matrices, int count)
 	safe_delete_array(m_inverseBindMatrices);
 	// IBM 变了，旧 jointMatrices 缓存可能尺寸不匹配，一并丢弃重建
 	safe_delete_array(m_jointMatrices);
+	m_jointMatricesCapacity = 0;
 
 	if (NULL == matrices || count <= 0)
 	{
@@ -57,8 +64,14 @@ scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inve
 	// 取 IBM 与 joints 的最小长度，防止任一端越界
 	const int count = (jointCount < m_inverseBindMatrixCount) ? jointCount : m_inverseBindMatrixCount;
 
-	if (NULL == m_jointMatrices)
-		m_jointMatrices = new matrix[m_inverseBindMatrixCount];
+	// hot-reload / IBM 变更后，仅靠 NULL 判断会复用旧容量数组，下面 i<count 的写
+	// 可能越过旧分配。容量真值显式存在 m_jointMatricesCapacity，不够就丢弃重建。
+	if (NULL == m_jointMatrices || m_jointMatricesCapacity < count)
+	{
+		safe_delete_array(m_jointMatrices);
+		m_jointMatrices			= new matrix[count];
+		m_jointMatricesCapacity	= count;
+	}
 
 	for (int i = 0; i < count; ++i)
 	{

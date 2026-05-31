@@ -3,6 +3,8 @@
 #include <scl/tree.h>
 #include <scl/hash_table.h>
 
+#include <limits.h>
+
 namespace cat {
 
 template <typename T>
@@ -57,6 +59,9 @@ void ObjectIDMap<T>::add(T* obj)
 {
 	if (NULL == obj)
 		return;
+	// alloc_id 溢出后会返回 -1，这里挡住，避免 -1 sentinel 被当成正常 key 入表
+	if (obj->id() < 0)
+		return;
 	assert(m_map.is_init());
 
 	m_map.add(obj->id(), obj);
@@ -65,7 +70,13 @@ void ObjectIDMap<T>::add(T* obj)
 template <typename T>
 int ObjectIDMap<T>::alloc_id()
 {
-	assert(m_id + 1 > 0);
+	// 不要写 m_id + 1 > 0：signed int 溢出是 UB，编译器有权把它优化掉。
+	// release 也必须能拦下，避免回绕成负数后污染 -1 这种 sentinel。
+	if (m_id >= INT_MAX - 1)
+	{
+		assert(false);
+		return -1;
+	}
 	return ++m_id;
 }
 
@@ -75,6 +86,12 @@ void ObjectIDMap<T>::init(const int maxCount)
 	if (m_map.is_init())
 		return;
 	const int MAX_CONFLICT = 8;
+	// 反向写避免乘法本身 UB：maxCount > INT_MAX / MAX_CONFLICT 即一定溢出
+	if (maxCount <= 0 || maxCount > INT_MAX / MAX_CONFLICT)
+	{
+		assert(false);
+		return;
+	}
 	m_map.init(MAX_CONFLICT * maxCount);
 }
 
