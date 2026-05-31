@@ -52,6 +52,7 @@ exec_cmd([
     "-x!lib",
     "-x!lib64",
     "-x!shaderc/build",
+    "-xr!VkLayer_utils.lib",
     "-aoa",     # ask overwrite mode = all
     "-bso0",    # stadard output stream disabled
     "-bd",      # disable progress indicator
