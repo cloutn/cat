@@ -76,6 +76,14 @@ int Primitive::_attrLocationToIndex(const int attrLocation)
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick, IRender* render)
 {
+	// caller 必须先 setShaderWithPick 才能 draw；契约违反 → debug 暴露，release 跳过本 primitive 避免崩到底层 driver。
+	Shader* const targetShader = isPick ? m_pickShader : m_shader;
+	if (NULL == targetShader)
+	{
+		assert(false);
+		return;
+	}
+
 	void* texture = NULL;
 	if (NULL == m_material || NULL == m_material->texture())
 		texture = NULL;		//m_env->getDefaultMaterial()->texture();
@@ -86,7 +94,7 @@ void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, c
 	void*				_indexBuffer	= indexBuffer();
 	int					_attrCount		= attrCount();
 	const VertexAttr*	_attrs			= attrs();
-	void*				_shader			= isPick ? m_pickShader->shader(render) : m_shader->shader(m_render);
+	void*				_shader			= targetShader->shader(render);
 	vector4				pickColor		= isPick ? m_env->registerPickPrimitive(this) : vector4();
 	void*				_pushConst		= isPick ? &pickColor : NULL;
 	int					_pushConstSize	= isPick ? sizeof(vector4) : 0;
@@ -353,7 +361,8 @@ void Primitive::setVertices(const void* vertices, const int vertexCount, const i
 
 void Primitive::updateVertices(void* vertices, int vertexCount, int sizeofVertex)
 {
-	if (m_deviceVertexBuffers[0] <= 0)
+	// 构造时 m_deviceVertexBuffers 为 NULL，setVertices 之前调本函数应为 no-op（不是契约违反）。
+	if (NULL == m_deviceVertexBuffers || m_deviceVertexBuffers[0] <= 0)
 		return;
 	if (vertexCount != m_vertexCount)
 	{

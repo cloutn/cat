@@ -54,39 +54,59 @@ void* Shader::shader(IRender* render)
 
 char* Shader::_loadfile(const char* const filename, const char* const macros)
 {
+	// 契约：caller (Shader::shader) 已保证 macros != NULL（传 String::c_str()），不在此处再判 NULL。
 	scl::file f;
 	if (!f.open(filename, "rb"))
 	{
 		assert(false);
 		return NULL;
 	}
-	const int	macrolen	= ::strlen(macros);
-	const int	filesize	= static_cast<int>(f.size());
-	const int	buflen		= macrolen + filesize + 1; // total buffer length = filesize + macros' strlen.
-	char*		buf			= new char[buflen];
-	memset(buf, 0, buflen);
-	const int readlen = f.read(buf + macrolen, filesize);
+
+	const int macrolen	= ::strlen(macros);
+	const int filesize	= static_cast<int>(f.size());
+
+	// 先把整文件读到独立的 fileBuf，再向 out 拼装。
+	// 这样可以避免原实现"原地重排 buf"导致：
+	//   (1) #version 不在文件开头时丢前置注释 / 重复 #version 行；
+	//   (2) #version 行扫描越界（最后一行无换行时 *p++ 走出 buf）。
+	char* fileBuf = new char[filesize + 1];
+	const int readlen = f.read(fileBuf, filesize);
 	assert(readlen == filesize);
-	if (macrolen == 0)
-		return buf;
+	fileBuf[filesize] = '\0';
 
-	char* text = buf + macrolen;
-	char* version = ::strstr(text, "#version");
-	if (NULL == version) // no #version found.
-	{
-		scl::strncpy_unsafe(buf, macros, macrolen);		
-	}
-	else // insert macros between #version and other code.
-	{
-		char* p = version + 1;
-		while (*p++ != '\n') 
-		{ }
-		int versionlen = (p - version);
-		scl::strncpy_unsafe(buf, version, versionlen);
-		scl::strncpy_unsafe(buf + versionlen, macros, macrolen);
-	}
+	const int outlen	= filesize + macrolen + 1;
+	char* out			= new char[outlen];
 
-	return buf;
+	const char* version = (filesize > 0) ? ::strstr(fileBuf, "#version") : NULL;
+	if (0 == macrolen || NULL == version)
+	{
+		// 无 #version 或无 macros：layout = macros + 整文件
+		if (macrolen > 0)
+			::memcpy(out, macros, macrolen);
+		::memcpy(out + macrolen, fileBuf, filesize);
+	}
+	else
+	{
+		// 找 #version 行末换行（带边界检查，修复原 while (*p++ != '\n') 越界）
+		const char* p = version;
+		const char* const fileEnd = fileBuf + filesize;
+		while (p < fileEnd && *p != '\n')
+			++p;
+		if (p < fileEnd)
+			++p; // 把换行包进 prefix
+
+		const int prefixLen = static_cast<int>(p - fileBuf);	// [文件起始 .. #version 行结束含 \n]
+		const int suffixLen = filesize - prefixLen;				// #version 行之后
+
+		// layout = prefix(含 #version 行) + macros + suffix
+		::memcpy(out,							fileBuf,	prefixLen);
+		::memcpy(out + prefixLen,				macros,		macrolen);
+		::memcpy(out + prefixLen + macrolen,	p,			suffixLen);
+	}
+	out[outlen - 1] = '\0';
+
+	delete[] fileBuf;
+	return out;
 }
 
 void Shader::_allmacros(String& output)

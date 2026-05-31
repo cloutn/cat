@@ -23,6 +23,9 @@ node document::load(const char* const filename)
 		return node();
 
 	char* buffer = (char*)fm.map();
+	// mmap 内核态可能失败（权限 / 0 字节文件 / 资源耗尽），ryml::to_csubstr(NULL) 内部 strlen(NULL) 是 UB。
+	if (NULL == buffer)
+		return node();
 
     m_tree = ryml::parse_in_arena(ryml::to_csubstr(buffer));
 	return node(m_tree.rootref());

@@ -67,7 +67,9 @@ cat::DescriptorSet DescriptorAllocator::_allocFromPages()
 		DescriptorPage& page = m_pages[i];
 		assert(NULL != page.memory);
 
-		if (page.freeIndices.size() == 0) // current page is full
+		// 新建 page freeIndices 是空的（PAGE_SIZE 个 set 还没分发，靠 allocCount > 0 走 fast path），
+		// 仅 freeIndices 与 allocCount 都为 0 才算 page 真满。
+		if (page.freeIndices.size() == 0 && page.allocCount == 0)
 			continue;
 
 		set = page.alloc(i);
@@ -81,6 +83,9 @@ void DescriptorAllocator::free(DescriptorSet& set)
 {
 	int pageIndex	= ((set.allocIndex & 0xFFFF0000) >> 16);
 	int setIndex	= (set.allocIndex & 0x0000FFFF);
+	// debug 暴露错路由的 set（caller 单点保证 free 一次，不在此处做 release-active 查重）。
+	assert(pageIndex >= 0 && pageIndex < m_pageCount);
+	assert(setIndex  >= 0 && setIndex  < DescriptorPage::PAGE_SIZE);
 	m_pages[pageIndex].freeIndices.push(setIndex);
 }
 

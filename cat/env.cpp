@@ -92,6 +92,10 @@ const TextureFile* Env::getTextureFile(const char* const filename)
 
 void Env::releaseTextureFile(const TextureFile* pTextureFile)
 {
+	// release 类函数对齐 safe_delete / vkDestroyXxx 语义，接受 NULL / sentinel 是正常行为，不属于双保险。
+	if (NULL == pTextureFile || pTextureFile == &TextureFile::empty())
+		return;
+
 	TextureFileMap::iterator it = m_textureFiles.find(pTextureFile->name);
 	if (it == m_textureFiles.end())
 		return;
