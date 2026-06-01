@@ -438,6 +438,12 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 			//}
 		}
 		break;
+	case WM_CLOSE:
+		{
+			m_config.screenSize.set(m_window.getWidth(), m_window.getHeight());
+			m_config.screenPos.set(m_window.getPositionX(), m_window.getPositionY());
+			return false;
+		}
 	case WM_SIZE:
 		{
 			int width	= LOWORD(lParam);
@@ -448,8 +454,8 @@ bool Client::onEvent(void* hWnd, uint32_t message, intptr_t wParam, intptr_t lPa
 		break;
 	case WM_MOVE:
 		{
-			int x = LOWORD(lParam);
-			int y = HIWORD(lParam);
+			int x = m_window.getPositionX();
+			int y = m_window.getPositionY();
 			m_config.screenPos.set(x, y);
 			//printf("WM_MOVE : x = %d, y = %d\n", x, y);
 		}

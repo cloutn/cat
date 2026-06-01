@@ -28,6 +28,50 @@ void EnableDpiAwareness()
 #endif
 }
 
+static int _clampInt(const int value, const int minValue, const int maxValue)
+{
+	if (value < minValue)
+		return minValue;
+	if (value > maxValue)
+		return maxValue;
+	return value;
+}
+
+static void _validateWindowRect(RECT& rect)
+{
+	if (rect.right <= rect.left || rect.bottom <= rect.top)
+		return;
+
+	HMONITOR monitor = ::MonitorFromRect(&rect, MONITOR_DEFAULTTONEAREST);
+	if (NULL == monitor)
+		return;
+
+	MONITORINFO monitorInfo;
+	memset(&monitorInfo, 0, sizeof(monitorInfo));
+	monitorInfo.cbSize = sizeof(monitorInfo);
+	if (!::GetMonitorInfo(monitor, &monitorInfo))
+		return;
+
+	RECT& workRect = monitorInfo.rcWork;
+	int width = rect.right - rect.left;
+	int height = rect.bottom - rect.top;
+	int minX = workRect.left;
+	int minY = workRect.top;
+	int maxX = workRect.right - width;
+	int maxY = workRect.bottom - height;
+	if (maxX < minX)
+		maxX = minX;
+	if (maxY < minY)
+		maxY = minY;
+
+	int x = _clampInt(rect.left, minX, maxX);
+	int y = _clampInt(rect.top, minY, maxY);
+	rect.left	= x;
+	rect.top	= y;
+	rect.right	= rect.left + width;
+	rect.bottom	= rect.top + height;
+}
+
 Win32Window::Win32Window() :
 	m_windowHandle		(NULL),
 	m_hInstance			(NULL),
@@ -66,6 +110,7 @@ bool Win32Window::init(const int posx, const int posy, const int width, const in
 		posy + height);				//  int y + height,
 
 	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+	_validateWindowRect(rect);
 
 	//注册窗口类
 	const TCHAR szWindowClass[] = _T("MainWindowClass");			// 主窗口类名
