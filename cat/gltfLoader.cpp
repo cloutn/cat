@@ -397,9 +397,27 @@ bool GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 		assert(false);
 		return false;
 	}
-	if (frameAccessor->component_type != cgltf_component_type_r_32f ||
-		(frameAccessor->type != cgltf_type_vec4 && frameAccessor->type != cgltf_type_vec3))
+	const KEY_FRAME_TYPE	type			= _cgltfType2KeyFrameType(channel.target_path);
+	cgltf_type			requiredType	= cgltf_type_invalid;
+	switch (type)
 	{
+	case KEY_FRAME_TYPE_ROTATE:
+		requiredType = cgltf_type_vec4;
+		break;
+	case KEY_FRAME_TYPE_SCALE:
+	case KEY_FRAME_TYPE_MOVE:
+		requiredType = cgltf_type_vec3;
+		break;
+	default:
+		break;
+	}
+	if (KEY_FRAME_TYPE_INVALID == type ||
+		frameAccessor->component_type != cgltf_component_type_r_32f ||
+		frameAccessor->type != requiredType)
+	{
+		log_error("AnimationChannel::loadKeyFrames accessor type mismatch: targetPath=%d, componentType=%d, type=%d, expectedType=%d",
+			static_cast<int>(channel.target_path), static_cast<int>(frameAccessor->component_type),
+			static_cast<int>(frameAccessor->type), static_cast<int>(requiredType));
 		assert(false);
 		return false;
 	}
@@ -416,7 +434,6 @@ bool GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 	}
 
 	const int			componentCount	= static_cast<int>(cgltf_num_components(frameAccessor->type));
-	const KEY_FRAME_TYPE	type		= _cgltfType2KeyFrameType(channel.target_path);
 
 	for (int i = 0; i < frameCount; ++i)
 	{
