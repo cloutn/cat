@@ -52,13 +52,13 @@ class document
 {
 public:
 	document();
-	document(c4::yml::Tree* tree);
+	document(const document&) = delete;
+	document&		operator=		(const document&) = delete;
 
 	node			load			(const char* const filename);
 	void			save			(const char* const filename);
 	node			root			();
 
-	// for node iterator
 	int				next_sibling	(const int id);
 	int				prev_sibling	(const int id);
 	c4::yml::Tree&	tree			() { return m_tree; }
@@ -80,7 +80,7 @@ class node
 {
 public:
 	node();
-	node(yaml::document* doc, const int id); // for node iterator
+	node(yaml::document* doc, c4::yml::NodeRef node);
 	node(c4::yml::NodeRef node);
 
 	bool			is_valid		() const;
@@ -150,8 +150,8 @@ public:
 	void			set_value		(T v) { m_node << v;  }
 
 private:
+	yaml::document*		m_document;
 	c4::yml::NodeRef	m_node;
-	yaml::document		m_document;
 	mutable scl::vstring m_value;
 
 }; // class node
@@ -160,18 +160,18 @@ private:
 class node_iterator
 {
 public:
-    node_iterator	(yaml::document* doc, int id) : m_document(doc), m_childID(id) { }
+	node_iterator	(yaml::document* doc, c4::yml::NodeRef node) : m_document(doc), m_node(node) { }
 
-    node_iterator&	operator++ () { assert(m_childID != -1); m_childID = m_document->next_sibling(m_childID); return *this; }
-    node_iterator&	operator-- () { assert(m_childID != -1); m_childID = m_document->prev_sibling(m_childID); return *this; }
-    yaml::node		operator*  () const { return yaml::node(m_document, m_childID); }
-    yaml::node		operator-> () const { return yaml::node(m_document, m_childID); }
-    bool			operator!= (node_iterator that) const { assert(m_document == that.m_document); return m_childID != that.m_childID; }
-    bool			operator== (node_iterator that) const { assert(m_document == that.m_document); return m_childID == that.m_childID; }
+	node_iterator&	operator++ () { assert(!m_node.invalid()); m_node = m_node.next_sibling(); return *this; }
+	node_iterator&	operator-- () { assert(!m_node.invalid()); m_node = m_node.prev_sibling(); return *this; }
+	yaml::node		operator*  () const { return yaml::node(m_document, m_node); }
+	yaml::node		operator-> () const { return yaml::node(m_document, m_node); }
+	bool			operator!= (node_iterator that) const { assert(m_document == that.m_document); return m_node != that.m_node; }
+	bool			operator== (node_iterator that) const { assert(m_document == that.m_document); return m_node == that.m_node; }
 
 private:
-    yaml::document*	m_document;
-    size_t			m_childID;
+	yaml::document*		m_document;
+	c4::yml::NodeRef	m_node;
 
 }; // class node_iterator
 

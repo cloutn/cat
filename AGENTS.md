@@ -18,17 +18,122 @@
 
 ## 代码风格
 
-1. 权威来源是 `.cursor/rules/cat代码风格.mdc`（`alwaysApply: true`，自动加载）。**所有具体风格规则以该文件为准**，本节只做高频提醒，不复述细节。
-2. 关键硬规则速记：
-   - 用 `NULL`，不用 `nullptr`；空指针比较用 Yoda 风格 `if (NULL == ptr)`。
-   - 删除指针用宏 `safe_delete` / `safe_delete_array`，禁止裸 `delete ptr; ptr = NULL;`。
-   - 禁止 STL 容器 / `std::string` 出现在头文件接口或类成员；用 `scl::varray` / `scl::array` / `scl::tree` / `scl::hash_table` / `cat::String`。
-   - 不抛异常；用返回值（`bool` / `int` / NULL 指针）+ `assert()` 报错。
-   - 类成员声明、init list、头文件方法表保留**纵向对齐**风格。
-   - Tab 缩进，Allman 大括号风格。
-   - 用 `#pragma once`，不用 include guard 宏。
-3. 命名取舍：**简洁服从一致**。优先沿用仓库已有命名模式（如"按属性查找"统一走 `xxByY` 形式：`objectByID` / `childByID` / `objectByName` / `childByName`），不引入与已有模式同义但措辞冗余的新前缀（如 `findXxxByY` 与 `xxByY` 同义重复）。最短形式只在不与现有重载冲突、不引入歧义的前提下选择（参考 `child(int)` 与 `childByName(const char*)` 拆分的处理）。
-4. 详细规则（命名前缀、include 顺序、平台宏、12 节自检清单等）直接读 `cat代码风格.mdc`，不在此重述。
+以下内容从 `.cursor/rules/cat代码风格.mdc` 同步，供 Codex 自动加载使用。Cursor 仍然读取原 `.mdc` 文件；两处内容如需长期保持一致，请以 `.cursor/rules/cat代码风格.mdc` 为源头重新同步。
+
+# cat 引擎代码风格 — 强制规则
+
+适用范围：本仓库（`cat` / `catbase` / `catui` / `catwindows` / `catvulkan` / `testCat`）所有 `.h` / `.cpp` / `.c` 文件。规则从现有代码归纳而来，**违反任何一条都属于风格 bug**。修改、新增、重构都必须遵守。
+
+> 与 `AGENTS.override.md` / `CLAUDE.override.md` 不冲突，本文件只描述 cat 引擎的代码风格；override 文件描述跨项目的个人元规则。冲突时以更具体的本文件为准。
+
+## 1. 空指针与内存
+
+1. 用 `NULL`，**不要用 `nullptr`**。所有对比、初始化、参数默认值都用 `NULL`。
+2. 删除指针用宏（定义在 `catbase/cat/def.h`）：
+   - 单对象：`safe_delete(ptr);`
+   - 数组：`safe_delete_array(ptr);`
+   - **禁止**直接写 `delete ptr; ptr = NULL;`。
+3. 空指针比较用 Yoda 风格：`if (NULL != ptr)`、`if (NULL == m_mesh)`，与现有代码（`object.cpp`、`primitive.cpp` 等）保持一致。
+4. 不使用智能指针（`std::unique_ptr` / `std::shared_ptr`）。如确实需要引用计数语义，用 `scl::ptr`。
+5. 不抛异常；用返回值（`bool` / `int` / `NULL` 指针）报错；用 `assert()` / `scl::assert.h` 检查不变量。
+
+## 2. 容器与基础类型
+
+6. **禁止** `std::vector / std::array / std::map / std::unordered_map / std::set / std::string` 出现在头文件接口或类成员中。`.cpp` 内部局部使用（如 `scene.cpp` 的 `std::queue`）属于既有破例，不要扩散。
+7. 用 `scl::varray`（动态数组）、`scl::array<T,N>`（固定容量栈数组）、`scl::tree`（按 key 平衡树）、`scl::hash_table`（闭散列）。
+8. 数学类型：`scl::vector2 / vector3 / vector4 / vector2i / matrix / quaternion`。**glm 不出模块边界**。
+9. 字符串：用 `cat::String`（typedef）或 `scl::string256`。**禁止**接口里出现 `std::string`。
+10. 整型别名：`uint`、`uint8/16/32/64`、`int8/16/32/64`、`byte` 来自 `scl/type.h`。
+
+## 3. 命名
+
+11. 类：PascalCase（`Object`、`Mesh`、`VulkanRender`、`MainGUI`）。
+12. 函数与变量：camelCase（`loadNode`、`setMove`、`m_isInit`、`vertexBuffers`）。
+13. 枚举值与宏：`ALL_CAPS_WITH_UNDERSCORE`（`PRIMITIVE_TYPE_POINTS`、`KEY_FRAME_TYPE_INVALID`、`MAX_OBJECT_COUNT`、`FIX_COMPONENT_TYPE_TRANSFORM`、`SHADER_PATH`）。
+14. 成员前缀：
+    - 普通成员：`m_xxx`
+    - 静态成员：`s_xxx`
+    - 私有/文件局部函数：`_xxx`（如 `_loadVertex`、`_invalidateView`）
+15. 接口/特殊前缀：
+    - 纯虚接口类用 `I` 前缀：`IRender`、`IFileProvider`
+    - simplevulkan POD 结构体用 `svk` 前缀：`svkDevice`、`svkImage`、`svkBuffer`
+16. 命名空间：引擎代码全部位于 `namespace cat`；编辑器配置位于 `namespace game`；UI 扩展位于 `namespace imguiex`；YAML 包装位于 `namespace yaml`。
+17. **按属性查找统一用 `xxByY` 形式**，不要混用 `findXxxByY` / `getXxxByY` 等同义前缀。标准命名：`objectByID` / `objectByName` / `childByID` / `childByName`（见 `Scene::*` / `Object::*`）。新增同类查询沿用，不从第三方库（imgui 的 `FindWindowByName` 等）借形；第三方代码在 `free/` 下保留各自风格，不在本规则约束内。
+18. **简洁服从一致**：能复用已有命名模式时选最短形式（`objectByName` 优于 `findObjectByName`）；当且仅当短名字会与已有重载冲突或暗示错误代价（典型反例：`child(int)` O(1) 与 `child(const char*)` O(N×D) 撞名），才拆成更长的差异化名字（`child(int)` + `childByName(const char*)`）。
+
+## 4. 缩进、对齐、大括号
+
+19. 用 **Tab** 缩进，不要用空格混入。
+20. 大括号 Allman / BSD 风：`{` 与 `}` 各自单独占一行。
+21. 单语句 if / for 可省略大括号：`if (NULL == ptr) return;`。多语句必须加大括号。
+22. **纵向对齐是 cat 的标志风格**，必须保留：
+    - 类成员声明列对齐（类型列 / 名字列 / 注释列）
+    - 构造函数 init list 列对齐（成员名右侧用空格补齐到统一列）
+    - 头文件中的方法列表列对齐（返回类型列 / 函数名列）
+    - 参考样例：`object.h` 的成员函数声明、`camera.cpp` 的 init list、`primitive.cpp` 的 init list、`vulkanRender.h` 的 IRender 实现列。
+23. 简单 getter / setter 在头文件内联实现（一行）：
+    `int id() const { return m_id; }`
+
+## 5. 头文件与包含
+
+24. 用 `#pragma once`，**不要**写 `#ifndef ... #define ... #endif` include guard。
+25. include 顺序：
+    1. 自身模块头（`#include "cat/xxx.h"`）
+    2. `scl/*.h`
+    3. 第三方（`vulkan/*.h`、`shaderc/*.h`、`cgltf/*.h`、`rapidyaml/*.h` 等）
+    4. C/C++ 标准头（`<stdint.h>` 等）
+    分组之间留空行。
+26. 头文件优先用前置声明（`struct cgltf_node;`、`namespace yaml { class node; }`），减少传染性 include。
+27. 头文件函数参数 `const char* const filename`（双 `const`）是普遍风格，新增字符串/路径参数沿用。
+
+## 6. 类与文件结构
+
+28. 类内顺序：`public:` 构造/析构在前 → 公共方法 → 简单 inline getter → `private:` 工具函数 → `private:` 数据成员。
+29. 构造函数 **必须**在 init list 里把所有指针成员显式置 `NULL`、所有标志位显式置默认值。析构函数顺序对称，统一用 `safe_delete`。
+30. ID 类对象用全局静态 `ObjectIDMap<T>` + `static T* objectByID(int)` 模式（参考 `Object::s_objectIDMap`）。
+31. 命名空间结尾必须带注释：`} // namespace cat`，并保留文件末尾的空行。
+
+## 7. 接口隔离（架构强约束）
+
+32. `cat` 模块**不允许** `#include <vulkan/...>` 或 `#include <shaderc/...>` 或 `#include <spirv_cross/...>`。GPU 相关一律走 `IRender*`，资源句柄用 `void*`。
+33. `catbase` 不依赖 `cat` / `catvulkan` / `catui` / `catwindows`。
+34. `catvulkan` 是 `IRender` 的具体实现层，可见 Vulkan 全部头。
+35. `catwindows` 是平台层，可见 Win32 / EGL；`catui` 仅依赖 ImGui + scl。
+
+## 8. EOF 空行（个人硬规则同步）
+
+36. 修改 `.cpp` / `.h` 时，**严禁增删**文件末尾的空行，必须保持文件原 EOF 状态。新建文件按现有同类文件的末尾空行数来写。
+
+## 9. 注释
+
+37. 允许中文注释。
+38. 不强制 doxygen；普通函数加一行 `//` 说明意图即可。
+39. 既有的注释掉的死代码不要在无关 PR 里清理；只删除你这次 PR 真正应该删的。
+40. 不要添加无意义的"复述代码"注释（不要 `// increment counter` / `// return result` 这类）。
+
+## 10. 平台与宏
+
+41. 平台分支用 `SCL_WIN` / `SCL_APPLE` / `SCL_ANDROID`（来自 `scl/type.h`）。
+42. Vulkan vs GLES 分支用 `TEST_VULKAN`（`def.h`），`SHADER_PATH` 等已经按它分发，不要在上层重复判断。
+43. 通用宏只用 `def.h` 提供的 `safe_delete` / `safe_delete_array` / `countof` / `OFFSET` / `arg_count`，不要再造同名宏。
+
+## 11. 不要做
+
+- 不要把 `nullptr` / `std::vector` / `std::string` / `std::unique_ptr` 引入接口或成员。
+- 不要在 `cat` 模块直接使用 Vulkan 句柄。
+- 不要在大括号风格、命名前缀、init list 对齐上引入新风格。
+- 不要给文件加 license 头部 / 版权块（现有文件没有，加了会突兀；只有少数文件保留作者日期 banner，是可选的）。
+- 不要修改 EOF 空行。
+
+## 12. 提交前自检清单
+
+- [ ] 没有 `nullptr`、没有 `delete xxx;`（除非是 `safe_delete` 内部）。
+- [ ] 没有 `std::vector` / `std::string` / `std::map` 等出现在 `.h` 或类成员。
+- [ ] 没有 `#include <vulkan/...>` 出现在 `cat/`（只允许在 `catvulkan/`）。
+- [ ] 类成员、init list 列对齐保留了。
+- [ ] 命名前缀（`m_` / `s_` / `_`）正确。
+- [ ] 文件末尾空行没改动。
+- [ ] 命名空间结尾带 `// namespace xxx` 注释。
 
 ## 文件编码与 Windows 终端注意事项
 

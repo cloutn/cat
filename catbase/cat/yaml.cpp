@@ -11,11 +11,6 @@ document::document() : m_tree()
 
 }
 
-document::document(c4::yml::Tree* tree) : m_tree(*tree)
-{
-
-}
-
 node document::load(const char* const filename)
 {
 	scl::file_mapping fm;
@@ -28,7 +23,7 @@ node document::load(const char* const filename)
 		return node();
 
     m_tree = ryml::parse_in_arena(ryml::to_csubstr(buffer));
-	return node(m_tree.rootref());
+	return node(this, m_tree.rootref());
 }
 
 void document::save(const char* const filename)
@@ -50,7 +45,7 @@ void document::save(const char* const filename)
 
 node document::root()
 {
-	return m_tree.rootref();
+	return node(this, m_tree.rootref());
 }
 
 int document::next_sibling(const int id)
@@ -63,19 +58,17 @@ int document::prev_sibling(const int id)
 	return m_tree.prev_sibling(id);
 }
 
-node::node()
+node::node() : m_document(NULL), m_node()
 {
 }
 
-node::node(c4::yml::NodeRef node) : m_node(node), m_document(node.tree())
+node::node(yaml::document* doc, c4::yml::NodeRef node) : m_document(doc), m_node(node)
 {
-
+	assert(NULL == doc || node.invalid() || node.tree() == &doc->tree());
 }
 
-node::node(yaml::document* doc, const int id)
+node::node(c4::yml::NodeRef node) : m_document(NULL), m_node(node)
 {
-	m_document = *doc;
-	m_node = c4::yml::NodeRef(&doc->tree(), id);
 }
 
 bool node::is_valid() const
@@ -95,7 +88,7 @@ node node::child(const int index)
 		assert(false);
 		return node();
 	}
-	return m_node.child(index);
+	return node(m_document, m_node.child(index));
 }
 
 node node::child(const char* name)
@@ -105,7 +98,7 @@ node node::child(const char* name)
 		assert(false);
 		return node();
 	}
-	return m_node[c4::to_csubstr(name)];
+	return node(m_document, m_node[c4::to_csubstr(name)]);
 }
 
 const char* node::value() const
@@ -259,12 +252,12 @@ void node::set_type(NODE_TYPE type)
 
 node node::add()
 {
-	return node(m_node.append_child());
+	return node(m_document, m_node.append_child());
 }
 
 node node::add(const char* const name)
 {
-	return node(m_node[c4::to_csubstr(name)]);
+	return node(m_document, m_node[c4::to_csubstr(name)]);
 }
 
 node node::add_map()
@@ -304,8 +297,9 @@ node node::add_seq()
 
 yaml::node_list node::children()
 {
-	node_iterator begin	(&m_document, m_node.first_child().id());
-	node_iterator end	(&m_document, -1);
+	c4::yml::Tree* tree = m_node.tree();
+	node_iterator begin	(m_document, m_node.first_child());
+	node_iterator end	(m_document, c4::yml::NodeRef(tree, c4::yml::NONE));
 	node_list iter(begin, end);
 	return iter;
 }
