@@ -249,9 +249,24 @@ void GltfLoader::_loadPrimitive(cgltf_primitive* data, Mesh* host, int skinJoint
 	const cgltf_accessor*	indices	= data->indices;
 	if (NULL != indices)
 	{
-		const byte* pIndexBuffer = cgltf_get_accessor_buffer(indices);
+		const byte*			pIndexBuffer		= cgltf_get_accessor_buffer(indices);
+		if (NULL == pIndexBuffer)
+		{
+			log_error("GltfLoader::_loadPrimitive index buffer not loaded");
+			assert(false);
+			safe_delete(primitive);
+			return;
+		}
+		const ELEM_TYPE		indexComponentType	= gltf_type_to_attr_type(indices->component_type);
+		if (indices->count <= 0 || ELEM_TYPE_INVALID == indexComponentType)
+		{
+			log_error("GltfLoader::_loadPrimitive index accessor invalid");
+			assert(false);
+			safe_delete(primitive);
+			return;
+		}
 		primitive->setIndices(pIndexBuffer, static_cast<int>(indices->count),
-							  gltf_type_to_attr_type(indices->component_type));
+							  indexComponentType);
 	}
 
 	// vertex: interleave all attrs into one buffer, all attrs share buffer index 0
@@ -261,12 +276,16 @@ void GltfLoader::_loadPrimitive(cgltf_primitive* data, Mesh* host, int skinJoint
 	const int MAX_ATTR		= 32;
 	VertexAttr	attrs[MAX_ATTR];
 	byte*	buffer			= _flattenVertexAttrs(data, attrs, attrCount, vertexCount, stride);
-	if (NULL != buffer && attrCount > 0)
+	if (NULL == buffer || attrCount <= 0)
 	{
-		primitive->setAttrs(attrs, attrCount, NULL);	// all share buffer index 0
-		primitive->setVertices(buffer, vertexCount, stride);
-		delete[] buffer;
+		log_error("GltfLoader::_loadPrimitive vertex buffer not loaded");
+		assert(false);
+		safe_delete(primitive);
+		return;
 	}
+	primitive->setAttrs(attrs, attrCount, NULL);	// all share buffer index 0
+	primitive->setVertices(buffer, vertexCount, stride);
+	safe_delete_array(buffer);
 
 	// material
 	if (NULL != data->material)
@@ -511,6 +530,11 @@ byte* GltfLoader::_flattenVertexAttrs(cgltf_primitive* data,
 	}
 	const int	attrCount	= static_cast<int>(data->attributes_count);
 	const int	vertexCount	= static_cast<int>(data->attributes[0].data->count);
+	if (vertexCount <= 0)
+	{
+		assert(false);
+		return NULL;
+	}
 
 	int		attrOffsets[1024]	= { 0 };
 	int		sizeofVertex		= 0;
@@ -518,7 +542,17 @@ byte* GltfLoader::_flattenVertexAttrs(cgltf_primitive* data,
 	{
 		cgltf_attribute&	attr		= data->attributes[i];
 		cgltf_accessor*		accessor	= attr.data;
+		if (NULL == accessor)
+		{
+			assert(false);
+			return NULL;
+		}
 		const int			size		= static_cast<int>(cgltf_calc_size(accessor->type, accessor->component_type));
+		if (size <= 0)
+		{
+			assert(false);
+			return NULL;
+		}
 		sizeofVertex		+= size;
 		attrOffsets[i + 1]	= attrOffsets[i] + size;
 	}
@@ -547,8 +581,21 @@ byte* GltfLoader::_flattenVertexAttrs(cgltf_primitive* data,
 		int elementSize = static_cast<int>(accessor->stride);
 		if (elementSize == 0)
 			elementSize = static_cast<int>(cgltf_calc_size(accessor->type, accessor->component_type));
+		if (elementSize <= 0)
+		{
+			assert(false);
+			safe_delete_array(buffer);
+			return NULL;
+		}
 
-		const byte* viewBuffer = cgltf_get_accessor_buffer(accessor);
+		const byte*			viewBuffer	= cgltf_get_accessor_buffer(accessor);
+		if (NULL == viewBuffer)
+		{
+			log_error("GltfLoader::_flattenVertexAttrs buffer not loaded");
+			assert(false);
+			safe_delete_array(buffer);
+			return NULL;
+		}
 		for (int vi = 0; vi < vertexCount; ++vi)
 		{
 			assert(vi * sizeofVertex + attrOffsets[i] + elementSize <= bufferSize);

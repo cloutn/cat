@@ -305,6 +305,11 @@ void Primitive::setIndices(const void* indices, const int indexCount, const ELEM
 {
 	if (NULL == m_render)
 		return;
+	if (NULL == indices || indexCount <= 0 || ELEM_TYPE_INVALID == indexComponentType)
+	{
+		assert(false);
+		return;
+	}
 
 	// index
 	m_indexCount			= indexCount;
@@ -319,6 +324,11 @@ void Primitive::setVertices(const void** const verticesList, const int vertexCou
 {
 	if (NULL == m_render)
 		return;
+	if (NULL == verticesList || NULL == sizeofVertex || vertexCount <= 0)
+	{
+		assert(false);
+		return;
+	}
 
 	if (m_attrCount <= 0)
 	{
@@ -327,6 +337,16 @@ void Primitive::setVertices(const void** const verticesList, const int vertexCou
 	}
 
 	const int attrCount = m_attrCount;
+	for (int i = 0; i < attrCount; ++i)
+	{
+		const int bufferIndex = m_attrBufferIndices[i];
+		if (bufferIndex < 0 || NULL == verticesList[bufferIndex] || sizeofVertex[bufferIndex] <= 0)
+		{
+			assert(false);
+			return;
+		}
+	}
+
 	m_deviceVertexBuffers = new void*[m_attrCount];
 	memset(m_deviceVertexBuffers, 0, sizeof(m_deviceVertexBuffers[0]) * m_attrCount);
 	m_vertexCount = vertexCount;
