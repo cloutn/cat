@@ -247,7 +247,7 @@ static void _createTextureImageWithSize(svkDevice& device, const int width, cons
 	_createTextureImage(device, texObj, width, height, texFormat, tiling, usage, requiredProps, VK_IMAGE_LAYOUT_PREINITIALIZED, NULL);
 }
 
-static void _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps, svkLoadImageDataCallback loadDataCallback) 
+static bool _createTextureImageFromFile(svkDevice& device, const char* const filename, svkTexture* texObj, VkImageTiling tiling, VkImageUsageFlags usage, VkFlags requiredProps, svkLoadImageDataCallback loadDataCallback)
 {
 	int32_t texWidth	= 0;
 	int32_t texHeight	= 0;
@@ -263,7 +263,7 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 		// 资源文件缺失/路径错；上层 svkCreateTexture 会拿到 width=height=0 的 texObj，
 		// 不要继续解引用 f（callback 内部 stb_image / fclose(NULL) 都会崩）。
 		printf("Error opening texture file: %s\n", filename);
-		return;
+		return false;
 	}
 
 	// Call with out_rgba = NULL to get size info only
@@ -286,6 +286,7 @@ static void _createTextureImageFromFile(svkDevice& device, const char* const fil
 	}
 
 	fclose(f);
+	return true;
 }
 
 static void _setImageLayout(
@@ -1555,7 +1556,9 @@ svkTexture svkCreateTexture(svkDevice& device, const char* const filename, VkCom
 	memclr(_svkTexture);
 	//VkResult err;
 
-	_createTextureImageFromFile(device, filename, &_svkTexture, VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, loadDataCallback);
+	bool createResult = _createTextureImageFromFile(device, filename, &_svkTexture, VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, loadDataCallback);
+	if (!createResult)
+		return _svkTexture;
 
 	// Nothing in the pipeline needs to be complete to start, and don't allow fragment // shader to run until layout transition completes
 	VkCommandBuffer commandBuffer = outCommandBuffer;
