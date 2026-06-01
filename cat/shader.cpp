@@ -26,27 +26,31 @@ void* Shader::shader(IRender* render)
 {
 	if (NULL == m_deviceShader || m_dirty)
 	{
-		m_render = render;
-
-		if (m_deviceShader != NULL)
-			render->releaseShader(m_deviceShader);
-
 		String macros;
 		_allmacros(macros);
-	
+
 		char* vs_code = _loadfile(m_vsFilename.c_str(), macros.c_str());
 		char* ps_code = _loadfile(m_psFilename.c_str(), macros.c_str());
+		void* newDeviceShader = NULL;
 
 		// 任一文件加载失败则跳过编译，避免把 NULL 传进 createShader 触发底层 svkCreateShaderProgramFromCode 崩溃
 		if (NULL != vs_code && NULL != ps_code)
 		{
-			m_deviceShader = render->createShader(vs_code, ps_code);
+			newDeviceShader = render->createShader(vs_code, ps_code);
 		}
 
-		delete[] vs_code;
-		delete[] ps_code;
+		safe_delete_array(vs_code);
+		safe_delete_array(ps_code);
 
-		m_dirty = false;
+		if (NULL != newDeviceShader)
+		{
+			if (NULL != m_deviceShader)
+				m_render->releaseShader(m_deviceShader);
+
+			m_deviceShader = newDeviceShader;
+			m_render       = render;
+			m_dirty        = false;
+		}
 	}
 	return m_deviceShader;
 }
