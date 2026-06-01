@@ -66,8 +66,12 @@ scl::matrix* Skin::generateJointMatrix(int& matrixCount, const scl::matrix& inve
 	if (jointCount <= 0)
 		return NULL;
 
-	// 取 IBM 与 joints 的最小长度，防止任一端越界
-	const int count = (jointCount < m_inverseBindMatrixCount) ? jointCount : m_inverseBindMatrixCount;
+	if (jointCount != m_inverseBindMatrixCount)
+	{
+		log_error("Skin: joint count %d mismatches inverse bind matrix count %d, skin invalidated", jointCount, m_inverseBindMatrixCount);
+		return NULL;
+	}
+	const int count = jointCount;
 
 	// 任一 joint 为 NULL 说明 GLTF 加载链断了，整副骨架已经不可信；
 	// 退化到不蒙皮渲染（返回 NULL），不要用 bindpose 兜底导致画出半 bindpose / 半动画的扭曲姿态

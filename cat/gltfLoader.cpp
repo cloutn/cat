@@ -331,10 +331,7 @@ void GltfLoader::_loadSkin(cgltf_skin* skinData, Skin* outSkin)
 		cgltf_node* node = skinData->joints[i];
 		Object*		obj	 = _objectByNode(node);
 		if (NULL == obj)
-		{
-			log_warning("Skin: joint[%d] not mapped to Object, skipped", i);
-			continue;
-		}
+			log_warning("Skin: joint[%d] not mapped to Object, store NULL placeholder", i);
 		outSkin->addJoint(obj);
 	}
 
