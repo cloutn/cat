@@ -245,11 +245,11 @@ svkBuffer				svkCreateUniformBuffer			(svkDevice& device, void* data, const int 
 
 // render pass
 VkRenderPass			svkCreateRenderPass				(svkDevice& device, VkFormat format, VkFormat depthFormat, VkImageLayout colorAttachmentFinalLayout);
-void					svkDestroyRenderPass			(svkDevice& device, VkRenderPass renderPass);
+void					svkDestroyRenderPass			(svkDevice& device, VkRenderPass& renderPass);
 
 // frame buffer
 VkFramebuffer			svkCreateFrameBuffer			(svkDevice& device, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height);
-void					svkDestroyFrameBuffer			(svkDevice& device, VkFramebuffer framebuffer);
+void					svkDestroyFrameBuffer			(svkDevice& device, VkFramebuffer& framebuffer);
 
 // image
 svkImage				svkCreateAttachmentDepthImage	(svkDevice& device, VkFormat format, const int width, const int height);
@@ -265,11 +265,11 @@ void					svkDestroyFrames				(svkDevice& device, svkFrame* frames, const int fra
 // fence
 VkFence					svkCreateFence					(svkDevice& device, bool signaled);
 void					svkWaitFence					(svkDevice& device, VkFence* fences, const int fenceCOunt);
-void					svkDestroyFence					(svkDevice& device, VkFence fence);
+void					svkDestroyFence					(svkDevice& device, VkFence& fence);
 bool					svkIsFenceSignaled				(svkDevice& device, VkFence fence);
 
 // semaphore
 VkSemaphore				svkCreateSemaphore				(svkDevice& device);
-void					svkDestroySemaphore				(svkDevice& device, VkSemaphore semaphore);
+void					svkDestroySemaphore				(svkDevice& device, VkSemaphore& semaphore);
 
 

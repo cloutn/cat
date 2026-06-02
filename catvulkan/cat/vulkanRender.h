@@ -255,8 +255,8 @@ private:
 
 	bool				m_isInit;
 	bool				m_minimized;
-	bool				m_frameAcquired;
-	bool				m_frameSubmitted;
+	bool				m_frameAcquired;					// 本帧是否已成功 acquire swapchain image
+	bool				m_frameSubmitted;					// 本帧是否已 submit main scene，swap 只能 present 已 submit 的 image
 	int					m_frameIndex;
 	int					m_prevFrameIndex;
 	bool				m_matrixChanged;

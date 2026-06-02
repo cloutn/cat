@@ -855,9 +855,12 @@ VkRenderPass svkCreateRenderPass(svkDevice& svkdevice, VkFormat format, VkFormat
 	return renderPass;
 }
 
-void svkDestroyRenderPass(svkDevice& device, VkRenderPass renderPass)
+void svkDestroyRenderPass(svkDevice& device, VkRenderPass& renderPass)
 {
+	if (NULL == renderPass)
+		return;
 	vkDestroyRenderPass(device.device, renderPass, NULL);
+	renderPass = NULL;
 }
 
 VkFramebuffer svkCreateFrameBuffer(svkDevice& svkdevice, VkRenderPass renderPass, VkImageView* attachments, const int attachmentCount, const uint32_t width, const uint32_t height)
@@ -881,9 +884,12 @@ VkFramebuffer svkCreateFrameBuffer(svkDevice& svkdevice, VkRenderPass renderPass
 	return frameBuffer;
 }
 
-void svkDestroyFrameBuffer(svkDevice& device, VkFramebuffer framebuffer)
+void svkDestroyFrameBuffer(svkDevice& device, VkFramebuffer& framebuffer)
 {
+	if (NULL == framebuffer)
+		return;
 	vkDestroyFramebuffer(device.device, framebuffer, NULL);
+	framebuffer = NULL;
 }
 
 
@@ -958,10 +964,13 @@ svkImage svkCreateAttachmentColorImage(svkDevice& device, VkFormat format, const
 
 void svkDestroyImage(svkDevice& device, svkImage& image)
 {
-	image.format = VK_FORMAT_UNDEFINED;
-	vkDestroyImageView	(device.device, image.imageView, NULL);
-	vkDestroyImage		(device.device, image.image, NULL);
-	vkFreeMemory		(device.device, image.memory, NULL);
+	if (NULL != image.imageView)
+		vkDestroyImageView	(device.device, image.imageView, NULL);
+	if (NULL != image.image)
+		vkDestroyImage		(device.device, image.image, NULL);
+	if (NULL != image.memory)
+		vkFreeMemory		(device.device, image.memory, NULL);
+	memclr(image);
 }
 
 
@@ -1020,23 +1029,23 @@ void svkDestroyFrames(svkDevice& device, svkFrame* frames, const int frameCount)
 	{
 		svkFrame& f = frames[i];
 
-		if (NULL != f.imageView);
+		if (NULL != f.imageView)
+		{
 			vkDestroyImageView(device.device, f.imageView, NULL);
+			f.imageView = NULL;
+		}
 
-		if (NULL != f.framebuffer)
-			vkDestroyFramebuffer(device.device, f.framebuffer, NULL);
+		svkDestroyFrameBuffer(device, f.framebuffer);
 
 		if (NULL != f.commandBuffer)
+		{
 			vkFreeCommandBuffers(device.device, device.commandPool, 1, &f.commandBuffer);
+			f.commandBuffer = NULL;
+		}
 
-		if (NULL != f.fence)
-			vkDestroyFence(device.device, f.fence, NULL);
-
-		if (NULL != f.imageAcquireSemaphore)
-			vkDestroySemaphore(device.device, f.imageAcquireSemaphore, NULL);
-
-		if (NULL != f.drawCompleteSemaphore)
-			vkDestroySemaphore(device.device, f.drawCompleteSemaphore, NULL);
+		svkDestroyFence		(device, f.fence);
+		svkDestroySemaphore	(device, f.imageAcquireSemaphore);
+		svkDestroySemaphore	(device, f.drawCompleteSemaphore);
 
 		memclr(f);
 	}
@@ -1063,9 +1072,12 @@ void svkWaitFence(svkDevice& device, VkFence* fences, const int fenceCount)
 	vkWaitForFences(device.device, fenceCount, fences, VK_TRUE, UINT64_MAX);
 }
 
-void svkDestroyFence(svkDevice& device, VkFence fence)
+void svkDestroyFence(svkDevice& device, VkFence& fence)
 {
+	if (NULL == fence)
+		return;
 	vkDestroyFence(device.device, fence, NULL);
+	fence = NULL;
 }
 
 bool svkIsFenceSignaled(svkDevice& device, VkFence fence)
@@ -1100,9 +1112,12 @@ VkSemaphore svkCreateSemaphore(svkDevice& device)
 	return semaphore;
 }
 
-void svkDestroySemaphore(svkDevice& device, VkSemaphore semaphore)
+void svkDestroySemaphore(svkDevice& device, VkSemaphore& semaphore)
 {
-	vkDestroySemaphore(device.device, semaphore, NULL);	
+	if (NULL == semaphore)
+		return;
+	vkDestroySemaphore(device.device, semaphore, NULL);
+	semaphore = NULL;
 }
 
 VkInstance svkCreateInstance(bool enableValidationLayer)
@@ -2207,6 +2222,7 @@ VkResult svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFram
 {
 	nextFrame = (uint32_t)-1;
 
+	// 只 acquire 一次，recreate / retry 由 VulkanRender::beginDraw 统一处理。
 	VkResult err = vkAcquireNextImageKHR(
 			device.device,
 			swapchain.swapchain,
@@ -2361,11 +2377,9 @@ void svkDestroySwapchain(svkDevice& device, svkSwapchain& swapchain, bool delete
 	if (NULL == device.device)
 		return;
 
-	swapchain.imageCount	= 0;
-	swapchain.format		= VK_FORMAT_UNDEFINED;
-	swapchain.colorSpace	= VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-	if (deleteSelfHandle)
+	if (deleteSelfHandle && NULL != swapchain.swapchain)
 		vkDestroySwapchainKHR(device.device, swapchain.swapchain, NULL);
+	memclr(swapchain);
 }
 
 void svkDestroyTexture(svkDevice& device, svkTexture& texture)

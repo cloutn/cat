@@ -238,8 +238,10 @@ VulkanRender::~VulkanRender()
 		svkDestroyPipeline(m_device, *pipelines[i], true);
 		safe_delete(pipelines[i]);
 	}
-	for (int i = 0; i < static_cast<int>(m_swapchain.imageCount); ++i)
+	for (int i = 0; i < MAX_FRAME; ++i)
 	{
+		if (NULL == m_frameUniforms[i].buffer)
+			continue;
 		svkUnmapBuffer	(m_device, m_frameUniforms[i]);
 		svkDestroyBuffer(m_device, m_frameUniforms[i]);
 	}
@@ -252,10 +254,12 @@ VulkanRender::~VulkanRender()
 		delete allocator;
 	}
 
-	for (uint i = 0; i < m_swapchain.imageCount; ++i)
+	for (int i = 0; i < MAX_FRAME; ++i)
 	{
+		if (NULL == m_commandAllocator[i])
+			continue;
 		m_commandAllocator[i]->release(m_device);
-		delete m_commandAllocator[i];
+		safe_delete(m_commandAllocator[i]);
 	}
 
 	m_pickCommandAllocator->release(m_device);
@@ -525,6 +529,7 @@ void VulkanRender::swap()
 		return;
 	}
 
+	// 没有 submit 就不能 present，否则 present 会等未 signal 的 drawCompleteSemaphore。
 	if (!m_frameSubmitted)
 		return;
 
@@ -583,6 +588,7 @@ void VulkanRender::beginDraw()
 	const int	MAX_RETRY			= 5;
 	for (int retry = 0; retry < MAX_RETRY; ++retry)
 	{
+		// acquire 前还不知道 nextFrame，只能用当前 frame 的 semaphore；成功后记录到 m_prevFrameIndex 供 submit wait。
 		const int	acquireFrameIndex	= m_frameIndex;
 		uint32_t	nextFrame			= (uint32_t)-1;
 		VkResult	err					= svkAcquireNextImage(m_device, m_swapchain, m_frames, acquireFrameIndex, nextFrame);
@@ -603,6 +609,7 @@ void VulkanRender::beginDraw()
 			return;
 	}
 
+	// 连续失败时跳过本帧，避免后续 pass 等待未 signal 的 acquire semaphore。
 	assert(false);
 	memclr(m_drawContext);
 }
@@ -756,7 +763,7 @@ void VulkanRender::endScenePass()
 	if (NULL == m_drawContext.renderPass)
 		return;
 
-	// 必须先 beginDraw 才能进入 endScenePass，否则下面 m_frames[m_prevFrameIndex].imageAcquireSemaphore 会拿到未 signal 的 semaphore 导致 GPU 死等
+	// m_prevFrameIndex 是本帧成功 acquire 时实际 signal 的 semaphore index，必须和 submit wait 保持一致。
 	assert(m_prevFrameIndex >= 0 && m_prevFrameIndex < m_frameCount);
 	assert(m_frameIndex     >= 0 && m_frameIndex     < m_frameCount);
 
@@ -1094,6 +1101,7 @@ void VulkanRender::_destroyMainRenderTarget()
 	svkDestroyRenderPass(m_device, m_mainRenderPass);
 	svkDestroyImage		(m_device, m_mainDepthImage);
 	svkDestroySwapchain	(m_device, m_swapchain);
+	m_frameCount		= 0;
 }
 
 void VulkanRender::_fillDeviceInfo(svkDevice& device, DeviceInfo& info)
