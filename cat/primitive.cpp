@@ -153,13 +153,8 @@ void Primitive::release()
 				continue;
 			//if (0 == G.refCounter.DecRef(buf))
 			m_render->releaseVertexBuffer(buf);
-			//m_deviceVertexBuffers[i] = NULL;
 		}
-		for (int i = 0; i < m_attrCount; ++i)
-		{
-			m_deviceVertexBuffers[i] = NULL;
-		}
-		delete[] m_deviceVertexBuffers;
+		safe_delete_array(m_deviceVertexBuffers);
 	}
 
 	//if (NULL != m_cpuVertexBuffers)
