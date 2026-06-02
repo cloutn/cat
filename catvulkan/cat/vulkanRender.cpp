@@ -572,11 +572,6 @@ void VulkanRender::releaseShader(void* _shader)
 	delete shaderProgram;
 }
 
-void VulkanRender::release()
-{
-
-}
-
 void VulkanRender::beginDraw()
 {
 	m_frameAcquired		= false;

@@ -55,7 +55,6 @@ public:
 	void					updateMVP				(const scl::matrix& mvp);
 //	void					onResize				(const int width, const int height, bool forceSet = false);
 //	void					calcViewMatrix			();
-	void					release					();
 //	void					scale					(const float v);
 
 //const scl::matrix&		viewMatrix				() const { return m_view; }
