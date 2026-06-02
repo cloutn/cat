@@ -452,6 +452,14 @@ bool GltfLoader::_loadAnimChannel(const cgltf_animation_channel& channel, Animat
 		return false;
 	}
 
+	// glTF core animation accessor 紧密排列；本 loader 暂不支持 sparse 覆盖，避免静默读错。
+	if (timeAccessor->is_sparse || frameAccessor->is_sparse)
+	{
+		log_error("AnimationChannel::loadKeyFrames sparse accessor unsupported");
+		assert(false);
+		return false;
+	}
+
 	const float*		times			= reinterpret_cast<const float*>(cgltf_get_accessor_buffer(timeAccessor));
 	const float*		frameDatas		= reinterpret_cast<const float*>(cgltf_get_accessor_buffer(frameAccessor));
 	// cgltf 不强制 buffer 已加载（外部 .bin 缺失 / cgltf_load_buffers 未调用都会返回 NULL），
