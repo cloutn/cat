@@ -12,7 +12,7 @@ class G:
     arch64 = False
     generator = ""
     build_suffix = ""
-    arch_param = ""
+    arch_param = []
     vcvars = ""
     call_vcvars = ""
 
@@ -44,7 +44,7 @@ def build_shaderc():
     build_path = f"../free/shaderc/build{arch}_{G.build_suffix}/"
     if not os.path.exists(build_path):
         os.mkdir(build_path)
-    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
+    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, *G.arch_param, "-DSHADERC_ENABLE_SHARED_CRT:INT=1", "-DSHADERC_SKIP_TESTS=ON", "-DSHADERC_SKIP_INSTALL=ON", "-DPYTHON_EXECUTABLE=./python/python.exe", "-Wno-dev", "-S", src_path, "-B", build_path])
 
     exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
     exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Release"])
@@ -65,26 +65,31 @@ def build_jolt():
     build_path = f"../free/jolt/build{arch}_{G.build_suffix}/"
     if not os.path.exists(build_path):
         os.makedirs(build_path)
-    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
+    exec_cmd(['./cmake/bin/cmake.exe', "-G", G.generator, *G.arch_param, "-Wno-dev", "-S", src_path, "-B", build_path])
 
     exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Debug"])
     exec_cmd(['./cmake/bin/cmake.exe', "--build", build_path, "--config", "Release"])
+    for lib_path in [f"../free/lib{arch}/jolt_d.lib", f"../free/lib{arch}/jolt.lib"]:
+        if not os.path.exists(lib_path):
+            raise FileNotFoundError(lib_path)
 
 
 def generate_testCat():
     arch = "64" if G.arch64 else ""
     src_path = "../testCat/"
     build_path = f"../testCat/build{arch}_{G.build_suffix}/"
-    cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G "{G.generator}" {G.arch_param} -Wno-dev -S {src_path} -B {build_path}'
+    arch_param_str = " ".join(G.arch_param)
+    cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G "{G.generator}" {arch_param_str} -Wno-dev -S {src_path} -B {build_path}'
     exec_cmd(cmd_str, shell=True)
 
 def generate_tests():
     arch = "64" if G.arch64 else ""
+    arch_param_str = " ".join(G.arch_param)
     filelist = os.listdir("../test")
     for filename in filelist:
         src_path = "../test/" + filename
         build_path = f"../test/{filename}/build{arch}_{G.build_suffix}/"
-        cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G "{G.generator}" {G.arch_param} -Wno-dev -S {src_path} -B {build_path}'
+        cmd_str = f'{G.call_vcvars} .\\cmake\\bin\\cmake.exe -G "{G.generator}" {arch_param_str} -Wno-dev -S {src_path} -B {build_path}'
         exec_cmd(cmd_str, shell=True)
 
 ####################################################
@@ -157,7 +162,9 @@ G.arch64 = (args.arch==64)
 if args.generator == "vs":
     G.generator = "Visual Studio 17 2022"
     G.build_suffix = "visualstudio"
-    G.arch_param = "-A " + ("x64" if G.arch64 else "Win32")
+    # 必须是 list 形式，list+shell=False 下 subprocess 会保持 "-A" 与 "x64" 是两个独立 argv；
+    # 之前写成 "-A x64" 是单个 argv，CMake argv 解析按 "-A" 严格匹配，会被静默忽略。
+    G.arch_param = ["-A", "x64" if G.arch64 else "Win32"]
 elif args.generator == "ninja":
     G.vcvars = find_vcvars()
     G.call_vcvars = f'call "{G.vcvars}" &&';

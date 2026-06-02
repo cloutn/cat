@@ -46,7 +46,7 @@ public:
 	const Object*				child						(int index) const	{ assert(index >= 0 && index < m_childs.size()); return m_childs[index]; }
 	Object*						childByName					(const char* const objectName, bool recursive = true);
 	Object*						childByID					(const int id, bool recursive = false);
-	void						addChild					(Object* c) { if (NULL != c) { c->m_parent = this; m_childs.push_back(c); } }
+	void						addChild					(Object* c);
 	Object*						parent						() { return m_parent; }
 	const Object*				parent						() const { return m_parent; }
 	void						setRotate					(const scl::quaternion& v);

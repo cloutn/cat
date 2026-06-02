@@ -29,7 +29,7 @@ Object::Object() : Object(NULL)
 
 Object::Object(Object* parent) :
 	m_id					(_objectIDMap().alloc_id()),
-	m_parent				(parent),
+	m_parent				(NULL),
 	m_mesh					(NULL),
 	m_skin					(NULL),
 	//m_matrixWithAnimation	(NULL),
@@ -39,6 +39,9 @@ Object::Object(Object* parent) :
 	m_enableAnimation		(true)
 {
 	_objectIDMap().add(this);
+	// 父子双向链表统一走 addChild 建立，避免出现 m_parent 已 set 但未挂入 m_childs 的半挂态
+	if (NULL != parent)
+		parent->addChild(this);
 }
 
 Object::~Object()
@@ -314,6 +317,33 @@ Object* Object::childByID(const int id, bool recursive)
 		}
 	}
 	return NULL;
+}
+
+void Object::addChild(Object* c)
+{
+	if (NULL == c)
+		return;
+	if (c == this)
+		return;
+
+	// 已挂在我下面：可能 m_childs 已含 c（正常态），也可能仅 c->m_parent==this 而未 push（构造器中途态）
+	// 两种情况都视为 "c 是我的子"，扫描确认是否需要补 push
+	if (c->m_parent == this)
+	{
+		for (int i = 0; i < m_childs.size(); ++i)
+		{
+			if (m_childs[i] == c)
+				return;
+		}
+	}
+	else if (NULL != c->m_parent)
+	{
+		// 重挂：先从旧 parent 的 m_childs 摘掉，避免旧 parent 析构时把 c 重复 delete
+		c->m_parent->_removeChild(c);
+	}
+
+	c->m_parent = this;
+	m_childs.push_back(c);
 }
 
 void Object::_removeChild(Object* c)

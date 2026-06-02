@@ -36,7 +36,7 @@ def exec_cmd(cmd, print_cmd=True, shell=False, check=True):
         else:
             print(cmd)
 
-    try:
-        subprocess.run(cmd, shell=shell, check=check)
-    except subprocess.CalledProcessError:
-        print("Execute failed. %s" % cmd)
+    # check=True 时让 CalledProcessError 自然抛到调用方；之前 try/except 只 print 不
+    # raise，等于把 check=True 的语义抹平成 check=False，会造成 build 步骤失败但脚本
+    # 继续往下跑、最终 .bat 仍然 echo "complete." 的"假成功"。
+    subprocess.run(cmd, shell=shell, check=check)
