@@ -51,6 +51,8 @@ VulkanRender::VulkanRender()  :
 	m_pickCopyCommandBuffer		(NULL),
 	m_isInit					(false),
 	m_minimized					(false),
+	m_frameAcquired				(false),
+	m_frameSubmitted			(false),
 	m_frameIndex				(-1),
 	m_prevFrameIndex			(-1),
 	m_matrixChanged				(false),
@@ -523,6 +525,9 @@ void VulkanRender::swap()
 		return;
 	}
 
+	if (!m_frameSubmitted)
+		return;
+
 	//for (int i = 0; i < m_currentFrameCommandBuffers.size(); ++i)
 	//{
 	//	svkQueueSubmit(
@@ -538,6 +543,8 @@ void VulkanRender::swap()
 	//}
 
 	svkPresent(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
+	m_frameAcquired		= false;
+	m_frameSubmitted	= false;
 }
 
 void VulkanRender::clear()
@@ -567,15 +574,37 @@ void VulkanRender::release()
 
 void VulkanRender::beginDraw()
 {
+	m_frameAcquired		= false;
+	m_frameSubmitted	= false;
+
 	if (_minimized())
 		return;
 
-	m_prevFrameIndex					= m_frameIndex;
-	m_frameIndex						= svkAcquireNextImage(m_device, m_swapchain, m_frames, m_frameIndex, this, presentCallback);
+	const int	MAX_RETRY			= 5;
+	for (int retry = 0; retry < MAX_RETRY; ++retry)
+	{
+		const int	acquireFrameIndex	= m_frameIndex;
+		uint32_t	nextFrame			= (uint32_t)-1;
+		VkResult	err					= svkAcquireNextImage(m_device, m_swapchain, m_frames, acquireFrameIndex, nextFrame);
+		if (err == VK_SUCCESS || err == VK_SUBOPTIMAL_KHR)
+		{
+			m_prevFrameIndex				= acquireFrameIndex;
+			m_frameIndex					= static_cast<int>(nextFrame);
+			m_frameAcquired					= true;
 
 
-	m_frameUniformBufferOffset			= 0;
-	m_frameDrawCount					= 0;
+			m_frameUniformBufferOffset		= 0;
+			m_frameDrawCount				= 0;
+			return;
+		}
+
+		presentCallback(this, err);
+		if (_minimized())
+			return;
+	}
+
+	assert(false);
+	memclr(m_drawContext);
 }
 
 void VulkanRender::endDraw()
@@ -700,6 +729,8 @@ void VulkanRender::beginScenePass(scl::vector4& clearColorRGBA)
 {
 	if (_minimized())
 		return;
+	if (!m_frameAcquired)
+		return;
 
 	svkWaitFence(m_device, &m_frames[m_frameIndex].fence, 1);
 
@@ -719,6 +750,10 @@ void VulkanRender::beginScenePass(scl::vector4& clearColorRGBA)
 void VulkanRender::endScenePass()
 {
 	if (_minimized())
+		return;
+	if (!m_frameAcquired)
+		return;
+	if (NULL == m_drawContext.renderPass)
 		return;
 
 	// 必须先 beginDraw 才能进入 endScenePass，否则下面 m_frames[m_prevFrameIndex].imageAcquireSemaphore 会拿到未 signal 的 semaphore 导致 GPU 死等
@@ -748,6 +783,7 @@ void VulkanRender::endScenePass()
 		&m_frames[m_frameIndex].drawCompleteSemaphore,
 		m_frames[m_frameIndex].fence);
 
+	m_frameSubmitted = true;
 	memclr(m_drawContext);
 }
 

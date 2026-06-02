@@ -217,7 +217,7 @@ void					svkCmdSetScissor				(VkCommandBuffer cb, uint32_t width, uint32_t heigh
 
 // submit and present
 typedef void			(*presentResultCallback)		(void* userData, VkResult);
-int						svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frameIndex, void* userData, presentResultCallback callback);
+VkResult				svkAcquireNextImage				(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frameIndex, uint32_t& imageIndex);
 void					svkQueueSubmit					(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore* waitSemaphore, VkSemaphore* signalSemaphore, VkFence fence);
 void					svkQueueSubmitFrame				(svkDevice& device, svkFrame* frames, const int frame, const int prevFrame);
 void					svkPresent						(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame,  void* userData, presentResultCallback callback);

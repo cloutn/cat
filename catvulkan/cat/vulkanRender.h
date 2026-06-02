@@ -255,6 +255,8 @@ private:
 
 	bool				m_isInit;
 	bool				m_minimized;
+	bool				m_frameAcquired;
+	bool				m_frameSubmitted;
 	int					m_frameIndex;
 	int					m_prevFrameIndex;
 	bool				m_matrixChanged;

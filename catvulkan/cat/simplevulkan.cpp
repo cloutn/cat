@@ -2203,42 +2203,22 @@ void svkCmdSetScissor(VkCommandBuffer cb, uint32_t width, uint32_t height)
 	vkCmdSetScissor(cb, 0, 1, &scissor);
 }
 
-int svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame, void* userData, presentResultCallback callback)
+VkResult svkAcquireNextImage(svkDevice& device, svkSwapchain& swapchain, svkFrame* frames, const int frame, uint32_t& nextFrame)
 {
-	// 之前是 do-while(err != VK_SUCCESS) 无上限重试：当 err 是不可恢复码
-	// （DEVICE_LOST/OUT_OF_DEVICE_MEMORY）或 callback 内 recreateSwapchain 反复失败时主线程死循环。
-	// 现在加 MAX_RETRY 上限：可恢复路径（OUT_OF_DATE/SURFACE_LOST -> callback recreate -> 下次成功）
-	// 不受影响；持续失败时 fatal 退出（比 hang 更易诊断）。
-	const int	MAX_RETRY		= 5;
-	VkResult	err				= VK_SUCCESS;
-	uint32_t	nextFrame		= (uint32_t)-1;
-	int			retry			= 0;
+	nextFrame = (uint32_t)-1;
 
-	do 
-	{
-		err = vkAcquireNextImageKHR(
-				device.device, 
-				swapchain.swapchain, 
-				UINT64_MAX,
-				frames[frame].imageAcquireSemaphore, 
-				VK_NULL_HANDLE, 
-				&nextFrame);
-		if (err != VK_SUCCESS)
-		{
-			if (NULL != callback)
-				callback(userData, err);
-			++retry;
-			if (retry >= MAX_RETRY)
-			{
-				printf("svkAcquireNextImage: unrecoverable failure after %d retries, err=%d\n", MAX_RETRY, (int)err);
-				abort();
-			}
-		}
-	} while (err != VK_SUCCESS);
+	VkResult err = vkAcquireNextImageKHR(
+			device.device,
+			swapchain.swapchain,
+			UINT64_MAX,
+			frames[frame].imageAcquireSemaphore,
+			VK_NULL_HANDLE,
+			&nextFrame);
 
-	vkWaitForFences	(device.device, 1, &frames[nextFrame].fence, VK_TRUE, UINT64_MAX);
+	if (err == VK_SUCCESS || err == VK_SUBOPTIMAL_KHR)
+		vkWaitForFences	(device.device, 1, &frames[nextFrame].fence, VK_TRUE, UINT64_MAX);
 
-	return (int)nextFrame;
+	return err;
 }
 
 void svkQueueSubmit(svkDevice& device, const VkCommandBuffer* commandBuffers, const int commandBufferCount, VkSemaphore* waitSemaphore, VkSemaphore* signalSemaphore, VkFence fence)
