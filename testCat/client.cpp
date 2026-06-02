@@ -285,7 +285,7 @@ void Client::run()
 
 		m_render.endDraw();
 #else
-		m_gridPrimitive->draw(m_camera->matrix(), NULL, 0, false);
+		_renderScene(false);
 
 		//m_object->draw(m_camera->matrix(), false);
 #endif

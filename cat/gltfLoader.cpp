@@ -331,11 +331,22 @@ void GltfLoader::_loadSkin(cgltf_skin* skinData, Skin* outSkin)
 	const int jointCount = static_cast<int>(skinData->joints_count);
 
 	// inverse bind matrices
-	matrix* ibm = _loadIBM(skinData->inverse_bind_matrices, jointCount);
+	// glTF 2.0：字段缺省时每根骨头取 identity；字段存在但格式/数量非法时整个 skin 失效
+	matrix* ibm = NULL;
+	if (NULL == skinData->inverse_bind_matrices)
+	{
+		ibm = new matrix[jointCount];
+		for (int i = 0; i < jointCount; ++i)
+			ibm[i] = matrix::identity();
+	}
+	else
+	{
+		ibm = _loadIBM(skinData->inverse_bind_matrices, jointCount);
+	}
 	if (NULL == ibm)
 	{
 		// 不能传 (NULL, jointCount)，否则 Skin 内 count>0 / ptr==NULL 失配
-		log_warning("Skin: inverse bind matrices missing/invalid, skin will be unusable");
+		log_warning("Skin: inverse bind matrices invalid, skin will be unusable");
 		outSkin->setInverseBindMatrices(NULL, 0);
 	}
 	else
@@ -616,7 +627,8 @@ byte* GltfLoader::_flattenVertexAttrs(cgltf_primitive* data,
 // 之后再乘上骨头当前帧的 global 矩阵，就得到顶点在当前动画姿势下的位置。
 // 蒙皮最终矩阵：M_joint = inv(mesh.global) * joint.global * IBM
 // 见 Skin::generateJointMatrix。gltf 里以 mat4 数组存在 skin.inverseBindMatrices accessor。
-// 数量必须与 joints 数量一致，缺失/损坏时整个 skin 不可用。
+// 本函数处理"字段存在"的情况；字段缺省按 glTF 2.0 规范由 _loadSkin 补 identity，不进入此函数。
+// 格式/数量非法返回 NULL，由调用方决定是否禁用 skin。
 scl::matrix* GltfLoader::_loadIBM(cgltf_accessor* accessor, int outputCount)
 {
 	if (NULL == accessor || outputCount <= 0)
@@ -625,16 +637,28 @@ scl::matrix* GltfLoader::_loadIBM(cgltf_accessor* accessor, int outputCount)
 		return NULL;
 	if (accessor->type != cgltf_type_mat4)
 		return NULL;
-
-	cgltf_buffer_view*	view	= accessor->buffer_view;
-	if (NULL == view || NULL == view->buffer || NULL == view->buffer->data)
-		return NULL;
-	if (view->size != sizeof(matrix) * outputCount)
+	if (accessor->count != static_cast<cgltf_size>(outputCount))
 		return NULL;
 
-	const byte*	pBuffer	= reinterpret_cast<const byte*>(view->buffer->data) + view->offset;
-	matrix*		output	= new matrix[outputCount];
-	memcpy(output, pBuffer, view->size);
+	const int			matrixSize		= static_cast<int>(sizeof(matrix));
+	int					elementSize		= static_cast<int>(accessor->stride);
+	if (0 == elementSize)
+		elementSize = static_cast<int>(cgltf_calc_size(accessor->type, accessor->component_type));
+	if (elementSize < matrixSize)
+		return NULL;
+
+	const byte*			pBuffer			= cgltf_get_accessor_buffer(accessor);
+	if (NULL == pBuffer)
+		return NULL;
+
+	cgltf_buffer_view*	view			= accessor->buffer_view;
+	const cgltf_size	requiredSize	= accessor->offset + static_cast<cgltf_size>(elementSize) * static_cast<cgltf_size>(outputCount - 1) + static_cast<cgltf_size>(matrixSize);
+	if (requiredSize > view->size)
+		return NULL;
+
+	matrix*				output			= new matrix[outputCount];
+	for (int i = 0; i < outputCount; ++i)
+		memcpy(&output[i], pBuffer + i * elementSize, matrixSize);
 	return output;
 }
 
