@@ -25,6 +25,7 @@
 - [十四、贯穿全程的横切任务](#十四贯穿全程的横切任务)
 - [十五、风险与对策](#十五风险与对策)
 - [十六、出口判定](#十六出口判定)
+- [十七、从 task.txt 迁入的历史补充](#十七从-tasktxt-迁入的历史补充)
 
 ---
 
@@ -631,6 +632,31 @@ vec3 specular_indirect = ks * prefiltered(R, roughness)
 - [ ] `testCat` 中至少 **6 个 demo 场景**能跑（PBR / CSM / Jolt / Terrain / Water / Nav）
 - [ ] 引擎在 **Windows + Linux** 上都能编过且 demo 跑通
 - [ ] 自己能用**一句话**讲清每个子系统的设计取舍和"为什么这么做"
+
+---
+
+## 十七、从 task.txt 迁入的历史补充
+
+> 以下为旧 `task.txt` 中未被上文直接覆盖的内容；已完成项作为 v0 基线保留，延期项仅作历史/备选记录，不改变 v2 主线优先级。
+> 旧文件末尾的 `test` 为占位文本，不作为任务迁入。
+
+### v0 已完成 / 基本完成基线
+
+- [x] glTF 原生数据 render（基本完成）
+- [x] glTF mesh 加载（已完成）
+- [x] glTF 基础材质纹理加载（已完成）
+- [x] 基础场景组织 v0（已完成）
+- [x] skinned mesh 动画（基本完成）
+
+### 延期或备选项
+
+- [ ] ImGuizmo 左上角方向指示器：按 Unity Scene View 类似逻辑改进；归入贯穿全程的编辑器 Gizmo 打磨。
+- [ ] 渲染代码整理：结合 M0.3 的 `IRender` typed handle、M0.4 的 uniform / visibility 基础设施、Phase 2 后的中期审查同步收敛。
+- [ ] FBX Windows 加载调研：非必要功能，延后；如重启，优先评估 Autodesk FBX SDK。
+- [ ] FBX Android 加载调研：非必要功能，延后；如重启，评估 openfbx 或 assimp。当前主线仍以 glTF 2.0 为唯一模型 / 动画交换格式。
+- [ ] 场景阴影 bake 调研：用 Unreal LightMass 作为对照，评估是否需要导入 / 复用 bake 结果。
+- [ ] PhysX 4.0 接入备选调研：当前 Phase 3 主线采用 Jolt；PhysX 4.0 仅保留为历史备选与对照项。
+- [ ] 水体涟漪参考：Unity 实现参考 <https://blog.csdn.net/ak47007tiger/article/details/115270022>，归入 M6.3 涟漪。
 
 ---
 
