@@ -827,11 +827,9 @@ int VulkanRender::_fillUniformData(
 
 	// [0]
 	int idx = 0;
+	const int mvpStrideMax = _alignUniformBufferOffset(sizeof(mvp));
 	uniformDatas[idx].data[0].buffer.buffer		= m_drawContext.uniform.buffer;
-	//uniformDatas[idx].data[0].buffer.bufferSize	= sizeof(mvp);
-	//uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1 - dynamicOffsets[0];
-	// !!! Set buffer size to max limits, so all the descriptor has the same size, we can use less descriptor.
-	uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1;
+	uniformDatas[idx].data[0].buffer.bufferSize	= mvpStrideMax;
 	uniformDatas[idx].dataCount = 1;
 	uniformDatas[idx].binding = 0;
 	++idx;
@@ -845,10 +843,9 @@ int VulkanRender::_fillUniformData(
 		//	uniformDatas[idx].data[i].buffer.buffer	= m_drawContext.uniform.buffer;
 		//	uniformDatas[idx].data[i].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
 		//}s
+		const int jointStrideMax					= _alignUniformBufferOffset(sizeof(scl::matrix) * MAX_JOINT_PER_OBJECT);
 		uniformDatas[idx].data[0].buffer.buffer		= m_drawContext.uniform.buffer;
-		//uniformDatas[idx].data[0].buffer.bufferSize = sizeof(scl::matrix) * jointMatrixCount;
-		//uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1 - dynamicOffsets[1];
-		uniformDatas[idx].data[0].buffer.bufferSize = m_device.gpuProperties.limits.maxUniformBufferRange - 1;
+		uniformDatas[idx].data[0].buffer.bufferSize = jointStrideMax;
 		uniformDatas[idx].dataCount					= 1;
 		uniformDatas[idx].binding					= 2;
 		++idx;
@@ -974,6 +971,12 @@ uint32_t VulkanRender::_fillDynamicOffsets(
 	}
 
 	const bool			hasJoint	= (jointMatrixCount > 0 && NULL != jointMatrices);
+	if (hasJoint && jointMatrixCount > MAX_JOINT_PER_OBJECT)
+	{
+		assert(false);
+		return 0;
+	}
+
 	const uint32_t		mvpStride	= static_cast<uint32_t>(_alignUniformBufferOffset(sizeof(mvp)));
 	const uint32_t		jointBytes	= hasJoint ? static_cast<uint32_t>(sizeof(scl::matrix) * jointMatrixCount) : 0;
 	const uint32_t		jointStride	= hasJoint ? static_cast<uint32_t>(_alignUniformBufferOffset(static_cast<int>(jointBytes))) : 0;
@@ -1004,7 +1007,7 @@ uint32_t VulkanRender::_fillDynamicOffsets(
 }
 
 
-void VulkanRender::_prepareDescriptorSetAndFillData(
+bool VulkanRender::_prepareDescriptorSetAndFillData(
 	void*					shader, 
 	const scl::matrix&		mvp,
 	void*					texture,
@@ -1030,7 +1033,11 @@ void VulkanRender::_prepareDescriptorSetAndFillData(
 	//	2. 每一帧使用一个 buffer，记录所有 object 的 uniform matrix (mvp, jointMatrices), 然后在 vkCmdBindDescriptorSets 中使用 dynamicOffsets 区分每个物体。
 	//
 	outputDynamicOffsetCount	= _fillDynamicOffsets	(outputDynamicOffsets, outputDynamicOffsetCapacity, mvp, jointMatrices, jointMatrixCount);
+	if (0 == outputDynamicOffsetCount)
+		return false;
+
 	outputDescriptorSet			= _prepareDescriptorSet	(shader, uniformDatas, uniformDataCount, outputDescriptorSetLayout, outputDynamicOffsets, outputDynamicOffsetCount);
+	return true;
 }
 
 
@@ -1254,19 +1261,20 @@ void VulkanRender::draw2(
 	if (NULL == m_drawContext.renderPass)
 		return;
 
+	DescriptorSet			descriptorSet								= { 0 };
+	VkDescriptorSetLayout	descriptorSetLayout							= NULL;
+	const int				MAX_DYNAMIC_OFFSET_COUNT					= 2;
+	uint32_t				dynamicOffsets[MAX_DYNAMIC_OFFSET_COUNT]	= { 0 };
+	uint32_t				dynamicOffsetCount							= 0;
+	if (!_prepareDescriptorSetAndFillData(shader, mvp, texture, jointMatrices, jointMatrixCount, descriptorSet, descriptorSetLayout, dynamicOffsets, countof(dynamicOffsets), dynamicOffsetCount))
+		return;
+
 	//VkCommandBuffer cmd_buf = m_swapchain.commandBuffers[m_frameIndex];
 	bool			useBindCommandBuffer	= m_bindCommandBuffer != NULL;
 	VkCommandBuffer	cmd_buf					= useBindCommandBuffer ? m_bindCommandBuffer : m_drawContext.commandAllocator->alloc();
 
 	if (!useBindCommandBuffer)
 		svkBeginSecondaryCommandBuffer(cmd_buf, m_drawContext.renderPass, m_drawContext.framebuffer);
-
-	DescriptorSet			descriptorSet								= { 0 };
-	VkDescriptorSetLayout	descriptorSetLayout							= NULL;
-	const int				MAX_DYNAMIC_OFFSET_COUNT					= 2;
-	uint32_t				dynamicOffsets[MAX_DYNAMIC_OFFSET_COUNT]	= { 0 };
-	uint32_t				dynamicOffsetCount							= 0;
-	_prepareDescriptorSetAndFillData(shader, mvp, texture, jointMatrices, jointMatrixCount, descriptorSet, descriptorSetLayout, dynamicOffsets, countof(dynamicOffsets), dynamicOffsetCount);
 
 	svkPipeline* pipeline = NULL;
 	_preparePipeline(primitiveType, attrs, attrCount, vertexBuffers, descriptorSetLayout, shader, m_drawContext.renderPass, pipeline);

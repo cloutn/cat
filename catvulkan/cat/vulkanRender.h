@@ -178,7 +178,7 @@ private:
 		const scl::matrix*		jointMatrices,
 		const int				jointMatrixCount);
 
-	void					_prepareDescriptorSetAndFillData(
+	bool					_prepareDescriptorSetAndFillData(
 		void*					shader, 
 		const scl::matrix&		mvp,
 		void*					texture,
@@ -221,7 +221,7 @@ private:
 private:
 	static const int	MAX_FRAME						= svkSwapchain::MAX_IMAGE_COUNT;	// 最大交换帧数量。TODO, 改为动态扩张。开始时2，不够的时候增加
 	static const int	MAX_JOINT_PER_OBJECT			= 64;	// 每个蒙皮 object 的最大骨骼数；骨骼矩阵被打包成一段连续 buffer 写入
-	static const int	MAX_DRAW_PER_FRAME				= 1024;	// 每帧最大 draw 调用数（_fillDynamicOffsets 入口 assert）
+	static const int	MAX_DRAW_PER_FRAME				= 1024;	// 每帧最大 draw 调用数（_fillDynamicOffsets 入口 assert，release 下跳过 draw）
 	static const int	MAX_CONFLICT					= 16;	// render 中使用的多个 hash_table 的最大冲突次数。
 	static const int	MAX_DESCRITOR_ALLOCATOR_COUNT	= 1024;	// hash_table 中 descriptor allocator 的最大数量
 	static const int	MAX_PIPELINE_COUNT				= 1024;	// hash_table 中 pipeline 的最大数量
