@@ -31,6 +31,8 @@ set(FLOATING_POINT_EXCEPTIONS_ENABLED    OFF CACHE BOOL ""   FORCE)
 set(OBJECT_LAYER_BITS                    32  CACHE STRING "" FORCE)
 
 # SIMD（PC x64 主线）
+# 基线：Intel Haswell(2013) / AMD Excavator(2015) 及更新；无 AVX2 的旧 CPU 跑 Release 会非法指令崩溃。
+# cat 是 PC 实验引擎，主动选择 AVX2 主线，不做运行时 dispatch；移动端将另起一套 CMake 配置。
 set(USE_SSE4_1                           ON  CACHE BOOL ""   FORCE)
 set(USE_SSE4_2                           ON  CACHE BOOL ""   FORCE)
 set(USE_AVX                              ON  CACHE BOOL ""   FORCE)

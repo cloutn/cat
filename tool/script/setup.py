@@ -60,6 +60,9 @@ def build_jolt():
     # Jolt 600+ 文件，体积大，不入 testCat sln；走 shaderc 同款"独立预 build"路径。
     # free/jolt/CMakeLists.txt 是 cat 写的薄壳，会转发到上游 free/jolt/Build/CMakeLists.txt，
     # 并把 .lib 直接产出到 free/lib${arch}/jolt(_d).lib，所以这里不需要再 shutil.copy。
+    # 平台范围：当前只产 Win64 x64 .lib（与 testCat 整条依赖链一致，参见 testCat/CMakeLists.txt
+    # 里链接的 vulkan-1.lib / Qualcomm libEGL.lib 等都是 Windows 导入库）。
+    # 后续接入移动端时再补 NDK / Xcode 入口和 free/lib${arch}/ 的 ABI 分目录（arm64-v8a 等）。
     arch = "64" if G.arch64 else ""
     src_path = "../free/jolt/"
     build_path = f"../free/jolt/build{arch}_{G.build_suffix}/"
