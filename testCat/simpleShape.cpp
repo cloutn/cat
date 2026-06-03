@@ -56,7 +56,7 @@ Object* _createGrid(IRender* render, Env* env)
 	p->setIndices(indices, countof(indices), ELEM_TYPE_UINT16);
 	p->setAttrs(attrs, attrCount);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 
 	Object* obj = new Object();
 

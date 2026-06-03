@@ -74,7 +74,7 @@ void Terrain::init(IRender* render, Env* env)
 
 	ShaderMacroArray macros;
 	macros.add("COLOR");
-	m_primitive->setShaderWithPick(env->getDefaultShader(macros), env);
+	m_primitive->setShaderWithPick(env->getDefaultShader(macros));
 
 }
 

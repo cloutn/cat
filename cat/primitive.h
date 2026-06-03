@@ -32,8 +32,7 @@ public:
 	void				release				();
 	Shader*				shader				() { return m_shader; }
 	void				setShader			(Shader* shader) { m_shader = shader; }
-	void				setShaderWithPick	(Shader* shader, Env* env);
-	void				setPickShader		(Shader* pickShader) { m_pickShader = pickShader; }
+	void				setShaderWithPick	(Shader* shader);
 	void				setTexture			(const char* const filename);
 	//void				loadMemory			(
 	//	void*			indices, 

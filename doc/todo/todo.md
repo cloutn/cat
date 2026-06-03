@@ -5,6 +5,8 @@
 ## 当前补充
 
 - **ensure 多线程去重**（`free/scl/assert.h` 宏内 `static bool s_logged`）：scl 进多线程项目且要严格 once 时换 `volatile int + scl::compare_and_swap`；当前 race 是良性退化（多几次 log/break），非必修。详见 `doc/architect/错误处理-哲学与工具集.md`。
+- **PipelineKey 逐字段 hash / compare**（`catvulkan/cat/pipelineKey.cpp:1-31`）：当前 `XXH32(this, sizeof) + memcmp` 依赖 ctor `memset` 清 padding，结果正确但易碎——加字段时若忘了走 `memset` 路径会复现 cache miss + 每帧泄漏。等下次给 PipelineKey 加字段时一起改：逐字段 hash + 逐字段 `operator==`，彻底脱离 padding 依赖。文件内 TODO 注释已标。`static_assert(std::is_trivially_copyable<PipelineKey>)` 是 placebo，**不要加**——它只保证 memcpy/memcmp 合法，不防 padding 未初始化。
+- **Pick pass RT 缩小为 1×1 + scissor**（`catvulkan/cat/vulkanRender.cpp:111` `_createRenderTarget` 处）：当前 pick 用全屏 RT，CPU buffer 已经是 1×1 = 4 字节。pick 已经只在点击事件触发（`Client::_clickSelectObject`），不是每帧成本，桌面端无压力。**移动端编辑器落地时再优化**：1×1 offscreen RT + 投影矩阵把点击点偏移到 RT 中心；或者 scissor 限制 + 调整 viewport。优化属独立改造，涉及 pick 投影路径变更，不要顺手做。
 
 ## 2025年8月20日
 

@@ -51,7 +51,7 @@ void _loadPrimivteFromMemory2(Primitive* p, IRender* render, Env* env)
 	p->setAttrs			(attrs, attrCount, attrBuffers);
 	p->setVertices		(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture		(NULL);
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 }
 
 
@@ -117,7 +117,7 @@ Primitive* createBone(Object* root, IRender* render, Env* env)
 	p->setAttrs(attrs, attrCount, attrBuffers);
 	p->setVertices(vertices.begin(), vertices.size(), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 	return p;
 }
 
@@ -139,7 +139,7 @@ cat::Primitive* createTestPrimitive_getVertexData(IRender* render, Env* env, ver
 	p->setAttrs(attrs, attrCount, attrBuffers);
 	p->setVertices(vertices, vertexCount, sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 
 	return p;
 }
@@ -178,7 +178,7 @@ Primitive* createTestVulkanPrimitive(IRender* render, Env* env)
 	p->setAttrs(attrs, attr_count, attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color_uv));
 	p->setTexture(NULL);
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 	return p;
 }
 
@@ -214,7 +214,7 @@ Primitive* createTestVulkanPrimitiveColor(IRender* render, Env* env)
 	p->setAttrs(attrs, attrCount, attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color));
 	p->setTexture(NULL);
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 	return p;
 }
 
@@ -256,7 +256,7 @@ void testPrimitive_vertexPosition_edgeCase(IRender* render, Env* env)
 	p->setAttrs(attrs, attr_count, attrBuffers);
 	p->setVertices(vertices, countof(vertices), sizeof(vertex_color_uv));
 	p->setTexture(NULL);
-	p->setShaderWithPick(env->getDefaultShader(macros), env);
+	p->setShaderWithPick(env->getDefaultShader(macros));
 
 	// 测试1：没有位置属性时的 allVertexPositions
 	int vertexCount = 0;

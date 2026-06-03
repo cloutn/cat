@@ -76,7 +76,8 @@ int Primitive::_attrLocationToIndex(const int attrLocation)
 
 void Primitive::draw(const scl::matrix& mvp, const scl::matrix* jointMatrices, const int jointMatrixCount, bool isPick)
 {
-	// caller 必须先 setRender + setShaderWithPick 才能 draw；契约违反 → debug 暴露，release 跳过本 primitive 避免崩到底层 driver。
+	// caller 必须先 setRender + setShaderWithPick 才能 draw；pick 路径还需先 setEnv（m_env 用于 registerPickPrimitive）。
+	// 契约违反 → debug 暴露，release 跳过本 primitive 避免崩到底层 driver。
 	Shader* const targetShader = isPick ? m_pickShader : m_shader;
 	if (NULL == m_render || NULL == targetShader)
 	{
@@ -240,10 +241,11 @@ void Primitive::release()
 //	m_shader = shader;
 //}
 
-void Primitive::setShaderWithPick(Shader* shader, Env* env)
+void Primitive::setShaderWithPick(Shader* shader)
 {
 	setShader(shader);
-	m_pickShader = env->shaderCache()->getPickShader(shader);
+	assert(NULL != m_env);
+	m_pickShader = m_env->shaderCache()->getPickShader(shader);
 }
 
 

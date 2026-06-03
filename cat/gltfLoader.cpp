@@ -243,7 +243,7 @@ void GltfLoader::_loadPrimitive(cgltf_primitive* data, Mesh* host, int skinJoint
 
 	// shader
 	Shader* shader = _selectShader(data, skinJointCount);
-	primitive->setShaderWithPick(shader, m_env);
+	primitive->setShaderWithPick(shader);
 
 	// index
 	const cgltf_accessor*	indices	= data->indices;
