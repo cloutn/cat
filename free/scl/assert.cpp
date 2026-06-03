@@ -89,4 +89,33 @@ void assert_writef(
 	scl::urgency_log(logMessage);
 }
 
+
+bool ensure_failed(
+	const char* const fileName, 
+	const char* const functionName, 
+	const int lineNumber, 
+	const char* const expression)
+{
+	// ensure 是软失败（可恢复，进程仍在运行），走 scl::log 正常通道即可，
+	// 不走 urgency_log（那是给"日志系统也可能崩"的 assert 兜底用的）。
+	// 用 LOG_LEVEL_ERROR 而非 LOG_LEVEL_FATAL：与 ensure"可继续"语义对齐，
+	// LOG_LEVEL_FATAL 留给真正不可恢复的 assert 失败。
+	scl::log::out(
+		scl::LOG_LEVEL_ERROR, 
+		-1, 
+		fileName, 
+		functionName, 
+		lineNumber, 
+		"ensure failed: %s", 
+		expression);
+
+#ifdef SCL_WIN
+	// 返回是否建议宏侧 break：仅在调试器附着时为 true。
+	// 无调试器（release 直接运行 / 命令行启动 / shipping）下不打扰，让 caller 走 ensure 返回 false 的兜底路径。
+	return IsDebuggerPresent() != FALSE;
+#else
+	return false;
+#endif
+}
+
 } //namespace scl

@@ -135,6 +135,51 @@
 - [ ] 文件末尾空行没改动。
 - [ ] 命名空间结尾带 `// namespace xxx` 注释。
 
+## 13. 错误处理 — assert / ensure / 日志
+
+cat 错误处理哲学：debug 期错误立刻中断；release 期分两类——不可继续就 fatal，可继续就尝试继续。详细对照与改进计划见 `doc/todo/log_fatal设计-Unity-UE对照与改进计划.md`。
+
+工具集：
+
+- `assert(expr)` / `assert(false)` — 不可继续。debug `int 3` / release `throw 1`，**最终终止进程**。
+- `ensure(expr)` — 可继续。debug + 调试器附着时 `__debugbreak`，release 写日志，**永远返回 bool 让 caller 决定**。每个 callsite 只触发一次（按 file+line 去重）。
+- `log_verbose / debug / info / warn / error / fatal` — 仅日志，无中断；`log_fatal` 是 scl 的 verbosity 等级，**不会终止**。
+
+判别原则（单条够用 90% 场景）：
+
+> 想象 release 下违反这条：
+> - 当前调用栈上**能定义出合理的兜底**（早退、跳过、用默认值），且兜底后进程状态仍有意义 → `ensure`
+> - 没有兜底，或继续走会让状态更糟（UB、数据损坏、级联崩） → `assert`
+
+速查：
+
+| 错误来源 | 工具 |
+|---|---|
+| 外部数据（gltf、yaml、shader 编译、网络包） | `ensure` |
+| 用户/编辑器交互（ID 找不到、操作失败） | `ensure` |
+| 单帧 / 单 draw 上限超出（MAX_DRAW、MAX_JOINT、CB 满） | `ensure` |
+| 可选优化路径失败（descriptor cache 满、pipeline 创建失败） | `ensure` |
+| 程序内部不变量（链表头 NULL、size 为负、双 free、状态机非法转移） | `assert` |
+| 初始化阶段失败（Vulkan device、必需 shader、主 window） | `assert` |
+| switch default 真不可能的分支 | `assert` |
+| 内存/句柄破坏（必需 new 失败、Vk handle 为 NULL） | `assert` |
+
+写法：
+
+- 推荐 ✅ `if (!ensure(...)) return ...;` 显式早退（多数场景）
+- 推荐 ✅ `if (ensure(NULL != ptr)) ptr->do_something();` 通过时执行
+- 可用 ✅ `ensure(...);` 不接返回值——仅当 caller 真的不需要走兜底路径，仅作"debug 期暴露 + release 期留日志"的纯检查（debug 期调试器附着仍会 break，不会被漏掉）
+- 避免 ❌ `assert(ensure(...));` 双层断言自我矛盾
+
+模糊地带默认 `ensure`：可升级（包一层 `if (!ensure) { assert(false); }`），不可降级；debug 期暴露能力对等；release 宁可丢一帧也别崩编辑器。
+
+反向防滥用：写 `if (!ensure(...))` 之前问自己一句"如果删掉 ensure 让条件违反静默 return，会发生什么？"——答得出"丢一个物体 / 跳过这次操作"就用 ensure；答不出或答"数据结构半初始化"就改 `assert`。
+
+日志策略：
+
+- `assert` 失败 → `scl::assert_write` 三路写（OutputDebugString + printf + urgency_log）—— 崩前必须落盘
+- `ensure` 失败 → `scl::log::out(LOG_LEVEL_ERROR, ...)` 单路写 —— 软失败走正常通道即可
+
 ## 文件编码与 Windows 终端注意事项
 
 1. 所有源文件（`.cpp` / `.h` / `.hlsl` / `.glsl` / `.usf` / `.ush`）和文档（`.md`）**统一使用 UTF-8 无 BOM**，与仓库现状保持一致（截至定稿，`cat/` 下 42 个 cpp/h 全部 UTF-8 无 BOM，含中文注释的文件也无 BOM）。修改时**禁止给文件添加 BOM、也禁止移除已有 BOM**，避免单个文件破坏仓库的编码一致性。
