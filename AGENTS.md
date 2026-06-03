@@ -24,7 +24,16 @@
 
 适用范围：本仓库（`cat` / `catbase` / `catui` / `catwindows` / `catvulkan` / `testCat`）所有 `.h` / `.cpp` / `.c` 文件。规则从现有代码归纳而来，**违反任何一条都属于风格 bug**。修改、新增、重构都必须遵守。
 
-> 与 `AGENTS.override.md` / `CLAUDE.override.md` 不冲突，本文件只描述 cat 引擎的代码风格；override 文件描述跨项目的个人元规则。冲突时以更具体的本文件为准。
+> 与 `AGENTS.override.md` / `CLAUDE.override.md` 作用域不重叠：
+>
+> - **本文件**描述 cat 引擎的代码风格（命名、对齐、`scl::*` 容器、`NULL` vs `nullptr`、init list 列对齐、`#pragma once`、Tab 缩进等），属"具体技术风格"层。
+> - **override 文件**描述跨项目的个人元规则与流程约束（文档放置位置、文件命名规则、是否运行编译验证、个人/团队配置入库与否等），属"流程/元规则"层。
+>
+> 优先级判定原则：
+>
+> 1. 两份文件的条款**作用域不同**时（例如本文件管"`m_` 前缀"、override 管"新建 markdown 放 `..\pw\ue\.doc`"），各自在自己的范围内生效，互不覆盖。
+> 2. 两份文件**对同一条款给出不同要求**时（典型完全重叠条款：EOF 空行），以 override 为准——这与 `personal-override.mdc` 的"最高优先级"声明一致。
+> 3. 当 override 对某个**具体技术细节**只给了泛化措辞而本文件给了精确写法时（例如 override 说"代码要简洁"、本文件说"删除指针用 `safe_delete`"），按本文件的具体写法落地，不视为冲突。
 
 ## 1. 空指针与内存
 
@@ -199,7 +208,7 @@ cat 错误处理哲学：debug 期错误立刻中断；release 期分两类—�
 ## 个人强制规则
 
 1. 所有新建文档都必须放在相对当前仓库根目录的 `..\pw\ue\.doc` 目录下面，除非 @caolei 明确指定其他位置。
-2. 所有 Markdown 文档（`*.md`）都必须使用中文文件名，文件名要描述主题，不使用 `plan.md`、`design.md`、`document.md`、`checklist.md` 这类泛用英文名。
+2. 所有 Markdown 文档（`*.md`）都必须使用中文文件名，文件名要描述主题，不使用 `plan.md`、`design.md`、`document.md`、`checklist.md` 这类泛用英文名。**例外**：目录入口文件 `README.md` 作为 GitHub / 编辑器自动识别的导航文件保留英文名（本身是惯例名而非泛用名）；其它任何"看似导航"的文件不享受此豁免。
 3. 修改 `.cpp` 和 `.h` 源文件时，千万不要增加或删除文件末尾的空行；必须保持文件原本的 EOF 空行状态。
 4. 不要把个人 skill、个人 agent 配置提交到仓库，除非明确决定团队共享。
 5. 代码要在保持可读性的情况下，追求简洁。

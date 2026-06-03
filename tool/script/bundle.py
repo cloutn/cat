@@ -18,7 +18,14 @@ extra_path = Path("./7z").resolve()
 print(extra_path)
 os.environ['PATH'] = f"{extra_path}{os.pathsep}{os.environ['PATH']}"
 
-#print("compressing free.7z" % dir)
+# free.7z 的语义：仅打包【未入 git】的第三方依赖，给别人重建仓库时一并解出。
+# 列表与 .gitignore 中 /free/* 的忽略项一一对齐：
+#   .gitignore 已忽略 → 这里必须打包  (cgltf / gles / jpeg_turbo / libktx /
+#                                    libpng / libtga / shaderc / spirv_cross /
+#                                    vld_runtime / zlib / vulkan)
+#   .gitignore 未忽略 → 已入库, 不需要打包 (jolt / glm / imgui / libimg /
+#                                         rapidyaml / scl)
+# 新增 free/<dep> 时, 务必先确认 .gitignore 是否忽略, 再决定是否加入这里。
 exec_cmd([
     '7z',
     'a',
@@ -49,6 +56,11 @@ exec_cmd([
     "-xr!build",
     "-xr!build32",
     "-xr!build64",
+    "-xr!build64_visualstudio",
+    "-xr!build64_ninja",
+    "-xr!build64_linux",
+    "-xr!CMakeFiles",
+    "-xr!xcuserdata",
     "-x!lib",
     "-x!lib64",
     "-x!shaderc/build",

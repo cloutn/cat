@@ -6,7 +6,16 @@ alwaysApply: true
 
 适用范围：本仓库（`cat` / `catbase` / `catui` / `catwindows` / `catvulkan` / `testCat`）所有 `.h` / `.cpp` / `.c` 文件。规则从现有代码归纳而来，**违反任何一条都属于风格 bug**。修改、新增、重构都必须遵守。
 
-> 与 `AGENTS.override.md` / `CLAUDE.override.md` 不冲突，本文件只描述 cat 引擎的代码风格；override 文件描述跨项目的个人元规则。冲突时以更具体的本文件为准。
+> 与 `AGENTS.override.md` / `CLAUDE.override.md` 作用域不重叠：
+>
+> - **本文件**描述 cat 引擎的代码风格（命名、对齐、`scl::*` 容器、`NULL` vs `nullptr`、init list 列对齐、`#pragma once`、Tab 缩进等），属"具体技术风格"层。
+> - **override 文件**描述跨项目的个人元规则与流程约束（文档放置位置、文件命名规则、是否运行编译验证、个人/团队配置入库与否等），属"流程/元规则"层。
+>
+> 优先级判定原则：
+>
+> 1. 两份文件的条款**作用域不同**时（例如本文件管"`m_` 前缀"、override 管"新建 markdown 放 `..\pw\ue\.doc`"），各自在自己的范围内生效，互不覆盖。
+> 2. 两份文件**对同一条款给出不同要求**时（典型完全重叠条款：EOF 空行），以 override 为准——这与 `personal-override.mdc` 的"最高优先级"声明一致。
+> 3. 当 override 对某个**具体技术细节**只给了泛化措辞而本文件给了精确写法时（例如 override 说"代码要简洁"、本文件说"删除指针用 `safe_delete`"），按本文件的具体写法落地，不视为冲突。
 
 ## 1. 空指针与内存
 
